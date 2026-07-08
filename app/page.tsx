@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { APP_NAME, APP_TAGLINE } from "@/constants"
+import { APP_NAME, APP_SECONDARY_TAGLINE, APP_TAGLINE } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { UserGallery } from "@/components/user-gallery"
 import { Faq } from "@/components/faq"
@@ -13,8 +13,8 @@ export default function HomePage() {
   return (
     <main>
       <section
-        className="relative flex h-[80vh] min-h-[500px] flex-col justify-center bg-cover bg-center text-white"
-        style={{ backgroundImage: "url(/home-landing.png)" }}
+        // Show mobile background on small screens and desktop background on medium screens and up
+        className="relative flex h-[80vh] min-h-[500px] flex-col justify-center bg-[url('/home-landing-mobile.png')] bg-cover bg-center text-white md:bg-[url('/home-landing.png')]"
       >
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -28,13 +28,12 @@ export default function HomePage() {
             />
             <AppName className="text-3xl font-bold sm:text-4xl md:text-5xl" />
             <div className="space-y-2">
-              <p className="text-lg text-white/90 md:text-xl">{APP_TAGLINE}</p>
+              <p className="text-lg font-bold text-white/90 md:text-xl">
+                <span className="text-gradient">{APP_TAGLINE}</span>
+              </p>
 
               <p className="text-lg font-bold md:text-xl">
-                <span className="text-gradient">
-                  Real People. Real Relationships. Personally Matched in
-                  Thailand.
-                </span>
+                <span className="text-gradient">{APP_SECONDARY_TAGLINE}</span>
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-4">

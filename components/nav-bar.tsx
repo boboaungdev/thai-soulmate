@@ -32,6 +32,16 @@ export function NavBar() {
   const pathname = usePathname()
   const router = useRouter()
 
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLElement>,
+    href: string
+  ) => {
+    if (pathname === href) {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    } else router.push(href)
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="mx-auto flex min-h-16 w-full max-w-7xl items-center gap-2 px-4 py-3 sm:px-6 md:min-h-18 md:gap-3 md:py-0 lg:px-8">
@@ -67,7 +77,12 @@ export function NavBar() {
                   active && "btn-gradient text-white"
                 )}
               >
-                <Link href={item.href}>{item.label}</Link>
+                <Link
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                >
+                  {item.label}
+                </Link>
               </Button>
             )
           })}
@@ -104,23 +119,23 @@ export function NavBar() {
                 <div className="flex flex-col gap-2 px-4">
                   {SITE_NAV_LINKS.map((item) => (
                     <SheetClose asChild key={item.href}>
-                      <div
-                        onClick={() => router.push(item.href)}
+                      <a
+                        onClick={(e) => handleNavClick(e, item.href)}
                         className="flex cursor-pointer items-center justify-between px-3 py-2.5"
                       >
                         <span>{item.label}</span>
                         <ArrowUpRight className="size-4 text-muted-foreground" />
-                      </div>
+                      </a>
                     </SheetClose>
                   ))}
                   <SheetClose asChild>
-                    <div
-                      onClick={() => router.push("")}
+                    <a
+                      onClick={(e) => handleNavClick(e, "")}
                       className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
                     >
                       <span>Login</span>
                       <ArrowUpRight className="size-4" />
-                    </div>
+                    </a>
                   </SheetClose>
                 </div>
                 <SheetClose asChild>

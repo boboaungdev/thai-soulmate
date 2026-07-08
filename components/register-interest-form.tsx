@@ -1,16 +1,10 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import React, { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import {
-  User,
-  MapPin,
-  Mail,
-  Phone,
-  Home,
-  Cake,
-} from "lucide-react"
+import { User, MapPin, Mail, Phone, Home, Cake } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -37,9 +31,11 @@ import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { Spinner } from "@/components/ui/spinner"
 
 const formSchema = z.object({
-  salutation: z.string().refine((val) => ["Mr.", "Ms.", "Mrs.", "Dr."].includes(val), {
-    message: "Please select a salutation.",
-  }),
+  salutation: z
+    .string()
+    .refine((val) => ["Mr.", "Ms.", "Mrs.", "Dr."].includes(val), {
+      message: "Please select a salutation.",
+    }),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
@@ -56,11 +52,15 @@ const formSchema = z.object({
     message: "Location must be at least 2 characters.",
   }),
   email: z.string().email(),
-  phone: z.string().regex(/^\+\d+$/, {
-    message: "Phone number must start with a + sign and contain only digits thereafter.",
-  }).min(10, {
-    message: "Phone number must be at least 10 characters.",
-  }),
+  phone: z
+    .string()
+    .regex(/^\+\d+$/, {
+      message:
+        "Phone number must start with a + sign and contain only digits thereafter.",
+    })
+    .min(10, {
+      message: "Phone number must be at least 10 characters.",
+    }),
 })
 
 export function RegisterInterestForm() {
@@ -77,6 +77,35 @@ export function RegisterInterestForm() {
       phone: "",
     },
   })
+
+  const { setValue, getValues, watch } = form
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (name === "salutation" && type === "change") {
+        const currentGender = getValues("gender")
+        if (value.salutation === "Mr." && currentGender !== "Male") {
+          setValue("gender", "Male", { shouldValidate: true })
+        } else if (
+          ["Ms.", "Mrs."].includes(value.salutation ?? "") &&
+          currentGender !== "Female"
+        ) {
+          setValue("gender", "Female", { shouldValidate: true })
+        }
+      } else if (name === "gender" && type === "change") {
+        const currentSalutation = getValues("salutation")
+        if (value.gender === "Male" && currentSalutation !== "Mr.") {
+          setValue("salutation", "Mr.", { shouldValidate: true })
+        } else if (
+          value.gender === "Female" &&
+          !["Ms.", "Mrs."].includes(currentSalutation ?? "")
+        ) {
+          setValue("salutation", "Ms.", { shouldValidate: true })
+        }
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [watch, getValues, setValue])
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
@@ -101,12 +130,9 @@ export function RegisterInterestForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Salutation</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30 pl-3 pr-2.5 py-1">
+                      <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
                         <SelectValue placeholder="Select your salutation" />
                       </SelectTrigger>
                     </FormControl>
@@ -150,12 +176,9 @@ export function RegisterInterestForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30 pl-3 pr-2.5 py-1">
+                      <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
                         <SelectValue placeholder="Select your gender" />
                       </SelectTrigger>
                     </FormControl>

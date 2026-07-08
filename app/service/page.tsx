@@ -11,10 +11,10 @@ export default function ServicePage() {
           </h1>
           <div className="mx-auto max-w-3xl space-y-4 text-left">
             <p className="text-muted-foreground md:text-xl">
-              <AppName /> takes a personalised approach to matchmaking.
-              Carefully learning about your preferences, values and relationship
-              goals. Every introduction is thoughtfully selected to ensure
-              genuine compatibility and meaningful connection.
+              <AppName className="font-bold" /> takes a personalised approach to
+              matchmaking. Carefully learning about your preferences, values and
+              relationship goals. Every introduction is thoughtfully selected to
+              ensure genuine compatibility and meaningful connection.
             </p>
             <p className="text-center text-lg font-bold md:text-xl">
               <span className="text-gradient">
@@ -84,10 +84,10 @@ export default function ServicePage() {
             </p>
             <h2 className="pt-8 text-3xl font-bold tracking-tight">FEES</h2>
             <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline" /> structured fee service and payment
-              terms for male and female members varies. Our friendly team can
-              discuss with you in more detail once you have registered your
-              interest.
+              <AppName className="inline font-bold" /> structured fee service
+              and payment terms for male and female members varies. Our friendly
+              team can discuss with you in more detail once you have registered
+              your interest.
             </p>
             <p className="pt-4 text-center text-lg font-bold md:text-xl">
               <span className="text-gradient">

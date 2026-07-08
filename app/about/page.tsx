@@ -22,20 +22,20 @@ export default function AboutPage() {
           {/* Left-aligned content */}
           <div className="mx-auto max-w-3xl space-y-4 text-left">
             <p className="text-muted-foreground md:text-xl">
-              Welcome to <AppName /> – where connections are made and stories
-              begin. We are dedicated to bringing people together in meaningful
-              ways.
+              Welcome to <AppName className="font-bold" /> – where connections
+              are made and stories begin. We are dedicated to bringing people
+              together in meaningful ways.
             </p>
 
             <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline" />
+              <AppName className="inline font-bold" />
               &nbsp;you don&apos;t have time for dating apps that offer no real
               value, and you don&apos;t have the time to engage with individuals
               who aren&apos;t the right fit for YOU.
             </p>
 
             <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline" />
+              <AppName className="inline font-bold" />
               &nbsp;understands you are at a stage in your life where everything
               is in place, and all that&apos;s missing is the right
               person—someone with whom you can share the rest of your life in
@@ -43,20 +43,20 @@ export default function AboutPage() {
             </p>
 
             <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline" />
+              <AppName className="inline font-bold" />
               &nbsp;is a personalised matchmaking service dedicated to creating
               a genuine, meaningful connection between Thai women and YOU.
             </p>
 
             <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline" />
+              <AppName className="inline font-bold" />
               &nbsp;takes the time to understand each individual&apos;s values,
               lifestyle, and relationship goals to connect you with your future
               life partner.
             </p>
 
             <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline" />
+              <AppName className="inline font-bold" />
               &nbsp;approach is respectful and discreet, ensuring every
               introduction is made with care and integrity.
             </p>

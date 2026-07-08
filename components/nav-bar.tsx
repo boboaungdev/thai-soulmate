@@ -60,14 +60,12 @@ export function NavBar() {
               <Button
                 key={item.href}
                 asChild
-                variant="ghost"
+                variant={active ? "default" : "ghost"}
                 size="sm"
                 className={cn(
-                  "relative rounded-full px-3 transition-all",
-                  active &&
-                    "after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-gradient-to-r after:from-[#cfa14f] after:to-[#cb5d7a]"
+                  "rounded-full px-3 font-medium transition-all",
+                  active && "btn-gradient text-white"
                 )}
-                style={active ? { color: "#cfa14f" } : {}}
               >
                 <Link href={item.href}>{item.label}</Link>
               </Button>

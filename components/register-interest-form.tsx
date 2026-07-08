@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import React, { useEffect } from "react"
+import React, { useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { User, MapPin, Mail, Phone, Home, Cake } from "lucide-react"
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { Spinner } from "@/components/ui/spinner"
+import { toast } from "sonner"
 
 const formSchema = z.object({
   salutation: z
@@ -78,6 +79,8 @@ export function RegisterInterestForm() {
     },
   })
 
+  const [isPending, startTransition] = useTransition()
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const { setValue, getValues, watch } = form
 
   useEffect(() => {
@@ -107,8 +110,46 @@ export function RegisterInterestForm() {
     return () => subscription.unsubscribe()
   }, [watch, getValues, setValue])
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    startTransition(async () => {
+      try {
+        const response = await fetch("/api/register-interest", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        })
+
+        if (response.ok) {
+          toast.success("Submission Successful!", {
+            description: "Thank you for your interest. We will be in touch.",
+          })
+          setIsSubmitted(true)
+          form.reset()
+        } else {
+          toast.error("Uh oh! Something went wrong.", {
+            description: "There was a problem with your submission.",
+          })
+        }
+      } catch (error) {
+        toast.error("Uh oh! Something went wrong.", {
+          description: "An unexpected error occurred. Please try again.",
+        })
+      }
+    })
+  }
+
+  if (isSubmitted) {
+    return (
+      <div className="mx-auto w-full max-w-2xl p-4 text-center">
+        <h2 className="mb-2 text-3xl font-bold">Thank You!</h2>
+        <p className="text-muted-foreground">
+          Your interest has been registered successfully. We will get back to
+          you shortly.
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -302,10 +343,10 @@ export function RegisterInterestForm() {
           </div>
           <Button
             type="submit"
-            disabled={!form.formState.isValid || form.formState.isSubmitting}
+            disabled={!form.formState.isValid || isPending}
             className="w-full bg-gradient-to-r from-[#cfa14f] via-[#cb5d7a] to-[#cb5d7a] text-white"
           >
-            {form.formState.isSubmitting ? (
+            {isPending ? (
               <>
                 <Spinner className="mr-2" />
                 Submitting...

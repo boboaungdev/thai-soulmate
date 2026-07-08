@@ -28,15 +28,18 @@ export function Footer() {
                 className="size-11 shrink-0 rounded-2xl bg-background object-cover shadow-sm"
               />
               <div className="min-w-0">
-                <AppName className="truncate text-sm font-semibold" />
+                <AppName className="truncate text-xl font-semibold" />
                 <p className="truncate text-sm text-muted-foreground">
                   {APP_TAGLINE}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Real People. Real Relationships. Personally Matched in Thailand.
                 </p>
               </div>
             </div>
           </div>
           <div className="flex justify-end">
-            <div className="flex flex-wrap justify-end gap-2 lg:grid lg:grid-cols-3">
+            <div className="flex flex-wrap justify-end gap-2">
               <Button
                 asChild
                 variant="outline"
@@ -112,7 +115,15 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-border/70 pt-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-border/70 pt-5 text-sm text-muted-foreground items-center">
+          <div className="flex items-center gap-4">
+            <Link href="/terms-of-service" className="hover:text-foreground underline">
+              Terms of Service
+            </Link>
+            <Link href="/privacy-policy" className="hover:text-foreground underline">
+              Privacy Policy
+            </Link>
+          </div>
           <p>
             Copyright &copy; {new Date().getFullYear()}{" "}
             <Link href="/" className="hover:text-foreground">
@@ -120,14 +131,6 @@ export function Footer() {
             </Link>
             . All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            <Link href="/terms-of-service" className="hover:text-foreground">
-              Terms of Service
-            </Link>
-            <Link href="/privacy-policy" className="hover:text-foreground">
-              Privacy Policy
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

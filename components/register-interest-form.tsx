@@ -8,9 +8,8 @@ import {
   MapPin,
   Mail,
   Phone,
-  MessageSquare,
   Home,
-  Calendar as CalendarIcon,
+  Cake,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -26,7 +25,6 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-  InputGroupTextarea,
 } from "@/components/ui/input-group"
 import {
   Select,
@@ -51,8 +49,8 @@ const formSchema = z.object({
   gender: z.string().refine((val) => ["Male", "Female"].includes(val), {
     message: "Please select a gender.",
   }),
-  citizenship: z.string().min(2, {
-    message: "Citizenship must be at least 2 characters.",
+  nationality: z.string().min(2, {
+    message: "Nationality must be at least 2 characters.",
   }),
   location: z.string().min(2, {
     message: "Location must be at least 2 characters.",
@@ -62,9 +60,6 @@ const formSchema = z.object({
     message: "Phone number must start with a + sign and contain only digits thereafter.",
   }).min(10, {
     message: "Phone number must be at least 10 characters.",
-  }),
-  message: z.string().min(10, {
-    message: "Message must be at least 10 characters.",
   }),
 })
 
@@ -76,11 +71,10 @@ export function RegisterInterestForm() {
       salutation: undefined,
       name: "",
       gender: undefined,
-      citizenship: "",
+      nationality: "",
       location: "",
       email: "",
       phone: "",
-      message: "",
     },
   })
 
@@ -179,11 +173,11 @@ export function RegisterInterestForm() {
               name="birthday"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Birthday</FormLabel>
+                  <FormLabel>Date of Birth</FormLabel>
                   <FormControl>
                     <InputGroup>
                       <InputGroupAddon>
-                        <CalendarIcon className="size-4" />
+                        <Cake className="size-4" />
                       </InputGroupAddon>
                       <DatePickerInput
                         value={field.value}
@@ -199,16 +193,16 @@ export function RegisterInterestForm() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
-              name="citizenship"
+              name="nationality"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Citizenship</FormLabel>
+                  <FormLabel>Nationality</FormLabel>
                   <FormControl>
                     <InputGroup>
                       <InputGroupAddon>
                         <Home className="size-4" />
                       </InputGroupAddon>
-                      <InputGroupInput placeholder="British" {...field} />
+                      <InputGroupInput placeholder="Thai" {...field} />
                     </InputGroup>
                   </FormControl>
                   <FormMessage />
@@ -283,28 +277,6 @@ export function RegisterInterestForm() {
               )}
             />
           </div>
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tell us about yourself</FormLabel>
-                <FormControl>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <MessageSquare className="size-4" />
-                    </InputGroupAddon>
-                    <InputGroupTextarea
-                      placeholder="What are you looking for in a partner?"
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </InputGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <Button
             type="submit"
             disabled={!form.formState.isValid || form.formState.isSubmitting}

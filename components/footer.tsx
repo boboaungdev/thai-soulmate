@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 import {
@@ -8,12 +10,23 @@ import {
   FaInstagram,
   FaPhoneAlt,
 } from "react-icons/fa"
+import { usePathname } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { AppName } from "@/components/app-name"
 import { APP_NAME, APP_TAGLINE, CONTACT } from "@/constants"
 
 export function Footer() {
+  const pathname = usePathname()
+
+  const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === "/") {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+    // If not on the home page, the Link's default behavior will navigate.
+  }
+
   return (
     <footer className="border-t border-border/70 bg-background">
       <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
@@ -33,7 +46,8 @@ export function Footer() {
                   {APP_TAGLINE}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Real People. Real Relationships. Personally Matched in Thailand.
+                  Real People. Real Relationships. Personally Matched in
+                  Thailand.
                 </p>
               </div>
             </div>
@@ -115,18 +129,28 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-border/70 pt-5 text-sm text-muted-foreground items-center">
+        <div className="mt-10 flex flex-col items-center gap-4 border-t border-border/70 pt-5 text-sm text-muted-foreground">
           <div className="flex items-center gap-4">
-            <Link href="/terms-of-service" className="hover:text-foreground underline">
+            <Link
+              href="/terms-of-service"
+              className="underline hover:text-foreground"
+            >
               Terms of Service
             </Link>
-            <Link href="/privacy-policy" className="hover:text-foreground underline">
+            <Link
+              href="/privacy-policy"
+              className="underline hover:text-foreground"
+            >
               Privacy Policy
             </Link>
           </div>
           <p>
             Copyright &copy; {new Date().getFullYear()}{" "}
-            <Link href="/" className="hover:text-foreground">
+            <Link
+              href="/"
+              className="hover:text-foreground"
+              onClick={handleHomeClick}
+            >
               <AppName />
             </Link>
             . All rights reserved.
@@ -136,4 +160,3 @@ export function Footer() {
     </footer>
   )
 }
-

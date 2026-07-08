@@ -4,37 +4,63 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { AppName } from "./app-name"
+import { APP_NAME } from "@/constants"
 
 const faqs = [
   {
-    question: "What is Siam Soulmates?",
-    answer:
-      "Siam Soulmates is a premium matchmaking service dedicated to helping you find a meaningful and long-lasting relationship. We focus on personalized matching based on your values, interests, and life goals.",
+    question: `What is ${APP_NAME}?`,
+    answer: (
+      <>
+        <AppName /> is an exclusive one-to-one matchmaking service where we
+        function as your personal assistant in your search for a life partner in
+        Thailand. We provide a discreet, confidential, and highly personalized
+        experience to help you find a genuine, long-lasting relationship.
+      </>
+    ),
+  },
+  {
+    question: `How is ${APP_NAME} different from a dating app?`,
+    answer: (
+      <>
+        Unlike dating apps that rely on endless swiping, <AppName /> provides
+        you with a dedicated matchmaker. We focus on quality introductions over
+        quantity, ensuring you meet genuinely compatible individuals who are
+        also seeking a serious, long-term relationship.
+      </>
+    ),
   },
   {
     question: "How does the matching process work?",
     answer:
-      "Our process begins with a detailed consultation to understand your personality and preferences. We then use a combination of our experienced matchmakers' intuition and our proprietary compatibility algorithm to find potential partners for you.",
+      "Our process is entirely centered around you. It starts with a private consultation to deeply understand your personality, values, and what you're looking for in a partner. Your personal matchmaker then carefully hand-selects and vets potential matches. We manage all introductions and facilitate communication, ensuring a smooth and respectful process for everyone involved.",
   },
   {
-    question: "Is my privacy protected?",
+    question: "What does the 'personal assistant' service include?",
     answer:
-      "Absolutely. We prioritize your privacy and confidentiality. Your personal information is securely stored and is only shared with potential matches with your explicit consent.",
+      "Think of us as your trusted partner on this journey. Beyond just finding matches, your personal assistant matchmaker handles all the arrangements. This includes scheduling introductions (video calls or in-person meetings), offering guidance and feedback, and providing continuous support to help nurture the connection. We take care of the details so you can focus on building a relationship.",
   },
   {
-    question: "What makes Siam Soulmates different?",
-    answer:
-      "Unlike typical dating apps, we provide a highly personalized and discreet service. We focus on quality over quantity, ensuring that you meet genuinely compatible individuals who are also seeking serious relationships.",
+    question: "Who is this service for?",
+    answer: (
+      <>
+        Our service is designed for discerning individuals who are serious about
+        finding a life partner and value their privacy and time. If you&apos;re
+        tired of the impersonal nature of dating apps and are looking for a
+        meaningful connection with a Thai partner through a professional and
+        supportive service, then <AppName /> is for you.
+      </>
+    ),
   },
   {
     question: "What are your service fees?",
     answer:
-      "Our service fees vary based on the personalized matchmaking plan you choose. We offer different tiers designed to meet diverse needs and preferences. Please contact us for a detailed consultation and a customized quote.",
+      "We offer a bespoke service tailored to each client's unique needs. Our fees reflect the comprehensive, one-to-one attention and professional expertise you receive. For a detailed consultation and a personalized quote, please register your interest, and one of our matchmakers will be in touch.",
   },
   {
-    question: "What is your success rate?",
+    question: "Is my privacy and data secure?",
     answer:
-      "While we cannot guarantee specific outcomes, Siam Soulmates prides itself on a high success rate due to our personalized approach and dedicated matchmakers. Many of our clients have found long-lasting relationships and marriages through our service.",
+      "Absolutely. Confidentiality is paramount to our service. Your personal information is handled with the utmost discretion and is only shared with potential matches after we have received your explicit consent. We never post profiles publicly.",
   },
 ]
 
@@ -44,10 +70,12 @@ export function Faq() {
       <Accordion type="single" collapsible className="w-full">
         {faqs.map((faq) => (
           <AccordionItem key={faq.question} value={faq.question}>
-            <AccordionTrigger className="text-lg">{faq.question}</AccordionTrigger>
-            <AccordionContent className="text-muted-foreground text-base">
-            {faq.answer}
-          </AccordionContent>
+            <AccordionTrigger className="text-lg">
+              {faq.question}
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-muted-foreground">
+              {faq.answer}
+            </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>

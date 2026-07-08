@@ -66,11 +66,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="faq" className="bg-muted/30 py-16 sm:py-20">
+      <section id="faq" className="bg-muted/50 py-16 sm:py-20 dark:bg-muted/30">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-8 text-center text-3xl font-bold">
+          <h2 className="mb-2 text-center text-3xl font-bold">
             Frequently Asked Questions
           </h2>
+          <p className="mb-8 text-center text-muted-foreground">
+            Find answers to common questions about our service.
+          </p>
           <Faq />
         </div>
       </section>

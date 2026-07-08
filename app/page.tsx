@@ -66,18 +66,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="register-interest" className="py-16 sm:py-20">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <RegisterInterestForm />
-        </div>
-      </section>
-
       <section id="faq" className="bg-muted/30 py-16 sm:py-20">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-8 text-center text-3xl font-bold">
             Frequently Asked Questions
           </h2>
           <Faq />
+        </div>
+      </section>
+
+      <section id="register-interest" className="py-16 sm:py-20">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <RegisterInterestForm />
         </div>
       </section>
     </main>

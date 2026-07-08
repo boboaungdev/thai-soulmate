@@ -1,4 +1,6 @@
 import { Geist_Mono, Inter } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import "./globals.css"
 import { NavBar } from "@/components/nav-bar"
@@ -40,6 +42,8 @@ export default function RootLayout({
             <Footer />
           </div>
           <Toaster />
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>

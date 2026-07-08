@@ -28,15 +28,28 @@ import {
   InputGroupInput,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { Spinner } from "@/components/ui/spinner"
 
 const formSchema = z.object({
+  salutation: z.string().refine((val) => ["Mr.", "Ms.", "Mrs.", "Dr."].includes(val), {
+    message: "Please select a salutation.",
+  }),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
   birthday: z.date({
     message: "A date of birth is required.",
+  }),
+  gender: z.string().refine((val) => ["Male", "Female"].includes(val), {
+    message: "Please select a gender.",
   }),
   citizenship: z.string().min(2, {
     message: "Citizenship must be at least 2 characters.",
@@ -60,7 +73,9 @@ export function RegisterInterestForm() {
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
+      salutation: undefined,
       name: "",
+      gender: undefined,
       citizenship: "",
       location: "",
       email: "",
@@ -88,6 +103,32 @@ export function RegisterInterestForm() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
+              name="salutation"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Salutation</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30 pl-3 pr-2.5 py-1">
+                        <SelectValue placeholder="Select your salutation" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Mr.">Mr.</SelectItem>
+                      <SelectItem value="Ms.">Ms.</SelectItem>
+                      <SelectItem value="Mrs.">Mrs.</SelectItem>
+                      <SelectItem value="Dr.">Dr.</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
@@ -103,6 +144,32 @@ export function RegisterInterestForm() {
                       />
                     </InputGroup>
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30 pl-3 pr-2.5 py-1">
+                        <SelectValue placeholder="Select your gender" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

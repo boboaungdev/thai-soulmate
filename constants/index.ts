@@ -7,4 +7,6 @@ export const CONTACT = {
   whatsapp: "+66 62 060 4000",
   facebook: "https://facebook.com/thaisoulmate",
   line: "https://line.me/R/ti/p/thaisoulmate",
+  instagram: "https://instagram.com/thaisoulmate",
+  phone: "+66 62 060 4000",
 } as const

@@ -5,6 +5,8 @@ import {
   FaLine,
   FaWhatsapp,
   FaEnvelope,
+  FaInstagram,
+  FaPhoneAlt,
 } from "react-icons/fa"
 
 import { Button } from "@/components/ui/button"
@@ -15,7 +17,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border/70 bg-background">
       <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Image
@@ -32,8 +34,9 @@ export function Footer() {
                 </p>
               </div>
             </div>
-
-            <div className="flex flex-wrap gap-2">
+          </div>
+          <div className="flex justify-end">
+            <div className="flex flex-wrap justify-end gap-2 lg:grid lg:grid-cols-3">
               <Button
                 asChild
                 variant="outline"
@@ -46,7 +49,7 @@ export function Footer() {
                   rel="noreferrer"
                 >
                   <FaWhatsapp className="size-4" />
-                  WhatsApp
+                  <span className="hidden sm:inline">WhatsApp</span>
                 </a>
               </Button>
               <Button
@@ -57,7 +60,7 @@ export function Footer() {
               >
                 <a href={`mailto:${CONTACT.email}`}>
                   <FaEnvelope className="size-4" />
-                  Email
+                  <span className="hidden sm:inline">Email</span>
                 </a>
               </Button>
               <Button
@@ -68,7 +71,7 @@ export function Footer() {
               >
                 <a href={CONTACT.facebook} target="_blank" rel="noreferrer">
                   <FaFacebook className="size-4" />
-                  Facebook
+                  <span className="hidden sm:inline">Facebook</span>
                 </a>
               </Button>
 
@@ -80,7 +83,29 @@ export function Footer() {
               >
                 <a href={CONTACT.line} target="_blank" rel="noreferrer">
                   <FaLine className="size-4" />
-                  Line
+                  <span className="hidden sm:inline">Line</span>
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+              >
+                <a href={CONTACT.instagram} target="_blank" rel="noreferrer">
+                  <FaInstagram className="size-4" />
+                  <span className="hidden sm:inline">Instagram</span>
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+              >
+                <a href={`tel:${CONTACT.phone}`}>
+                  <FaPhoneAlt className="size-4" />
+                  {CONTACT.phone}
                 </a>
               </Button>
             </div>

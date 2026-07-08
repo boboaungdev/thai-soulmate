@@ -183,6 +183,18 @@
     animation: bg-pan 10s ease-in-out infinite;
   }
 
+  .bg-gold {
+    background-color: var(--gold);
+  }
+
+  .text-gold {
+    color: var(--gold);
+  }
+
+  .text-pink {
+    color: var(--pink);
+  }
+
   .btn-gradient {
     background-image: linear-gradient(to right, var(--gold), var(--pink));
     color: white; /* Or another contrasting color */

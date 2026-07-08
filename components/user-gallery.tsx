@@ -8,10 +8,7 @@ import { ChevronLeft, ChevronRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  ScrollArea,
-  ScrollBar,
-} from "@/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 interface RandomUser {
   login: {
@@ -45,7 +42,7 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
 
   useEffect(() => {
     async function fetchUsers() {
-      const userCount = layout === "grid" ? 18 : 20
+      const userCount = layout === "grid" ? 12 : 20
       try {
         const response = await fetch(
           `https://randomuser.me/api/?results=${userCount}&gender=female&nat=us,gb,au,ca,nz,ie`
@@ -66,11 +63,12 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
   }, [layout])
 
   const scroll = (direction: "left" | "right") => {
-    if (viewportRef.current) {
-      const scrollAmount =
-        direction === "left"
-          ? -viewportRef.current.clientWidth
-          : viewportRef.current.clientWidth
+    if (viewportRef.current && scrollContainerRef.current) {
+      const card = scrollContainerRef.current.children[0] as HTMLElement
+      if (!card) return
+
+      const cardWidth = card.offsetWidth
+      const scrollAmount = (cardWidth + 24) * (direction === "left" ? -1 : 1) // 24px for gap-6
       viewportRef.current.scrollBy({
         left: scrollAmount,
         behavior: "smooth",
@@ -108,9 +106,9 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
                   <Link
                     href="/auth?mode=signup"
                     key={user.login.uuid}
-                    className="block p-[2px] bg-gradient-to-br from-[#cfa14f] via-[#cb5d7a] to-[#cb5d7a] rounded-lg"
+                    className="bg-gold block rounded-lg p-[2px]"
                   >
-                    <Card className="group relative h-[380px] w-[280px] shrink-0 overflow-hidden bg-background">
+                    <Card className="group relative h-[380px] w-[280px] shrink-0 overflow-hidden rounded-md border-0 bg-background">
                       <Image
                         src={user.picture.large}
                         alt={`${user.name.first} ${user.name.last}`}
@@ -121,9 +119,12 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                       <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                         <p className="text-lg font-semibold">
-                          ID-{user.login.uuid.slice(0, 4).toUpperCase()}, {user.dob.age}
+                          <span className="text-gold">
+                            ID-{user.login.uuid.slice(0, 4).toUpperCase()}
+                          </span>
+                          , <span className="text-pink">{user.dob.age}</span>
                         </p>
-                        <p className="text-sm flex items-center gap-1">
+                        <p className="flex items-center gap-1 text-sm">
                           <MapPin className="size-3" />
                           {user.location.city}, {user.location.country}
                         </p>
@@ -151,9 +152,9 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
       {isLoading
-        ? Array.from({ length: 18 }).map((_, index) => (
+        ? Array.from({ length: 12 }).map((_, index) => (
             <Card
               key={index}
               className="relative h-[380px] w-full overflow-hidden"
@@ -165,9 +166,9 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
             <Link
               href="/auth?mode=signup"
               key={user.login.uuid}
-              className="block p-[2px] bg-gradient-to-br from-[#cfa14f] via-[#cb5d7a] to-[#cb5d7a] rounded-lg"
+              className="bg-gold block rounded-lg p-[2px]"
             >
-              <Card className="group relative h-[380px] w-full overflow-hidden bg-background">
+              <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
                 <Image
                   src={user.picture.large}
                   alt={`${user.name.first} ${user.name.last}`}
@@ -178,9 +179,12 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                   <p className="text-lg font-semibold">
-                    ID-{user.login.uuid.slice(0, 4).toUpperCase()}, {user.dob.age}
+                    <span className="text-gold">
+                      ID-{user.login.uuid.slice(0, 4).toUpperCase()}
+                    </span>
+                    , <span className="text-pink">{user.dob.age}</span>
                   </p>
-                  <p className="text-sm flex items-center gap-1">
+                  <p className="flex items-center gap-1 text-sm">
                     <MapPin className="size-3" />
                     {user.location.city}, {user.location.country}
                   </p>

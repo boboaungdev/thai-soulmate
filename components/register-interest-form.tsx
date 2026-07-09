@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect, useState, useTransition } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { User, MapPin, Mail, Phone, Home, Cake } from "lucide-react"
 
@@ -82,34 +82,39 @@ export function RegisterInterestForm() {
 
   const [isPending, startTransition] = useTransition()
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const { setValue, getValues, watch } = form
+  const { setValue } = form
+
+  const salutation = useWatch({
+    control: form.control,
+    name: "salutation",
+  })
+
+  const gender = useWatch({
+    control: form.control,
+    name: "gender",
+  })
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
-      if (name === "salutation" && type === "change") {
-        const currentGender = getValues("gender")
-        if (value.salutation === "Mr." && currentGender !== "Male") {
-          setValue("gender", "Male", { shouldValidate: true })
-        } else if (
-          ["Ms.", "Mrs."].includes(value.salutation ?? "") &&
-          currentGender !== "Female"
-        ) {
-          setValue("gender", "Female", { shouldValidate: true })
-        }
-      } else if (name === "gender" && type === "change") {
-        const currentSalutation = getValues("salutation")
-        if (value.gender === "Male" && currentSalutation !== "Mr.") {
-          setValue("salutation", "Mr.", { shouldValidate: true })
-        } else if (
-          value.gender === "Female" &&
-          !["Ms.", "Mrs."].includes(currentSalutation ?? "")
-        ) {
-          setValue("salutation", "Ms.", { shouldValidate: true })
-        }
+    if (salutation === "Mr." && gender !== "Male") {
+      setValue("gender", "Male", { shouldValidate: true })
+    } else if (
+      (salutation === "Ms." || salutation === "Mrs.") &&
+      gender !== "Female"
+    ) {
+      setValue("gender", "Female", { shouldValidate: true })
+    } else if (gender === "Male" && salutation !== "Mr.") {
+      // If gender is Male, ensure salutation is Mr.
+      if (salutation !== "Dr.") {
+        setValue("salutation", "Mr.", { shouldValidate: true })
       }
-    })
-    return () => subscription.unsubscribe()
-  }, [watch, getValues, setValue])
+    } else if (
+      gender === "Female" &&
+      !["Ms.", "Mrs.", "Dr."].includes(salutation ?? "")
+    ) {
+      // If gender is Female, default salutation to Ms. if it's not a female-appropriate one
+      setValue("salutation", "Ms.", { shouldValidate: true })
+    }
+  }, [salutation, gender, setValue])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(async () => {
@@ -133,7 +138,7 @@ export function RegisterInterestForm() {
             description: "There was a problem with your submission.",
           })
         }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Uh oh! Something went wrong.", {
           description: "An unexpected error occurred. Please try again.",

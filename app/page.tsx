@@ -52,7 +52,7 @@ export default function HomePage() {
                 className="mb-4 h-auto w-auto object-contain"
               />
               <AppName className="text-3xl font-bold sm:text-4xl md:text-5xl" />
-              <div className="space-y-2">
+              <div className="space-y-0">
                 <p className="text-lg font-bold text-white/90 md:text-xl">
                   <span className="text-gradient">{APP_INFO.tagline}</span>
                 </p>

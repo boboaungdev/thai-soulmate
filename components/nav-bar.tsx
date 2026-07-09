@@ -52,7 +52,7 @@ export function NavBar() {
             alt={`${APP_INFO.name} logo`}
             width={72}
             height={72}
-            className="size-10 shrink-0 rounded-2xl bg-background object-cover shadow-sm sm:size-11"
+            className="size-10 shrink-0 rounded-2xl object-cover sm:size-11"
             priority
           />
           <div className="min-w-0">
@@ -93,8 +93,11 @@ export function NavBar() {
           <ThemeToggle />
           <LanguageSwitcher />
           <div className="hidden items-center gap-2 lg:flex">
-            <Button className="rounded-md bg-gradient-to-r from-[#cfa14f] to-[#cb5d7a] font-medium text-white transition-opacity hover:opacity-90">
-              Login
+            <Button
+              asChild
+              className="rounded-md bg-gradient-to-r from-[#cfa14f] to-[#cb5d7a] font-medium text-white transition-opacity hover:opacity-90"
+            >
+              <Link href="/auth">Login</Link>
             </Button>
           </div>
 
@@ -130,13 +133,13 @@ export function NavBar() {
                     </SheetClose>
                   ))}
                   <SheetClose asChild>
-                    <a
-                      onClick={(e) => handleNavClick(e, "")}
+                    <Link
+                      href="/auth"
                       className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
                     >
                       <span>Login</span>
                       <ArrowUpRight className="size-4" />
-                    </a>
+                    </Link>
                   </SheetClose>
                 </div>
                 <SheetClose asChild>

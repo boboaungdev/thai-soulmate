@@ -38,7 +38,7 @@ export function Footer() {
                 alt={`${APP_INFO.name} logo`}
                 width={72}
                 height={72}
-                className="size-11 shrink-0 rounded-2xl bg-background object-cover shadow-sm"
+                className="size-11 shrink-0 rounded-2xl object-cover"
               />
               <div className="min-w-0">
                 <AppName className="truncate text-xl font-semibold" />

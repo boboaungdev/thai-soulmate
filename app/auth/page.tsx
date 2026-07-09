@@ -199,7 +199,7 @@ export default function AuthPage() {
                     <InputGroupAddon>
                       <Lock className="size-4" />
                     </InputGroupAddon>
-                    <InputGroupInput id="password-signup" type="password" />
+                    <InputGroupInput id="password-signup" type="password" placeholder="password"/>
                   </InputGroup>
                 </div>
               </CardContent>

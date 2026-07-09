@@ -2,7 +2,7 @@ import { Resend } from "resend"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { CONTACT } from "@/constants"
+import { CONTACT, RESEND_API_KEY } from "@/constants"
 import { calculateAge } from "@/lib/utils"
 
 const formSchema = z.object({
@@ -16,7 +16,7 @@ const formSchema = z.object({
   phone: z.string(),
 })
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(RESEND_API_KEY)
 
 export async function POST(req: Request) {
   try {

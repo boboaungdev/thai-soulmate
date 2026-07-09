@@ -1,8 +1,10 @@
-export const APP_NAME = "Thai Soulmate"
-export const APP_TAGLINE = "1-2-1 Matchmaking"
-export const APP_SECONDARY_TAGLINE =
-  "Real People. Real Relationships. Personally Matched in Thailand."
-export const COMPANY_NAME = "Thai Soulmate Co., Ltd."
+export const APP_INFO = {
+  name: "Thai Soulmate",
+  tagline: "1-2-1 Matchmaking",
+  secondaryTagline:
+    "Real People. Real Relationships. Personally Matched in Thailand.",
+  companyName: "Thai Soulmate Co., Ltd.",
+} as const
 
 export const CONTACT = {
   email: "boboaungdev@gmail.com",

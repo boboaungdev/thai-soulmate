@@ -1,23 +1,15 @@
-import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
-
-const plans = {
-  basic: "price_basic123",
-  pro: "price_pro456",
-  premium: "price_premium789",
-};
+import { NextResponse } from "next/server"
+import { stripe } from "@/lib/stripe"
+import { BASE_URL, STRIPE } from "@/constants"
 
 export async function POST(req: Request) {
   try {
-    const { plan } = await req.json();
+    const { plan } = await req.json()
 
-    const priceId = plans[plan as keyof typeof plans];
+    const priceId = STRIPE.PLANS[plan as keyof typeof STRIPE.PLANS]
 
     if (!priceId) {
-      return NextResponse.json(
-        { error: "Invalid plan" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid plan" }, { status: 400 })
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -30,17 +22,16 @@ export async function POST(req: Request) {
         },
       ],
 
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
 
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
-    });
+      cancel_url: `${BASE_URL}/payment/cancel`,
+    })
 
     return NextResponse.json({
       url: session.url,
-    });
-
+    })
   } catch (error) {
-    console.error(error);
+    console.error(error)
 
     return NextResponse.json(
       {
@@ -49,6 +40,6 @@ export async function POST(req: Request) {
       {
         status: 500,
       }
-    );
+    )
   }
 }

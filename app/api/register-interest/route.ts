@@ -2,7 +2,7 @@ import { Resend } from "resend"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { CONTACT, RESEND_API_KEY } from "@/constants"
+import { APP_INFO, CONTACT, RESEND } from "@/constants"
 import { calculateAge } from "@/lib/utils"
 
 const formSchema = z.object({
@@ -16,7 +16,7 @@ const formSchema = z.object({
   phone: z.string(),
 })
 
-const resend = new Resend(RESEND_API_KEY)
+const resend = new Resend(RESEND.apiKey)
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     const age = calculateAge(birthDate)
 
     await resend.emails.send({
-      from: "Thai Soulmate <onboarding@resend.dev>", // IMPORTANT: Replace with your verified domain
+      from: `${APP_INFO.name} <onboarding@resend.dev>`, // IMPORTANT: Replace with your verified domain
       to: CONTACT.email,
       subject: "New Interest Registration",
       html: `

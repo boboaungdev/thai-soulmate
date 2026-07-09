@@ -17,7 +17,9 @@ export const CONTACT = {
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
-export const RESEND_API_KEY = process.env.RESEND_API_KEY
+export const RESEND = {
+  apiKey: process.env.RESEND_API_KEY,
+} as const
 
 export const STRIPE = {
   publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,

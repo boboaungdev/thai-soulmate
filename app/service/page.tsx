@@ -52,7 +52,7 @@ export default function ServicePage() {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <h2 className="pt-8 text-3xl font-bold tracking-tight">
+              <h2 className="py-8 text-3xl font-bold tracking-tight">
                 WHAT WE OFFER
               </h2>
               <ul className="list-inside list-disc space-y-2 text-muted-foreground md:text-xl">
@@ -103,7 +103,7 @@ export default function ServicePage() {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <h2 className="pt-8 text-3xl font-bold tracking-tight">
+              <h2 className="py-8 text-3xl font-bold tracking-tight">
                 THE PROCESS
               </h2>
               <ul className="list-inside list-disc space-y-2 text-muted-foreground md:text-xl">
@@ -179,7 +179,7 @@ export default function ServicePage() {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <h2 className="pt-8 text-3xl font-bold tracking-tight">FEES</h2>
+              <h2 className="py-8 text-3xl font-bold tracking-tight">FEES</h2>
               <p className="text-muted-foreground md:text-xl">
                 <AppName className="inline font-bold" /> structured fee service
                 and payment terms for male and female members varies. Our

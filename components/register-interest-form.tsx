@@ -133,6 +133,7 @@ export function RegisterInterestForm() {
             description: "There was a problem with your submission.",
           })
         }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Uh oh! Something went wrong.", {
           description: "An unexpected error occurred. Please try again.",

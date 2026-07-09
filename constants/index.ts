@@ -19,8 +19,8 @@ export const CONTACT = {
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export const EMAIL = {
-  noreply: "boboaungdev@gmail.com",
-  contact: "bobo@kkhay.com",
+  noreply: "bobo@kkhay.com",
+  contact: "boboaungdev@gmail.com",
 }
 
 export const NODEMAILER = {

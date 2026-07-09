@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
+import { APP_INFO, EMAIL } from "@/constants"
 import { transporter } from "@/lib/nodemailer"
+import {
+  getAdminNotificationHtml,
+  getUserConfirmationHtml,
+} from "@/lib/email-templates"
 import { calculateAge } from "@/lib/utils"
 
 const formSchema = z.object({
@@ -26,46 +30,21 @@ export async function POST(req: Request) {
 
     // 1. Prepare the admin notification email
     const adminMailOptions = {
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`, // Use noreply for automated emails
       to: EMAIL.contact,
       subject: `New Interest Registration: ${validatedData.name}`,
-      html: `
-        <h1>New Interest Registration</h1>
-        <p><strong>Name:</strong> ${validatedData.salutation} ${validatedData.name}</p>
-        <p><strong>Date of Birth:</strong> ${birthDate.toLocaleDateString()} (Age: ${age})</p>
-        <p><strong>Gender:</strong> ${validatedData.gender}</p>
-        <p><strong>Nationality:</strong> ${validatedData.nationality}</p>
-        <p><strong>Location:</strong> ${validatedData.location}</p>
-        <p><strong>Email:</strong> ${validatedData.email}</p>
-        <p><strong>Phone:</strong> ${validatedData.phone}</p>
-      `,
+      html: getAdminNotificationHtml({ ...validatedData, age }),
     }
 
     // 2. Prepare the user confirmation email
     const userMailOptions = {
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`, // Use noreply for automated emails
       to: validatedData.email,
       subject: `Thank you for your interest in ${APP_INFO.name}!`,
-      html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-        <div style="background-color: #f4f4f4; padding: 20px; text-align: center;">
-          <h1 style="color: #333;">Thank You for Registering!</h1>
-        </div>
-        <div style="padding: 20px;">
-          <p>Dear ${validatedData.salutation} ${validatedData.name},</p>
-          <p>Thank you for registering your interest with <strong>${APP_INFO.name}</strong>. We're excited to have you on board!</p>
-          <p>We have successfully received your details. A member of our matchmaking team will review your information and contact you as soon as possible to discuss the next steps.</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${BASE_URL}" style="background-image: linear-gradient(to right, #cfa14f, #cb5d7a); color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Visit Our Website</a>
-          </div>
-          <p>Best regards,<br>The ${APP_INFO.name} Team</p>
-        </div>
-        <div style="background-color: #f4f4f4; color: #666; padding: 15px; text-align: center; font-size: 12px;">
-          <p>&copy; ${new Date().getFullYear()} ${APP_INFO.name}. All rights reserved.</p>
-          <p>${APP_INFO.name}</p>
-        </div>
-      </div>
-    `,
+      html: getUserConfirmationHtml({
+        name: validatedData.name,
+        salutation: validatedData.salutation,
+      }),
     }
 
     // 3. Send both emails

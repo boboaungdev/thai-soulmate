@@ -18,9 +18,14 @@ export const CONTACT = {
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
-export const RESEND = {
-  API_KEY: process.env.RESEND_API_KEY,
-  EMAIL_ADDRESS: 'boboaungdev@gmail.com',
+export const EMAIL = {
+  noreply: "boboaungdev@gmail.com",
+  contact: "bobo@kkhay.com",
+}
+
+export const NODEMAILER = {
+  user: process.env.SMTP_USER,
+  pass: process.env.SMTP_PASS,
 } as const
 
 export const STRIPE = {

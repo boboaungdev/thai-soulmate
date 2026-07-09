@@ -33,10 +33,10 @@ import { toast } from "sonner"
 import { MotionDiv } from "./motion"
 
 const formSchema = z.object({
-  salutation: z
+  prefix: z
     .string()
     .refine((val) => ["Mr.", "Ms.", "Mrs.", "Dr."].includes(val), {
-      message: "Please select a salutation.",
+      message: "Please select a prefix.",
     }),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
@@ -70,9 +70,9 @@ export function RegisterInterestForm() {
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      salutation: undefined,
+      prefix: "Mr.",
       name: "",
-      gender: undefined,
+      gender: "Male",
       nationality: "",
       location: "",
       email: "",
@@ -84,9 +84,9 @@ export function RegisterInterestForm() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const { setValue } = form
 
-  const salutation = useWatch({
+  const prefix = useWatch({
     control: form.control,
-    name: "salutation",
+    name: "prefix",
   })
 
   const gender = useWatch({
@@ -95,26 +95,23 @@ export function RegisterInterestForm() {
   })
 
   useEffect(() => {
-    if (salutation === "Mr." && gender !== "Male") {
+    if (prefix === "Mr." && gender !== "Male") {
       setValue("gender", "Male", { shouldValidate: true })
-    } else if (
-      (salutation === "Ms." || salutation === "Mrs.") &&
-      gender !== "Female"
-    ) {
+    } else if ((prefix === "Ms." || prefix === "Mrs.") && gender !== "Female") {
       setValue("gender", "Female", { shouldValidate: true })
-    } else if (gender === "Male" && salutation !== "Mr.") {
-      // If gender is Male, ensure salutation is Mr.
-      if (salutation !== "Dr.") {
-        setValue("salutation", "Mr.", { shouldValidate: true })
+    } else if (gender === "Male" && prefix !== "Mr.") {
+      // If gender is Male, ensure prefix is Mr.
+      if (prefix !== "Dr.") {
+        setValue("prefix", "Mr.", { shouldValidate: true })
       }
     } else if (
       gender === "Female" &&
-      !["Ms.", "Mrs.", "Dr."].includes(salutation ?? "")
+      !["Ms.", "Mrs.", "Dr."].includes(prefix ?? "")
     ) {
-      // If gender is Female, default salutation to Ms. if it's not a female-appropriate one
-      setValue("salutation", "Ms.", { shouldValidate: true })
+      // If gender is Female, default prefix to Ms. if it's not a female-appropriate one
+      setValue("prefix", "Ms.", { shouldValidate: true })
     }
-  }, [salutation, gender, setValue])
+  }, [prefix, gender, setValue])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(async () => {
@@ -183,17 +180,23 @@ export function RegisterInterestForm() {
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-[100px_1fr] gap-4">
               <FormField
                 control={form.control}
-                name="salutation"
+                name="prefix"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Salutation</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <FormLabel>Prefix</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
-                        <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                          <SelectValue placeholder="Select your salutation" />
+                        <SelectTrigger
+                          id="prefix"
+                          className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
+                        >
+                          <SelectValue placeholder="Select your prefix" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

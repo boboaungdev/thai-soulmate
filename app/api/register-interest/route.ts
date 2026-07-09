@@ -10,7 +10,7 @@ import {
 import { calculateAge } from "@/lib/utils"
 
 const formSchema = z.object({
-  salutation: z.string(),
+  prefix: z.string(),
   name: z.string(),
   birthday: z.string(), // Dates are serialized as strings
   gender: z.string(),
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       subject: `Thank you for your interest in ${APP_INFO.name}!`,
       html: getUserConfirmationHtml({
         name: validatedData.name,
-        salutation: validatedData.salutation,
+        prefix: validatedData.prefix,
       }),
     }
 

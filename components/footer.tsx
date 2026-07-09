@@ -145,16 +145,10 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col items-center gap-4 border-t border-border/70 pt-5 text-sm text-muted-foreground">
           <div className="flex items-center gap-4">
-            <Link
-              href="/terms-of-service"
-              className="underline hover:text-foreground"
-            >
+            <Link href="/terms-of-service" className="hover:text-foreground">
               Terms of Service
             </Link>
-            <Link
-              href="/privacy-policy"
-              className="underline hover:text-foreground"
-            >
+            <Link href="/privacy-policy" className="hover:text-foreground">
               Privacy Policy
             </Link>
           </div>

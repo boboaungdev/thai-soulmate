@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { User, Mail, Lock } from "lucide-react"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
@@ -13,8 +14,21 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
 
 export default function AuthPage() {
   const router = useRouter()
@@ -27,6 +41,7 @@ export default function AuthPage() {
     params.set("mode", newMode)
     router.push(`${pathname}?${params.toString()}`)
   }
+  const [prefix, setPrefix] = useState("Mr.")
 
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
@@ -81,24 +96,41 @@ export default function AuthPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="you@example.com" />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Mail className="size-4" />
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      id="email"
+                      type="email"
+                      placeholder="you@example.com"
+                    />
+                  </InputGroup>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" placeholder="password" />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Lock className="size-4" />
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      id="password"
+                      type="password"
+                      placeholder="password"
+                    />
+                  </InputGroup>
                 </div>
               </CardContent>
               <CardFooter className="flex-col items-start gap-4">
                 <Button className="btn-gradient w-full">Login</Button>
                 <div className="flex w-full items-center justify-between text-sm">
                   <p className="text-muted-foreground">
-                    Don&apos;t have an account?{" "}
                     <Button
                       variant="link"
-                      className="p-0"
+                      className="p-0 text-muted-foreground"
                       onClick={() => setMode("register")}
                     >
-                      Register
+                      Don&apos;t have an account?
                     </Button>
                   </p>
                   <Button
@@ -120,33 +152,66 @@ export default function AuthPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input id="name" placeholder="Your Name" />
+                <div className="grid grid-cols-[100px_1fr] gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="prefix">Prefix</Label>
+                    <Select onValueChange={setPrefix} value={prefix}>
+                      <SelectTrigger
+                        id="prefix"
+                        className="h-8 bg-background dark:bg-input/30"
+                      >
+                        <SelectValue placeholder="Mr." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Mr.">Mr.</SelectItem>
+                        <SelectItem value="Ms.">Ms.</SelectItem>
+                        <SelectItem value="Mrs.">Mrs.</SelectItem>
+                        <SelectItem value="Dr.">Dr.</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <User className="size-4" />
+                      </InputGroupAddon>
+                      <InputGroupInput id="name" placeholder="Your Name" />
+                    </InputGroup>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email-signup">Email</Label>
-                  <Input
-                    id="email-signup"
-                    type="email"
-                    placeholder="you@example.com"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Mail className="size-4" />
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      id="email-signup"
+                      type="email"
+                      placeholder="you@example.com"
+                    />
+                  </InputGroup>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password-signup">Password</Label>
-                  <Input id="password-signup" type="password" />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Lock className="size-4" />
+                    </InputGroupAddon>
+                    <InputGroupInput id="password-signup" type="password" />
+                  </InputGroup>
                 </div>
               </CardContent>
               <CardFooter className="flex-col items-start gap-4">
                 <Button className="btn-gradient w-full">Register</Button>
                 <p className="text-sm text-muted-foreground">
-                  Already have an account?{" "}
                   <Button
                     variant="link"
-                    className="p-0"
+                    className="p-0 text-muted-foreground"
                     onClick={() => setMode("login")}
                   >
-                    Login
+                   Already have an account?
                   </Button>
                 </p>
               </CardFooter>

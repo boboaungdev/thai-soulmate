@@ -2,11 +2,11 @@ import { APP_INFO, BASE_URL } from "@/constants"
 
 type UserDetails = {
   name: string
-  salutation: string
+  prefix: string
 }
 
 type AdminNotificationDetails = {
-  salutation: string
+  prefix: string
   name: string
   birthday: string
   age: number
@@ -22,7 +22,7 @@ const appNameGradientStyle =
 
 export const getUserConfirmationHtml = ({
   name,
-  salutation,
+  prefix,
 }: UserDetails): string => {
   const appNameWithStyle = `<span style="${appNameGradientStyle}">${APP_INFO.name}</span>`
 
@@ -32,7 +32,7 @@ export const getUserConfirmationHtml = ({
           <h1 style="color: #333;">Thank You for Registering!</h1>
         </div>
         <div style="padding: 20px;">
-          <p>Dear ${salutation} ${name},</p>
+          <p>Dear ${prefix} ${name},</p>
           <p>Thank you for registering your interest with ${appNameWithStyle}. We're excited to have you on board!</p>
           <p>We have successfully received your details. A member of our matchmaking team will review your information and contact you as soon as possible to discuss the next steps.</p>
           <p>In the meantime, you can get started by creating your account. Please click the button below to complete your registration.</p>
@@ -62,7 +62,7 @@ export const getAdminNotificationHtml = (
         <div style="padding: 20px;">
           <p>A new user has registered their interest on ${appNameWithStyle}.</p>
           <h2 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 20px;">User Details</h2>
-          <p><strong>Name:</strong> ${details.salutation} ${details.name}</p>
+          <p><strong>Name:</strong> ${details.prefix} ${details.name}</p>
           <p><strong>Date of Birth:</strong> ${new Date(details.birthday).toLocaleDateString()} (Age: ${details.age})</p>
           <p><strong>Gender:</strong> ${details.gender}</p>
           <p><strong>Nationality:</strong> ${details.nationality}</p>

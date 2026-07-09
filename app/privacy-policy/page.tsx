@@ -7,7 +7,7 @@ const PRIVACY_POLICY_CONTENT = [
     heading: "1. Introduction",
     text: (
       <>
-        Welcome to <AppName className="inline" />. We are committed to
+        Welcome to <AppName className="inline font-bold" />. We are committed to
         protecting your privacy. This Privacy Policy explains how we collect,
         use, disclose, and safeguard your information when you use our website
         and services. By using our service, you agree to the collection and use

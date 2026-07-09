@@ -119,9 +119,9 @@ export function Footer() {
                 size="sm"
                 className="rounded-full"
               >
-                <a href={`tel:${CONTACT.phone}`}>
+                <a href={`tel:${CONTACT.primaryPhone}`}>
                   <FaPhoneAlt className="size-4" />
-                  {CONTACT.phone}
+                  {CONTACT.primaryPhone}
                 </a>
               </Button>
             </div>

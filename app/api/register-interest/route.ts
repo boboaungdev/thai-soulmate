@@ -2,7 +2,7 @@ import { Resend } from "resend"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { APP_INFO, CONTACT, RESEND } from "@/constants"
+import { APP_INFO, RESEND } from "@/constants"
 import { calculateAge } from "@/lib/utils"
 
 const formSchema = z.object({
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: `${APP_INFO.name} <onboarding@resend.dev>`, // IMPORTANT: Replace with your verified domain
-      to: CONTACT.email,
+      to: RESEND.EMAIL_ADDRESS,
       subject: "New Interest Registration",
       html: `
         <h1>New Interest Registration</h1>

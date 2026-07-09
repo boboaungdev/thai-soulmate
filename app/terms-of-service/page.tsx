@@ -8,7 +8,7 @@ const TERMS_OF_SERVICE_CONTENT = [
     text: (
       <>
         By creating an account and using the services provided by{" "}
-        <AppName className="inline" /> (&quot;Service&quot;), you agree to be
+        <AppName className="inline font-bold" /> (&quot;Service&quot;), you agree to be
         bound by these Terms of Service (&quot;Terms&quot;). This agreement is a
         legally binding contract between you and {APP_INFO.companyName}. If you
         do not agree with these Terms, you must not use our Service. You affirm
@@ -45,7 +45,7 @@ const TERMS_OF_SERVICE_CONTENT = [
     text: (
       <>
         The Service is provided on an &quot;AS IS&quot; and &quot;AS
-        AVAILABLE&quot; basis. <AppName className="inline" /> makes no
+        AVAILABLE&quot; basis. <AppName className="inline font-bold" /> makes no
         warranties, expressed or implied, regarding the accuracy, reliability,
         or completeness of the service or the results of your use of the
         service. We do not conduct criminal background checks on our users but

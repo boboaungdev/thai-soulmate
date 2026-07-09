@@ -7,18 +7,20 @@ export const APP_INFO = {
 } as const
 
 export const CONTACT = {
-  email: "boboaungdev@gmail.com",
+  email: "contact@thaisoulmate.com",
   whatsapp: "447956385061",
   facebook: "https://facebook.com/thaisoulmate",
   line: "https://line.me/R/ti/p/thaisoulmate",
   instagram: "https://instagram.com/thaisoulmate",
-  phone: "+44 7956 385061",
+  primaryPhone: "+44 79 563 85061",
+  secondaryPhone: "+66 69 999 9999",
 } as const
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export const RESEND = {
   API_KEY: process.env.RESEND_API_KEY,
+  EMAIL_ADDRESS: 'boboaungdev@gmail.com',
 } as const
 
 export const STRIPE = {

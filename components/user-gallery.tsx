@@ -152,28 +152,28 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+    <div className="flex flex-wrap justify-center gap-6">
       {isLoading
         ? Array.from({ length: 12 }).map((_, index) => (
             <Card
               key={index}
-              className="relative h-[380px] w-full overflow-hidden"
+              className="relative h-[380px] w-[280px] overflow-hidden"
             >
               <Skeleton className="size-full" />
             </Card>
           ))
         : users.map((user) => (
             <Link
-              href="/auth?mode=signup"
+              href={`/gallery/${user.login.uuid}`}
               key={user.login.uuid}
-              className="bg-gold block rounded-lg p-[2px]"
+              className="bg-gold block w-[280px] rounded-lg p-[2px]"
             >
               <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
                 <Image
                   src={user.picture.large}
                   alt={`${user.name.first} ${user.name.last}`}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="280px"
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

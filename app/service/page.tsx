@@ -22,6 +22,38 @@ export default function ServicePage() {
               </span>
             </p>
             <h2 className="pt-8 text-3xl font-bold tracking-tight">
+              WHAT WE OFFER
+            </h2>
+            <ul className="list-inside list-disc space-y-2 text-muted-foreground md:text-xl">
+              <li>
+                <AppName /> offer a simple and straight forward package.
+                Whichever membership is chosen the service is exactly same.
+              </li>
+              <li>
+                <AppName /> seek to fully customize your match making
+                experience. You Will receive exceptional attention every step of
+                the way.
+              </li>
+              <li>
+                <AppName /> matches each individual member personally. We search
+                our database and then carefully filter the most appropriate
+                matches. We strive to ensure you get 3-5 matches a month.
+              </li>
+              <li>
+                <AppName /> offers a personal match maker with complementary
+                interpreter services for your virtual meetings.
+              </li>
+              <li>
+                <AppName /> takes care of you every step of the way-even when
+                you are matched. we carefully monitor your progress ensuring
+                everything is effortless in your exciting new journey of love.
+              </li>
+            </ul>
+            <p className="pt-4 text-center text-lg font-bold md:text-xl">
+              <span className="text-gradient "> Register your interest and get one of our matchmakers to discuss
+              your personal services.</span>
+            </p>
+            <h2 className="pt-8 text-3xl font-bold tracking-tight">
               THE PROCESS
             </h2>
             <ul className="list-inside list-disc space-y-2 text-muted-foreground md:text-xl">

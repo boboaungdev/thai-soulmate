@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/accordion"
 import { AppName } from "./app-name"
 import { APP_NAME } from "@/constants"
+import { MotionDiv } from "./motion"
 
 const faqs = [
   {
@@ -67,16 +68,29 @@ const faqs = [
 export function Faq() {
   return (
     <div>
-      <Accordion type="single" collapsible className="w-full">
-        {faqs.map((faq) => (
-          <AccordionItem key={faq.question} value={faq.question}>
-            <AccordionTrigger className="text-lg">
-              {faq.question}
-            </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
+      <Accordion
+        type="single"
+        collapsible
+        className="w-full"
+        defaultValue={faqs[0].question}
+      >
+        {faqs.map((faq, index) => (
+          <MotionDiv
+            key={faq.question}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <AccordionItem value={faq.question}>
+              <AccordionTrigger className="text-lg">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="text-base text-muted-foreground">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          </MotionDiv>
         ))}
       </Accordion>
     </div>

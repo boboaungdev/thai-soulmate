@@ -1,6 +1,7 @@
 import { Geist_Mono, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { ViewTransition } from "react"
 
 import "./globals.css"
 import { NavBar } from "@/components/nav-bar"
@@ -38,7 +39,9 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="relative flex min-h-screen flex-col overflow-x-clip">
             <NavBar />
-            <main className="flex-1">{children}</main>
+            <ViewTransition>
+              <main className="flex-1">{children}</main>
+            </ViewTransition>
             <Footer />
           </div>
           <Toaster />

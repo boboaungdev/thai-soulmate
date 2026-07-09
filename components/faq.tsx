@@ -5,12 +5,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { AppName } from "./app-name"
-import { APP_NAME } from "@/constants"
+import { APP_INFO } from "@/constants"
 import { MotionDiv } from "./motion"
 
 const faqs = [
   {
-    question: `What is ${APP_NAME}?`,
+    question: `What is ${APP_INFO.name}?`,
     answer: (
       <>
         <AppName /> is an exclusive one-to-one matchmaking service where we
@@ -21,7 +21,7 @@ const faqs = [
     ),
   },
   {
-    question: `How is ${APP_NAME} different from a dating app?`,
+    question: `How is ${APP_INFO.name} different from a dating app?`,
     answer: (
       <>
         Unlike dating apps that rely on endless swiping, <AppName /> provides

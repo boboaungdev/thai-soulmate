@@ -1,4 +1,4 @@
-import { APP_NAME } from "@/constants"
+import { APP_INFO } from "@/constants"
 import { cn } from "@/lib/utils"
 
 interface AppNameProps {
@@ -13,7 +13,7 @@ export function AppName({ className }: AppNameProps) {
         className
       )}
     >
-      {APP_NAME}
+      {APP_INFO.name}
     </span>
   )
 }

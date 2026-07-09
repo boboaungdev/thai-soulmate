@@ -14,7 +14,7 @@ import { usePathname } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { AppName } from "@/components/app-name"
-import { APP_NAME, APP_TAGLINE, CONTACT } from "@/constants"
+import { APP_INFO, CONTACT } from "@/constants"
 
 export function Footer() {
   const pathname = usePathname()
@@ -35,7 +35,7 @@ export function Footer() {
             <div className="flex items-center gap-3">
               <Image
                 src="/logo.png"
-                alt={`${APP_NAME} logo`}
+                alt={`${APP_INFO.name} logo`}
                 width={72}
                 height={72}
                 className="size-11 shrink-0 rounded-2xl bg-background object-cover shadow-sm"
@@ -43,11 +43,10 @@ export function Footer() {
               <div className="min-w-0">
                 <AppName className="truncate text-xl font-semibold" />
                 <p className="truncate text-sm text-muted-foreground">
-                  {APP_TAGLINE}
+                  {APP_INFO.tagline}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Real People. Real Relationships. Personally Matched in
-                  Thailand.
+                  {APP_INFO.secondaryTagline}
                 </p>
               </div>
             </div>

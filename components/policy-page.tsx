@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import React from "react"
 
-import { APP_NAME } from "@/constants"
+import { APP_INFO } from "@/constants"
 
 type PolicyContent = {
   heading: string
@@ -24,7 +24,7 @@ export function PolicyPage({ title, content }: PolicyPageProps) {
             className="inline-flex items-center gap-2 rounded-full px-1 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             <ArrowLeft className="size-4" />
-            Back to {APP_NAME}
+            Back to {APP_INFO.name}
           </Link>
 
           <header className="mt-8 sm:mt-12">
@@ -41,7 +41,7 @@ export function PolicyPage({ title, content }: PolicyPageProps) {
                     <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
                       {section.heading}
                     </h2>
-                    <div className="mt-4 text-muted-foreground whitespace-pre-line">
+                    <div className="mt-4 whitespace-pre-line text-muted-foreground">
                       {section.text}
                     </div>
                   </section>

@@ -18,15 +18,15 @@ export const CONTACT = {
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export const RESEND = {
-  apiKey: process.env.RESEND_API_KEY,
+  API_KEY: process.env.RESEND_API_KEY,
 } as const
 
 export const STRIPE = {
-  publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-  secretKey: process.env.STRIPE_SECRET_KEY,
+  PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   PLANS: {
     oneMonth: "price_1TrDiKRGO2DKoZ4YValprXFX",
-    threeMonths: "price_1TrDkhRGO2DKoZ4YVUzTLZfF",
-    sixMonths: "price_1TrDljRGO2DKoZ4YzZJqMLAp",
+    threeMonth: "price_1TrDkhRGO2DKoZ4YVUzTLZfF",
+    sixMonth: "price_1TrDljRGO2DKoZ4YzZJqMLAp",
   },
 } as const

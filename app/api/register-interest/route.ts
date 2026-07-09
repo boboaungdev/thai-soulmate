@@ -16,7 +16,7 @@ const formSchema = z.object({
   phone: z.string(),
 })
 
-const resend = new Resend(RESEND.apiKey)
+const resend = new Resend(RESEND.API_KEY)
 
 export async function POST(req: Request) {
   try {

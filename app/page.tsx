@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { APP_NAME, APP_SECONDARY_TAGLINE, APP_TAGLINE } from "@/constants"
+import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { UserGallery } from "@/components/user-gallery"
 import { Faq } from "@/components/faq"
@@ -46,7 +46,7 @@ export default function HomePage() {
             <>
               <Image
                 src="/logo.png"
-                alt={`${APP_NAME} Logo`}
+                alt={`${APP_INFO.name} Logo`}
                 width={150}
                 height={150}
                 className="mb-4 h-auto w-auto object-contain"
@@ -54,11 +54,13 @@ export default function HomePage() {
               <AppName className="text-3xl font-bold sm:text-4xl md:text-5xl" />
               <div className="space-y-2">
                 <p className="text-lg font-bold text-white/90 md:text-xl">
-                  <span className="text-gradient">{APP_TAGLINE}</span>
+                  <span className="text-gradient">{APP_INFO.tagline}</span>
                 </p>
 
                 <p className="text-lg font-bold md:text-xl">
-                  <span className="text-gradient">{APP_SECONDARY_TAGLINE}</span>
+                  <span className="text-gradient">
+                    {APP_INFO.secondaryTagline}
+                  </span>
                 </p>
               </div>
               <div className="flex flex-wrap justify-center gap-4">

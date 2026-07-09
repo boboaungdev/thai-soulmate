@@ -1,6 +1,6 @@
 import { AppName } from "@/components/app-name"
 import { PolicyPage } from "@/components/policy-page"
-import { APP_NAME, COMPANY_NAME, CONTACT } from "@/constants"
+import { APP_INFO, CONTACT } from "@/constants"
 
 const TERMS_OF_SERVICE_CONTENT = [
   {
@@ -10,10 +10,10 @@ const TERMS_OF_SERVICE_CONTENT = [
         By creating an account and using the services provided by{" "}
         <AppName className="inline" /> (&quot;Service&quot;), you agree to be
         bound by these Terms of Service (&quot;Terms&quot;). This agreement is a
-        legally binding contract between you and {COMPANY_NAME}. If you do not
-        agree with these Terms, you must not use our Service. You affirm that
-        you are at least 18 years of age and are fully able and competent to
-        enter into the terms, conditions, obligations, affirmations,
+        legally binding contract between you and {APP_INFO.companyName}. If you
+        do not agree with these Terms, you must not use our Service. You affirm
+        that you are at least 18 years of age and are fully able and competent
+        to enter into the terms, conditions, obligations, affirmations,
         representations, and warranties set forth in these Terms.
       </>
     ),
@@ -38,7 +38,7 @@ const TERMS_OF_SERVICE_CONTENT = [
   },
   {
     heading: "5. Intellectual Property",
-    text: `The Service and its original content (excluding Content provided by users), features, and functionality are and will remain the exclusive property of ${COMPANY_NAME} and its licensors. The Service is protected by copyright, trademark, and other laws of both Thailand and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of ${COMPANY_NAME}.`,
+    text: `The Service and its original content (excluding Content provided by users), features, and functionality are and will remain the exclusive property of ${APP_INFO.companyName} and its licensors. The Service is protected by copyright, trademark, and other laws of both Thailand and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of ${APP_INFO.companyName}.`,
   },
   {
     heading: "6. Disclaimers",
@@ -56,7 +56,7 @@ const TERMS_OF_SERVICE_CONTENT = [
   },
   {
     heading: "7. Limitation of Liability",
-    text: `In no event shall ${COMPANY_NAME}, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service; (ii) any conduct or content of any third party on the Service; (iii) any content obtained from the Service; and (iv) unauthorized access, use or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence) or any other legal theory, whether or not we have been informed of the possibility of such damage.`,
+    text: `In no event shall ${APP_INFO.companyName}, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service; (ii) any conduct or content of any third party on the Service; (iii) any content obtained from the Service; and (iv) unauthorized access, use or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence) or any other legal theory, whether or not we have been informed of the possibility of such damage.`,
   },
   {
     heading: "8. Termination",
@@ -78,9 +78,6 @@ const TERMS_OF_SERVICE_CONTENT = [
 
 export default function TermsOfServicePage() {
   return (
-    <PolicyPage
-      title="Terms of Service"
-      content={TERMS_OF_SERVICE_CONTENT}
-    />
+    <PolicyPage title="Terms of Service" content={TERMS_OF_SERVICE_CONTENT} />
   )
 }

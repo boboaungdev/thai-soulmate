@@ -15,7 +15,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 
-import { APP_NAME, APP_TAGLINE } from "@/constants"
+import { APP_INFO } from "@/constants"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { AppName } from "@/components/app-name"
@@ -49,7 +49,7 @@ export function NavBar() {
         >
           <Image
             src="/logo.png"
-            alt={`${APP_NAME} logo`}
+            alt={`${APP_INFO.name} logo`}
             width={72}
             height={72}
             className="size-10 shrink-0 rounded-2xl bg-background object-cover shadow-sm sm:size-11"
@@ -58,7 +58,7 @@ export function NavBar() {
           <div className="min-w-0">
             <AppName className="truncate text-base font-semibold sm:text-lg" />
             <p className="truncate text-xs text-muted-foreground">
-              {APP_TAGLINE}
+              {APP_INFO.tagline}
             </p>
           </div>
         </Link>

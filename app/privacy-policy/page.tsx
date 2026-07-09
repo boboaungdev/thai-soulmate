@@ -1,6 +1,6 @@
 import { AppName } from "@/components/app-name"
 import { PolicyPage } from "@/components/policy-page"
-import { APP_NAME, COMPANY_NAME, CONTACT } from "@/constants"
+import { APP_INFO, CONTACT } from "@/constants"
 
 const PRIVACY_POLICY_CONTENT = [
   {
@@ -11,8 +11,8 @@ const PRIVACY_POLICY_CONTENT = [
         protecting your privacy. This Privacy Policy explains how we collect,
         use, disclose, and safeguard your information when you use our website
         and services. By using our service, you agree to the collection and use
-        of information in accordance with this policy. This policy is managed by{" "}
-        {COMPANY_NAME}.
+        of information in accordance with this policy. This policy is managed by
+        {` ${APP_INFO.companyName}`}.
       </>
     ),
   },
@@ -80,10 +80,5 @@ B. Information Collected Automatically:
 ]
 
 export default function PrivacyPolicyPage() {
-  return (
-    <PolicyPage
-      title="Privacy Policy"
-      content={PRIVACY_POLICY_CONTENT}
-    />
-  )
+  return <PolicyPage title="Privacy Policy" content={PRIVACY_POLICY_CONTENT} />
 }

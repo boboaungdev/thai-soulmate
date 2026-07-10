@@ -37,9 +37,9 @@ export const getUserConfirmationHtml = ({
           <p>Dear ${prefix} ${name},</p>
           <p>Thank you for registering your interest with ${appNameWithStyle}. We're excited to have you on board!</p>
           <p>We have successfully received your details. A member of our matchmaking team will review your information and contact you as soon as possible to discuss the next steps.</p>
-          <p>In the meantime, you can get started by creating your account. Please click the button below to complete your registration.</p>
+          <p>In the meantime, you can get started by creating your account. Please click the button below to complete your registration and choose plans that suit your needs.</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${BASE_URL}/pricing&email=${email}" style="background-image: linear-gradient(to right, #cfa14f, #cb5d7a); color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Register Account</a>
+            <a href="${BASE_URL}/pricing?email=${email}" style="background-image: linear-gradient(to right, #cfa14f, #cb5d7a); color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Register Account</a>
           </div>
           <p>Best regards,<br>${APP_INFO.name} Team</p>
         </div>

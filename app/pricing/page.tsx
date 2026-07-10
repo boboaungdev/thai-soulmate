@@ -136,8 +136,12 @@ function PricingPageContents() {
 
   const handleCloseDialog = () => {
     setShowCancelDialog(false)
-    // Remove the `canceled` query param from the URL without reloading the page
-    const newPath = window.location.pathname
+    // Remove the `canceled` and `session_id` query params, but keep `email`
+    let newPath = window.location.pathname
+    if (email) {
+      const params = new URLSearchParams({ email })
+      newPath = `${newPath}?${params.toString()}`
+    }
     window.history.replaceState({}, "", newPath)
   }
 
@@ -188,7 +192,9 @@ function PricingPageContents() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={handleCloseDialog}>Close</Button>
+            <Button onClick={handleCloseDialog} className="btn-gradient">
+              Close
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -203,7 +209,9 @@ function PricingPageContents() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={handleCloseSuccessDialog}>Great!</Button>
+            <Button onClick={handleCloseSuccessDialog} className="btn-gradient">
+              Great!
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -265,14 +273,19 @@ function PricingPageContents() {
                 ))}
               </ul>
               <button
-                onClick={() => email && handleChoosePlan(plan, email)}
+                onClick={() => {
+                  if (email) {
+                    handleChoosePlan(plan, email)
+                  } else {
+                    router.push("/auth")
+                  }
+                }}
                 className={clsx(
-                  "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50",
+                  "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300",
                   plan.popular
                     ? "btn-gradient border-0 text-white shadow-lg"
-                    : "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                )}
-                disabled={!email}
+                    : "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-muted-foreground/10"
+                )} 
               >
                 Choose Plan
               </button>

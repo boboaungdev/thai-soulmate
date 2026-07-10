@@ -191,6 +191,10 @@
     color: var(--gold);
   }
 
+  .border-gold {
+    border-color: var(--gold);
+  }
+
   .text-pink {
     color: var(--pink);
   }
@@ -202,6 +206,7 @@
 
   .text-gradient {
     background: linear-gradient(to right, var(--gold), var(--pink));
+    display: inline-block;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

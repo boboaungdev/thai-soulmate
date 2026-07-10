@@ -5,16 +5,20 @@ import { BASE_URL } from "@/constants"
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { priceId, email, mode } = body
+    const { priceId, userData, mode } = body
 
-    if (!priceId || !email || !mode) {
-      return new NextResponse("Price ID, email, and mode are required", {
+    if (!priceId || !userData || !mode) {
+      return new NextResponse("Price ID, user data, and mode are required", {
         status: 400,
       })
     }
 
+    const encodedUserData = Buffer.from(JSON.stringify(userData)).toString(
+      "base64"
+    )
+
     const checkoutSession = await stripe.checkout.sessions.create({
-      customer_email: email,
+      customer_email: userData.email,
       line_items: [
         {
           price: priceId,
@@ -22,8 +26,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: mode,
-      success_url: `${BASE_URL}/pricing?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${BASE_URL}/pricing?email=${email}&canceled=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${BASE_URL}/pricing?userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${BASE_URL}/pricing?userData=${encodedUserData}&canceled=true&session_id={CHECKOUT_SESSION_ID}`,
     })
 
     return NextResponse.json({ url: checkoutSession.url })

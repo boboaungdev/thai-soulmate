@@ -16,6 +16,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { User } from "@/types"
 
 interface Plan {
   name: string
@@ -94,10 +95,19 @@ function PricingPageContents() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const emailFromUrl = searchParams.get("email")
-  const emailSchema = z.string().email()
-  const validationResult = emailSchema.safeParse(emailFromUrl)
-  const email = validationResult.success ? validationResult.data : null
+  const userDataFromUrl = searchParams.get("userData")
+  const [userData, setUserData] = useState<User | null>(null)
+
+  useEffect(() => {
+    if (userDataFromUrl) {
+      try {
+        const decodedUserData = JSON.parse(atob(userDataFromUrl))
+        setUserData(decodedUserData)
+      } catch (error) {
+        console.error("Failed to parse user data from URL", error)
+      }
+    }
+  }, [userDataFromUrl])
 
   const [showCancelDialog, setShowCancelDialog] = useState(false)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
@@ -136,12 +146,12 @@ function PricingPageContents() {
 
   const handleCloseDialog = () => {
     setShowCancelDialog(false)
-    // Remove the `canceled` and `session_id` query params, but keep `email`
     let newPath = window.location.pathname
-    if (email) {
-      const params = new URLSearchParams({ email })
+    if (userDataFromUrl) {
+      const params = new URLSearchParams({ userData: userDataFromUrl })
       newPath = `${newPath}?${params.toString()}`
     }
+
     window.history.replaceState({}, "", newPath)
   }
 
@@ -152,7 +162,7 @@ function PricingPageContents() {
     window.history.replaceState({}, "", newPath)
   }
 
-  const handleChoosePlan = async (plan: Plan, email: string) => {
+  const handleChoosePlan = async (plan: Plan) => {
     const priceId = isAutoRenew
       ? plan.priceIds.subscription
       : plan.priceIds.oneTime
@@ -164,7 +174,7 @@ function PricingPageContents() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ priceId, email, mode }),
+        body: JSON.stringify({ priceId, userData, mode }),
       })
 
       const { url, error } = await response.json()
@@ -221,7 +231,8 @@ function PricingPageContents() {
           VIP Membership
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          Unlock exclusive features and get more matches!
+          {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}Unlock
+          exclusive features and get more matches!
         </p>
         <div className="mt-8 flex items-center justify-center space-x-2">
           <Label htmlFor="auto-renew-toggle">One-time Payment</Label>
@@ -274,8 +285,8 @@ function PricingPageContents() {
               </ul>
               <button
                 onClick={() => {
-                  if (email) {
-                    handleChoosePlan(plan, email)
+                  if (userData) {
+                    handleChoosePlan(plan)
                   } else {
                     router.push("/auth")
                   }
@@ -285,7 +296,7 @@ function PricingPageContents() {
                   plan.popular
                     ? "btn-gradient border-0 text-white shadow-lg"
                     : "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-muted-foreground/10"
-                )} 
+                )}
               >
                 Choose Plan
               </button>

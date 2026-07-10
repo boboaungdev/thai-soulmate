@@ -15,7 +15,7 @@ const formSchema = z.object({
   birthday: z.string(), // Dates are serialized as strings
   gender: z.string(),
   nationality: z.string(),
-  location: z.string(),
+  currentLocation: z.string(),
   email: z.string().email(),
   phone: z.string(),
 })
@@ -33,7 +33,11 @@ export async function POST(req: Request) {
       from: `"${APP_INFO.name}" <${EMAIL.noreply}>`, // Use noreply for automated emails
       to: EMAIL.contact,
       subject: `New Interest Registration: ${validatedData.name}`,
-      html: getAdminNotificationHtml({ ...validatedData, age }),
+      html: getAdminNotificationHtml({
+        ...validatedData,
+        age,
+        location: validatedData.currentLocation,
+      }),
     }
 
     // 2. Prepare the user confirmation email
@@ -41,11 +45,7 @@ export async function POST(req: Request) {
       from: `"${APP_INFO.name}" <${EMAIL.noreply}>`, // Use noreply for automated emails
       to: validatedData.email,
       subject: `Thank you for your interest in ${APP_INFO.name}!`,
-      html: getUserConfirmationHtml({
-        name: validatedData.name,
-        prefix: validatedData.prefix,
-        email: validatedData.email,
-      }),
+      html: getUserConfirmationHtml(validatedData),
     }
 
     // 3. Send both emails

@@ -61,14 +61,10 @@ function AuthPageContents() {
   }
 
   const setRegistrationStep = (
-    newStep: "details" | "verify-email" | "location" | "password",
-    email?: string
+    newStep: "details" | "verify-email" | "location" | "password"
   ) => {
     const params = new URLSearchParams(searchParams)
     params.set("step", newStep)
-    if (newStep === "verify-email" && email) {
-      params.set("email", email)
-    }
     router.push(`${pathname}?${params.toString()}`)
   }
   const [prefix, setPrefix] = useState("Mr.")
@@ -117,8 +113,7 @@ function AuthPageContents() {
   const validateAndSetStep = (
     step: "details" | "verify-email" | "location" | "password",
     schema: z.ZodObject<any, any>,
-    data: any,
-    email?: string
+    data: any
   ) => {
     const result = schema.safeParse(data)
     if (!result.success) {
@@ -130,7 +125,7 @@ function AuthPageContents() {
       toast.error("Please fix the errors before proceeding.")
     } else {
       setFormErrors({})
-      setRegistrationStep(step, email)
+      setRegistrationStep(step)
     }
   }
 
@@ -211,13 +206,6 @@ function AuthPageContents() {
       }
     }
   }, [passwordForm, registrationStep])
-
-  useEffect(() => {
-    const emailFromUrl = searchParams.get("email")
-    if (emailFromUrl && !detailsForm.email) {
-      setDetailsForm((prev) => ({ ...prev, email: emailFromUrl }))
-    }
-  }, [searchParams, detailsForm.email])
 
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
@@ -587,11 +575,25 @@ function AuthPageContents() {
                       disabled={
                         !isVerificationCodeFormValid || !detailsForm.email
                       }
-                      onClick={() =>
-                        validateAndSetStep("password", verificationCodeSchema, {
+                      onClick={() => {
+                        const result = verificationCodeSchema.safeParse({
                           code: verificationCode,
                         })
-                      }
+                        if (!result.success) {
+                          toast.error("Please enter a valid 6-digit code.")
+                          return
+                        }
+
+                        const userData = {
+                          ...detailsForm,
+                          prefix,
+                          gender,
+                          birthday: birthday?.toISOString(),
+                          ...locationForm,
+                        }
+                        const encodedUserData = btoa(JSON.stringify(userData))
+                        router.push(`/pricing?userData=${encodedUserData}`)
+                      }}
                     >
                       Verify
                     </Button>
@@ -681,14 +683,13 @@ function AuthPageContents() {
                     <Button
                       className="btn-gradient w-full"
                       disabled={!isLocationFormValid}
-                      onClick={() =>
+                      onClick={() => {
                         validateAndSetStep(
                           "verify-email",
                           locationSchema,
-                          locationForm,
-                          detailsForm.email
+                          locationForm
                         )
-                      }
+                      }}
                     >
                       Next
                     </Button>

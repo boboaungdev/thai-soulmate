@@ -50,7 +50,7 @@ const formSchema = z.object({
   nationality: z.string().min(2, {
     message: "Nationality must be at least 2 characters.",
   }),
-  location: z.string().min(2, {
+  currentLocation: z.string().min(2, {
     message: "Location must be at least 2 characters.",
   }),
   email: z.string().email(),
@@ -74,7 +74,7 @@ export function RegisterInterestForm() {
       name: "",
       gender: "Male",
       nationality: "",
-      location: "",
+      currentLocation: "",
       email: "",
       phone: "",
     },
@@ -318,7 +318,7 @@ export function RegisterInterestForm() {
               />
               <FormField
                 control={form.control}
-                name="location"
+                name="currentLocation"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Current Location</FormLabel>

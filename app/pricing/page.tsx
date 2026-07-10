@@ -1,11 +1,16 @@
 "use client"
 import clsx from "clsx"
-import React from "react"
+import React, { useState } from "react"
 import { STRIPE } from "@/constants"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 
 interface Plan {
   name: string
-  priceId: string
+  priceIds: {
+    subscription: string
+    oneTime: string
+  }
   price: string
   features: string[]
   popular?: boolean
@@ -15,7 +20,10 @@ interface Plan {
 const plans: Plan[] = [
   {
     name: "1 Month",
-    priceId: STRIPE.PLANS.oneMonth,
+    priceIds: {
+      subscription: STRIPE.PLANS.priceId.subscription.oneMonth,
+      oneTime: STRIPE.PLANS.priceId.oneTime.oneMonth,
+    },
     price: "฿29,999", // You get 2 months for this price
     features: [
       "Get 1 month FREE",
@@ -28,7 +36,10 @@ const plans: Plan[] = [
   },
   {
     name: "3 Months",
-    priceId: STRIPE.PLANS.threeMonth,
+    priceIds: {
+      subscription: STRIPE.PLANS.priceId.subscription.threeMonth,
+      oneTime: STRIPE.PLANS.priceId.oneTime.threeMonth,
+    },
     price: "฿34,999", // You get 6 months for this price
     pricePerMonth: "≈ ฿5,833/mo",
     features: [
@@ -42,7 +53,10 @@ const plans: Plan[] = [
   },
   {
     name: "6 Months",
-    priceId: STRIPE.PLANS.sixMonth,
+    priceIds: {
+      subscription: STRIPE.PLANS.priceId.subscription.sixMonth,
+      oneTime: STRIPE.PLANS.priceId.oneTime.sixMonth,
+    },
     price: "฿49,999", // You get 12 months for this price
     pricePerMonth: "≈ ฿4,167/mo",
     features: [
@@ -56,14 +70,21 @@ const plans: Plan[] = [
 ]
 
 const PricingPage: React.FC = () => {
+  const [isAutoRenew, setIsAutoRenew] = useState(true)
+
   const handleChoosePlan = async (plan: Plan, email: string) => {
+    const priceId = isAutoRenew
+      ? plan.priceIds.subscription
+      : plan.priceIds.oneTime
+    const mode = isAutoRenew ? "subscription" : "payment"
+
     try {
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ priceId: plan.priceId, email }),
+        body: JSON.stringify({ priceId, email, mode }),
       })
 
       const { url, error } = await response.json()
@@ -88,6 +109,15 @@ const PricingPage: React.FC = () => {
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           Unlock exclusive features and get more matches!
         </p>
+        <div className="mt-8 flex items-center justify-center space-x-2">
+          <Label htmlFor="auto-renew-toggle">One-time Payment</Label>
+          <Switch
+            id="auto-renew-toggle"
+            checked={isAutoRenew}
+            onCheckedChange={setIsAutoRenew}
+          />
+          <Label htmlFor="auto-renew-toggle">Auto-renew</Label>
+        </div>
         <div className="mt-16 flex flex-wrap justify-center gap-8">
           {plans.map((plan) => (
             <div
@@ -125,7 +155,7 @@ const PricingPage: React.FC = () => {
                 ))}
               </ul>
               <button
-                onClick={() => handleChoosePlan(plan, 'email')}
+                onClick={() => handleChoosePlan(plan, "email")}
                 className={clsx(
                   "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300",
                   plan.popular

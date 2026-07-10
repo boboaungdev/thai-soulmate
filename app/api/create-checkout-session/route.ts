@@ -4,41 +4,35 @@ import { BASE_URL } from "@/constants"
 
 export async function POST(req: Request) {
   try {
-    const { priceId, email } = await req.json()
+    const body = await req.json()
+    const { priceId, email, mode } = body
 
-    if (!priceId) {
-      return NextResponse.json({ error: "Invalid plan" }, { status: 400 })
+    if (!priceId || !email || !mode) {
+      return new NextResponse("Price ID, email, and mode are required", {
+        status: 400,
+      })
     }
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
+    const checkoutSession = await stripe.checkout.sessions.create({
       customer_email: email,
-
+      payment_method_types: ["card"],
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
-
+      mode: mode,
       success_url: `${BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-
-      cancel_url: `${BASE_URL}/payment/cancel`,
+      cancel_url: `${BASE_URL}/payment/cancelled`,
     })
 
-    return NextResponse.json({
-      url: session.url,
-    })
+    return NextResponse.json({ url: checkoutSession.url })
   } catch (error) {
-    console.error(error)
-
-    return NextResponse.json(
-      {
-        error: "Checkout creation failed",
-      },
-      {
-        status: 500,
-      }
-    )
+    console.error("[CREATE_CHECKOUT_SESSION_ERROR]", error)
+    if (error instanceof Error) {
+      return new NextResponse(error.message, { status: 500 })
+    }
+    return new NextResponse("Internal Server Error", { status: 500 })
   }
 }

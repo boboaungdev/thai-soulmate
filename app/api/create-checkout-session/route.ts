@@ -22,8 +22,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: mode,
-      success_url: `${BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${BASE_URL}/payment/cancelled`,
+      success_url: `${BASE_URL}/pricing?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${BASE_URL}/pricing?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
     })
 
     return NextResponse.json({ url: checkoutSession.url })

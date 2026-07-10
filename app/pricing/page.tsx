@@ -1,10 +1,19 @@
 "use client"
 import clsx from "clsx"
-import { useRouter } from "next/navigation"
-import React, { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import React, { useState, useEffect } from "react"
 import { STRIPE } from "@/constants"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 
 interface Plan {
   name: string
@@ -73,6 +82,55 @@ const plans: Plan[] = [
 const PricingPage: React.FC = () => {
   const [isAutoRenew, setIsAutoRenew] = useState(true)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const [showCancelDialog, setShowCancelDialog] = useState(false)
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+
+  useEffect(() => {
+    const canceled = searchParams.get("canceled")
+    const sessionId = searchParams.get("session_id")
+
+    if (canceled && sessionId) {
+      const processedSessionId = sessionStorage.getItem(
+        "processed_stripe_session"
+      )
+
+      if (processedSessionId !== sessionId) {
+        setTimeout(() => {
+          setShowCancelDialog(true)
+          sessionStorage.setItem("processed_stripe_session", sessionId)
+        }, 0)
+      }
+    }
+
+    const success = searchParams.get("success")
+    if (success && sessionId) {
+      const processedSessionId = sessionStorage.getItem(
+        "processed_stripe_session"
+      )
+
+      if (processedSessionId !== sessionId) {
+        setTimeout(() => {
+          setShowSuccessDialog(true)
+          sessionStorage.setItem("processed_stripe_session", sessionId)
+        }, 0)
+      }
+    }
+  }, [searchParams])
+
+  const handleCloseDialog = () => {
+    setShowCancelDialog(false)
+    // Remove the `canceled` query param from the URL without reloading the page
+    const newPath = window.location.pathname
+    window.history.replaceState({}, "", newPath)
+  }
+
+  const handleCloseSuccessDialog = () => {
+    setShowSuccessDialog(false)
+    // Remove the query params from the URL without reloading the page
+    const newPath = window.location.pathname
+    window.history.replaceState({}, "", newPath)
+  }
 
   const handleChoosePlan = async (plan: Plan, email: string) => {
     const priceId = isAutoRenew
@@ -104,6 +162,36 @@ const PricingPage: React.FC = () => {
 
   return (
     <section className="bg-muted/50 py-16 sm:py-20 dark:bg-muted/30">
+      <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Payment Canceled</DialogTitle>
+            <DialogDescription>
+              Your payment process was canceled. You have not been charged. If
+              you&apos;d like to try again, please select a plan.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={handleCloseDialog}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Payment Successful!</DialogTitle>
+            <DialogDescription>
+              Thank you for your purchase! Your VIP membership is now active.
+              You can now enjoy all the exclusive benefits.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={handleCloseSuccessDialog}>Great!</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl">
           VIP Membership

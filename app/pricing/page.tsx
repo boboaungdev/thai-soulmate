@@ -1,5 +1,6 @@
 "use client"
 import clsx from "clsx"
+import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 import { STRIPE } from "@/constants"
 import { Label } from "@/components/ui/label"
@@ -71,6 +72,7 @@ const plans: Plan[] = [
 
 const PricingPage: React.FC = () => {
   const [isAutoRenew, setIsAutoRenew] = useState(true)
+  const router = useRouter()
 
   const handleChoosePlan = async (plan: Plan, email: string) => {
     const priceId = isAutoRenew
@@ -93,7 +95,7 @@ const PricingPage: React.FC = () => {
         throw new Error(error)
       }
 
-      window.location.href = url
+      router.push(url)
     } catch (error) {
       console.error("Failed to create checkout session:", error)
       alert("Failed to proceed to checkout. Please try again.")

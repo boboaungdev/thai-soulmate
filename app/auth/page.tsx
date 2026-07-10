@@ -61,10 +61,14 @@ export default function AuthPage() {
   }
 
   const setRegistrationStep = (
-    newStep: "details" | "verify-email" | "location" | "password"
+    newStep: "details" | "verify-email" | "location" | "password",
+    email?: string
   ) => {
     const params = new URLSearchParams(searchParams)
     params.set("step", newStep)
+    if (newStep === "verify-email" && email) {
+      params.set("email", email)
+    }
     router.push(`${pathname}?${params.toString()}`)
   }
   const [prefix, setPrefix] = useState("Mr.")
@@ -113,7 +117,8 @@ export default function AuthPage() {
   const validateAndSetStep = (
     step: "details" | "verify-email" | "location" | "password",
     schema: z.ZodObject<any, any>,
-    data: any
+    data: any,
+    email?: string
   ) => {
     const result = schema.safeParse(data)
     if (!result.success) {
@@ -125,7 +130,7 @@ export default function AuthPage() {
       toast.error("Please fix the errors before proceeding.")
     } else {
       setFormErrors({})
-      setRegistrationStep(step)
+      setRegistrationStep(step, email)
     }
   }
 
@@ -206,6 +211,13 @@ export default function AuthPage() {
       }
     }
   }, [passwordForm, registrationStep])
+
+  useEffect(() => {
+    const emailFromUrl = searchParams.get("email")
+    if (emailFromUrl && !detailsForm.email) {
+      setDetailsForm((prev) => ({ ...prev, email: emailFromUrl }))
+    }
+  }, [searchParams, detailsForm.email])
 
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
@@ -572,7 +584,9 @@ export default function AuthPage() {
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      disabled={!isVerificationCodeFormValid}
+                      disabled={
+                        !isVerificationCodeFormValid || !detailsForm.email
+                      }
                       onClick={() =>
                         validateAndSetStep("password", verificationCodeSchema, {
                           code: verificationCode,
@@ -594,7 +608,7 @@ export default function AuthPage() {
                         variant="link"
                         className="p-0 text-muted-foreground"
                         onClick={handleResendCode}
-                        disabled={isResendDisabled}
+                        disabled={isResendDisabled || !detailsForm.email}
                       >
                         {isResendDisabled //
                           ? `Resend code in ${countdown}s`
@@ -671,7 +685,8 @@ export default function AuthPage() {
                         validateAndSetStep(
                           "verify-email",
                           locationSchema,
-                          locationForm
+                          locationForm,
+                          detailsForm.email
                         )
                       }
                     >
@@ -792,9 +807,9 @@ export default function AuthPage() {
                       onClick={() => {
                         if (isPasswordFormValid) router.push("/pricing")
                       }}
-                      disabled={!isPasswordFormValid}
+                      disabled={!isPasswordFormValid || !detailsForm.email}
                     >
-                      Finish
+                      Register account
                     </Button>
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button

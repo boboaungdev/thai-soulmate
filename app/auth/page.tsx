@@ -497,7 +497,7 @@ export default function AuthPage() {
                       className="btn-gradient w-full"
                       disabled={!isDetailsFormValid}
                       onClick={() =>
-                        validateAndSetStep("verify-email", detailsSchema, {
+                        validateAndSetStep("location", detailsSchema, {
                           ...detailsForm,
                           birthday,
                         })
@@ -522,7 +522,8 @@ export default function AuthPage() {
                   <CardHeader>
                     <CardTitle>Verify Your Email</CardTitle>
                     <CardDescription>
-                      We&apos;ve sent a verification code to your email. if not arrive, check also in spam folder.
+                      We&apos;ve sent a verification code to your email. if not
+                      arrive, check also in spam folder.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -573,7 +574,7 @@ export default function AuthPage() {
                       className="btn-gradient w-full"
                       disabled={!isVerificationCodeFormValid}
                       onClick={() =>
-                        validateAndSetStep("location", verificationCodeSchema, {
+                        validateAndSetStep("password", verificationCodeSchema, {
                           code: verificationCode,
                         })
                       }
@@ -583,11 +584,11 @@ export default function AuthPage() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
-                        onClick={() => setRegistrationStep("details")}
+                        className="flex items-center p-0 text-muted-foreground" //
+                        onClick={() => setRegistrationStep("location")}
                       >
                         <ChevronLeft className="mr-1 size-4" />
-                        Back to details
+                        Back to location
                       </Button>
                       <Button
                         variant="link"
@@ -595,7 +596,7 @@ export default function AuthPage() {
                         onClick={handleResendCode}
                         disabled={isResendDisabled}
                       >
-                        {isResendDisabled
+                        {isResendDisabled //
                           ? `Resend code in ${countdown}s`
                           : "Resend code"}
                       </Button>
@@ -668,7 +669,7 @@ export default function AuthPage() {
                       disabled={!isLocationFormValid}
                       onClick={() =>
                         validateAndSetStep(
-                          "password",
+                          "verify-email",
                           locationSchema,
                           locationForm
                         )
@@ -680,10 +681,10 @@ export default function AuthPage() {
                       <Button
                         variant="link"
                         className="flex items-center p-0 text-muted-foreground"
-                        onClick={() => setRegistrationStep("verify-email")}
+                        onClick={() => setRegistrationStep("details")}
                       >
                         <ChevronLeft className="mr-1 size-4" />
-                        Back to verification
+                        Back to details
                       </Button>
                     </div>
                   </CardFooter>
@@ -799,10 +800,10 @@ export default function AuthPage() {
                       <Button
                         variant="link"
                         className="flex items-center p-0 text-muted-foreground"
-                        onClick={() => setRegistrationStep("location")}
+                        onClick={() => setRegistrationStep("verify-email")}
                       >
                         <ChevronLeft className="mr-1 size-4" />
-                        Back to location
+                        Back to verification
                       </Button>
                     </div>
                   </CardFooter>

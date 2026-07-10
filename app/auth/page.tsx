@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { User, Mail, Lock } from "lucide-react"
+import { User, Mail, Lock, Eye, EyeOff} from "lucide-react"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import {
   InputGroup,
   InputGroupAddon,
@@ -28,7 +27,8 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { useState, forwardRef } from "react"
+import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 
 export default function AuthPage() {
   const router = useRouter()
@@ -113,11 +113,20 @@ export default function AuthPage() {
                     <InputGroupAddon>
                       <Lock className="size-4" />
                     </InputGroupAddon>
-                    <InputGroupInput
-                      id="password"
-                      type="password"
-                      placeholder="password"
-                    />
+                    <div className="flex-1">
+                      <PasswordToggleField.Root>
+                        <PasswordToggleField.Input
+                          asChild
+                          id="password"
+                          placeholder="password"
+                        >
+                          <InputGroupInput />
+                        </PasswordToggleField.Input>
+                        <PasswordToggleField.Toggle asChild>
+                          <PasswordToggle />
+                        </PasswordToggleField.Toggle>
+                      </PasswordToggleField.Root>
+                    </div>
                   </InputGroup>
                 </div>
               </CardContent>
@@ -199,7 +208,44 @@ export default function AuthPage() {
                     <InputGroupAddon>
                       <Lock className="size-4" />
                     </InputGroupAddon>
-                    <InputGroupInput id="password-signup" type="password" placeholder="password"/>
+                    <div className="flex-1">
+                      <PasswordToggleField.Root>
+                        <PasswordToggleField.Input
+                          asChild
+                          id="password-signup"
+                          placeholder="password"
+                        >
+                          <InputGroupInput />
+                        </PasswordToggleField.Input>
+                        <PasswordToggleField.Toggle asChild>
+                          <PasswordToggle />
+                        </PasswordToggleField.Toggle>
+                      </PasswordToggleField.Root>
+                    </div>
+                  </InputGroup>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password-signup">
+                    Confirm Password
+                  </Label>
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Lock className="size-4" />
+                    </InputGroupAddon>
+                    <div className="flex-1">
+                      <PasswordToggleField.Root>
+                        <PasswordToggleField.Input
+                          asChild
+                          id="confirm-password-signup"
+                          placeholder="confirm password"
+                        >
+                          <InputGroupInput />
+                        </PasswordToggleField.Input>
+                        <PasswordToggleField.Toggle asChild>
+                          <PasswordToggle />
+                        </PasswordToggleField.Toggle>
+                      </PasswordToggleField.Root>
+                    </div>
                   </InputGroup>
                 </div>
               </CardContent>
@@ -211,7 +257,7 @@ export default function AuthPage() {
                     className="p-0 text-muted-foreground"
                     onClick={() => setMode("login")}
                   >
-                   Already have an account?
+                    Already have an account?
                   </Button>
                 </p>
               </CardFooter>
@@ -222,3 +268,20 @@ export default function AuthPage() {
     </main>
   )
 }
+
+const PasswordToggle = forwardRef<HTMLButtonElement>((props, ref) => (
+  <Button
+    ref={ref}
+    variant="ghost"
+    size="icon-sm"
+    className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:bg-transparent"
+    {...props}
+  >
+    <PasswordToggleField.Icon
+      visible={<EyeOff className="size-4" />}
+      hidden={<Eye className="size-4" />}
+    />
+    <span className="sr-only">Toggle password visibility</span>
+  </Button>
+))
+PasswordToggle.displayName = "PasswordToggle"

@@ -506,7 +506,12 @@ export default function AuthPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="flex-col items-start gap-4">
-                    <Button className="btn-gradient w-full">Finish</Button>
+                    <Button
+                      className="btn-gradient w-full"
+                      onClick={() => router.push("/pricing")}
+                    >
+                      Finish
+                    </Button>
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"

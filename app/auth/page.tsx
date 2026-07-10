@@ -1,7 +1,18 @@
 "use client"
 
 import Image from "next/image"
-import { User, Mail, Lock, Eye, EyeOff, Cake, Phone } from "lucide-react"
+import {
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Cake,
+  Phone,
+  Home,
+  MapPin,
+  ChevronLeft,
+} from "lucide-react"
 import { APP_INFO, CONTACT } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
@@ -38,18 +49,18 @@ export default function AuthPage() {
   const searchParams = useSearchParams()
   const mode = searchParams.get("mode") || "login"
   const registrationStep =
-    (searchParams.get("step") as "details" | "verify-email") || "details"
+    (searchParams.get("step") as
+      "details" | "verify-email" | "location" | "password") || "details"
 
   const setMode = (newMode: "login" | "register" | "forgot-password") => {
     const params = new URLSearchParams(searchParams)
     params.set("mode", newMode)
-    if (newMode !== "register") {
-      params.delete("step")
-    }
     router.push(`${pathname}?${params.toString()}`)
   }
 
-  const setRegistrationStep = (newStep: "details" | "verify-email") => {
+  const setRegistrationStep = (
+    newStep: "details" | "verify-email" | "location" | "password"
+  ) => {
     const params = new URLSearchParams(searchParams)
     params.set("step", newStep)
     router.push(`${pathname}?${params.toString()}`)
@@ -284,18 +295,6 @@ export default function AuthPage() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Phone className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="phone"
-                          placeholder="+1 234 567 890"
-                        />
-                      </InputGroup>
-                    </div>
-                    <div className="space-y-2">
                       <Label htmlFor="email-signup">Email</Label>
                       <InputGroup>
                         <InputGroupAddon>
@@ -309,49 +308,15 @@ export default function AuthPage() {
                       </InputGroup>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="password-signup">Password</Label>
+                      <Label htmlFor="phone">Phone</Label>
                       <InputGroup>
                         <InputGroupAddon>
-                          <Lock className="size-4" />
+                          <Phone className="size-4" />
                         </InputGroupAddon>
-                        <div className="flex-1">
-                          <PasswordToggleField.Root>
-                            <PasswordToggleField.Input
-                              asChild
-                              id="password-signup"
-                              placeholder="password"
-                            >
-                              <InputGroupInput />
-                            </PasswordToggleField.Input>
-                            <PasswordToggleField.Toggle asChild>
-                              <PasswordToggle />
-                            </PasswordToggleField.Toggle>
-                          </PasswordToggleField.Root>
-                        </div>
-                      </InputGroup>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirm-password-signup">
-                        Confirm Password
-                      </Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Lock className="size-4" />
-                        </InputGroupAddon>
-                        <div className="flex-1">
-                          <PasswordToggleField.Root>
-                            <PasswordToggleField.Input
-                              asChild
-                              id="confirm-password-signup"
-                              placeholder="confirm password"
-                            >
-                              <InputGroupInput />
-                            </PasswordToggleField.Input>
-                            <PasswordToggleField.Toggle asChild>
-                              <PasswordToggle />
-                            </PasswordToggleField.Toggle>
-                          </PasswordToggleField.Root>
-                        </div>
+                        <InputGroupInput
+                          id="phone"
+                          placeholder="+1 234 567 890"
+                        />
                       </InputGroup>
                     </div>
                   </CardContent>
@@ -400,13 +365,19 @@ export default function AuthPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="flex-col items-start gap-4">
-                    <Button className="btn-gradient w-full">Verify</Button>
+                    <Button
+                      className="btn-gradient w-full"
+                      onClick={() => setRegistrationStep("location")}
+                    >
+                      Verify
+                    </Button>
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground"
                         onClick={() => setRegistrationStep("details")}
                       >
+                        <ChevronLeft className="mr-1 size-4" />
                         Back to details
                       </Button>
                       <Button
@@ -418,6 +389,132 @@ export default function AuthPage() {
                         {isResendDisabled
                           ? `Resend code in ${countdown}s`
                           : "Resend code"}
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              )}
+              {registrationStep === "location" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Almost there</CardTitle>
+                    <CardDescription>
+                      Please provide your location details to complete your
+                      profile.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="nationality">Nationality</Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Home className="size-4" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          id="nationality"
+                          placeholder="e.g. Thai"
+                        />
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="current-location">Current Location</Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <MapPin className="size-4" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          id="current-location"
+                          placeholder="e.g. Bangkok, Thailand"
+                        />
+                      </InputGroup>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex-col items-start gap-4">
+                    <Button
+                      className="btn-gradient w-full"
+                      onClick={() => setRegistrationStep("password")}
+                    >
+                      Next
+                    </Button>
+                    <div className="flex w-full items-center justify-between text-sm">
+                      <Button
+                        variant="link"
+                        className="flex items-center p-0 text-muted-foreground"
+                        onClick={() => setRegistrationStep("verify-email")}
+                      >
+                        <ChevronLeft className="mr-1 size-4" />
+                        Back to verification
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              )}
+              {registrationStep === "password" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Set Your Password</CardTitle>
+                    <CardDescription>
+                      Choose a strong password to protect your account.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="password-signup">Password</Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Lock className="size-4" />
+                        </InputGroupAddon>
+                        <div className="flex-1">
+                          <PasswordToggleField.Root>
+                            <PasswordToggleField.Input
+                              asChild
+                              id="password-signup"
+                              placeholder="password"
+                            >
+                              <InputGroupInput />
+                            </PasswordToggleField.Input>
+                            <PasswordToggleField.Toggle asChild>
+                              <PasswordToggle />
+                            </PasswordToggleField.Toggle>
+                          </PasswordToggleField.Root>
+                        </div>
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password-signup">
+                        Confirm Password
+                      </Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Lock className="size-4" />
+                        </InputGroupAddon>
+                        <div className="flex-1">
+                          <PasswordToggleField.Root>
+                            <PasswordToggleField.Input
+                              asChild
+                              id="confirm-password-signup"
+                              placeholder="confirm password"
+                            >
+                              <InputGroupInput />
+                            </PasswordToggleField.Input>
+                            <PasswordToggleField.Toggle asChild>
+                              <PasswordToggle />
+                            </PasswordToggleField.Toggle>
+                          </PasswordToggleField.Root>
+                        </div>
+                      </InputGroup>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex-col items-start gap-4">
+                    <Button className="btn-gradient w-full">Finish</Button>
+                    <div className="flex w-full items-center justify-between text-sm">
+                      <Button
+                        variant="link"
+                        className="flex items-center p-0 text-muted-foreground"
+                        onClick={() => setRegistrationStep("location")}
+                      >
+                        <ChevronLeft className="mr-1 size-4" />
+                        Back to location
                       </Button>
                     </div>
                   </CardFooter>

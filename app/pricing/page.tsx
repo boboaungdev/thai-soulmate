@@ -1,6 +1,8 @@
 "use client"
 import clsx from "clsx"
 import { useRouter, useSearchParams } from "next/navigation"
+import { z } from "zod"
+import { Flame } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { STRIPE } from "@/constants"
 import { Label } from "@/components/ui/label"
@@ -25,6 +27,8 @@ interface Plan {
   features: string[]
   popular?: boolean
   pricePerMonth?: string
+  duration: string
+  recurringInterval: string
 }
 
 const plans: Plan[] = [
@@ -34,7 +38,9 @@ const plans: Plan[] = [
       subscription: STRIPE.PLANS.priceIds.subscription.oneMonth,
       oneTime: STRIPE.PLANS.priceIds.oneTime.oneMonth,
     },
-    price: "฿29,999", // You get 2 months for this price
+    price: "฿29,999",
+    duration: "Total 2 months",
+    recurringInterval: "Billed every 2 months",
     features: [
       "Get 1 month FREE",
       "Priority Customer Support",
@@ -50,7 +56,9 @@ const plans: Plan[] = [
       subscription: STRIPE.PLANS.priceIds.subscription.threeMonth,
       oneTime: STRIPE.PLANS.priceIds.oneTime.threeMonth,
     },
-    price: "฿34,999", // You get 6 months for this price
+    price: "฿34,999",
+    duration: "Total 6 months",
+    recurringInterval: "Billed every 6 months",
     pricePerMonth: "≈ ฿5,833/mo",
     features: [
       "Get 3 months FREE",
@@ -67,7 +75,9 @@ const plans: Plan[] = [
       subscription: STRIPE.PLANS.priceIds.subscription.sixMonth,
       oneTime: STRIPE.PLANS.priceIds.oneTime.sixMonth,
     },
-    price: "฿49,999", // You get 12 months for this price
+    price: "฿49,999",
+    duration: "Total 12 months",
+    recurringInterval: "Billed every 12 months",
     pricePerMonth: "≈ ฿4,167/mo",
     features: [
       "Get 6 months FREE",
@@ -83,6 +93,12 @@ function PricingPageContents() {
   const [isAutoRenew, setIsAutoRenew] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
+
+  const emailFromUrl = searchParams.get("email")
+  const emailSchema = z.string().email()
+  const validationResult = emailSchema.safeParse(emailFromUrl)
+  const email = validationResult.success ? validationResult.data : null
+
   const [showCancelDialog, setShowCancelDialog] = useState(false)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
 
@@ -193,7 +209,7 @@ function PricingPageContents() {
       </Dialog>
 
       <div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl">
+        <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
           VIP Membership
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
@@ -218,12 +234,16 @@ function PricingPageContents() {
               )}
             >
               {plan.popular && (
-                <div className="btn-gradient absolute -top-4 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-sm font-bold text-white">
-                  Most Popular
+                <div className="btn-gradient absolute -top-4 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold text-white">
+                  <Flame className="size-4" />
+                  <span>Most Popular</span>
                 </div>
               )}
               <h2 className="mb-4 text-2xl font-semibold">{plan.name}</h2>
               <p className="text-4xl font-bold">{plan.price}</p>
+              <p className="mt-1 text-sm font-semibold text-muted-foreground">
+                {isAutoRenew ? plan.recurringInterval : plan.duration}
+              </p>
               {plan.pricePerMonth && (
                 <p className="mt-1 mb-6 text-muted-foreground">
                   {plan.pricePerMonth}
@@ -245,13 +265,14 @@ function PricingPageContents() {
                 ))}
               </ul>
               <button
-                onClick={() => handleChoosePlan(plan, "boboaungdev@gmail.com")}
+                onClick={() => email && handleChoosePlan(plan, email)}
                 className={clsx(
-                  "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300",
+                  "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50",
                   plan.popular
                     ? "btn-gradient border-0 text-white shadow-lg"
                     : "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                 )}
+                disabled={!email}
               >
                 Choose Plan
               </button>

@@ -44,6 +44,7 @@ export async function POST(req: Request) {
       html: getUserConfirmationHtml({
         name: validatedData.name,
         prefix: validatedData.prefix,
+        email: validatedData.email,
       }),
     }
 

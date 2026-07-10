@@ -1,8 +1,9 @@
 import { APP_INFO, BASE_URL } from "@/constants"
 
 type UserDetails = {
-  name: string
   prefix: string
+  name: string
+  email: string
 }
 
 type AdminNotificationDetails = {
@@ -23,6 +24,7 @@ const appNameGradientStyle =
 export const getUserConfirmationHtml = ({
   name,
   prefix,
+  email,
 }: UserDetails): string => {
   const appNameWithStyle = `<span style="${appNameGradientStyle}">${APP_INFO.name}</span>`
 
@@ -37,13 +39,13 @@ export const getUserConfirmationHtml = ({
           <p>We have successfully received your details. A member of our matchmaking team will review your information and contact you as soon as possible to discuss the next steps.</p>
           <p>In the meantime, you can get started by creating your account. Please click the button below to complete your registration.</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${BASE_URL}/auth?mode=register" style="background-image: linear-gradient(to right, #cfa14f, #cb5d7a); color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Register Your Account</a>
+            <a href="${BASE_URL}/pricing&email=${email}" style="background-image: linear-gradient(to right, #cfa14f, #cb5d7a); color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Register Account</a>
           </div>
           <p>Best regards,<br>${APP_INFO.name} Team</p>
         </div>
         <div style="background-color: #f4f4f4; color: #666; padding: 15px; text-align: center; font-size: 12px;">
           <p style="margin-bottom: 10px; font-style: italic;">This is an automated message. Please do not reply to this email.</p>
-          <p>&copy; ${new Date().getFullYear()} <a href="${BASE_URL}" style="text-decoration: none;">${appNameWithStyle}</a>. All rights reserved.</p>
+          <p>Copyright &copy; ${new Date().getFullYear()} <a href="${BASE_URL}" style="text-decoration: none;">${appNameWithStyle}</a>. All rights reserved.</p>
         </div>
       </div>
     `

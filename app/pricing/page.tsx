@@ -21,8 +21,8 @@ const plans: Plan[] = [
   {
     name: "1 Month",
     priceIds: {
-      subscription: STRIPE.PLANS.priceId.subscription.oneMonth,
-      oneTime: STRIPE.PLANS.priceId.oneTime.oneMonth,
+      subscription: STRIPE.PLANS.priceIds.subscription.oneMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.oneMonth,
     },
     price: "฿29,999", // You get 2 months for this price
     features: [
@@ -37,8 +37,8 @@ const plans: Plan[] = [
   {
     name: "3 Months",
     priceIds: {
-      subscription: STRIPE.PLANS.priceId.subscription.threeMonth,
-      oneTime: STRIPE.PLANS.priceId.oneTime.threeMonth,
+      subscription: STRIPE.PLANS.priceIds.subscription.threeMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.threeMonth,
     },
     price: "฿34,999", // You get 6 months for this price
     pricePerMonth: "≈ ฿5,833/mo",
@@ -54,8 +54,8 @@ const plans: Plan[] = [
   {
     name: "6 Months",
     priceIds: {
-      subscription: STRIPE.PLANS.priceId.subscription.sixMonth,
-      oneTime: STRIPE.PLANS.priceId.oneTime.sixMonth,
+      subscription: STRIPE.PLANS.priceIds.subscription.sixMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.sixMonth,
     },
     price: "฿49,999", // You get 12 months for this price
     pricePerMonth: "≈ ฿4,167/mo",
@@ -155,7 +155,7 @@ const PricingPage: React.FC = () => {
                 ))}
               </ul>
               <button
-                onClick={() => handleChoosePlan(plan, "email")}
+                onClick={() => handleChoosePlan(plan, "boboaungdev@gmail.com")}
                 className={clsx(
                   "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300",
                   plan.popular

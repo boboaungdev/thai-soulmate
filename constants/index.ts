@@ -32,8 +32,15 @@ export const STRIPE = {
   PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   PLANS: {
-    oneMonth: "price_1TrDiKRGO2DKoZ4YValprXFX",
-    threeMonth: "price_1TrDkhRGO2DKoZ4YVUzTLZfF",
-    sixMonth: "price_1TrDljRGO2DKoZ4YzZJqMLAp",
+    autoRenew: {
+      oneMonth: "price_1Trd7hRGO2DKoZ4YKjKdPnAL",
+      threeMonth: "price_1Trd5gRGO2DKoZ4Ykj426kku",
+      sixMonth: "price_1Trd8nRGO2DKoZ4YWTw2mAKh",
+    },
+    oneTime: {
+      oneMonth: "price_1Trd7iRGO2DKoZ4YgovfP0md",
+      threeMonth: "price_1Trcq0RGO2DKoZ4YyYezqShF",
+      sixMonth: "price_1Trd8nRGO2DKoZ4YIxDirV8C",
+    },
   },
 } as const

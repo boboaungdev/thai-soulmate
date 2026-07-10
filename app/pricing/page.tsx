@@ -1,9 +1,11 @@
 "use client"
 import clsx from "clsx"
 import React from "react"
+import { STRIPE } from "@/constants"
 
 interface Plan {
   name: string
+  priceId: string
   price: string
   features: string[]
   popular?: boolean
@@ -13,6 +15,7 @@ interface Plan {
 const plans: Plan[] = [
   {
     name: "1 Month",
+    priceId: STRIPE.PLANS.oneMonth,
     price: "฿29,999", // You get 2 months for this price
     features: [
       "Get 1 month FREE",
@@ -25,6 +28,7 @@ const plans: Plan[] = [
   },
   {
     name: "3 Months",
+    priceId: STRIPE.PLANS.threeMonth,
     price: "฿34,999", // You get 6 months for this price
     pricePerMonth: "≈ ฿5,833/mo",
     features: [
@@ -38,6 +42,7 @@ const plans: Plan[] = [
   },
   {
     name: "6 Months",
+    priceId: STRIPE.PLANS.sixMonth,
     price: "฿49,999", // You get 12 months for this price
     pricePerMonth: "≈ ฿4,167/mo",
     features: [
@@ -51,35 +56,27 @@ const plans: Plan[] = [
 ]
 
 const PricingPage: React.FC = () => {
-  const handleChoosePlan = async (planName: string) => {
-    alert(`Plan chosen: ${planName}`)
-    // NOTE: The following is a client-side example.
-    // For a real application, you would typically call a backend endpoint
-    // to create a Stripe Checkout Session.
+  const handleChoosePlan = async (plan: Plan, email: string) => {
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ priceId: plan.priceId, email }),
+      })
 
-    /*
-    // Example of redirecting to Stripe Checkout (requires stripe-js)
-    import { loadStripe } from '@stripe/stripe-js';
+      const { url, error } = await response.json()
 
-    const stripe = await loadStripe('YOUR_STRIPE_PUBLISHABLE_KEY');
+      if (error) {
+        throw new Error(error)
+      }
 
-    if (stripe) {
-      // This is where you would typically call your backend to create a checkout session
-      // and get a session ID.
-      // For this example, we'll just log it.
-      console.log('Creating checkout session for', planName);
-
-      // const { error } = await stripe.redirectToCheckout({
-      //   lineItems: [{ price: priceId, quantity: 1 }],
-      //   mode: 'subscription',
-      //   successUrl: `${window.location.origin}/payment-success`,
-      //   cancelUrl: `${window.location.origin}/payment-cancelled`,
-      // });
-      // if (error) {
-      //   console.error("Stripe checkout error:", error);
-      // }
+      window.location.href = url
+    } catch (error) {
+      console.error("Failed to create checkout session:", error)
+      alert("Failed to proceed to checkout. Please try again.")
     }
-    */
   }
 
   return (
@@ -128,7 +125,7 @@ const PricingPage: React.FC = () => {
                 ))}
               </ul>
               <button
-                onClick={() => handleChoosePlan(plan.name)}
+                onClick={() => handleChoosePlan(plan, 'email')}
                 className={clsx(
                   "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300",
                   plan.popular

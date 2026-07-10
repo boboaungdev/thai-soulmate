@@ -1,19 +1,18 @@
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
-import { BASE_URL, STRIPE } from "@/constants"
+import { BASE_URL } from "@/constants"
 
 export async function POST(req: Request) {
   try {
-    const { plan } = await req.json()
-
-    const priceId = STRIPE.PLANS[plan as keyof typeof STRIPE.PLANS]
+    const { priceId, email } = await req.json()
 
     if (!priceId) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 })
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
+      mode: "payment",
+      customer_email: email,
 
       line_items: [
         {

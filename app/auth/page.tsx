@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { User, Mail, Lock, Eye, EyeOff, Cake, Phone } from "lucide-react"
-import { APP_INFO } from "@/constants"
+import { APP_INFO, CONTACT } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,21 +30,63 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, forwardRef, useEffect } from "react"
 import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
+import { toast } from "sonner"
 
 export default function AuthPage() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const mode = searchParams.get("mode") || "login"
+  const registrationStep =
+    (searchParams.get("step") as "details" | "verify-email") || "details"
 
   const setMode = (newMode: "login" | "register" | "forgot-password") => {
     const params = new URLSearchParams(searchParams)
     params.set("mode", newMode)
+    if (newMode !== "register") {
+      params.delete("step")
+    }
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
+  const setRegistrationStep = (newStep: "details" | "verify-email") => {
+    const params = new URLSearchParams(searchParams)
+    params.set("step", newStep)
     router.push(`${pathname}?${params.toString()}`)
   }
   const [prefix, setPrefix] = useState("Mr.")
   const [gender, setGender] = useState("Male")
   const [birthday, setBirthday] = useState<Date>()
+  const [countdown, setCountdown] = useState(0)
+  const [isResendDisabled, setIsResendDisabled] = useState(true)
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (registrationStep === "verify-email" && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1)
+      }, 1000)
+    } else if (countdown === 0) {
+      setIsResendDisabled(false)
+    }
+    return () => clearInterval(timer)
+  }, [registrationStep, countdown])
+
+  useEffect(() => {
+    if (registrationStep === "verify-email") {
+      setCountdown(60)
+      setIsResendDisabled(true)
+    }
+  }, [registrationStep])
+
+  const handleResendCode = () => {
+    setCountdown(60)
+    setIsResendDisabled(true)
+    // TODO: Add logic to actually resend the verification code
+    toast.success("Verification code resent!", {
+      description: "A new code has been sent to your email address.",
+    })
+  }
 
   useEffect(() => {
     if (prefix === "Mr." && gender !== "Male") {
@@ -164,160 +206,224 @@ export default function AuthPage() {
               </CardFooter>
             </Card>
           ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle>Register</CardTitle>
-                <CardDescription>
-                  Create an account to start your journey with us.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-[100px_1fr] gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="prefix">Prefix</Label>
-                    <Select onValueChange={setPrefix} value={prefix}>
-                      <SelectTrigger
-                        id="prefix"
-                        className="h-8 bg-background dark:bg-input/30"
-                      >
-                        <SelectValue placeholder="Mr." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Mr.">Mr.</SelectItem>
-                        <SelectItem value="Ms.">Ms.</SelectItem>
-                        <SelectItem value="Mrs.">Mrs.</SelectItem>
-                        <SelectItem value="Dr.">Dr.</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <InputGroup>
-                      <InputGroupAddon>
-                        <User className="size-4" />
-                      </InputGroupAddon>
-                      <InputGroupInput id="name" placeholder="Your Name" />
-                    </InputGroup>
-                  </div>
-                </div>
-                <div className="grid grid-cols-[100px_1fr] gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">Gender</Label>
-                    <Select onValueChange={setGender} value={gender}>
-                      <SelectTrigger
-                        id="gender"
-                        className="h-8 bg-background dark:bg-input/30"
-                      >
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem
-                          value="Male"
-                          disabled={prefix === "Ms." || prefix === "Mrs."}
-                        >
-                          Male
-                        </SelectItem>
-                        <SelectItem value="Female" disabled={prefix === "Mr."}>
-                          Female
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="birthday">Date of Birth</Label>
-                    <InputGroup>
-                      <InputGroupAddon>
-                        <Cake className="size-4" />
-                      </InputGroupAddon>
-                      <DatePickerInput
-                        value={birthday}
-                        onSelect={setBirthday}
-                      />
-                    </InputGroup>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <Phone className="size-4" />
-                    </InputGroupAddon>
-                    <InputGroupInput id="phone" placeholder="+1 234 567 890" />
-                  </InputGroup>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email-signup">Email</Label>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <Mail className="size-4" />
-                    </InputGroupAddon>
-                    <InputGroupInput
-                      id="email-signup"
-                      type="email"
-                      placeholder="you@example.com"
-                    />
-                  </InputGroup>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password-signup">Password</Label>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <Lock className="size-4" />
-                    </InputGroupAddon>
-                    <div className="flex-1">
-                      <PasswordToggleField.Root>
-                        <PasswordToggleField.Input
-                          asChild
-                          id="password-signup"
-                          placeholder="password"
-                        >
-                          <InputGroupInput />
-                        </PasswordToggleField.Input>
-                        <PasswordToggleField.Toggle asChild>
-                          <PasswordToggle />
-                        </PasswordToggleField.Toggle>
-                      </PasswordToggleField.Root>
+            <>
+              {registrationStep === "details" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Register</CardTitle>
+                    <CardDescription>
+                      Create an account to start your journey with us.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-[100px_1fr] gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="prefix">Prefix</Label>
+                        <Select onValueChange={setPrefix} value={prefix}>
+                          <SelectTrigger
+                            id="prefix"
+                            className="h-8 bg-background dark:bg-input/30"
+                          >
+                            <SelectValue placeholder="Mr." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Mr.">Mr.</SelectItem>
+                            <SelectItem value="Ms.">Ms.</SelectItem>
+                            <SelectItem value="Mrs.">Mrs.</SelectItem>
+                            <SelectItem value="Dr.">Dr.</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Name</Label>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <User className="size-4" />
+                          </InputGroupAddon>
+                          <InputGroupInput id="name" placeholder="Your Name" />
+                        </InputGroup>
+                      </div>
                     </div>
-                  </InputGroup>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password-signup">
-                    Confirm Password
-                  </Label>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <Lock className="size-4" />
-                    </InputGroupAddon>
-                    <div className="flex-1">
-                      <PasswordToggleField.Root>
-                        <PasswordToggleField.Input
-                          asChild
-                          id="confirm-password-signup"
-                          placeholder="confirm password"
-                        >
-                          <InputGroupInput />
-                        </PasswordToggleField.Input>
-                        <PasswordToggleField.Toggle asChild>
-                          <PasswordToggle />
-                        </PasswordToggleField.Toggle>
-                      </PasswordToggleField.Root>
+                    <div className="grid grid-cols-[100px_1fr] gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="gender">Gender</Label>
+                        <Select onValueChange={setGender} value={gender}>
+                          <SelectTrigger
+                            id="gender"
+                            className="h-8 bg-background dark:bg-input/30"
+                          >
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem
+                              value="Male"
+                              disabled={prefix === "Ms." || prefix === "Mrs."}
+                            >
+                              Male
+                            </SelectItem>
+                            <SelectItem
+                              value="Female"
+                              disabled={prefix === "Mr."}
+                            >
+                              Female
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="birthday">Date of Birth</Label>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <Cake className="size-4" />
+                          </InputGroupAddon>
+                          <DatePickerInput
+                            value={birthday}
+                            onSelect={setBirthday}
+                          />
+                        </InputGroup>
+                      </div>
                     </div>
-                  </InputGroup>
-                </div>
-              </CardContent>
-              <CardFooter className="flex-col items-start gap-4">
-                <Button className="btn-gradient w-full">Register</Button>
-                <p className="text-sm text-muted-foreground">
-                  <Button
-                    variant="link"
-                    className="p-0 text-muted-foreground"
-                    onClick={() => setMode("login")}
-                  >
-                    Already have an account?
-                  </Button>
-                </p>
-              </CardFooter>
-            </Card>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone</Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Phone className="size-4" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          id="phone"
+                          placeholder="+1 234 567 890"
+                        />
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email-signup">Email</Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Mail className="size-4" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          id="email-signup"
+                          type="email"
+                          placeholder="you@example.com"
+                        />
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password-signup">Password</Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Lock className="size-4" />
+                        </InputGroupAddon>
+                        <div className="flex-1">
+                          <PasswordToggleField.Root>
+                            <PasswordToggleField.Input
+                              asChild
+                              id="password-signup"
+                              placeholder="password"
+                            >
+                              <InputGroupInput />
+                            </PasswordToggleField.Input>
+                            <PasswordToggleField.Toggle asChild>
+                              <PasswordToggle />
+                            </PasswordToggleField.Toggle>
+                          </PasswordToggleField.Root>
+                        </div>
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password-signup">
+                        Confirm Password
+                      </Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Lock className="size-4" />
+                        </InputGroupAddon>
+                        <div className="flex-1">
+                          <PasswordToggleField.Root>
+                            <PasswordToggleField.Input
+                              asChild
+                              id="confirm-password-signup"
+                              placeholder="confirm password"
+                            >
+                              <InputGroupInput />
+                            </PasswordToggleField.Input>
+                            <PasswordToggleField.Toggle asChild>
+                              <PasswordToggle />
+                            </PasswordToggleField.Toggle>
+                          </PasswordToggleField.Root>
+                        </div>
+                      </InputGroup>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex-col items-start gap-4">
+                    <Button
+                      className="btn-gradient w-full"
+                      onClick={() => setRegistrationStep("verify-email")}
+                    >
+                      Next
+                    </Button>
+                    <p className="text-sm text-muted-foreground">
+                      <Button
+                        variant="link"
+                        className="p-0 text-muted-foreground"
+                        onClick={() => setMode("login")}
+                      >
+                        Already have an account?
+                      </Button>
+                    </p>
+                  </CardFooter>
+                </Card>
+              )}
+              {registrationStep === "verify-email" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Verify Your Email</CardTitle>
+                    <CardDescription>
+                      We&apos;ve sent a verification code to your email address.
+                      Enter the code below to continue.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="verification-code">
+                        Verification Code
+                      </Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Lock className="size-4" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          id="verification-code"
+                          placeholder="Enter 6-digit code"
+                        />
+                      </InputGroup>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex-col items-start gap-4">
+                    <Button className="btn-gradient w-full">Verify</Button>
+                    <div className="flex w-full items-center justify-between text-sm">
+                      <Button
+                        variant="link"
+                        className="p-0 text-muted-foreground"
+                        onClick={() => setRegistrationStep("details")}
+                      >
+                        Back to details
+                      </Button>
+                      <Button
+                        variant="link"
+                        className="p-0 text-muted-foreground"
+                        onClick={handleResendCode}
+                        disabled={isResendDisabled}
+                      >
+                        {isResendDisabled
+                          ? `Resend code in ${countdown}s`
+                          : "Resend code"}
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              )}
+            </>
           )}
         </div>
       </div>

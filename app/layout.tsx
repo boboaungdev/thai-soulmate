@@ -1,5 +1,6 @@
 import { Geist_Mono, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import type { Metadata } from "next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import "./globals.css"
@@ -15,6 +16,14 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: "Thai Soulmate",
+  description: "Your journey to finding a soulmate starts here.",
+  icons: {
+    icon: "/logo.png",
+  },
+}
 
 export default function RootLayout({
   children,

@@ -40,12 +40,12 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useState, forwardRef, useEffect } from "react"
+import { useState, forwardRef, useEffect, Suspense } from "react"
 import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
 
-export default function AuthPage() {
+function AuthPageContents() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -124,7 +124,7 @@ export default function AuthPage() {
     if (!result.success) {
       const errors: Record<string, string> = {}
       for (const issue of result.error.issues) {
-        errors[issue.path[0]] = issue.message
+        errors[String(issue.path[0])] = issue.message
       }
       setFormErrors(errors)
       toast.error("Please fix the errors before proceeding.")
@@ -203,7 +203,7 @@ export default function AuthPage() {
       if (!result.success) {
         const errors: Record<string, string> = {}
         for (const issue of result.error.issues) {
-          errors[issue.path[0]] = issue.message
+          errors[String(issue.path[0])] = issue.message
         }
         setFormErrors(errors)
       } else {
@@ -856,3 +856,11 @@ const PasswordToggle = forwardRef<
   )
 })
 PasswordToggle.displayName = "PasswordToggle"
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthPageContents />
+    </Suspense>
+  )
+}

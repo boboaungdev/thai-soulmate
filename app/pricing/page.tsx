@@ -1,7 +1,7 @@
 "use client"
 import clsx from "clsx"
 import { useRouter, useSearchParams } from "next/navigation"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { STRIPE } from "@/constants"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -79,7 +79,7 @@ const plans: Plan[] = [
   },
 ]
 
-const PricingPage: React.FC = () => {
+function PricingPageContents() {
   const [isAutoRenew, setIsAutoRenew] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -267,4 +267,11 @@ const PricingPage: React.FC = () => {
   )
 }
 
-export default PricingPage
+export default function PricingPage() {
+  return (
+    // A simple fallback; you could replace this with a loading skeleton component.
+    <Suspense fallback={<div>Loading pricing plans...</div>}>
+      <PricingPageContents />
+    </Suspense>
+  )
+}

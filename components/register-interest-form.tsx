@@ -239,7 +239,7 @@ export function RegisterInterestForm() {
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-[100px_1fr] gap-4">
               <FormField
                 control={form.control}
                 name="gender"
@@ -253,8 +253,15 @@ export function RegisterInterestForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem
+                          value="Male"
+                          disabled={prefix === "Ms." || prefix === "Mrs."}
+                        >
+                          Male
+                        </SelectItem>
+                        <SelectItem value="Female" disabled={prefix === "Mr."}>
+                          Female
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

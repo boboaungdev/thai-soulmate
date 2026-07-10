@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { User, Mail, Lock, Eye, EyeOff} from "lucide-react"
+import { User, Mail, Lock, Eye, EyeOff, Cake, Phone } from "lucide-react"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
@@ -27,8 +27,9 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useState, forwardRef } from "react"
+import { useState, forwardRef, useEffect } from "react"
 import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
+import { DatePickerInput } from "@/components/ui/date-picker-input"
 
 export default function AuthPage() {
   const router = useRouter()
@@ -42,6 +43,16 @@ export default function AuthPage() {
     router.push(`${pathname}?${params.toString()}`)
   }
   const [prefix, setPrefix] = useState("Mr.")
+  const [gender, setGender] = useState("Male")
+  const [birthday, setBirthday] = useState<Date>()
+
+  useEffect(() => {
+    if (prefix === "Mr." && gender !== "Male") {
+      setGender("Male")
+    } else if ((prefix === "Ms." || prefix === "Mrs.") && gender !== "Female") {
+      setGender("Female")
+    }
+  }, [prefix, gender])
 
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
@@ -188,6 +199,51 @@ export default function AuthPage() {
                       <InputGroupInput id="name" placeholder="Your Name" />
                     </InputGroup>
                   </div>
+                </div>
+                <div className="grid grid-cols-[100px_1fr] gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="gender">Gender</Label>
+                    <Select onValueChange={setGender} value={gender}>
+                      <SelectTrigger
+                        id="gender"
+                        className="h-8 bg-background dark:bg-input/30"
+                      >
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          value="Male"
+                          disabled={prefix === "Ms." || prefix === "Mrs."}
+                        >
+                          Male
+                        </SelectItem>
+                        <SelectItem value="Female" disabled={prefix === "Mr."}>
+                          Female
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="birthday">Date of Birth</Label>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Cake className="size-4" />
+                      </InputGroupAddon>
+                      <DatePickerInput
+                        value={birthday}
+                        onSelect={setBirthday}
+                      />
+                    </InputGroup>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Phone className="size-4" />
+                    </InputGroupAddon>
+                    <InputGroupInput id="phone" placeholder="+1 234 567 890" />
+                  </InputGroup>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email-signup">Email</Label>

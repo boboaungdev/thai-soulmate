@@ -1,5 +1,6 @@
 "use client"
 
+import { z } from "zod"
 import Image from "next/image"
 import {
   User,
@@ -12,8 +13,9 @@ import {
   Home,
   MapPin,
   ChevronLeft,
+  KeyRound,
 } from "lucide-react"
-import { APP_INFO, CONTACT } from "@/constants"
+import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
 import {
@@ -70,6 +72,7 @@ export default function AuthPage() {
   const [birthday, setBirthday] = useState<Date>()
   const [countdown, setCountdown] = useState(0)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -106,6 +109,103 @@ export default function AuthPage() {
       setGender("Female")
     }
   }, [prefix, gender])
+
+  const validateAndSetStep = (
+    step: "details" | "verify-email" | "location" | "password",
+    schema: z.ZodObject<any, any>,
+    data: any
+  ) => {
+    const result = schema.safeParse(data)
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        errors[issue.path[0]] = issue.message
+      }
+      setFormErrors(errors)
+      toast.error("Please fix the errors before proceeding.")
+    } else {
+      setFormErrors({})
+      setRegistrationStep(step)
+    }
+  }
+
+  // Form States
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" })
+  const [detailsForm, setDetailsForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  })
+  const [verificationCode, setVerificationCode] = useState("")
+  const [locationForm, setLocationForm] = useState({
+    nationality: "",
+    currentLocation: "",
+  })
+  const [passwordForm, setPasswordForm] = useState({
+    password: "",
+    confirmPassword: "",
+  })
+
+  // Zod Schemas for validation
+  const loginSchema = z.object({
+    email: z.string().email("Invalid email address."),
+    password: z.string().min(1, "Password is required."),
+  })
+
+  const detailsSchema = z.object({
+    name: z.string().min(2, "Name must be at least 2 characters."),
+    email: z.string().email("Invalid email address."),
+    phone: z.string().min(10, "Phone number seems too short."),
+    birthday: z.date({
+      error: "Date of birth is required.",
+    }),
+  })
+
+  const verificationCodeSchema = z.object({
+    code: z.string().length(6, "Code must be 6 digits."),
+  })
+
+  const locationSchema = z.object({
+    nationality: z.string().min(2, "Nationality is required."),
+    currentLocation: z.string().min(2, "Current location is required."),
+  })
+
+  const passwordSchema = z
+    .object({
+      password: z.string().min(8, "Password must be at least 8 characters."),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords don't match.",
+      path: ["confirmPassword"],
+    })
+
+  const isLoginFormValid = loginSchema.safeParse(loginForm).success
+
+  const isDetailsFormValid = detailsSchema.safeParse({
+    ...detailsForm,
+    birthday,
+  }).success
+  const isVerificationCodeFormValid = verificationCodeSchema.safeParse({
+    code: verificationCode,
+  }).success
+  const isLocationFormValid = locationSchema.safeParse(locationForm).success
+  const isPasswordFormValid = passwordSchema.safeParse(passwordForm).success
+
+  useEffect(() => {
+    if (registrationStep === "password") {
+      const result = passwordSchema.safeParse(passwordForm)
+      if (!result.success) {
+        const errors: Record<string, string> = {}
+        for (const issue of result.error.issues) {
+          errors[issue.path[0]] = issue.message
+        }
+        setFormErrors(errors)
+      } else {
+        setFormErrors({})
+      }
+    }
+  }, [passwordForm, registrationStep])
 
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
@@ -168,8 +268,17 @@ export default function AuthPage() {
                       id="email"
                       type="email"
                       placeholder="you@example.com"
+                      value={loginForm.email}
+                      onChange={(e) =>
+                        setLoginForm({ ...loginForm, email: e.target.value })
+                      }
                     />
                   </InputGroup>
+                  {formErrors.email && (
+                    <p className="text-sm text-destructive">
+                      {formErrors.email}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
@@ -179,23 +288,42 @@ export default function AuthPage() {
                     </InputGroupAddon>
                     <div className="flex-1">
                       <PasswordToggleField.Root>
-                        <PasswordToggleField.Input
-                          asChild
-                          id="password"
-                          placeholder="password"
-                        >
-                          <InputGroupInput />
+                        <PasswordToggleField.Input asChild>
+                          <InputGroupInput
+                            id="password"
+                            placeholder="password"
+                            value={loginForm.password}
+                            onChange={(e) =>
+                              setLoginForm({
+                                ...loginForm,
+                                password: e.target.value,
+                              })
+                            }
+                          />
                         </PasswordToggleField.Input>
                         <PasswordToggleField.Toggle asChild>
-                          <PasswordToggle />
+                          <PasswordToggle value={loginForm.password} />
                         </PasswordToggleField.Toggle>
                       </PasswordToggleField.Root>
                     </div>
                   </InputGroup>
+                  {formErrors.password && (
+                    <p className="text-sm text-destructive">
+                      {formErrors.password}
+                    </p>
+                  )}
                 </div>
               </CardContent>
               <CardFooter className="flex-col items-start gap-4">
-                <Button className="btn-gradient w-full">Login</Button>
+                <Button
+                  className="btn-gradient w-full"
+                  disabled={!isLoginFormValid}
+                  onClick={() => {
+                    // Handle Login
+                  }}
+                >
+                  Login
+                </Button>
                 <div className="flex w-full items-center justify-between text-sm">
                   <p className="text-muted-foreground">
                     <Button
@@ -251,9 +379,24 @@ export default function AuthPage() {
                           <InputGroupAddon>
                             <User className="size-4" />
                           </InputGroupAddon>
-                          <InputGroupInput id="name" placeholder="Your Name" />
+                          <InputGroupInput
+                            id="name"
+                            placeholder="Your Name"
+                            value={detailsForm.name}
+                            onChange={(e) =>
+                              setDetailsForm({
+                                ...detailsForm,
+                                name: e.target.value,
+                              })
+                            }
+                          />
                         </InputGroup>
                       </div>
+                      {formErrors.name && (
+                        <p className="col-start-2 text-sm text-destructive">
+                          {formErrors.name}
+                        </p>
+                      )}
                     </div>
                     <div className="grid grid-cols-[100px_1fr] gap-4">
                       <div className="space-y-2">
@@ -292,6 +435,11 @@ export default function AuthPage() {
                             onSelect={setBirthday}
                           />
                         </InputGroup>
+                        {formErrors.birthday && (
+                          <p className="text-sm text-destructive">
+                            {formErrors.birthday}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -304,8 +452,20 @@ export default function AuthPage() {
                           id="email-signup"
                           type="email"
                           placeholder="you@example.com"
+                          value={detailsForm.email}
+                          onChange={(e) =>
+                            setDetailsForm({
+                              ...detailsForm,
+                              email: e.target.value,
+                            })
+                          }
                         />
                       </InputGroup>
+                      {formErrors.email && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.email}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone</Label>
@@ -316,14 +476,32 @@ export default function AuthPage() {
                         <InputGroupInput
                           id="phone"
                           placeholder="+1 234 567 890"
+                          value={detailsForm.phone}
+                          onChange={(e) =>
+                            setDetailsForm({
+                              ...detailsForm,
+                              phone: e.target.value,
+                            })
+                          }
                         />
                       </InputGroup>
+                      {formErrors.phone && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.phone}
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      onClick={() => setRegistrationStep("verify-email")}
+                      disabled={!isDetailsFormValid}
+                      onClick={() =>
+                        validateAndSetStep("verify-email", detailsSchema, {
+                          ...detailsForm,
+                          birthday,
+                        })
+                      }
                     >
                       Next
                     </Button>
@@ -344,30 +522,61 @@ export default function AuthPage() {
                   <CardHeader>
                     <CardTitle>Verify Your Email</CardTitle>
                     <CardDescription>
-                      We&apos;ve sent a verification code to your email address.
-                      Enter the code below to continue.
+                      We&apos;ve sent a verification code to your email. if not arrive, check also in spam folder.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email-display">Email</Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Mail className="size-4" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          id="email-display"
+                          type="email"
+                          value={detailsForm.email}
+                          readOnly
+                          disabled
+                        />
+                      </InputGroup>
+                    </div>
                     <div className="space-y-2">
                       <Label htmlFor="verification-code">
                         Verification Code
                       </Label>
                       <InputGroup>
                         <InputGroupAddon>
-                          <Lock className="size-4" />
+                          <KeyRound className="size-4" />
                         </InputGroupAddon>
                         <InputGroupInput
                           id="verification-code"
                           placeholder="Enter 6-digit code"
+                          value={verificationCode}
+                          onChange={(e) => {
+                            const value = e.target.value
+                            if (/^\d{0,6}$/.test(value)) {
+                              setVerificationCode(value)
+                            }
+                          }}
                         />
                       </InputGroup>
+                      {formErrors.code && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.code}
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      onClick={() => setRegistrationStep("location")}
+                      disabled={!isVerificationCodeFormValid}
+                      onClick={() =>
+                        validateAndSetStep("location", verificationCodeSchema, {
+                          code: verificationCode,
+                        })
+                      }
                     >
                       Verify
                     </Button>
@@ -413,8 +622,20 @@ export default function AuthPage() {
                         <InputGroupInput
                           id="nationality"
                           placeholder="e.g. Thai"
+                          value={locationForm.nationality}
+                          onChange={(e) =>
+                            setLocationForm({
+                              ...locationForm,
+                              nationality: e.target.value,
+                            })
+                          }
                         />
                       </InputGroup>
+                      {formErrors.nationality && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.nationality}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="current-location">Current Location</Label>
@@ -425,14 +646,33 @@ export default function AuthPage() {
                         <InputGroupInput
                           id="current-location"
                           placeholder="e.g. Bangkok, Thailand"
+                          value={locationForm.currentLocation}
+                          onChange={(e) =>
+                            setLocationForm({
+                              ...locationForm,
+                              currentLocation: e.target.value,
+                            })
+                          }
                         />
                       </InputGroup>
+                      {formErrors.currentLocation && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.currentLocation}
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      onClick={() => setRegistrationStep("password")}
+                      disabled={!isLocationFormValid}
+                      onClick={() =>
+                        validateAndSetStep(
+                          "password",
+                          locationSchema,
+                          locationForm
+                        )
+                      }
                     >
                       Next
                     </Button>
@@ -459,6 +699,22 @@ export default function AuthPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
+                      <Label htmlFor="email-display-password">Email</Label>
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Mail className="size-4" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          id="email-display-password"
+                          type="email"
+                          value={detailsForm.email}
+                          readOnly
+                          disabled
+                        />
+                      </InputGroup>
+                    </div>
+
+                    <div className="space-y-2">
                       <Label htmlFor="password-signup">Password</Label>
                       <InputGroup>
                         <InputGroupAddon>
@@ -466,19 +722,30 @@ export default function AuthPage() {
                         </InputGroupAddon>
                         <div className="flex-1">
                           <PasswordToggleField.Root>
-                            <PasswordToggleField.Input
-                              asChild
-                              id="password-signup"
-                              placeholder="password"
-                            >
-                              <InputGroupInput />
+                            <PasswordToggleField.Input asChild>
+                              <InputGroupInput
+                                id="password-signup"
+                                placeholder="password"
+                                value={passwordForm.password}
+                                onChange={(e) =>
+                                  setPasswordForm({
+                                    ...passwordForm,
+                                    password: e.target.value,
+                                  })
+                                }
+                              />
                             </PasswordToggleField.Input>
                             <PasswordToggleField.Toggle asChild>
-                              <PasswordToggle />
+                              <PasswordToggle value={passwordForm.password} />
                             </PasswordToggleField.Toggle>
                           </PasswordToggleField.Root>
                         </div>
                       </InputGroup>
+                      {formErrors.password && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.password}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="confirm-password-signup">
@@ -490,25 +757,41 @@ export default function AuthPage() {
                         </InputGroupAddon>
                         <div className="flex-1">
                           <PasswordToggleField.Root>
-                            <PasswordToggleField.Input
-                              asChild
-                              id="confirm-password-signup"
-                              placeholder="confirm password"
-                            >
-                              <InputGroupInput />
+                            <PasswordToggleField.Input asChild>
+                              <InputGroupInput
+                                id="confirm-password-signup"
+                                placeholder="confirm password"
+                                value={passwordForm.confirmPassword}
+                                onChange={(e) =>
+                                  setPasswordForm({
+                                    ...passwordForm,
+                                    confirmPassword: e.target.value,
+                                  })
+                                }
+                              />
                             </PasswordToggleField.Input>
                             <PasswordToggleField.Toggle asChild>
-                              <PasswordToggle />
+                              <PasswordToggle
+                                value={passwordForm.confirmPassword}
+                              />
                             </PasswordToggleField.Toggle>
                           </PasswordToggleField.Root>
                         </div>
                       </InputGroup>
+                      {formErrors.confirmPassword && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.confirmPassword}
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      onClick={() => router.push("/pricing")}
+                      onClick={() => {
+                        if (isPasswordFormValid) router.push("/pricing")
+                      }}
+                      disabled={!isPasswordFormValid}
                     >
                       Finish
                     </Button>
@@ -533,19 +816,27 @@ export default function AuthPage() {
   )
 }
 
-const PasswordToggle = forwardRef<HTMLButtonElement>((props, ref) => (
-  <Button
-    ref={ref}
-    variant="ghost"
-    size="icon-sm"
-    className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:bg-transparent"
-    {...props}
-  >
-    <PasswordToggleField.Icon
-      visible={<EyeOff className="size-4" />}
-      hidden={<Eye className="size-4" />}
-    />
-    <span className="sr-only">Toggle password visibility</span>
-  </Button>
-))
+const PasswordToggle = forwardRef<
+  HTMLButtonElement,
+  { value: string } & React.ComponentProps<typeof Button>
+>(({ value, ...props }, ref) => {
+  if (!value) {
+    return null
+  }
+  return (
+    <Button
+      ref={ref}
+      variant="ghost"
+      size="icon-sm"
+      className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:bg-transparent"
+      {...props}
+    >
+      <PasswordToggleField.Icon
+        visible={<Eye className="size-4" />}
+        hidden={<EyeOff className="size-4" />}
+      />
+      <span className="sr-only">Toggle password visibility</span>
+    </Button>
+  )
+})
 PasswordToggle.displayName = "PasswordToggle"

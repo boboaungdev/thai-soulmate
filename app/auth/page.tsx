@@ -276,7 +276,12 @@ function AuthPageContents() {
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
       <div className="grid w-full max-w-4xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
-        <div className="hidden lg:block">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="hidden lg:block"
+        >
           <div className="flex flex-col items-start text-left">
             <Image
               src="/logo.png"
@@ -295,9 +300,14 @@ function AuthPageContents() {
               Your journey to finding a soulmate starts here.
             </p>
           </div>
-        </div>
+        </motion.div>
         <div className="w-full max-w-md justify-self-center lg:justify-self-end">
-          <div className="mb-4 flex flex-col items-center text-center lg:hidden">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="mb-4 flex flex-col items-center text-center lg:hidden"
+          >
             <Image
               src="/logo.png"
               alt={`${APP_INFO.name} logo`}
@@ -314,7 +324,7 @@ function AuthPageContents() {
             <p className="mt-2 text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
-          </div>
+          </motion.div>
           <AnimatePresence mode="wait">
             {mode === "login" ? (
               <motion.div

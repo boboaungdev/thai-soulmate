@@ -42,6 +42,7 @@ import { Label } from "@/components/ui/label"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, forwardRef, useEffect, Suspense } from "react"
 import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
+import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
 
@@ -265,6 +266,13 @@ function AuthPageContents() {
       }
     }
   }
+
+  const animationVariants = {
+    initial: { opacity: 0, x: -20 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: 20 },
+  }
+
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
       <div className="grid w-full max-w-4xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
@@ -307,213 +315,36 @@ function AuthPageContents() {
               Your journey to finding a soulmate starts here.
             </p>
           </div>
-          {mode === "login" ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Login</CardTitle>
-                <CardDescription>
-                  Enter your credentials to access your account.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <Mail className="size-4" />
-                    </InputGroupAddon>
-                    <InputGroupInput
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={loginForm.email}
-                      onChange={(e) =>
-                        setLoginForm({ ...loginForm, email: e.target.value })
-                      }
-                    />
-                  </InputGroup>
-                  {formErrors.email && (
-                    <p className="text-sm text-destructive">
-                      {formErrors.email}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <Lock className="size-4" />
-                    </InputGroupAddon>
-                    <div className="flex-1">
-                      <PasswordToggleField.Root>
-                        <PasswordToggleField.Input asChild>
-                          <InputGroupInput
-                            id="password"
-                            placeholder="password"
-                            value={loginForm.password}
-                            onChange={(e) =>
-                              setLoginForm({
-                                ...loginForm,
-                                password: e.target.value,
-                              })
-                            }
-                          />
-                        </PasswordToggleField.Input>
-                        <PasswordToggleField.Toggle asChild>
-                          <PasswordToggle value={loginForm.password} />
-                        </PasswordToggleField.Toggle>
-                      </PasswordToggleField.Root>
-                    </div>
-                  </InputGroup>
-                  {formErrors.password && (
-                    <p className="text-sm text-destructive">
-                      {formErrors.password}
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter className="flex-col items-start gap-4">
-                <Button
-                  className="btn-gradient w-full"
-                  disabled={!isLoginFormValid}
-                  onClick={() => {
-                    // Handle Login
-                  }}
-                >
-                  Login
-                </Button>
-                <div className="flex w-full items-center justify-between text-sm">
-                  <p className="text-muted-foreground">
-                    <Button
-                      variant="link"
-                      className="p-0 text-muted-foreground"
-                      onClick={() => setMode("register")}
-                    >
-                      Don&apos;t have an account?
-                    </Button>
-                  </p>
-                  <Button
-                    variant="link"
-                    className="p-0 text-muted-foreground"
-                    onClick={() => setMode("forgot-password")}
-                  >
-                    Forgot password?
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          ) : (
-            <>
-              {registrationStep === "details" && (
+          <AnimatePresence mode="wait">
+            {mode === "login" ? (
+              <motion.div
+                key="login"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <Card>
                   <CardHeader>
-                    <CardTitle>Register</CardTitle>
+                    <CardTitle>Login</CardTitle>
                     <CardDescription>
-                      Create an account to start your journey with us.
+                      Enter your credentials to access your account.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-[100px_1fr] gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="prefix">Prefix</Label>
-                        <Select onValueChange={setPrefix} value={prefix}>
-                          <SelectTrigger
-                            id="prefix"
-                            className="h-8 bg-background dark:bg-input/30"
-                          >
-                            <SelectValue placeholder="Mr." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Mr.">Mr.</SelectItem>
-                            <SelectItem value="Ms.">Ms.</SelectItem>
-                            <SelectItem value="Mrs.">Mrs.</SelectItem>
-                            <SelectItem value="Dr.">Dr.</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <InputGroup>
-                          <InputGroupAddon>
-                            <User className="size-4" />
-                          </InputGroupAddon>
-                          <InputGroupInput
-                            id="name"
-                            placeholder="Your Name"
-                            value={detailsForm.name}
-                            onChange={(e) =>
-                              setDetailsForm({
-                                ...detailsForm,
-                                name: e.target.value,
-                              })
-                            }
-                          />
-                        </InputGroup>
-                      </div>
-                      {formErrors.name && (
-                        <p className="col-start-2 text-sm text-destructive">
-                          {formErrors.name}
-                        </p>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-[100px_1fr] gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="gender">Gender</Label>
-                        <Select onValueChange={setGender} value={gender}>
-                          <SelectTrigger
-                            id="gender"
-                            className="h-8 bg-background dark:bg-input/30"
-                          >
-                            <SelectValue placeholder="Select gender" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="Male"
-                              disabled={prefix === "Ms." || prefix === "Mrs."}
-                            >
-                              Male
-                            </SelectItem>
-                            <SelectItem
-                              value="Female"
-                              disabled={prefix === "Mr."}
-                            >
-                              Female
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="birthday">Date of Birth</Label>
-                        <InputGroup>
-                          <InputGroupAddon>
-                            <Cake className="size-4" />
-                          </InputGroupAddon>
-                          <DatePickerInput
-                            value={birthday}
-                            onSelect={setBirthday}
-                          />
-                        </InputGroup>
-                        {formErrors.birthday && (
-                          <p className="text-sm text-destructive">
-                            {formErrors.birthday}
-                          </p>
-                        )}
-                      </div>
-                    </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email-signup">Email</Label>
+                      <Label htmlFor="email">Email</Label>
                       <InputGroup>
                         <InputGroupAddon>
                           <Mail className="size-4" />
                         </InputGroupAddon>
                         <InputGroupInput
-                          id="email-signup"
+                          id="email"
                           type="email"
                           placeholder="you@example.com"
-                          value={detailsForm.email}
+                          value={loginForm.email}
                           onChange={(e) =>
-                            setDetailsForm({
-                              ...detailsForm,
+                            setLoginForm({
+                              ...loginForm,
                               email: e.target.value,
                             })
                           }
@@ -526,313 +357,7 @@ function AuthPageContents() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Phone className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="phone"
-                          placeholder="+1 234 567 890"
-                          value={detailsForm.phone}
-                          onChange={(e) =>
-                            setDetailsForm({
-                              ...detailsForm,
-                              phone: e.target.value,
-                            })
-                          }
-                          onKeyDown={(e) =>
-                            e.key === "Enter" &&
-                            isDetailsFormValid &&
-                            validateAndSetStep("location", detailsSchema, {
-                              ...detailsForm,
-                              birthday,
-                            })
-                          }
-                        />
-                      </InputGroup>
-                      {formErrors.phone && (
-                        <p className="text-sm text-destructive">
-                          {formErrors.phone}
-                        </p>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex-col items-start gap-4">
-                    <Button
-                      className="btn-gradient w-full"
-                      disabled={!isDetailsFormValid}
-                      onClick={() =>
-                        validateAndSetStep("location", detailsSchema, {
-                          ...detailsForm,
-                          birthday,
-                        })
-                      }
-                    >
-                      Next
-                    </Button>
-                    <p className="text-sm text-muted-foreground">
-                      <Button
-                        variant="link"
-                        className="p-0 text-muted-foreground"
-                        onClick={() => setMode("login")}
-                      >
-                        Already have an account?
-                      </Button>
-                    </p>
-                  </CardFooter>
-                </Card>
-              )}
-              {registrationStep === "verify-email" && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Verify Your Email</CardTitle>
-                    <CardDescription>
-                      We&apos;ve sent a verification code to your email. if not
-                      arrive, check also in spam folder.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email-display">Email</Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Mail className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="email-display"
-                          type="email"
-                          value={detailsForm.email}
-                          readOnly
-                          disabled
-                        />
-                      </InputGroup>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="verification-code">
-                        Verification Code
-                      </Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <KeyRound className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="verification-code"
-                          placeholder="Enter 6-digit code"
-                          value={verificationCode}
-                          onChange={(e) => {
-                            const value = e.target.value
-                            if (/^\d{0,6}$/.test(value)) {
-                              setVerificationCode(value)
-                            }
-                          }}
-                          onKeyDown={(e) => {
-                            if (
-                              e.key === "Enter" &&
-                              isVerificationCodeFormValid &&
-                              detailsForm.email
-                            ) {
-                              const result = verificationCodeSchema.safeParse({
-                                code: verificationCode,
-                              })
-                              if (!result.success) return
-                              const userData = {
-                                ...detailsForm,
-                                prefix,
-                                gender,
-                                birthday: birthday?.toISOString(),
-                                ...locationForm,
-                              }
-                              const encodedUserData = btoa(
-                                JSON.stringify(userData)
-                              )
-                              router.push(
-                                `/pricing?userData=${encodedUserData}`
-                              )
-                            }
-                          }}
-                        />
-                      </InputGroup>
-                      {formErrors.code && (
-                        <p className="text-sm text-destructive">
-                          {formErrors.code}
-                        </p>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex-col items-start gap-4">
-                    <Button
-                      className="btn-gradient w-full"
-                      disabled={
-                        !isVerificationCodeFormValid || !detailsForm.email
-                      }
-                      onClick={() => {
-                        const result = verificationCodeSchema.safeParse({
-                          code: verificationCode,
-                        })
-                        if (!result.success) {
-                          toast.error("Please enter a valid 6-digit code.")
-                          return
-                        }
-
-                        const userData = {
-                          ...detailsForm,
-                          prefix,
-                          gender,
-                          birthday: birthday?.toISOString(),
-                          ...locationForm,
-                        }
-                        const encodedUserData = btoa(JSON.stringify(userData))
-                        router.push(`/pricing?userData=${encodedUserData}`)
-                      }}
-                    >
-                      Verify
-                    </Button>
-                    <div className="flex w-full items-center justify-between text-sm">
-                      <Button
-                        variant="link"
-                        className="flex items-center p-0 text-muted-foreground" //
-                        onClick={() => setRegistrationStep("location")}
-                      >
-                        <ChevronLeft className="mr-1 size-4" />
-                        Back to location
-                      </Button>
-                      <Button
-                        variant="link"
-                        className="p-0 text-muted-foreground"
-                        onClick={handleResendCode}
-                        disabled={isResendDisabled || !detailsForm.email}
-                      >
-                        {isResendDisabled //
-                          ? `Resend code in ${countdown}s`
-                          : "Resend code"}
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              )}
-              {registrationStep === "location" && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Almost there</CardTitle>
-                    <CardDescription>
-                      Please provide your location details to complete your
-                      profile.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="nationality">Nationality</Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Home className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="nationality"
-                          placeholder="e.g. Thai"
-                          value={locationForm.nationality}
-                          onChange={(e) =>
-                            setLocationForm({
-                              ...locationForm,
-                              nationality: e.target.value,
-                            })
-                          }
-                        />
-                      </InputGroup>
-                      {formErrors.nationality && (
-                        <p className="text-sm text-destructive">
-                          {formErrors.nationality}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="current-location">Current Location</Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <MapPin className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="current-location"
-                          placeholder="e.g. Bangkok, Thailand"
-                          value={locationForm.currentLocation}
-                          onChange={(e) =>
-                            setLocationForm({
-                              ...locationForm,
-                              currentLocation: e.target.value,
-                            })
-                          }
-                          onKeyDown={(e) =>
-                            e.key === "Enter" &&
-                            isLocationFormValid &&
-                            validateAndSetStep(
-                              "verify-email",
-                              locationSchema,
-                              locationForm
-                            )
-                          }
-                        />
-                      </InputGroup>
-                      {formErrors.currentLocation && (
-                        <p className="text-sm text-destructive">
-                          {formErrors.currentLocation}
-                        </p>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex-col items-start gap-4">
-                    <Button
-                      className="btn-gradient w-full"
-                      disabled={!isLocationFormValid}
-                      onClick={() => {
-                        validateAndSetStep(
-                          "verify-email",
-                          locationSchema,
-                          locationForm
-                        )
-                      }}
-                    >
-                      Next
-                    </Button>
-                    <div className="flex w-full items-center justify-between text-sm">
-                      <Button
-                        variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
-                        onClick={() => setRegistrationStep("details")}
-                      >
-                        <ChevronLeft className="mr-1 size-4" />
-                        Back to details
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              )}
-              {registrationStep === "password" && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Set Your Password</CardTitle>
-                    <CardDescription>
-                      Choose a strong password to protect your account.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email-display-password">Email</Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Mail className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="email-display-password"
-                          type="email"
-                          value={detailsForm.email}
-                          readOnly
-                          disabled
-                        />
-                      </InputGroup>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="password-signup">Password</Label>
+                      <Label htmlFor="password">Password</Label>
                       <InputGroup>
                         <InputGroupAddon>
                           <Lock className="size-4" />
@@ -841,19 +366,19 @@ function AuthPageContents() {
                           <PasswordToggleField.Root>
                             <PasswordToggleField.Input asChild>
                               <InputGroupInput
-                                id="password-signup"
+                                id="password"
                                 placeholder="password"
-                                value={passwordForm.password}
+                                value={loginForm.password}
                                 onChange={(e) =>
-                                  setPasswordForm({
-                                    ...passwordForm,
+                                  setLoginForm({
+                                    ...loginForm,
                                     password: e.target.value,
                                   })
                                 }
                               />
                             </PasswordToggleField.Input>
                             <PasswordToggleField.Toggle asChild>
-                              <PasswordToggle value={passwordForm.password} />
+                              <PasswordToggle value={loginForm.password} />
                             </PasswordToggleField.Toggle>
                           </PasswordToggleField.Root>
                         </div>
@@ -864,61 +389,600 @@ function AuthPageContents() {
                         </p>
                       )}
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirm-password-signup">
-                        Confirm Password
-                      </Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Lock className="size-4" />
-                        </InputGroupAddon>
-                        <div className="flex-1">
-                          <PasswordToggleField.Root>
-                            <PasswordToggleField.Input asChild>
-                              <InputGroupInput
-                                id="confirm-password-signup"
-                                placeholder="confirm password"
-                                value={passwordForm.confirmPassword}
-                                onChange={(e) =>
-                                  setPasswordForm({
-                                    ...passwordForm,
-                                    confirmPassword: e.target.value,
-                                  })
-                                }
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && isPasswordFormValid)
-                                    router.replace("/dashboard")
-                                }}
-                              />
-                            </PasswordToggleField.Input>
-                            <PasswordToggleField.Toggle asChild>
-                              <PasswordToggle
-                                value={passwordForm.confirmPassword}
-                              />
-                            </PasswordToggleField.Toggle>
-                          </PasswordToggleField.Root>
-                        </div>
-                      </InputGroup>
-                      {formErrors.confirmPassword && (
-                        <p className="text-sm text-destructive">
-                          {formErrors.confirmPassword}
-                        </p>
-                      )}
-                    </div>
                   </CardContent>
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      onClick={handleFinalRegistration}
-                      disabled={!isPasswordFormValid || !detailsForm.email}
+                      disabled={!isLoginFormValid}
+                      onClick={() => {
+                        // Handle Login
+                      }}
                     >
-                      Register account
+                      Login
                     </Button>
+                    <div className="flex w-full items-center justify-between text-sm">
+                      <p className="text-muted-foreground">
+                        <Button
+                          variant="link"
+                          className="p-0 text-muted-foreground"
+                          onClick={() => setMode("register")}
+                        >
+                          Don&apos;t have an account?
+                        </Button>
+                      </p>
+                      <Button
+                        variant="link"
+                        className="p-0 text-muted-foreground"
+                        onClick={() => setMode("forgot-password")}
+                      >
+                        Forgot password?
+                      </Button>
+                    </div>
                   </CardFooter>
                 </Card>
-              )}
-            </>
-          )}
+              </motion.div>
+            ) : (
+              <AnimatePresence mode="wait">
+                {registrationStep === "details" && (
+                  <motion.div
+                    key="register-details"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Register</CardTitle>
+                        <CardDescription>
+                          Create an account to start your journey with us.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-[100px_1fr] gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="prefix">Prefix</Label>
+                            <Select onValueChange={setPrefix} value={prefix}>
+                              <SelectTrigger
+                                id="prefix"
+                                className="h-8 bg-background dark:bg-input/30"
+                              >
+                                <SelectValue placeholder="Mr." />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Mr.">Mr.</SelectItem>
+                                <SelectItem value="Ms.">Ms.</SelectItem>
+                                <SelectItem value="Mrs.">Mrs.</SelectItem>
+                                <SelectItem value="Dr.">Dr.</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="name">Name</Label>
+                            <InputGroup>
+                              <InputGroupAddon>
+                                <User className="size-4" />
+                              </InputGroupAddon>
+                              <InputGroupInput
+                                id="name"
+                                placeholder="Your Name"
+                                value={detailsForm.name}
+                                onChange={(e) =>
+                                  setDetailsForm({
+                                    ...detailsForm,
+                                    name: e.target.value,
+                                  })
+                                }
+                              />
+                            </InputGroup>
+                          </div>
+                          {formErrors.name && (
+                            <p className="col-start-2 text-sm text-destructive">
+                              {formErrors.name}
+                            </p>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-[100px_1fr] gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="gender">Gender</Label>
+                            <Select onValueChange={setGender} value={gender}>
+                              <SelectTrigger
+                                id="gender"
+                                className="h-8 bg-background dark:bg-input/30"
+                              >
+                                <SelectValue placeholder="Select gender" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem
+                                  value="Male"
+                                  disabled={
+                                    prefix === "Ms." || prefix === "Mrs."
+                                  }
+                                >
+                                  Male
+                                </SelectItem>
+                                <SelectItem
+                                  value="Female"
+                                  disabled={prefix === "Mr."}
+                                >
+                                  Female
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="birthday">Date of Birth</Label>
+                            <InputGroup>
+                              <InputGroupAddon>
+                                <Cake className="size-4" />
+                              </InputGroupAddon>
+                              <DatePickerInput
+                                value={birthday}
+                                onSelect={setBirthday}
+                              />
+                            </InputGroup>
+                            {formErrors.birthday && (
+                              <p className="text-sm text-destructive">
+                                {formErrors.birthday}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email-signup">Email</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Mail className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="email-signup"
+                              type="email"
+                              placeholder="you@example.com"
+                              value={detailsForm.email}
+                              onChange={(e) =>
+                                setDetailsForm({
+                                  ...detailsForm,
+                                  email: e.target.value,
+                                })
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.email && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.email}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Phone</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Phone className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="phone"
+                              placeholder="+1 234 567 890"
+                              value={detailsForm.phone}
+                              onChange={(e) =>
+                                setDetailsForm({
+                                  ...detailsForm,
+                                  phone: e.target.value,
+                                })
+                              }
+                              onKeyDown={(e) =>
+                                e.key === "Enter" &&
+                                isDetailsFormValid &&
+                                validateAndSetStep("location", detailsSchema, {
+                                  ...detailsForm,
+                                  birthday,
+                                })
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.phone && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.phone}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          disabled={!isDetailsFormValid}
+                          onClick={() =>
+                            validateAndSetStep("location", detailsSchema, {
+                              ...detailsForm,
+                              birthday,
+                            })
+                          }
+                        >
+                          Next
+                        </Button>
+                        <p className="text-sm text-muted-foreground">
+                          <Button
+                            variant="link"
+                            className="p-0 text-muted-foreground"
+                            onClick={() => setMode("login")}
+                          >
+                            Already have an account?
+                          </Button>
+                        </p>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "verify-email" && (
+                  <motion.div
+                    key="register-verify-email"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Verify Your Email</CardTitle>
+                        <CardDescription>
+                          We&apos;ve sent a verification code to your email. if
+                          not arrive, check also in spam folder.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="email-display">Email</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Mail className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="email-display"
+                              type="email"
+                              value={detailsForm.email}
+                              readOnly
+                              disabled
+                            />
+                          </InputGroup>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="verification-code">
+                            Verification Code
+                          </Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <KeyRound className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="verification-code"
+                              placeholder="Enter 6-digit code"
+                              value={verificationCode}
+                              onChange={(e) => {
+                                const value = e.target.value
+                                if (/^\d{0,6}$/.test(value)) {
+                                  setVerificationCode(value)
+                                }
+                              }}
+                              onKeyDown={(e) => {
+                                if (
+                                  e.key === "Enter" &&
+                                  isVerificationCodeFormValid &&
+                                  detailsForm.email
+                                ) {
+                                  const result =
+                                    verificationCodeSchema.safeParse({
+                                      code: verificationCode,
+                                    })
+                                  if (!result.success) return
+                                  const userData = {
+                                    ...detailsForm,
+                                    prefix,
+                                    gender,
+                                    birthday: birthday?.toISOString(),
+                                    ...locationForm,
+                                  }
+                                  const encodedUserData = btoa(
+                                    JSON.stringify(userData)
+                                  )
+                                  router.push(
+                                    `/pricing?userData=${encodedUserData}`
+                                  )
+                                }
+                              }}
+                            />
+                          </InputGroup>
+                          {formErrors.code && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.code}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          disabled={
+                            !isVerificationCodeFormValid || !detailsForm.email
+                          }
+                          onClick={() => {
+                            const result = verificationCodeSchema.safeParse({
+                              code: verificationCode,
+                            })
+                            if (!result.success) {
+                              toast.error("Please enter a valid 6-digit code.")
+                              return
+                            }
+
+                            const userData = {
+                              ...detailsForm,
+                              prefix,
+                              gender,
+                              birthday: birthday?.toISOString(),
+                              ...locationForm,
+                            }
+                            const encodedUserData = btoa(
+                              JSON.stringify(userData)
+                            )
+                            router.push(`/pricing?userData=${encodedUserData}`)
+                          }}
+                        >
+                          Verify
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground" //
+                            onClick={() => setRegistrationStep("location")}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back to location
+                          </Button>
+                          <Button
+                            variant="link"
+                            className="p-0 text-muted-foreground"
+                            onClick={handleResendCode}
+                            disabled={isResendDisabled || !detailsForm.email}
+                          >
+                            {isResendDisabled //
+                              ? `Resend code in ${countdown}s`
+                              : "Resend code"}
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "location" && (
+                  <motion.div
+                    key="register-location"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Almost there</CardTitle>
+                        <CardDescription>
+                          Please provide your location details to complete your
+                          profile.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="nationality">Nationality</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Home className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="nationality"
+                              placeholder="e.g. Thai"
+                              value={locationForm.nationality}
+                              onChange={(e) =>
+                                setLocationForm({
+                                  ...locationForm,
+                                  nationality: e.target.value,
+                                })
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.nationality && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.nationality}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="current-location">
+                            Current Location
+                          </Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <MapPin className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="current-location"
+                              placeholder="e.g. Bangkok, Thailand"
+                              value={locationForm.currentLocation}
+                              onChange={(e) =>
+                                setLocationForm({
+                                  ...locationForm,
+                                  currentLocation: e.target.value,
+                                })
+                              }
+                              onKeyDown={(e) =>
+                                e.key === "Enter" &&
+                                isLocationFormValid &&
+                                validateAndSetStep(
+                                  "verify-email",
+                                  locationSchema,
+                                  locationForm
+                                )
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.currentLocation && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.currentLocation}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          disabled={!isLocationFormValid}
+                          onClick={() => {
+                            validateAndSetStep(
+                              "verify-email",
+                              locationSchema,
+                              locationForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => setRegistrationStep("details")}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back to details
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "password" && (
+                  <motion.div
+                    key="register-password"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Set Your Password</CardTitle>
+                        <CardDescription>
+                          Choose a strong password to protect your account.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="email-display-password">Email</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Mail className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="email-display-password"
+                              type="email"
+                              value={detailsForm.email}
+                              readOnly
+                              disabled
+                            />
+                          </InputGroup>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="password-signup">Password</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Lock className="size-4" />
+                            </InputGroupAddon>
+                            <div className="flex-1">
+                              <PasswordToggleField.Root>
+                                <PasswordToggleField.Input asChild>
+                                  <InputGroupInput
+                                    id="password-signup"
+                                    placeholder="password"
+                                    value={passwordForm.password}
+                                    onChange={(e) =>
+                                      setPasswordForm({
+                                        ...passwordForm,
+                                        password: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </PasswordToggleField.Input>
+                                <PasswordToggleField.Toggle asChild>
+                                  <PasswordToggle
+                                    value={passwordForm.password}
+                                  />
+                                </PasswordToggleField.Toggle>
+                              </PasswordToggleField.Root>
+                            </div>
+                          </InputGroup>
+                          {formErrors.password && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.password}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="confirm-password-signup">
+                            Confirm Password
+                          </Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Lock className="size-4" />
+                            </InputGroupAddon>
+                            <div className="flex-1">
+                              <PasswordToggleField.Root>
+                                <PasswordToggleField.Input asChild>
+                                  <InputGroupInput
+                                    id="confirm-password-signup"
+                                    placeholder="confirm password"
+                                    value={passwordForm.confirmPassword}
+                                    onChange={(e) =>
+                                      setPasswordForm({
+                                        ...passwordForm,
+                                        confirmPassword: e.target.value,
+                                      })
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (
+                                        e.key === "Enter" &&
+                                        isPasswordFormValid
+                                      )
+                                        router.replace("/dashboard")
+                                    }}
+                                  />
+                                </PasswordToggleField.Input>
+                                <PasswordToggleField.Toggle asChild>
+                                  <PasswordToggle
+                                    value={passwordForm.confirmPassword}
+                                  />
+                                </PasswordToggleField.Toggle>
+                              </PasswordToggleField.Root>
+                            </div>
+                          </InputGroup>
+                          {formErrors.confirmPassword && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.confirmPassword}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={handleFinalRegistration}
+                          disabled={!isPasswordFormValid || !detailsForm.email}
+                        >
+                          Register account
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </main>

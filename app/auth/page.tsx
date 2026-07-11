@@ -155,7 +155,10 @@ function AuthPageContents() {
   const detailsSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters."),
     email: z.string().email("Invalid email address."),
-    phone: z.string().min(10, "Phone number seems too short."),
+    phone: z
+      .string()
+      .startsWith("+", "Phone number must start with a '+'.")
+      .min(10, "Phone number seems too short."),
     birthday: z.date({
       error: "Date of birth is required.",
     }),
@@ -194,11 +197,22 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (registrationStep === "password") {
+      // Don't show validation errors until the user has interacted with the fields.
+      if (passwordForm.password === "" && passwordForm.confirmPassword === "") {
+        setFormErrors({})
+        return
+      }
+
       const result = passwordSchema.safeParse(passwordForm)
       if (!result.success) {
         const errors: Record<string, string> = {}
         for (const issue of result.error.issues) {
           errors[String(issue.path[0])] = issue.message
+        }
+
+        // Don't show "Passwords don't match" if confirm password input is empty
+        if (passwordForm.confirmPassword === "" && errors.confirmPassword) {
+          delete errors.confirmPassword
         }
         setFormErrors(errors)
       } else {
@@ -207,6 +221,50 @@ function AuthPageContents() {
     }
   }, [passwordForm, registrationStep])
 
+  useEffect(() => {
+    const userDataFromUrl = searchParams.get("userData")
+    if (userDataFromUrl && registrationStep === "password") {
+      try {
+        const decodedUserData = JSON.parse(atob(userDataFromUrl))
+        setDetailsForm({
+          name: decodedUserData.name || "",
+          email: decodedUserData.email || "",
+          phone: decodedUserData.phone || "",
+        })
+        setLocationForm({
+          nationality: decodedUserData.nationality || "",
+          currentLocation: decodedUserData.currentLocation || "",
+        })
+        // Other states like prefix, gender, birthday can be set here if needed
+      } catch (error) {
+        console.error("Failed to parse user data from URL", error)
+      }
+    }
+  }, [searchParams, registrationStep])
+
+  const handleFinalRegistration = () => {
+    if (isPasswordFormValid) {
+      const userData = {
+        prefix,
+        name: detailsForm.name,
+        gender,
+        birthday: birthday?.toISOString(),
+        email: detailsForm.email,
+        phone: detailsForm.phone,
+        nationality: locationForm.nationality,
+        currentLocation: locationForm.currentLocation,
+      }
+
+      try {
+        localStorage.setItem("user", JSON.stringify(userData))
+        toast.success("Account registered successfully!")
+        router.replace("/dashboard")
+      } catch (error) {
+        console.error("Failed to save user data to localStorage", error)
+        toast.error("Something went wrong. Please try again.")
+      }
+    }
+  }
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
       <div className="grid w-full max-w-4xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
@@ -483,6 +541,14 @@ function AuthPageContents() {
                               phone: e.target.value,
                             })
                           }
+                          onKeyDown={(e) =>
+                            e.key === "Enter" &&
+                            isDetailsFormValid &&
+                            validateAndSetStep("location", detailsSchema, {
+                              ...detailsForm,
+                              birthday,
+                            })
+                          }
                         />
                       </InputGroup>
                       {formErrors.phone && (
@@ -558,6 +624,31 @@ function AuthPageContents() {
                             const value = e.target.value
                             if (/^\d{0,6}$/.test(value)) {
                               setVerificationCode(value)
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (
+                              e.key === "Enter" &&
+                              isVerificationCodeFormValid &&
+                              detailsForm.email
+                            ) {
+                              const result = verificationCodeSchema.safeParse({
+                                code: verificationCode,
+                              })
+                              if (!result.success) return
+                              const userData = {
+                                ...detailsForm,
+                                prefix,
+                                gender,
+                                birthday: birthday?.toISOString(),
+                                ...locationForm,
+                              }
+                              const encodedUserData = btoa(
+                                JSON.stringify(userData)
+                              )
+                              router.push(
+                                `/pricing?userData=${encodedUserData}`
+                              )
                             }
                           }}
                         />
@@ -669,6 +760,15 @@ function AuthPageContents() {
                               ...locationForm,
                               currentLocation: e.target.value,
                             })
+                          }
+                          onKeyDown={(e) =>
+                            e.key === "Enter" &&
+                            isLocationFormValid &&
+                            validateAndSetStep(
+                              "verify-email",
+                              locationSchema,
+                              locationForm
+                            )
                           }
                         />
                       </InputGroup>
@@ -785,6 +885,10 @@ function AuthPageContents() {
                                     confirmPassword: e.target.value,
                                   })
                                 }
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" && isPasswordFormValid)
+                                    router.replace("/dashboard")
+                                }}
                               />
                             </PasswordToggleField.Input>
                             <PasswordToggleField.Toggle asChild>
@@ -805,23 +909,11 @@ function AuthPageContents() {
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      onClick={() => {
-                        if (isPasswordFormValid) router.push("/pricing")
-                      }}
+                      onClick={handleFinalRegistration}
                       disabled={!isPasswordFormValid || !detailsForm.email}
                     >
                       Register account
                     </Button>
-                    <div className="flex w-full items-center justify-between text-sm">
-                      <Button
-                        variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
-                        onClick={() => setRegistrationStep("verify-email")}
-                      >
-                        <ChevronLeft className="mr-1 size-4" />
-                        Back to verification
-                      </Button>
-                    </div>
                   </CardFooter>
                 </Card>
               )}

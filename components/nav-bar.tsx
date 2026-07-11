@@ -3,8 +3,8 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Menu, ArrowUpRight } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -42,7 +42,6 @@ const SITE_NAV_LINKS = [
 
 export function NavBar() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const router = useRouter()
   const [user, setUser] = useState<{ name?: string; email?: string } | null>(
     null
@@ -78,7 +77,7 @@ export function NavBar() {
       setUser(null)
     }
     setIsLoading(false)
-  }, [pathname, searchParams, router])
+  }, [pathname])
 
   const getInitials = (name = "") =>
     name

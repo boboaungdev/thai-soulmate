@@ -6,20 +6,21 @@ import { useEffect, useState } from "react"
 export function RouteGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const [isChecking, setIsChecking] = useState(true)
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   useEffect(() => {
+    // This effect should only run on the client side.
+    // We check if we are on the home page and if the user data exists.
     const userData = localStorage.getItem("user")
     if (userData && pathname === "/") {
+      // If so, we start the redirect and show the loading indicator.
+      setIsRedirecting(true)
       router.replace("/dashboard")
-      // We don't set isChecking to false here because we are redirecting.
-      // The new page will have its own render cycle.
-    } else {
-      setIsChecking(false)
     }
+    // For any other case, we don't need to do anything, and no loading spinner will be shown.
   }, [pathname, router])
 
-  if (isChecking) {
+  if (isRedirecting) {
     // You can replace this with a more sophisticated loading skeleton if you like.
     // This will be shown very briefly while the redirect occurs.
     return (

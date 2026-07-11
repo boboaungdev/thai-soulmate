@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useMounted } from "@/hooks/use-mounted"
 import { GBFlag, THFlag } from "./flag-icon"
 
 const languages = [
@@ -28,6 +29,11 @@ const languages = [
 
 export function LanguageSwitcher() {
   const [value, setValue] = React.useState("en")
+  const mounted = useMounted()
+
+  if (!mounted) {
+    return <div className="h-10 w-[76px]" /> // Placeholder with specific width
+  }
 
   return (
     <DropdownMenu>

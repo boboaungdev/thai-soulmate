@@ -5,10 +5,15 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
+import { useMounted } from "@/hooks/use-mounted"
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
+  const mounted = useMounted()
 
+  if (!mounted) {
+    return <div className="size-10" /> // Render a placeholder on the server
+  }
   return (
     <Button
       variant="ghost"

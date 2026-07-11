@@ -43,10 +43,10 @@ const SITE_NAV_LINKS = [
 export function NavBar() {
   const pathname = usePathname()
   const router = useRouter()
-  const [user, setUser] = useState<{ name?: string; email?: string } | null>(
-    null
-  )
-  const [isLoading, setIsLoading] = useState(true)
+  // Use undefined for initial state to represent "not yet loaded"
+  const [user, setUser] = useState<
+    { name?: string; email?: string } | null | undefined
+  >(undefined)
 
   const navContainerVariants = {
     hidden: { opacity: 0 },
@@ -63,20 +63,18 @@ export function NavBar() {
     show: { y: 0, opacity: 1 },
   }
   useEffect(() => {
-    setIsLoading(true)
     const userData = localStorage.getItem("user")
     if (userData) {
       try {
         setUser(JSON.parse(userData))
       } catch (error) {
         console.error("Failed to parse user data from localStorage", error)
-        localStorage.removeItem("user")
+        localStorage.removeItem("user") // Clear corrupted data
         setUser(null)
       }
     } else {
       setUser(null)
     }
-    setIsLoading(false)
   }, [pathname])
 
   const getInitials = (name = "") =>
@@ -154,8 +152,8 @@ export function NavBar() {
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
           <LanguageSwitcher />
-          {isLoading ? (
-            <div className="hidden size-10 items-center justify-center lg:flex" />
+          {user === undefined ? ( // Loading state
+            <div className="hidden h-10 w-[70px] items-center justify-center lg:flex" />
           ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -207,7 +205,7 @@ export function NavBar() {
             </MotionDiv>
           )}
 
-          {!isLoading && !user && (
+          {user === null && (
             <div className="lg:hidden">
               <Sheet>
                 <SheetTrigger asChild>

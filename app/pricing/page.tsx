@@ -5,6 +5,7 @@ import { z } from "zod"
 import { Flame } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { STRIPE } from "@/constants"
+import { MotionDiv } from "@/components/motion"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import {
@@ -227,26 +228,41 @@ function PricingPageContents() {
       </Dialog>
 
       <div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-        <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
-          VIP Membership
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}Unlock
-          exclusive features and get more matches!
-        </p>
-        <div className="mt-8 flex items-center justify-center space-x-2">
-          <Label htmlFor="auto-renew-toggle">One-time Payment</Label>
-          <Switch
-            id="auto-renew-toggle"
-            checked={isAutoRenew}
-            onCheckedChange={setIsAutoRenew}
-          />
-          <Label htmlFor="auto-renew-toggle">Auto-renew</Label>
-        </div>
+        <MotionDiv
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
+            VIP Membership
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+            {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}
+            Unlock exclusive features and get more matches!
+          </p>
+        </MotionDiv>
+        <MotionDiv
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="mt-8 flex items-center justify-center space-x-2">
+            <Label htmlFor="auto-renew-toggle">One-time Payment</Label>
+            <Switch
+              id="auto-renew-toggle"
+              checked={isAutoRenew}
+              onCheckedChange={setIsAutoRenew}
+            />
+            <Label htmlFor="auto-renew-toggle">Auto-renew</Label>
+          </div>
+        </MotionDiv>
         <div className="mt-16 flex flex-wrap justify-center gap-8">
-          {plans.map((plan) => (
-            <div
+          {plans.map((plan, index) => (
+            <MotionDiv
               key={plan.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
               className={clsx(
                 "relative flex w-full max-w-sm flex-col rounded-lg border bg-card p-8 text-card-foreground shadow-sm transition-transform duration-300",
                 plan.popular && "border-gold scale-105 transform border-2"
@@ -300,7 +316,7 @@ function PricingPageContents() {
               >
                 Choose Plan
               </button>
-            </div>
+            </MotionDiv>
           ))}
         </div>
         <p className="mx-auto mt-16 max-w-3xl text-base text-muted-foreground">

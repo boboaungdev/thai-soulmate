@@ -31,7 +31,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { RegistrationStepper } from "@/components/registration-stepper"
 import {
   InputGroup,
   InputGroupAddon,
@@ -44,6 +43,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, forwardRef, useEffect, Suspense } from "react"
@@ -72,8 +72,8 @@ const plans: Plan[] = [
       oneTime: "price_1PgqYSBDI3S4a0gS4s8s6g7g",
     },
     price: "฿29,999",
-    duration: "Total 2 months",
-    recurringInterval: "Billed every 2 months",
+    duration: { paid: "1 month", total: "2 months" },
+    recurringInterval: { paid: "1 month", total: "2 months" },
     features: [
       "Get 1 month FREE",
       "Priority Customer Support",
@@ -90,8 +90,8 @@ const plans: Plan[] = [
       oneTime: "price_1PgqZPBDI3S4a0gS5s6s7g8g",
     },
     price: "฿34,999",
-    duration: "Total 6 months",
-    recurringInterval: "Billed every 6 months",
+    duration: { paid: "3 months", total: "6 months" },
+    recurringInterval: { paid: "3 months", total: "6 months" },
     pricePerMonth: "≈ ฿5,833/mo",
     features: [
       "Get 3 months FREE",
@@ -109,8 +109,8 @@ const plans: Plan[] = [
       oneTime: "price_1PgqaFBDI3S4a0gS3s4s5g6g",
     },
     price: "฿49,999",
-    duration: "Total 12 months",
-    recurringInterval: "Billed every 12 months",
+    duration: { paid: "6 months", total: "12 months" },
+    recurringInterval: { paid: "6 months", total: "12 months" },
     pricePerMonth: "≈ ฿4,167/mo",
     features: [
       "Get 6 months FREE",
@@ -214,7 +214,9 @@ function AuthPageContents() {
   const [countdown, setCountdown] = useState(0)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
+  const [isAutoRenew, setIsAutoRenew] = useState(true)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+  const [selectedPlan, setSelectedPlan] = useState("3 Months")
 
   useEffect(() => {
     const userDataFromUrl = searchParams.get("userData")
@@ -450,8 +452,10 @@ function AuthPageContents() {
   }
 
   const handleChoosePlan = async (plan: Plan) => {
-    const priceId = plan.priceIds.oneTime // Defaulting to one-time for simplicity in auth flow
-    const mode = "payment"
+    const priceId = isAutoRenew
+      ? plan.priceIds.subscription
+      : plan.priceIds.oneTime
+    const mode = isAutoRenew ? "subscription" : "payment"
 
     sessionStorage.setItem("selectedPlan", JSON.stringify(plan))
 
@@ -488,7 +492,11 @@ function AuthPageContents() {
   }
 
   const PlanSelector = () => (
-    <Tabs defaultValue="3 Months" className="w-full">
+    <Tabs
+      value={selectedPlan}
+      onValueChange={setSelectedPlan}
+      className="w-full"
+    >
       <TabsList className="grid w-full grid-cols-3">
         {plans.map((plan) => (
           <TabsTrigger
@@ -515,17 +523,27 @@ function AuthPageContents() {
                 {plan.pricePerMonth}
               </p>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {plan.duration}
-            </p>
-            <ul className="my-6 list-inside list-disc space-y-2 text-sm">
-              {plan.features.map((feature, i) => (
-                <li key={i} className="text-muted-foreground">
-                  <span className={i === 0 ? "text-gradient font-bold" : ""}>
-                    {feature}
+            <div className="mt-1 text-sm font-semibold text-muted-foreground">
+              {isAutoRenew ? (
+                <span>
+                  Billed for <del>{plan.recurringInterval.paid}</del>, get{" "}
+                  <b>{plan.recurringInterval.total}</b>
+                </span>
+              ) : (
+                <span>
+                  Pay for <del>{plan.duration.paid}</del>, get{" "}
+                  <b>{plan.duration.total}</b>
+                </span>
+              )}
+            </div>
+            <ul className="my-6 list-inside list-none space-y-2 text-sm">
+              {plan.features.length > 0 && (
+                <li className="text-muted-foreground">
+                  <span className="text-gradient font-bold">
+                    {plan.features[0]}
                   </span>
                 </li>
-              ))}
+              )}
             </ul>
             <Button
               className="btn-gradient w-full"
@@ -1154,7 +1172,17 @@ function AuthPageContents() {
                           Select a VIP membership to unlock exclusive features.
                         </CardDescription>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center justify-center space-x-2">
+                          <Label htmlFor="auto-renew-toggle">
+                            Auto-renew subscription
+                          </Label>
+                          <Switch
+                            id="auto-renew-toggle"
+                            checked={isAutoRenew}
+                            onCheckedChange={setIsAutoRenew}
+                          />
+                        </div>
                         <PlanSelector />
                       </CardContent>
                       <CardFooter className="flex-col items-start gap-4">

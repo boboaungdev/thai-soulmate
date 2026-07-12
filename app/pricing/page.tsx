@@ -32,8 +32,8 @@ const plans: Plan[] = [
       oneTime: STRIPE.PLANS.priceIds.oneTime.oneMonth,
     },
     price: "฿29,999",
-    duration: "Total 2 months",
-    recurringInterval: "Billed every 2 months",
+    duration: { paid: "1 month", total: "2 months" },
+    recurringInterval: { paid: "1 month", total: "2 months" },
     features: [
       "Get 1 month FREE",
       "Priority Customer Support",
@@ -50,8 +50,8 @@ const plans: Plan[] = [
       oneTime: STRIPE.PLANS.priceIds.oneTime.threeMonth,
     },
     price: "฿34,999",
-    duration: "Total 6 months",
-    recurringInterval: "Billed every 6 months",
+    duration: { paid: "3 months", total: "6 months" },
+    recurringInterval: { paid: "3 months", total: "6 months" },
     pricePerMonth: "≈ ฿5,833/mo",
     features: [
       "Get 3 months FREE",
@@ -69,8 +69,8 @@ const plans: Plan[] = [
       oneTime: STRIPE.PLANS.priceIds.oneTime.sixMonth,
     },
     price: "฿49,999",
-    duration: "Total 12 months",
-    recurringInterval: "Billed every 12 months",
+    duration: { paid: "6 months", total: "12 months" },
+    recurringInterval: { paid: "6 months", total: "12 months" },
     pricePerMonth: "≈ ฿4,167/mo",
     features: [
       "Get 6 months FREE",
@@ -269,13 +269,12 @@ export function PricingPageContents({
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <div className="mt-8 flex items-center justify-center space-x-2">
-            <Label htmlFor="auto-renew-toggle">One-time Payment</Label>
+            <Label htmlFor="auto-renew-toggle">Auto-renew subscription</Label>
             <Switch
               id="auto-renew-toggle"
               checked={isAutoRenew}
               onCheckedChange={setIsAutoRenew}
             />
-            <Label htmlFor="auto-renew-toggle">Auto-renew</Label>
           </div>
         </MotionDiv>
         <div className="mt-16 flex flex-wrap justify-center gap-8">
@@ -298,9 +297,19 @@ export function PricingPageContents({
               )}
               <h2 className="mb-4 text-2xl font-semibold">{plan.name}</h2>
               <p className="text-4xl font-bold">{plan.price}</p>
-              <p className="mt-1 text-sm font-semibold text-muted-foreground">
-                {isAutoRenew ? plan.recurringInterval : plan.duration}
-              </p>
+              <div className="mt-1 text-sm font-semibold text-muted-foreground">
+                {isAutoRenew ? (
+                  <span>
+                    Billed for <del>{plan.recurringInterval.paid}</del>, get{" "}
+                    <b>{plan.recurringInterval.total}</b>
+                  </span>
+                ) : (
+                  <span>
+                    Pay for <del>{plan.duration.paid}</del>, get{" "}
+                    <b>{plan.duration.total}</b>
+                  </span>
+                )}
+              </div>
               {plan.pricePerMonth && (
                 <p className="mt-1 mb-6 text-muted-foreground">
                   {plan.pricePerMonth}

@@ -8,8 +8,14 @@ export interface Plan {
   features: string[]
   popular?: boolean
   pricePerMonth?: string
-  duration: string
-  recurringInterval: string
+  duration:  {
+    paid: string
+    total: string
+  }
+  recurringInterval: {
+    paid: string
+    total: string
+  }
 }
 
 export interface User {

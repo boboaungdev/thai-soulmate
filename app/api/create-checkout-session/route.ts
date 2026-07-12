@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         },
       ],
       mode: mode,
-      success_url: `${BASE_URL}/auth?mode=register&step=password&userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${BASE_URL}/auth?mode=register&step=profile-setup&userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}/pricing?userData=${encodedUserData}&canceled=true&session_id={CHECKOUT_SESSION_ID}`,
     })
 

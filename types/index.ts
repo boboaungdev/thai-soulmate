@@ -1,10 +1,27 @@
-export type User = {
+export interface Plan {
   name: string
-  prefix: string
-  email: string
-  phone: string
-  birthday: string
-  gender: string
-  nationality: string
-  currentLocation: string
+  priceIds: {
+    subscription: string
+    oneTime: string
+  }
+  price: string
+  features: string[]
+  popular?: boolean
+  pricePerMonth?: string
+  duration: string
+  recurringInterval: string
+}
+
+export interface User {
+  prefix?: string
+  name?: string
+  gender?: string
+  birthday?: string
+  email?: string
+  phone?: string
+  nationality?: string
+  currentLocation?: string
+  hobbies?: string[]
+  plan?: Plan
+  paymentStatus?: "paid" | null
 }

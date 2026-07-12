@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { useRouter, useSearchParams } from "next/navigation"
 import { z } from "zod"
 import { Flame } from "lucide-react"
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, Fragment } from "react"
 import { STRIPE } from "@/constants"
 import { MotionDiv } from "@/components/motion"
 import { Label } from "@/components/ui/label"
@@ -17,22 +17,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { User } from "@/types"
+import { AnimatePresence } from "framer-motion"
+import type { User, Plan } from "@/types"
 
-interface Plan {
-  name: string
-  priceIds: {
-    subscription: string
-    oneTime: string
-  }
-  price: string
-  features: string[]
-  popular?: boolean
-  pricePerMonth?: string
-  duration: string
-  recurringInterval: string
+interface PricingPageContentsProps {
+  isEmbedded?: boolean
+  embeddedUserData?: User | null
 }
-
 const plans: Plan[] = [
   {
     name: "1 Month",
@@ -91,16 +82,22 @@ const plans: Plan[] = [
   },
 ]
 
-function PricingPageContents() {
+export function PricingPageContents({
+  isEmbedded = false,
+  embeddedUserData = null,
+}: PricingPageContentsProps) {
   const [isAutoRenew, setIsAutoRenew] = useState(true)
   const router = useRouter()
+  const [expandedPlan, setExpandedPlan] = useState<string | null>(null)
   const searchParams = useSearchParams()
 
   const userDataFromUrl = searchParams.get("userData")
-  const [userData, setUserData] = useState<User | null>(null)
+  const [userData, setUserData] = useState<User | null>(embeddedUserData)
 
   useEffect(() => {
-    if (userDataFromUrl) {
+    if (isEmbedded && embeddedUserData) {
+      setUserData(embeddedUserData)
+    } else if (userDataFromUrl) {
       try {
         const decodedUserData = JSON.parse(atob(userDataFromUrl))
         setUserData(decodedUserData)
@@ -158,9 +155,28 @@ function PricingPageContents() {
 
   const handleCloseSuccessDialog = () => {
     setShowSuccessDialog(false)
-    // Remove the query params from the URL without reloading the page
-    const newPath = window.location.pathname
-    window.history.replaceState({}, "", newPath)
+    const planData = sessionStorage.getItem("selectedPlan")
+    if (userDataFromUrl && planData) {
+      try {
+        const decodedUserData = JSON.parse(atob(userDataFromUrl))
+        const selectedPlan = JSON.parse(planData)
+
+        const updatedUserData = {
+          ...decodedUserData,
+          plan: selectedPlan,
+          paymentStatus: "paid",
+        }
+
+        const encodedUserData = btoa(JSON.stringify(updatedUserData))
+        router.push(
+          `/auth?mode=register&step=password&userData=${encodedUserData}`
+        )
+        sessionStorage.removeItem("selectedPlan")
+      } catch (error) {
+        console.error("Failed to process user and plan data", error)
+        window.history.replaceState({}, "", window.location.pathname)
+      }
+    }
   }
 
   const handleChoosePlan = async (plan: Plan) => {
@@ -168,6 +184,8 @@ function PricingPageContents() {
       ? plan.priceIds.subscription
       : plan.priceIds.oneTime
     const mode = isAutoRenew ? "subscription" : "payment"
+
+    sessionStorage.setItem("selectedPlan", JSON.stringify(plan))
 
     try {
       const response = await fetch("/api/create-checkout-session", {
@@ -233,13 +251,17 @@ function PricingPageContents() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
-            VIP Membership
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}
-            Unlock exclusive features and get more matches!
-          </p>
+          {!isEmbedded && (
+            <>
+              <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
+                VIP Membership
+              </h1>
+              <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+                {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}
+                Unlock exclusive features and get more matches!
+              </p>
+            </>
+          )}
         </MotionDiv>
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
@@ -284,21 +306,43 @@ function PricingPageContents() {
                   {plan.pricePerMonth}
                 </p>
               )}
-              <ul className="my-6 flex-grow list-none p-0 text-left">
-                {plan.features.map((feature, index) => (
-                  <li
-                    key={index}
-                    className={clsx(
-                      "mb-3",
-                      index === 0
-                        ? "text-gradient font-bold"
-                        : "text-muted-foreground"
-                    )}
+              <AnimatePresence>
+                {!isEmbedded || expandedPlan === plan.name ? (
+                  <MotionDiv
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
                   >
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+                    <ul className="my-6 flex-grow list-none p-0 text-left">
+                      {plan.features.map((feature, index) => (
+                        <li
+                          key={index}
+                          className={clsx(
+                            "mb-3",
+                            index === 0
+                              ? "text-gradient font-bold"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                    {isEmbedded && (
+                      <Button
+                        variant="link"
+                        className="mb-4"
+                        onClick={() => setExpandedPlan(null)}
+                      >
+                        Hide features
+                      </Button>
+                    )}
+                  </MotionDiv>
+                ) : null}
+              </AnimatePresence>
+
               <button
                 onClick={() => {
                   if (userData) {
@@ -316,6 +360,15 @@ function PricingPageContents() {
               >
                 Choose Plan
               </button>
+              {isEmbedded && expandedPlan !== plan.name && (
+                <Button
+                  variant="link"
+                  className="mt-4"
+                  onClick={() => setExpandedPlan(plan.name)}
+                >
+                  Show features
+                </Button>
+              )}
             </MotionDiv>
           ))}
         </div>

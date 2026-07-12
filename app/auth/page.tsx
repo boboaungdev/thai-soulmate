@@ -1,5 +1,6 @@
 "use client"
 
+import clsx from "clsx"
 import { z } from "zod"
 import Image from "next/image"
 import {
@@ -8,13 +9,16 @@ import {
   Lock,
   Eye,
   EyeOff,
+  Heart,
   Cake,
   Phone,
   Home,
   MapPin,
   ChevronLeft,
   KeyRound,
+  Flame,
 } from "lucide-react"
+import { UploadCloud } from "lucide-react"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
@@ -26,6 +30,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { RegistrationStepper } from "@/components/registration-stepper"
 import {
   InputGroup,
   InputGroupAddon,
@@ -45,6 +50,77 @@ import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
+import { Badge } from "@/components/ui/badge"
+import { PricingPageContents } from "../pricing/page"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type { Plan } from "@/types"
+
+const registrationSteps = [
+  { id: "details", name: "Details" },
+  { id: "verify-email", name: "Verification" },
+  { id: "location", name: "Location" },
+  { id: "plans", name: "Choose Plan" },
+  { id: "profile-setup", name: "Profile Setup" },
+  { id: "password", name: "Password" },
+]
+
+const plans: Plan[] = [
+  {
+    name: "1 Month",
+    priceIds: {
+      subscription: "price_1PgqYSBDI3S4a0gS3YJq2g3a",
+      oneTime: "price_1PgqYSBDI3S4a0gS4s8s6g7g",
+    },
+    price: "฿29,999",
+    duration: "Total 2 months",
+    recurringInterval: "Billed every 2 months",
+    features: [
+      "Get 1 month FREE",
+      "Priority Customer Support",
+      "Exclusive Access to New Features",
+      "Enhanced Privacy Controls",
+      "Verified Member Badge",
+    ],
+    pricePerMonth: "฿15,000/mo",
+  },
+  {
+    name: "3 Months",
+    priceIds: {
+      subscription: "price_1PgqZPBDI3S4a0gS1s2s3g4g",
+      oneTime: "price_1PgqZPBDI3S4a0gS5s6s7g8g",
+    },
+    price: "฿34,999",
+    duration: "Total 6 months",
+    recurringInterval: "Billed every 6 months",
+    pricePerMonth: "≈ ฿5,833/mo",
+    features: [
+      "Get 3 months FREE",
+      "Priority Customer Support",
+      "Exclusive Access to New Features",
+      "Enhanced Privacy Controls",
+      "Verified Member Badge",
+    ],
+    popular: true,
+  },
+  {
+    name: "6 Months",
+    priceIds: {
+      subscription: "price_1PgqaFBDI3S4a0gS9s0s1g2g",
+      oneTime: "price_1PgqaFBDI3S4a0gS3s4s5g6g",
+    },
+    price: "฿49,999",
+    duration: "Total 12 months",
+    recurringInterval: "Billed every 12 months",
+    pricePerMonth: "≈ ฿4,167/mo",
+    features: [
+      "Get 6 months FREE",
+      "Priority Customer Support",
+      "Exclusive Access to New Features",
+      "Enhanced Privacy Controls",
+      "Verified Member Badge",
+    ],
+  },
+]
 
 function AuthPageContents() {
   const router = useRouter()
@@ -53,7 +129,24 @@ function AuthPageContents() {
   const mode = searchParams.get("mode") || "login"
   const registrationStep =
     (searchParams.get("step") as
-      "details" | "verify-email" | "location" | "password") || "details"
+      | "details"
+      | "verify-email"
+      | "location"
+      | "plans"
+      | "profile-setup"
+      | "password") || "details"
+
+  const getEffectiveStep = () => {
+    if (
+      registrationStep === "profile-setup" ||
+      registrationStep === "password"
+    ) {
+      if (paymentStatus === "paid") {
+        return registrationStep
+      }
+    }
+    return registrationStep
+  }
 
   const setMode = (newMode: "login" | "register" | "forgot-password") => {
     const params = new URLSearchParams(searchParams)
@@ -62,17 +155,25 @@ function AuthPageContents() {
   }
 
   const setRegistrationStep = (
-    newStep: "details" | "verify-email" | "location" | "password"
+    newStep:
+      | "details"
+      | "verify-email"
+      | "location"
+      | "plans"
+      | "profile-setup"
+      | "password"
   ) => {
     const params = new URLSearchParams(searchParams)
     params.set("step", newStep)
     router.push(`${pathname}?${params.toString()}`)
   }
+
   const [prefix, setPrefix] = useState("Mr.")
   const [gender, setGender] = useState("Male")
   const [birthday, setBirthday] = useState<Date>()
   const [countdown, setCountdown] = useState(0)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -112,8 +213,14 @@ function AuthPageContents() {
   }, [prefix, gender])
 
   const validateAndSetStep = (
-    step: "details" | "verify-email" | "location" | "password",
-    schema: z.ZodObject<any, any>,
+    step:
+      | "details"
+      | "verify-email"
+      | "location"
+      | "plans"
+      | "profile-setup"
+      | "password",
+    schema: z.ZodObject<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
     data: any
   ) => {
     const result = schema.safeParse(data)
@@ -141,6 +248,10 @@ function AuthPageContents() {
   const [locationForm, setLocationForm] = useState({
     nationality: "",
     currentLocation: "",
+  })
+  const [profileSetupForm, setProfileSetupForm] = useState({
+    avatar: null as File | null,
+    hobbies: "",
   })
   const [passwordForm, setPasswordForm] = useState({
     password: "",
@@ -174,6 +285,11 @@ function AuthPageContents() {
     currentLocation: z.string().min(2, "Current location is required."),
   })
 
+  const profileSetupSchema = z.object({
+    avatar: z.any().refine((file) => file, "Avatar is required."),
+    hobbies: z.string().min(3, "Please enter at least one hobby."),
+  })
+
   const passwordSchema = z
     .object({
       password: z.string().min(8, "Password must be at least 8 characters."),
@@ -194,10 +310,15 @@ function AuthPageContents() {
     code: verificationCode,
   }).success
   const isLocationFormValid = locationSchema.safeParse(locationForm).success
+  const isProfileSetupFormValid =
+    profileSetupSchema.safeParse(profileSetupForm).success
   const isPasswordFormValid = passwordSchema.safeParse(passwordForm).success
 
   useEffect(() => {
-    if (registrationStep === "password") {
+    if (
+      registrationStep === "password" ||
+      registrationStep === "profile-setup"
+    ) {
       // Don't show validation errors until the user has interacted with the fields.
       if (passwordForm.password === "" && passwordForm.confirmPassword === "") {
         setFormErrors({})
@@ -224,7 +345,10 @@ function AuthPageContents() {
 
   useEffect(() => {
     const userDataFromUrl = searchParams.get("userData")
-    if (userDataFromUrl && registrationStep === "password") {
+    if (
+      userDataFromUrl &&
+      (registrationStep === "password" || registrationStep === "profile-setup")
+    ) {
       try {
         const decodedUserData = JSON.parse(atob(userDataFromUrl))
         setDetailsForm({
@@ -232,6 +356,7 @@ function AuthPageContents() {
           email: decodedUserData.email || "",
           phone: decodedUserData.phone || "",
         })
+        setPaymentStatus(decodedUserData.paymentStatus || null)
         setLocationForm({
           nationality: decodedUserData.nationality || "",
           currentLocation: decodedUserData.currentLocation || "",
@@ -241,7 +366,13 @@ function AuthPageContents() {
         console.error("Failed to parse user data from URL", error)
       }
     }
-  }, [searchParams, registrationStep])
+  }, [
+    searchParams,
+    registrationStep,
+    setDetailsForm,
+    setLocationForm,
+    setPaymentStatus,
+  ])
 
   const handleFinalRegistration = () => {
     if (isPasswordFormValid) {
@@ -254,6 +385,9 @@ function AuthPageContents() {
         phone: detailsForm.phone,
         nationality: locationForm.nationality,
         currentLocation: locationForm.currentLocation,
+        hobbies: profileSetupForm.hobbies.split(",").map((h) => h.trim()),
+        // avatar would be uploaded and a URL stored here
+        plan: JSON.parse(localStorage.getItem("selectedPlan") || "{}"),
       }
 
       try {
@@ -272,6 +406,96 @@ function AuthPageContents() {
     animate: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: 20 },
   }
+
+  const handleChoosePlan = async (plan: Plan) => {
+    const priceId = plan.priceIds.oneTime // Defaulting to one-time for simplicity in auth flow
+    const mode = "payment"
+
+    sessionStorage.setItem("selectedPlan", JSON.stringify(plan))
+
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          priceId,
+          userData: {
+            ...detailsForm,
+            prefix,
+            gender,
+            birthday: birthday?.toISOString(),
+            ...locationForm,
+          },
+          mode,
+        }),
+      })
+
+      const { url, error } = await response.json()
+
+      if (error) {
+        throw new Error(error)
+      }
+
+      router.push(url)
+    } catch (error) {
+      console.error("Failed to create checkout session:", error)
+      alert("Failed to proceed to checkout. Please try again.")
+    }
+  }
+
+  const PlanSelector = () => (
+    <Tabs defaultValue="3 Months" className="w-full">
+      <TabsList className="grid w-full grid-cols-3">
+        {plans.map((plan) => (
+          <TabsTrigger
+            key={plan.name}
+            value={plan.name}
+            className="data-[state=active]:btn-gradient data-[state=active]:text-primary-foreground"
+          >
+            {plan.name}
+            {plan.popular && <Flame className="text-gold ml-2 size-4" />}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {plans.map((plan) => (
+        <TabsContent key={plan.name} value={plan.name}>
+          <div
+            className={clsx(
+              "mt-4 rounded-lg border bg-card p-6 text-card-foreground",
+              plan.popular && "border-gold border-2"
+            )}
+          >
+            <div className="flex items-baseline justify-between">
+              <h3 className="text-2xl font-bold">{plan.price}</h3>
+              <p className="text-sm text-muted-foreground">
+                {plan.pricePerMonth}
+              </p>
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {plan.duration}
+            </p>
+            <ul className="my-6 list-inside list-disc space-y-2 text-sm">
+              {plan.features.map((feature, i) => (
+                <li key={i} className="text-muted-foreground">
+                  <span className={i === 0 ? "text-gradient font-bold" : ""}>
+                    {feature}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <Button
+              className="btn-gradient w-full"
+              onClick={() => handleChoosePlan(plan)}
+            >
+              Choose {plan.name} Plan
+            </Button>
+          </div>
+        </TabsContent>
+      ))}
+    </Tabs>
+  )
 
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
@@ -299,6 +523,14 @@ function AuthPageContents() {
             <p className="mt-3 text-lg text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
+            {mode === "register" && (
+              <div className="mt-8 w-full">
+                <RegistrationStepper
+                  steps={registrationSteps}
+                  currentStep={getEffectiveStep()}
+                />
+              </div>
+            )}
           </div>
         </motion.div>
         <div className="w-full max-w-md justify-self-center lg:justify-self-end">
@@ -324,6 +556,14 @@ function AuthPageContents() {
             <p className="mt-2 text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
+            {mode === "register" && (
+              <div className="mt-6 w-full">
+                <RegistrationStepper
+                  steps={registrationSteps}
+                  currentStep={getEffectiveStep()}
+                />
+              </div>
+            )}
           </motion.div>
           <AnimatePresence mode="wait">
             {mode === "login" ? (
@@ -602,7 +842,7 @@ function AuthPageContents() {
                           disabled={!isDetailsFormValid}
                           onClick={() =>
                             validateAndSetStep("location", detailsSchema, {
-                              ...detailsForm,
+                              ...detailsForm, // This should be verify-email
                               birthday,
                             })
                           }
@@ -685,17 +925,8 @@ function AuthPageContents() {
                                   if (!result.success) return
                                   const userData = {
                                     ...detailsForm,
-                                    prefix,
-                                    gender,
-                                    birthday: birthday?.toISOString(),
-                                    ...locationForm,
                                   }
-                                  const encodedUserData = btoa(
-                                    JSON.stringify(userData)
-                                  )
-                                  router.push(
-                                    `/pricing?userData=${encodedUserData}`
-                                  )
+                                  setRegistrationStep("plans")
                                 }
                               }}
                             />
@@ -722,17 +953,7 @@ function AuthPageContents() {
                               return
                             }
 
-                            const userData = {
-                              ...detailsForm,
-                              prefix,
-                              gender,
-                              birthday: birthday?.toISOString(),
-                              ...locationForm,
-                            }
-                            const encodedUserData = btoa(
-                              JSON.stringify(userData)
-                            )
-                            router.push(`/pricing?userData=${encodedUserData}`)
+                            setRegistrationStep("plans")
                           }}
                         >
                           Verify
@@ -741,7 +962,7 @@ function AuthPageContents() {
                           <Button
                             variant="link"
                             className="flex items-center p-0 text-muted-foreground" //
-                            onClick={() => setRegistrationStep("location")}
+                            onClick={() => setRegistrationStep("details")}
                           >
                             <ChevronLeft className="mr-1 size-4" />
                             Back to location
@@ -844,7 +1065,7 @@ function AuthPageContents() {
                           disabled={!isLocationFormValid}
                           onClick={() => {
                             validateAndSetStep(
-                              "verify-email",
+                              "plans",
                               locationSchema,
                               locationForm
                             )
@@ -866,6 +1087,141 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
+                {registrationStep === "plans" && (
+                  <motion.div
+                    key="register-plans"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Choose Your Plan</CardTitle>
+                        <CardDescription>
+                          Select a VIP membership to unlock exclusive features.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <PlanSelector />
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => setRegistrationStep("verify-email")}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back to verification
+                          </Button>
+                          <Button
+                            variant="link"
+                            className="p-0 text-muted-foreground"
+                            onClick={() => router.push("/pricing")}
+                          >
+                            View Full Details
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "profile-setup" && (
+                  <motion.div
+                    key="register-profile-setup"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Set Up Your Profile</CardTitle>
+                          {paymentStatus === "paid" && (
+                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+                              Payment Successful
+                            </Badge>
+                          )}
+                        </div>
+                        <CardDescription>
+                          Tell us more about you for better matchmaking.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="avatar">Profile Picture</Label>
+                          <InputGroup className="items-center">
+                            <InputGroupAddon>
+                              <UploadCloud className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="avatar"
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) =>
+                                setProfileSetupForm({
+                                  ...profileSetupForm,
+                                  avatar: e.target.files
+                                    ? e.target.files[0]
+                                    : null,
+                                })
+                              }
+                              className="pt-1.5"
+                            />
+                          </InputGroup>
+                          {formErrors.avatar && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.avatar}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="hobbies">
+                            Hobbies (comma-separated)
+                          </Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Heart className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="hobbies"
+                              placeholder="e.g. Reading, Hiking, Cooking"
+                              value={profileSetupForm.hobbies}
+                              onChange={(e) =>
+                                setProfileSetupForm({
+                                  ...profileSetupForm,
+                                  hobbies: e.target.value,
+                                })
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.hobbies && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.hobbies}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          className="btn-gradient w-full"
+                          disabled={!isProfileSetupFormValid}
+                          onClick={() =>
+                            validateAndSetStep(
+                              "password",
+                              profileSetupSchema,
+                              profileSetupForm
+                            )
+                          }
+                        >
+                          Next
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
                 {registrationStep === "password" && (
                   <motion.div
                     key="register-password"
@@ -876,9 +1232,16 @@ function AuthPageContents() {
                   >
                     <Card>
                       <CardHeader>
-                        <CardTitle>Set Your Password</CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Set Your Password</CardTitle>
+                          {paymentStatus === "paid" && (
+                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+                              Payment Successful
+                            </Badge>
+                          )}
+                        </div>
                         <CardDescription>
-                          Choose a strong password to protect your account.
+                          Just one last step to create your account.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">

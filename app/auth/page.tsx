@@ -610,7 +610,7 @@ function AuthPageContents() {
               className="btn-gradient w-full"
               onClick={() => handleChoosePlan(plan)}
             >
-              Choose {plan.name} Plan
+              {isAutoRenew ? "Subscribe" : "Pay"}
             </Button>
           </div>
         </TabsContent>

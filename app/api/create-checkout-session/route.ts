@@ -8,8 +8,10 @@ export async function POST(req: Request) {
     const { priceId, userData, mode, autoRenew, plan } = body
 
     if (!priceId || !userData || !mode || autoRenew === undefined || !plan) {
-      return new NextResponse(
-        "Price ID, user data, mode, autoRenew, and plan are required",
+      return NextResponse.json(
+        {
+          error: "Price ID, user data, mode, autoRenew, and plan are required",
+        },
         { status: 400 }
       )
     }
@@ -27,7 +29,7 @@ export async function POST(req: Request) {
         },
       ],
       mode: mode,
-      success_url: `${BASE_URL}/auth?mode=register&step=profile-setup&userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
+      success_url: `${BASE_URL}/auth?mode=register&step=password&userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
       cancel_url: `${BASE_URL}/auth?mode=register&step=plans&userData=${encodedUserData}&canceled=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
     })
 
@@ -35,8 +37,11 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("[CREATE_CHECKOUT_SESSION_ERROR]", error)
     if (error instanceof Error) {
-      return new NextResponse(error.message, { status: 500 })
+      return NextResponse.json({ error: error.message }, { status: 500 })
     }
-    return new NextResponse("Internal Server Error", { status: 500 })
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    )
   }
 }

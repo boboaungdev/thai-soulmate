@@ -9,7 +9,6 @@ import {
   Lock,
   Eye,
   EyeOff,
-  Heart,
   Cake,
   Phone,
   Home,
@@ -18,8 +17,7 @@ import {
   KeyRound,
   Flame,
 } from "lucide-react"
-import { UploadCloud } from "lucide-react"
-import { APP_INFO, STRIPE } from "@/constants"
+import { APP_INFO, PLANS } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
 import {
@@ -51,7 +49,6 @@ import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
-import { PricingPageContents } from "../pricing/page"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Plan } from "@/types"
 
@@ -60,66 +57,7 @@ const registrationSteps = [
   { id: "location", name: "Location" },
   { id: "verify-email", name: "Verification" },
   { id: "plans", name: "Plans" },
-  { id: "profile-setup", name: "Profile Setup" },
   { id: "password", name: "Password" },
-]
-
-const plans: Plan[] = [
-  {
-    name: "1 Month",
-    priceIds: {
-      subscription: STRIPE.PLANS.priceIds.subscription.oneMonth,
-      oneTime: STRIPE.PLANS.priceIds.oneTime.oneMonth,
-    },
-    price: "฿29,999",
-    duration: { paid: "1 month", total: "2 months" },
-    recurringInterval: { paid: "1 month", total: "2 months" },
-    features: [
-      "Get 1 month FREE",
-      "Priority Customer Support",
-      "Exclusive Access to New Features",
-      "Enhanced Privacy Controls",
-      "Verified Member Badge",
-    ],
-    pricePerMonth: "฿15,000/mo",
-  },
-  {
-    name: "3 Months",
-    priceIds: {
-      subscription: STRIPE.PLANS.priceIds.subscription.threeMonth,
-      oneTime: STRIPE.PLANS.priceIds.oneTime.threeMonth,
-    },
-    price: "฿34,999",
-    duration: { paid: "3 months", total: "6 months" },
-    recurringInterval: { paid: "3 months", total: "6 months" },
-    pricePerMonth: "≈ ฿5,833/mo",
-    features: [
-      "Get 3 months FREE",
-      "Priority Customer Support",
-      "Exclusive Access to New Features",
-      "Enhanced Privacy Controls",
-      "Verified Member Badge",
-    ],
-    popular: true,
-  },
-  {
-    name: "6 Months",
-    priceIds: {
-      subscription: STRIPE.PLANS.priceIds.subscription.sixMonth,
-      oneTime: STRIPE.PLANS.priceIds.oneTime.sixMonth,
-    },
-    price: "฿49,999",
-    duration: { paid: "6 months", total: "12 months" },
-    recurringInterval: { paid: "6 months", total: "12 months" },
-    pricePerMonth: "≈ ฿4,167/mo",
-    features: [
-      "Get 6 months FREE",
-      "Priority Customer Support",
-      "Exclusive Access to New Features",
-      "Enhanced Privacy Controls",
-      "Verified Member Badge",
-    ],
-  },
 ]
 
 function SimpleStepper({
@@ -149,18 +87,11 @@ function AuthPageContents() {
   const mode = searchParams.get("mode") || "login"
   const registrationStep =
     (searchParams.get("step") as
-      | "details"
-      | "verify-email"
-      | "location"
-      | "plans"
-      | "profile-setup"
-      | "password") || "details"
+      "details" | "verify-email" | "location" | "plans" | "password") ||
+    "details"
 
   const getEffectiveStep = () => {
-    if (
-      registrationStep === "profile-setup" ||
-      registrationStep === "password"
-    ) {
+    if (registrationStep === "password") {
       if (paymentStatus === "paid") {
         return registrationStep
       }
@@ -175,13 +106,7 @@ function AuthPageContents() {
   }
 
   const setRegistrationStep = (
-    newStep:
-      | "details"
-      | "verify-email"
-      | "location"
-      | "plans"
-      | "profile-setup"
-      | "password"
+    newStep: "details" | "verify-email" | "location" | "plans" | "password"
   ) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set("step", newStep)
@@ -195,7 +120,6 @@ function AuthPageContents() {
       phone: detailsForm.phone,
       nationality: locationForm.nationality,
       currentLocation: locationForm.currentLocation,
-      hobbies: profileSetupForm.hobbies,
       paymentStatus,
     }
 
@@ -283,10 +207,6 @@ function AuthPageContents() {
           currentLocation:
             decodedUserData.currentLocation || prev.currentLocation,
         }))
-        setProfileSetupForm((prev) => ({
-          ...prev,
-          hobbies: decodedUserData.hobbies || prev.hobbies,
-        }))
         if (decodedUserData.prefix) setPrefix(decodedUserData.prefix)
         if (decodedUserData.gender) setGender(decodedUserData.gender)
         if (decodedUserData.birthday)
@@ -339,13 +259,7 @@ function AuthPageContents() {
   }, [prefix, gender])
 
   const validateAndSetStep = (
-    step:
-      | "details"
-      | "verify-email"
-      | "location"
-      | "plans"
-      | "profile-setup"
-      | "password",
+    step: "details" | "verify-email" | "location" | "plans" | "password",
     schema: z.ZodObject<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
     data: any
   ) => {
@@ -374,10 +288,6 @@ function AuthPageContents() {
   const [locationForm, setLocationForm] = useState({
     nationality: "",
     currentLocation: "",
-  })
-  const [profileSetupForm, setProfileSetupForm] = useState({
-    avatar: null as File | null,
-    hobbies: "",
   })
   const [passwordForm, setPasswordForm] = useState({
     password: "",
@@ -411,11 +321,6 @@ function AuthPageContents() {
     currentLocation: z.string().min(2, "Current location is required."),
   })
 
-  const profileSetupSchema = z.object({
-    avatar: z.any().refine((file) => file, "Avatar is required."),
-    hobbies: z.string().min(3, "Please enter at least one hobby."),
-  })
-
   const passwordSchema = z
     .object({
       password: z.string().min(8, "Password must be at least 8 characters."),
@@ -436,15 +341,10 @@ function AuthPageContents() {
     code: verificationCode,
   }).success
   const isLocationFormValid = locationSchema.safeParse(locationForm).success
-  const isProfileSetupFormValid =
-    profileSetupSchema.safeParse(profileSetupForm).success
   const isPasswordFormValid = passwordSchema.safeParse(passwordForm).success
 
   useEffect(() => {
-    if (
-      registrationStep === "password" ||
-      registrationStep === "profile-setup"
-    ) {
+    if (registrationStep === "password") {
       // Don't show validation errors until the user has interacted with the fields.
       if (passwordForm.password === "" && passwordForm.confirmPassword === "") {
         setFormErrors({})
@@ -480,9 +380,8 @@ function AuthPageContents() {
         phone: detailsForm.phone,
         nationality: locationForm.nationality,
         currentLocation: locationForm.currentLocation,
-        hobbies: profileSetupForm.hobbies.split(",").map((h) => h.trim()),
         // avatar would be uploaded and a URL stored here
-        plan: JSON.parse(localStorage.getItem("selectedPlan") || "{}"),
+        plan: JSON.parse(localStorage.getItem("selectedPlan") || "{}").id,
       }
 
       try {
@@ -508,7 +407,7 @@ function AuthPageContents() {
       : plan.priceIds.oneTime
     const mode = isAutoRenew ? "subscription" : "payment"
 
-    sessionStorage.setItem("selectedPlan", JSON.stringify(plan))
+    localStorage.setItem("selectedPlan", JSON.stringify(plan))
 
     try {
       const response = await fetch("/api/create-checkout-session", {
@@ -526,8 +425,8 @@ function AuthPageContents() {
             ...locationForm,
           },
           mode,
-          autoRenew: isAutoRenew,
           plan: plan.name,
+          autoRenew: isAutoRenew,
         }),
       })
 
@@ -559,7 +458,7 @@ function AuthPageContents() {
       className="w-full"
     >
       <TabsList className="grid w-full grid-cols-3">
-        {plans.map((plan) => (
+        {PLANS.map((plan) => (
           <TabsTrigger
             key={plan.name}
             value={plan.name}
@@ -570,7 +469,7 @@ function AuthPageContents() {
           </TabsTrigger>
         ))}
       </TabsList>
-      {plans.map((plan) => (
+      {PLANS.map((plan) => (
         <TabsContent key={plan.name} value={plan.name}>
           <div
             className={clsx(
@@ -1269,105 +1168,6 @@ function AuthPageContents() {
                             View Full Details
                           </Button>
                         </div>
-                      </CardFooter>
-                    </Card>
-                  </motion.div>
-                )}
-                {registrationStep === "profile-setup" && (
-                  <motion.div
-                    key="register-profile-setup"
-                    variants={animationVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <Card>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle>Set Up Your Profile</CardTitle>
-                          <SimpleStepper
-                            steps={registrationSteps}
-                            currentStep={getEffectiveStep()}
-                          />
-                          {/* {paymentStatus === "paid" && (
-                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
-                              Payment Successful
-                            </Badge>
-                          )} */}
-                        </div>
-                        <CardDescription>
-                          Tell us more about you for better matchmaking.
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="avatar">Profile Picture</Label>
-                          <InputGroup className="items-center">
-                            <InputGroupAddon>
-                              <UploadCloud className="size-4" />
-                            </InputGroupAddon>
-                            <InputGroupInput
-                              id="avatar"
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) =>
-                                setProfileSetupForm({
-                                  ...profileSetupForm,
-                                  avatar: e.target.files
-                                    ? e.target.files[0]
-                                    : null,
-                                })
-                              }
-                              className="pt-1.5"
-                            />
-                          </InputGroup>
-                          {formErrors.avatar && (
-                            <p className="text-sm text-destructive">
-                              {formErrors.avatar}
-                            </p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="hobbies">
-                            Hobbies (comma-separated)
-                          </Label>
-                          <InputGroup>
-                            <InputGroupAddon>
-                              <Heart className="size-4" />
-                            </InputGroupAddon>
-                            <InputGroupInput
-                              id="hobbies"
-                              placeholder="e.g. Reading, Hiking, Cooking"
-                              value={profileSetupForm.hobbies}
-                              onChange={(e) =>
-                                setProfileSetupForm({
-                                  ...profileSetupForm,
-                                  hobbies: e.target.value,
-                                })
-                              }
-                            />
-                          </InputGroup>
-                          {formErrors.hobbies && (
-                            <p className="text-sm text-destructive">
-                              {formErrors.hobbies}
-                            </p>
-                          )}
-                        </div>
-                      </CardContent>
-                      <CardFooter>
-                        <Button
-                          className="btn-gradient w-full"
-                          disabled={!isProfileSetupFormValid}
-                          onClick={() =>
-                            validateAndSetStep(
-                              "password",
-                              profileSetupSchema,
-                              profileSetupForm
-                            )
-                          }
-                        >
-                          Next
-                        </Button>
                       </CardFooter>
                     </Card>
                   </motion.div>

@@ -1,3 +1,5 @@
+import { Plan } from "@/types"
+
 export const APP_INFO = {
   name: "Thai Soulmate",
   tagline: "1-2-1 Matchmaking",
@@ -46,3 +48,64 @@ export const STRIPE = {
     },
   },
 } as const
+
+export const PLANS: Plan[] = [
+  {
+    id: "1-month",
+    name: "1 Month",
+    priceIds: {
+      subscription: STRIPE.PLANS.priceIds.subscription.oneMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.oneMonth,
+    },
+    price: "฿29,999",
+    duration: { paid: "1 month", total: "2 months" },
+    recurringInterval: { paid: "1 month", total: "2 months" },
+    features: [
+      "Get 1 month FREE",
+      "Priority Customer Support",
+      "Exclusive Access to New Features",
+      "Enhanced Privacy Controls",
+      "Verified Member Badge",
+    ],
+    pricePerMonth: "฿15,000/mo",
+  },
+  {
+    id: "3-months",
+    name: "3 Months",
+    priceIds: {
+      subscription: STRIPE.PLANS.priceIds.subscription.threeMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.threeMonth,
+    },
+    price: "฿34,999",
+    duration: { paid: "3 months", total: "6 months" },
+    recurringInterval: { paid: "3 months", total: "6 months" },
+    pricePerMonth: "≈ ฿5,833/mo",
+    features: [
+      "Get 3 months FREE",
+      "Priority Customer Support",
+      "Exclusive Access to New Features",
+      "Enhanced Privacy Controls",
+      "Verified Member Badge",
+    ],
+    popular: true,
+  },
+  {
+    id: "6-months",
+    name: "6 Months",
+    priceIds: {
+      subscription: STRIPE.PLANS.priceIds.subscription.sixMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.sixMonth,
+    },
+    price: "฿49,999",
+    duration: { paid: "6 months", total: "12 months" },
+    recurringInterval: { paid: "6 months", total: "12 months" },
+    pricePerMonth: "≈ ฿4,167/mo",
+    features: [
+      "Get 6 months FREE",
+      "Priority Customer Support",
+      "Exclusive Access to New Features",
+      "Enhanced Privacy Controls",
+      "Verified Member Badge",
+    ],
+  },
+]

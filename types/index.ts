@@ -1,4 +1,5 @@
 export interface Plan {
+  id: string
   name: string
   priceIds: {
     subscription: string
@@ -8,7 +9,7 @@ export interface Plan {
   features: string[]
   popular?: boolean
   pricePerMonth?: string
-  duration:  {
+  duration: {
     paid: string
     total: string
   }

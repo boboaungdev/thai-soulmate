@@ -19,7 +19,7 @@ import {
   Flame,
 } from "lucide-react"
 import { UploadCloud } from "lucide-react"
-import { APP_INFO } from "@/constants"
+import { APP_INFO, STRIPE } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
 import {
@@ -68,8 +68,8 @@ const plans: Plan[] = [
   {
     name: "1 Month",
     priceIds: {
-      subscription: "price_1PgqYSBDI3S4a0gS3YJq2g3a",
-      oneTime: "price_1PgqYSBDI3S4a0gS4s8s6g7g",
+      subscription: STRIPE.PLANS.priceIds.subscription.oneMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.oneMonth,
     },
     price: "฿29,999",
     duration: { paid: "1 month", total: "2 months" },
@@ -86,8 +86,8 @@ const plans: Plan[] = [
   {
     name: "3 Months",
     priceIds: {
-      subscription: "price_1PgqZPBDI3S4a0gS1s2s3g4g",
-      oneTime: "price_1PgqZPBDI3S4a0gS5s6s7g8g",
+      subscription: STRIPE.PLANS.priceIds.subscription.threeMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.threeMonth,
     },
     price: "฿34,999",
     duration: { paid: "3 months", total: "6 months" },
@@ -105,8 +105,8 @@ const plans: Plan[] = [
   {
     name: "6 Months",
     priceIds: {
-      subscription: "price_1PgqaFBDI3S4a0gS9s0s1g2g",
-      oneTime: "price_1PgqaFBDI3S4a0gS3s4s5g6g",
+      subscription: STRIPE.PLANS.priceIds.subscription.sixMonth,
+      oneTime: STRIPE.PLANS.priceIds.oneTime.sixMonth,
     },
     price: "฿49,999",
     duration: { paid: "6 months", total: "12 months" },
@@ -219,6 +219,22 @@ function AuthPageContents() {
   const [selectedPlan, setSelectedPlan] = useState("3 Months")
 
   useEffect(() => {
+    const canceled = searchParams.get("canceled")
+    if (canceled) {
+      toast.error("Payment Canceled", {
+        description: "Your payment process was canceled. Please try again.",
+      })
+      // Clean up URL
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete("canceled")
+      params.delete("session_id")
+      router.replace(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      })
+    }
+  }, [searchParams, pathname, router])
+
+  useEffect(() => {
     const userDataFromUrl = searchParams.get("userData")
     if (userDataFromUrl) {
       try {
@@ -249,7 +265,7 @@ function AuthPageContents() {
         console.error("Failed to parse user data from URL", error)
       }
     }
-  }, [])
+  }, [searchParams])
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -479,6 +495,11 @@ function AuthPageContents() {
       })
 
       const { url, error } = await response.json()
+
+      if (!response.ok) {
+        console.error("Server error:", error)
+        throw new Error(error.message || "Failed to create checkout session.")
+      }
 
       if (error) {
         throw new Error(error)

@@ -5,12 +5,13 @@ import { BASE_URL } from "@/constants"
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { priceId, userData, mode } = body
+    const { priceId, userData, mode, autoRenew, plan } = body
 
-    if (!priceId || !userData || !mode) {
-      return new NextResponse("Price ID, user data, and mode are required", {
-        status: 400,
-      })
+    if (!priceId || !userData || !mode || autoRenew === undefined || !plan) {
+      return new NextResponse(
+        "Price ID, user data, mode, autoRenew, and plan are required",
+        { status: 400 }
+      )
     }
 
     const encodedUserData = Buffer.from(JSON.stringify(userData)).toString(
@@ -26,8 +27,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: mode,
-      success_url: `${BASE_URL}/auth?mode=register&step=profile-setup&userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${BASE_URL}/auth?mode=register&step=plans&userData=${encodedUserData}&canceled=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${BASE_URL}/auth?mode=register&step=profile-setup&userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
+      cancel_url: `${BASE_URL}/auth?mode=register&step=plans&userData=${encodedUserData}&canceled=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
     })
 
     return NextResponse.json({ url: checkoutSession.url })

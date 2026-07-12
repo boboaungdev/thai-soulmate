@@ -214,9 +214,41 @@ function AuthPageContents() {
   const [countdown, setCountdown] = useState(0)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
-  const [isAutoRenew, setIsAutoRenew] = useState(true)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
-  const [selectedPlan, setSelectedPlan] = useState("3 Months")
+
+  const [isAutoRenew, setIsAutoRenew] = useState(
+    searchParams.get("autoRenew") !== "false"
+  )
+  const [selectedPlan, setSelectedPlan] = useState(
+    searchParams.get("plan") || "3 Months"
+  )
+
+  const updateQueryParam = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set(key, value)
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
+  useEffect(() => {
+    updateQueryParam("autoRenew", isAutoRenew.toString())
+  }, [isAutoRenew])
+
+  useEffect(() => {
+    const success = searchParams.get("success")
+    const planName = searchParams.get("plan")
+    if (success && planName) {
+      toast.success("Payment Successful", {
+        description: `You have successfully purchased the ${planName} plan.`,
+      })
+      // Clean up URL
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete("success")
+      params.delete("session_id")
+      router.replace(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      })
+    }
+  }, [searchParams, pathname, router])
 
   useEffect(() => {
     const canceled = searchParams.get("canceled")
@@ -261,6 +293,9 @@ function AuthPageContents() {
           setBirthday(new Date(decodedUserData.birthday))
         if (decodedUserData.paymentStatus)
           setPaymentStatus(decodedUserData.paymentStatus)
+        if (searchParams.get("plan"))
+          setSelectedPlan(searchParams.get("plan") as string)
+        setIsAutoRenew(searchParams.get("autoRenew") !== "false")
       } catch (error) {
         console.error("Failed to parse user data from URL", error)
       }
@@ -491,6 +526,8 @@ function AuthPageContents() {
             ...locationForm,
           },
           mode,
+          autoRenew: isAutoRenew,
+          plan: plan.name,
         }),
       })
 
@@ -515,7 +552,10 @@ function AuthPageContents() {
   const PlanSelector = () => (
     <Tabs
       value={selectedPlan}
-      onValueChange={setSelectedPlan}
+      onValueChange={(value) => {
+        setSelectedPlan(value)
+        updateQueryParam("plan", value)
+      }}
       className="w-full"
     >
       <TabsList className="grid w-full grid-cols-3">

@@ -1,21 +1,12 @@
 "use client"
 import clsx from "clsx"
 import { useRouter, useSearchParams } from "next/navigation"
-import { z } from "zod"
 import { Flame } from "lucide-react"
-import { useState, useEffect, Suspense, Fragment } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { STRIPE } from "@/constants"
 import { MotionDiv } from "@/components/motion"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { AnimatePresence } from "framer-motion"
 import type { User, Plan } from "@/types"
@@ -90,11 +81,16 @@ export function PricingPageContents({
   const router = useRouter()
   const [expandedPlan, setExpandedPlan] = useState<string | null>(null)
   const searchParams = useSearchParams()
-
+  const isFromAuth = searchParams.get("mode") === "register"
   const userDataFromUrl = searchParams.get("userData")
   const [userData, setUserData] = useState<User | null>(embeddedUserData)
 
   useEffect(() => {
+    const autoRenew = searchParams.get("autoRenew")
+    if (autoRenew !== null) {
+      setIsAutoRenew(autoRenew === "true")
+    }
+
     if (isEmbedded && embeddedUserData) {
       setUserData(embeddedUserData)
     } else if (userDataFromUrl) {
@@ -105,160 +101,50 @@ export function PricingPageContents({
         console.error("Failed to parse user data from URL", error)
       }
     }
-  }, [userDataFromUrl])
+  }, [userDataFromUrl, isEmbedded, embeddedUserData])
 
-  const [showCancelDialog, setShowCancelDialog] = useState(false)
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
-
-  useEffect(() => {
-    const canceled = searchParams.get("canceled")
-    const sessionId = searchParams.get("session_id")
-
-    if (canceled && sessionId) {
-      const processedSessionId = sessionStorage.getItem(
-        "processed_stripe_session"
-      )
-
-      if (processedSessionId !== sessionId) {
-        setTimeout(() => {
-          setShowCancelDialog(true)
-          sessionStorage.setItem("processed_stripe_session", sessionId)
-        }, 0)
-      }
+  const handleChoosePlan = (plan: Plan) => {
+    if (isFromAuth) {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set("step", "plans")
+      params.set("plan", plan.name)
+      params.set("autoRenew", isAutoRenew.toString())
+      router.push(`/auth?${params.toString()}`)
+      return
     }
 
-    const success = searchParams.get("success")
-    if (success && sessionId) {
-      const processedSessionId = sessionStorage.getItem(
-        "processed_stripe_session"
-      )
-
-      if (processedSessionId !== sessionId) {
-        setTimeout(() => {
-          setShowSuccessDialog(true)
-          sessionStorage.setItem("processed_stripe_session", sessionId)
-        }, 0)
-      }
-    }
-  }, [searchParams])
-
-  const handleCloseDialog = () => {
-    setShowCancelDialog(false)
-    let newPath = window.location.pathname
-    if (userDataFromUrl) {
-      const params = new URLSearchParams({ userData: userDataFromUrl })
-      newPath = `${newPath}?${params.toString()}`
-    }
-
-    window.history.replaceState({}, "", newPath)
-  }
-
-  const handleCloseSuccessDialog = () => {
-    setShowSuccessDialog(false)
-    const planData = sessionStorage.getItem("selectedPlan")
-    if (userDataFromUrl && planData) {
-      try {
-        const decodedUserData = JSON.parse(atob(userDataFromUrl))
-        const selectedPlan = JSON.parse(planData)
-
-        const updatedUserData = {
-          ...decodedUserData,
-          plan: selectedPlan,
-          paymentStatus: "paid",
-        }
-
-        const encodedUserData = btoa(JSON.stringify(updatedUserData))
-        router.push(
-          `/auth?mode=register&step=password&userData=${encodedUserData}`
-        )
-        sessionStorage.removeItem("selectedPlan")
-      } catch (error) {
-        console.error("Failed to process user and plan data", error)
-        window.history.replaceState({}, "", window.location.pathname)
-      }
-    }
-  }
-
-  const handleChoosePlan = async (plan: Plan) => {
-    const priceId = isAutoRenew
-      ? plan.priceIds.subscription
-      : plan.priceIds.oneTime
-    const mode = isAutoRenew ? "subscription" : "payment"
-
-    sessionStorage.setItem("selectedPlan", JSON.stringify(plan))
-
-    try {
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ priceId, userData, mode }),
-      })
-
-      const { url, error } = await response.json()
-
-      if (error) {
-        throw new Error(error)
-      }
-
-      router.push(url)
-    } catch (error) {
-      console.error("Failed to create checkout session:", error)
-      alert("Failed to proceed to checkout. Please try again.")
-    }
+    // If the user is not in the registration flow (i.e., they landed on
+    // /pricing directly), send them to the start of the auth flow without
+    // any query parameters.
+    router.push("/auth")
   }
 
   return (
     <section className="bg-muted/50 py-16 sm:py-20 dark:bg-muted/30">
-      <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Payment Canceled</DialogTitle>
-            <DialogDescription>
-              Your payment process was canceled. You have not been charged. If
-              you&apos;d like to try again, please select a plan.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={handleCloseDialog} className="btn-gradient">
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Payment Successful!</DialogTitle>
-            <DialogDescription>
-              Thank you for your purchase! Your VIP membership is now active.
-              You can now enjoy all the exclusive benefits.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={handleCloseSuccessDialog} className="btn-gradient">
-              Great!
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       <div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {!isEmbedded && (
+          {!isEmbedded && !isFromAuth && (
             <>
               <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
                 VIP Membership
               </h1>
               <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-                {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}
                 Unlock exclusive features and get more matches!
+              </p>
+            </>
+          )}
+          {isFromAuth && (
+            <>
+              <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
+                VIP Membership Details
+              </h1>
+              <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+                {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}
+                Here are the full details of our VIP plans.
               </p>
             </>
           )}
@@ -354,11 +240,7 @@ export function PricingPageContents({
 
               <button
                 onClick={() => {
-                  if (userData) {
-                    handleChoosePlan(plan)
-                  } else {
-                    router.push("/auth")
-                  }
+                  handleChoosePlan(plan)
                 }}
                 className={clsx(
                   "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300",

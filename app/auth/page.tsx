@@ -1259,7 +1259,12 @@ function AuthPageContents() {
                           <Button
                             variant="link"
                             className="p-0 text-muted-foreground"
-                            onClick={() => router.push("/pricing")}
+                            onClick={() => {
+                              const params = new URLSearchParams(
+                                searchParams.toString()
+                              )
+                              router.push(`/pricing?${params.toString()}`)
+                            }}
                           >
                             View Full Details
                           </Button>

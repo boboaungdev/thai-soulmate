@@ -183,9 +183,29 @@ function AuthPageContents() {
       | "profile-setup"
       | "password"
   ) => {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams.toString())
     params.set("step", newStep)
-    router.push(`${pathname}?${params.toString()}`)
+
+    const currentUserData = {
+      prefix,
+      name: detailsForm.name,
+      gender,
+      birthday: birthday?.toISOString(),
+      email: detailsForm.email,
+      phone: detailsForm.phone,
+      nationality: locationForm.nationality,
+      currentLocation: locationForm.currentLocation,
+      hobbies: profileSetupForm.hobbies,
+      paymentStatus,
+    }
+
+    const filteredUserData = Object.fromEntries(
+      Object.entries(currentUserData).filter(([, v]) => v != null && v !== "")
+    )
+
+    const encodedUserData = btoa(JSON.stringify(filteredUserData))
+    params.set("userData", encodedUserData)
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   const [prefix, setPrefix] = useState("Mr.")
@@ -195,6 +215,39 @@ function AuthPageContents() {
   const [isResendDisabled, setIsResendDisabled] = useState(true)
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const userDataFromUrl = searchParams.get("userData")
+    if (userDataFromUrl) {
+      try {
+        const decodedUserData = JSON.parse(atob(userDataFromUrl))
+        setDetailsForm((prev) => ({
+          ...prev,
+          name: decodedUserData.name || prev.name,
+          email: decodedUserData.email || prev.email,
+          phone: decodedUserData.phone || prev.phone,
+        }))
+        setLocationForm((prev) => ({
+          ...prev,
+          nationality: decodedUserData.nationality || prev.nationality,
+          currentLocation:
+            decodedUserData.currentLocation || prev.currentLocation,
+        }))
+        setProfileSetupForm((prev) => ({
+          ...prev,
+          hobbies: decodedUserData.hobbies || prev.hobbies,
+        }))
+        if (decodedUserData.prefix) setPrefix(decodedUserData.prefix)
+        if (decodedUserData.gender) setGender(decodedUserData.gender)
+        if (decodedUserData.birthday)
+          setBirthday(new Date(decodedUserData.birthday))
+        if (decodedUserData.paymentStatus)
+          setPaymentStatus(decodedUserData.paymentStatus)
+      } catch (error) {
+        console.error("Failed to parse user data from URL", error)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -362,37 +415,6 @@ function AuthPageContents() {
       }
     }
   }, [passwordForm, registrationStep])
-
-  useEffect(() => {
-    const userDataFromUrl = searchParams.get("userData")
-    if (
-      userDataFromUrl &&
-      (registrationStep === "password" || registrationStep === "profile-setup")
-    ) {
-      try {
-        const decodedUserData = JSON.parse(atob(userDataFromUrl))
-        setDetailsForm({
-          name: decodedUserData.name || "",
-          email: decodedUserData.email || "",
-          phone: decodedUserData.phone || "",
-        })
-        setPaymentStatus(decodedUserData.paymentStatus || null)
-        setLocationForm({
-          nationality: decodedUserData.nationality || "",
-          currentLocation: decodedUserData.currentLocation || "",
-        })
-        // Other states like prefix, gender, birthday can be set here if needed
-      } catch (error) {
-        console.error("Failed to parse user data from URL", error)
-      }
-    }
-  }, [
-    searchParams,
-    registrationStep,
-    setDetailsForm,
-    setLocationForm,
-    setPaymentStatus,
-  ])
 
   const handleFinalRegistration = () => {
     if (isPasswordFormValid) {

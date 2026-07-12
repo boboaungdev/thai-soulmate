@@ -30,6 +30,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { RegistrationStepper } from "@/components/registration-stepper"
 import {
   InputGroup,
@@ -50,16 +51,15 @@ import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge"
 import { PricingPageContents } from "../pricing/page"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Plan } from "@/types"
 
 const registrationSteps = [
   { id: "details", name: "Details" },
-  { id: "verify-email", name: "Verification" },
   { id: "location", name: "Location" },
-  { id: "plans", name: "Choose Plan" },
+  { id: "verify-email", name: "Verification" },
+  { id: "plans", name: "Plans" },
   { id: "profile-setup", name: "Profile Setup" },
   { id: "password", name: "Password" },
 ]
@@ -121,6 +121,26 @@ const plans: Plan[] = [
     ],
   },
 ]
+
+function SimpleStepper({
+  steps,
+  currentStep,
+}: {
+  steps: { id: string; name: string }[]
+  currentStep: string
+}) {
+  const currentStepIndex = steps.findIndex((step) => step.id === currentStep)
+
+  if (currentStepIndex === -1) {
+    return null
+  }
+
+  return (
+    <Badge variant="outline" className="font-medium">
+      {`Step ${currentStepIndex + 1} of ${steps.length}`}
+    </Badge>
+  )
+}
 
 function AuthPageContents() {
   const router = useRouter()
@@ -523,14 +543,6 @@ function AuthPageContents() {
             <p className="mt-3 text-lg text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
-            {mode === "register" && (
-              <div className="mt-8 w-full">
-                <RegistrationStepper
-                  steps={registrationSteps}
-                  currentStep={getEffectiveStep()}
-                />
-              </div>
-            )}
           </div>
         </motion.div>
         <div className="w-full max-w-md justify-self-center lg:justify-self-end">
@@ -556,14 +568,6 @@ function AuthPageContents() {
             <p className="mt-2 text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
-            {mode === "register" && (
-              <div className="mt-6 w-full">
-                <RegistrationStepper
-                  steps={registrationSteps}
-                  currentStep={getEffectiveStep()}
-                />
-              </div>
-            )}
           </motion.div>
           <AnimatePresence mode="wait">
             {mode === "login" ? (
@@ -683,7 +687,13 @@ function AuthPageContents() {
                   >
                     <Card>
                       <CardHeader>
-                        <CardTitle>Register</CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Register</CardTitle>
+                          <SimpleStepper
+                            steps={registrationSteps}
+                            currentStep={getEffectiveStep()}
+                          />
+                        </div>
                         <CardDescription>
                           Create an account to start your journey with us.
                         </CardDescription>
@@ -842,7 +852,7 @@ function AuthPageContents() {
                           disabled={!isDetailsFormValid}
                           onClick={() =>
                             validateAndSetStep("location", detailsSchema, {
-                              ...detailsForm, // This should be verify-email
+                              ...detailsForm,
                               birthday,
                             })
                           }
@@ -872,7 +882,13 @@ function AuthPageContents() {
                   >
                     <Card>
                       <CardHeader>
-                        <CardTitle>Verify Your Email</CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Verify Your Email</CardTitle>
+                          <SimpleStepper
+                            steps={registrationSteps}
+                            currentStep={getEffectiveStep()}
+                          />
+                        </div>
                         <CardDescription>
                           We&apos;ve sent a verification code to your email. if
                           not arrive, check also in spam folder.
@@ -961,11 +977,11 @@ function AuthPageContents() {
                         <div className="flex w-full items-center justify-between text-sm">
                           <Button
                             variant="link"
-                            className="flex items-center p-0 text-muted-foreground" //
-                            onClick={() => setRegistrationStep("details")}
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
                           >
                             <ChevronLeft className="mr-1 size-4" />
-                            Back to location
+                            Back
                           </Button>
                           <Button
                             variant="link"
@@ -992,7 +1008,15 @@ function AuthPageContents() {
                   >
                     <Card>
                       <CardHeader>
-                        <CardTitle>Almost there</CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Location Details</CardTitle>
+                          <div className="mb-4 pt-2">
+                            <SimpleStepper
+                              steps={registrationSteps}
+                              currentStep={getEffectiveStep()}
+                            />
+                          </div>
+                        </div>
                         <CardDescription>
                           Please provide your location details to complete your
                           profile.
@@ -1065,7 +1089,7 @@ function AuthPageContents() {
                           disabled={!isLocationFormValid}
                           onClick={() => {
                             validateAndSetStep(
-                              "plans",
+                              "verify-email",
                               locationSchema,
                               locationForm
                             )
@@ -1077,10 +1101,10 @@ function AuthPageContents() {
                           <Button
                             variant="link"
                             className="flex items-center p-0 text-muted-foreground"
-                            onClick={() => setRegistrationStep("details")}
+                            onClick={() => router.back()}
                           >
                             <ChevronLeft className="mr-1 size-4" />
-                            Back to details
+                            Back
                           </Button>
                         </div>
                       </CardFooter>
@@ -1097,7 +1121,13 @@ function AuthPageContents() {
                   >
                     <Card>
                       <CardHeader>
-                        <CardTitle>Choose Your Plan</CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Choose Your Plan</CardTitle>
+                          <SimpleStepper
+                            steps={registrationSteps}
+                            currentStep={getEffectiveStep()}
+                          />
+                        </div>
                         <CardDescription>
                           Select a VIP membership to unlock exclusive features.
                         </CardDescription>
@@ -1110,10 +1140,10 @@ function AuthPageContents() {
                           <Button
                             variant="link"
                             className="flex items-center p-0 text-muted-foreground"
-                            onClick={() => setRegistrationStep("verify-email")}
+                            onClick={() => router.back()}
                           >
                             <ChevronLeft className="mr-1 size-4" />
-                            Back to verification
+                            Back
                           </Button>
                           <Button
                             variant="link"
@@ -1139,11 +1169,15 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>Set Up Your Profile</CardTitle>
-                          {paymentStatus === "paid" && (
+                          <SimpleStepper
+                            steps={registrationSteps}
+                            currentStep={getEffectiveStep()}
+                          />
+                          {/* {paymentStatus === "paid" && (
                             <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
                               Payment Successful
                             </Badge>
-                          )}
+                          )} */}
                         </div>
                         <CardDescription>
                           Tell us more about you for better matchmaking.
@@ -1234,11 +1268,15 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>Set Your Password</CardTitle>
-                          {paymentStatus === "paid" && (
+                          <SimpleStepper
+                            steps={registrationSteps}
+                            currentStep={getEffectiveStep()}
+                          />
+                          {/* {paymentStatus === "paid" && (
                             <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
                               Payment Successful
                             </Badge>
-                          )}
+                          )} */}
                         </div>
                         <CardDescription>
                           Just one last step to create your account.

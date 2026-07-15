@@ -417,11 +417,11 @@ export function RegisterInterestForm() {
                     <FormLabel>How did you hear about us?</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      // defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a source" />
+                        <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                          <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

@@ -108,7 +108,7 @@ export function NavBar() {
             className="size-10 shrink-0 rounded-2xl object-cover sm:size-11"
             priority
           />
-          <div className="min-w-0">
+          <div className="min-w-0 text-center">
             <AppName className="truncate text-base font-semibold sm:text-lg" />
             <p className="truncate text-xs text-muted-foreground">
               {APP_INFO.tagline}

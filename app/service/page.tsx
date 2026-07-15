@@ -128,7 +128,7 @@ export default function ServicePage() {
                   ladies will the most suitable.
                 </li>
                 <li>
-                  Profiles will be sent the member first for approval and then
+                  Profiles will be sent to the member first for approval and then
                   the members profile will be forwarded to the ladies.
                 </li>
                 <li>

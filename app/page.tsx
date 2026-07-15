@@ -44,39 +44,45 @@ export default function HomePage() {
             className="flex max-w-md flex-col items-center space-y-6 text-center"
           >
             <>
-              <Image
-                src="/logo.png"
-                alt={`${APP_INFO.name} Logo`}
-                width={150}
-                height={150}
-                className="mb-4 h-auto w-auto object-contain"
-              />
-              <AppName className="text-3xl font-bold sm:text-4xl md:text-5xl" />
-              <div className="space-y-0">
-                <p className="text-lg font-bold text-white/90 md:text-xl">
-                  <span className="text-gradient">{APP_INFO.tagline}</span>
-                </p>
+  <Image
+    src="/logo.png"
+    alt={`${APP_INFO.name} Logo`}
+    width={150}
+    height={150}
+    className="h-auto w-auto object-contain"
+  />
 
-                <p className="text-lg font-bold md:text-xl">
-                  <span className="text-gradient">
-                    {APP_INFO.secondaryTagline}
-                  </span>
-                </p>
-              </div>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Button asChild size="lg" className="btn-gradient">
-                  <Link href="#register-interest">Register Interest</Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="bg-transparent text-white transition-opacity hover:bg-white/10 hover:opacity-100"
-                >
-                  <Link href="/service">Learn More</Link>
-                </Button>
-              </div>
-            </>
+  <div className="space-y-4">
+    <AppName className="text-3xl font-bold sm:text-4xl md:text-4xl" />
+
+    <div className="space-y-0">
+      <p className="text-lg font-bold text-white/90 md:text-xl">
+        <span className="text-gradient">{APP_INFO.tagline}</span>
+      </p>
+
+      <p className="text-lg font-bold md:text-xl">
+        <span className="text-gradient whitespace-pre-line">
+          {APP_INFO.secondaryTagline}
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <div className="flex flex-wrap justify-center gap-4">
+    <Button asChild size="lg" className="btn-gradient">
+      <Link href="#register-interest">Register Interest</Link>
+    </Button>
+
+    <Button
+      asChild
+      size="lg"
+      variant="outline"
+      className="bg-transparent text-white transition-opacity hover:bg-white/10 hover:opacity-100"
+    >
+      <Link href="/service">Learn More</Link>
+    </Button>
+  </div>
+</>
           </MotionDiv>
         </div>
       </section>

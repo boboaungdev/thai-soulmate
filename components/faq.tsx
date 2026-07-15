@@ -74,12 +74,6 @@ const faqs = [
     answer:
       "We offer a bespoke service tailored to each client's unique needs. Our fees reflect the comprehensive, one-to-one attention and professional expertise you receive. For a detailed consultation and a personalized quote, please register your interest, and one of our matchmakers will be in touch.",
   },
-  {
-    id: "privacy-and-data",
-    question: "Is my privacy and data secure?",
-    answer:
-      "Absolutely. Confidentiality is paramount to our service. Your personal information is handled with the utmost discretion and is only shared with potential matches after we have received your explicit consent. We never post profiles publicly.",
-  },
 ]
 
 export function Faq() {

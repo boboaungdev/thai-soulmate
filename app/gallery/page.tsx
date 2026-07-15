@@ -8,7 +8,7 @@ export default function GalleryPage() {
         <div className="mx-auto w-full max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold tracking-tighter md:text-5xl">
-              Meet Our Members
+             Meet Some of Our Members
             </h1>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
               Explore the profiles of our vibrant community. Your next

@@ -60,14 +60,13 @@ export default function AboutPage() {
               <p className="text-muted-foreground md:text-xl">
                 <AppName className="inline font-bold" />
                 &nbsp;is a personalised matchmaking service dedicated to
-                creating a genuine, meaningful connection between Thai women and
-                YOU.
+                creating a genuine, meaningful connection between YOU and your future partner.
               </p>
 
               <p className="text-muted-foreground md:text-xl">
                 <AppName className="inline font-bold" />
                 &nbsp;takes the time to understand each individual&apos;s
-                values, lifestyle, and relationship goals to connect you with
+                values, lifestyle, and relationship goals to connect YOU with
                 your future life partner.
               </p>
 

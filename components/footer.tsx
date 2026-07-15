@@ -40,12 +40,12 @@ export function Footer() {
                 height={72}
                 className="size-11 shrink-0 rounded-2xl object-cover"
               />
-              <div className="min-w-0">
-                <AppName className="truncate text-xl font-semibold" />
+              <div className="min-w-0 text-center">
+                <AppName className="truncate text-base font-semibold" />
                 <p className="truncate text-sm text-muted-foreground">
                   {APP_INFO.tagline}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground whitespace-pre-line">
                   {APP_INFO.secondaryTagline}
                 </p>
               </div>

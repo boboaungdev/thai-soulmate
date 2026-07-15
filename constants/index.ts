@@ -2,9 +2,9 @@ import { Plan } from "@/types"
 
 export const APP_INFO = {
   name: "Thai Soulmate",
-  tagline: "1-2-1 Matchmaking",
+  tagline: "1-2-1 Matchmaking Service",
   secondaryTagline:
-    "Real People. Real Relationships. Personally Matched in Thailand.",
+    "Real People. Real Relationships.\nPersonally Matched in Thailand.",
   companyName: "Thai Soulmate Co., Ltd.",
 } as const
 

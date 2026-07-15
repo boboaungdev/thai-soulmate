@@ -28,42 +28,50 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
+import { Textarea } from "@/components/ui/textarea"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
 import { MotionDiv } from "./motion"
 
-const formSchema = z.object({
-  prefix: z
-    .string()
-    .refine((val) => ["Mr.", "Ms.", "Mrs.", "Dr."].includes(val), {
-      message: "Please select a prefix.",
+const formSchema = z
+  .object({
+    prefix: z
+      .string()
+      .refine((val) => ["Mr.", "Ms.", "Mrs.", "Dr."].includes(val), {
+        message: "Please select a prefix.",
+      }),
+    name: z.string().min(2, {
+      message: "Name must be at least 2 characters.",
     }),
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  birthday: z.date({
-    message: "A date of birth is required.",
-  }),
-  gender: z.string().refine((val) => ["Male", "Female"].includes(val), {
-    message: "Please select a gender.",
-  }),
-  nationality: z.string().min(2, {
-    message: "Nationality must be at least 2 characters.",
-  }),
-  currentLocation: z.string().min(2, {
-    message: "Location must be at least 2 characters.",
-  }),
-  email: z.string().email(),
-  phone: z
-    .string()
-    .regex(/^\+\d+$/, {
-      message:
-        "Phone number must start with a + sign and contain only digits thereafter.",
-    })
-    .min(10, {
-      message: "Phone number must be at least 10 characters.",
+    birthday: z.date({
+      message: "A date of birth is required.",
     }),
-})
+    gender: z.string().refine((val) => ["Male", "Female"].includes(val), {
+      message: "Please select a gender.",
+    }),
+    nationality: z.string().min(2, {
+      message: "Nationality must be at least 2 characters.",
+    }),
+    currentLocation: z.string().min(2, {
+      message: "Location must be at least 2 characters.",
+    }),
+    email: z.string().email(),
+    phone: z
+      .string()
+      .regex(/^\+\d+$/, {
+        message:
+          "Phone number must start with a + sign and contain only digits thereafter.",
+      })
+      .min(10, {
+        message: "Phone number must be at least 10 characters.",
+      }),
+    source: z.string().optional(),
+    otherSource: z.string().optional(),
+  })
+  .refine((data) => data.source !== "Other" || !!data.otherSource, {
+    message: "Please specify the other source.",
+    path: ["otherSource"],
+  })
 
 export function RegisterInterestForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -77,6 +85,8 @@ export function RegisterInterestForm() {
       currentLocation: "",
       email: "",
       phone: "",
+      source: "",
+      otherSource: "",
     },
   })
 
@@ -92,6 +102,11 @@ export function RegisterInterestForm() {
   const gender = useWatch({
     control: form.control,
     name: "gender",
+  })
+
+  const source = useWatch({
+    control: form.control,
+    name: "source",
   })
 
   useEffect(() => {
@@ -297,6 +312,35 @@ export function RegisterInterestForm() {
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Mail className="size-4" />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        type="email"
+                        placeholder="your@example.com"
+                        {...field}
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </MotionDiv>
+          <MotionDiv
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -327,10 +371,7 @@ export function RegisterInterestForm() {
                         <InputGroupAddon>
                           <MapPin className="size-4" />
                         </InputGroupAddon>
-                        <InputGroupInput
-                          placeholder="Bangkok, Thailand"
-                          {...field}
-                        />
+                        <InputGroupInput placeholder="Thailand" {...field} />
                       </InputGroup>
                     </FormControl>
                     <FormMessage />
@@ -343,31 +384,9 @@ export function RegisterInterestForm() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
           >
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Mail className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          type="email"
-                          placeholder="your@example.com"
-                          {...field}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="phone"
@@ -390,13 +409,74 @@ export function RegisterInterestForm() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="source"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>How did you hear about us?</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a source" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Search Engine">
+                          Search Engine (Google, Bing, etc.)
+                        </SelectItem>
+                        <SelectItem value="Social Media">
+                          Social Media (Facebook, Instagram, etc.)
+                        </SelectItem>
+                        <SelectItem value="Friend or Family">
+                          Friend or Family
+                        </SelectItem>
+                        <SelectItem value="Advertisement">
+                          Advertisement
+                        </SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </MotionDiv>
+
+          {source === "Other" && (
+            <MotionDiv
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <FormField
+                control={form.control}
+                name="otherSource"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Please specify</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Tell us where you heard about us"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </MotionDiv>
+          )}
+
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
           >
             <Button
               type="submit"

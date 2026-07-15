@@ -29,7 +29,8 @@ export async function GET() {
             },
           ])
       ).values()
-    ).sort((a, b) => a.nationality.localeCompare(b.nationality))
+    ).sort((a: any, b: any) => a.name.localeCompare(b.name))
+      .sort((a: any, b: any) => a.nationality.localeCompare(b.nationality))
 
     return NextResponse.json(countries)
   } catch (error) {

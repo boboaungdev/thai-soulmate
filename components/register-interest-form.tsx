@@ -55,15 +55,17 @@ const formSchema = z
     currentLocation: z.string().min(2, {
       message: "Location must be at least 2 characters.",
     }),
-    email: z.string().email(),
+    email: z.email(),
+    phoneCountry: z.string().min(1, {
+      message: "Please select country code.",
+    }),
     phone: z
       .string()
-      .regex(/^\+\d+$/, {
-        message:
-          "Phone number must start with a + sign and contain only digits thereafter.",
+      .regex(/^\d+$/, {
+        message: "Phone number must contain only digits.",
       })
-      .min(10, {
-        message: "Phone number must be at least 10 characters.",
+      .min(6, {
+        message: "Phone number is too short.",
       }),
     source: z.string().min(1, {
       message: "Please select how you heard about us.",
@@ -82,10 +84,12 @@ export function RegisterInterestForm() {
     defaultValues: {
       prefix: "Mr.",
       name: "",
+      birthday: undefined,
       gender: "Male",
       nationality: "",
       currentLocation: "",
       email: "",
+      phoneCountry: "TH",
       phone: "",
       source: "",
       otherSource: "",
@@ -389,12 +393,12 @@ export function RegisterInterestForm() {
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="h-8 rounded-lg border border-input bg-background">
+                          <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
                             <SelectValue placeholder="Select nationality" />
                           </SelectTrigger>
                         </FormControl>
 
-                        <SelectContent className="max-h-80">
+                        <SelectContent className="max-h-80 w-[var(--radix-select-trigger-width)]">
                           {loadingCountries ? (
                             <SelectItem value="loading" disabled>
                               Loading countries...
@@ -428,12 +432,12 @@ export function RegisterInterestForm() {
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="h-8 rounded-lg border border-input bg-background">
+                          <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
                             <SelectValue placeholder="Select current location" />
                           </SelectTrigger>
                         </FormControl>
 
-                        <SelectContent className="max-h-80">
+                        <SelectContent className="max-h-80 w-[var(--radix-select-trigger-width)]">
                           {loadingCountries ? (
                             <SelectItem value="loading" disabled>
                               Loading countries...
@@ -464,28 +468,74 @@ export function RegisterInterestForm() {
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone</FormLabel>
-                    <FormControl>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Phone className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          type="tel"
-                          placeholder="+66 123 456 789"
-                          {...field}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex gap-4">
+                {/* Country code */}
+                <FormField
+                  control={form.control}
+                  name="phoneCountry"
+                  render={({ field }) => (
+                    <FormItem className="w-[100px]">
+                      <FormLabel>Phone</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                        <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                            <SelectValue>
+                              {field.value &&
+                                `+${
+                                  countries.find(
+                                    (country) => country.code === field.value
+                                  )?.callCode
+                                }`}
+                            </SelectValue>
+                          </SelectTrigger>
+
+                          <SelectContent className="max-h-80">
+                            {countries.map((country) => (
+                              <SelectItem
+                                key={country.code}
+                                value={country.code}
+                              >
+                                {country.flag} {country.code} (+
+                                {country.callCode})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {/* Phone number */}
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel className="invisible">Phone</FormLabel>
+
+                      <FormControl>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <Phone className="size-4" />
+                          </InputGroupAddon>
+
+                          <InputGroupInput
+                            type="tel"
+                            placeholder="123456789"
+                            {...field}
+                          />
+                        </InputGroup>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="source"
@@ -494,11 +544,11 @@ export function RegisterInterestForm() {
                     <FormLabel>How did you hear about us?</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                        <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
                           <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="w-[var(--radix-select-trigger-width)]">
                         <SelectItem value="Search Engine">
                           Search Engine (Google, Bing, etc.)
                         </SelectItem>

@@ -65,7 +65,9 @@ const formSchema = z
       .min(10, {
         message: "Phone number must be at least 10 characters.",
       }),
-    source: z.string().optional(),
+    source: z.string().min(1, {
+      message: "Please select how you heard about us.",
+    }),
     otherSource: z.string().optional(),
   })
   .refine((data) => data.source !== "Other" || !!data.otherSource, {
@@ -415,10 +417,7 @@ export function RegisterInterestForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>How did you hear about us?</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      // defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
                           <SelectValue placeholder="Select an option" />
@@ -480,7 +479,7 @@ export function RegisterInterestForm() {
           >
             <Button
               type="submit"
-              disabled={!form.formState.isValid || isPending}
+              disabled={isPending}
               className="w-full bg-gradient-to-r from-[#cfa14f] via-[#cb5d7a] to-[#cb5d7a] text-white"
             >
               {isPending ? (

@@ -111,6 +111,39 @@ export function RegisterInterestForm() {
     name: "source",
   })
 
+  const [countries, setCountries] = useState<
+    {
+      name: string
+      flag: string
+      code: string
+      nationality: string
+      callCode: string
+    }[]
+  >([])
+  const [loadingCountries, setLoadingCountries] = useState(true)
+
+  useEffect(() => {
+    async function fetchCountries() {
+      try {
+        const res = await fetch("/api/register-interest/countries")
+
+        if (!res.ok) {
+          throw new Error("Failed loading countries")
+        }
+
+        const data = await res.json()
+
+        setCountries(data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoadingCountries(false)
+      }
+    }
+
+    fetchCountries()
+  }, [])
+
   useEffect(() => {
     if (prefix === "Mr." && gender !== "Male") {
       setValue("gender", "Male", { shouldValidate: true })
@@ -351,12 +384,33 @@ export function RegisterInterestForm() {
                   <FormItem>
                     <FormLabel>Nationality</FormLabel>
                     <FormControl>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Home className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput placeholder="Thai" {...field} />
-                      </InputGroup>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="h-8 rounded-lg border border-input bg-background">
+                            <SelectValue placeholder="Select nationality" />
+                          </SelectTrigger>
+                        </FormControl>
+
+                        <SelectContent className="max-h-80">
+                          {loadingCountries ? (
+                            <SelectItem value="loading" disabled>
+                              Loading countries...
+                            </SelectItem>
+                          ) : (
+                            countries.map((country) => (
+                              <SelectItem
+                                key={country.code}
+                                value={country.nationality}
+                              >
+                                {country.flag} {country.nationality}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -369,12 +423,33 @@ export function RegisterInterestForm() {
                   <FormItem>
                     <FormLabel>Current Location</FormLabel>
                     <FormControl>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <MapPin className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput placeholder="Thailand" {...field} />
-                      </InputGroup>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="h-8 rounded-lg border border-input bg-background">
+                            <SelectValue placeholder="Select current location" />
+                          </SelectTrigger>
+                        </FormControl>
+
+                        <SelectContent className="max-h-80">
+                          {loadingCountries ? (
+                            <SelectItem value="loading" disabled>
+                              Loading countries...
+                            </SelectItem>
+                          ) : (
+                            countries.map((country) => (
+                              <SelectItem
+                                key={country.code}
+                                value={country.name}
+                              >
+                                {country.flag} {country.name}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -563,6 +563,12 @@ export function RegisterInterestForm() {
                             type="tel"
                             placeholder="123456789"
                             {...field}
+                            onChange={(e) => {
+                              const { value } = e.target
+                              if (/^\d*$/.test(value)) {
+                                field.onChange(value)
+                              }
+                            }}
                           />
                         </InputGroup>
                       </FormControl>

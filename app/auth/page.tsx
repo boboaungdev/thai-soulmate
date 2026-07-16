@@ -1,6 +1,5 @@
 "use client"
 
-import clsx from "clsx"
 import { z } from "zod"
 import Image from "next/image"
 import {
@@ -11,13 +10,10 @@ import {
   EyeOff,
   Cake,
   Phone,
-  Home,
-  MapPin,
   ChevronLeft,
   KeyRound,
-  Flame,
 } from "lucide-react"
-import { APP_INFO, PLANS } from "@/constants"
+import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
 import {
@@ -41,7 +37,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, forwardRef, useEffect, Suspense } from "react"
@@ -49,14 +44,10 @@ import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { Plan } from "@/types"
 
 const registrationSteps = [
-  { id: "details", name: "Details" },
-  { id: "location", name: "Location" },
+  { id: "details", name: "Details & Location" },
   { id: "verify-email", name: "Verification" },
-  { id: "plans", name: "Plans" },
   { id: "password", name: "Password" },
 ]
 
@@ -86,18 +77,8 @@ function AuthPageContents() {
   const searchParams = useSearchParams()
   const mode = searchParams.get("mode") || "login"
   const registrationStep =
-    (searchParams.get("step") as
-      "details" | "verify-email" | "location" | "plans" | "password") ||
+    (searchParams.get("step") as "details" | "verify-email" | "password") ||
     "details"
-
-  const getEffectiveStep = () => {
-    if (registrationStep === "password") {
-      if (paymentStatus === "paid") {
-        return registrationStep
-      }
-    }
-    return registrationStep
-  }
 
   const setMode = (newMode: "login" | "register" | "forgot-password") => {
     const params = new URLSearchParams(searchParams)
@@ -106,29 +87,11 @@ function AuthPageContents() {
   }
 
   const setRegistrationStep = (
-    newStep: "details" | "verify-email" | "location" | "plans" | "password"
+    newStep: "details" | "verify-email" | "password"
   ) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set("step", newStep)
-
-    const currentUserData = {
-      prefix,
-      name: detailsForm.name,
-      gender,
-      birthday: birthday?.toISOString(),
-      email: detailsForm.email,
-      phone: detailsForm.phone,
-      nationality: locationForm.nationality,
-      currentLocation: locationForm.currentLocation,
-      paymentStatus,
-    }
-
-    const filteredUserData = Object.fromEntries(
-      Object.entries(currentUserData).filter(([, v]) => v != null && v !== "")
-    )
-
-    const encodedUserData = btoa(JSON.stringify(filteredUserData))
-    params.set("userData", encodedUserData)
+    params.delete("userData")
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
@@ -137,89 +100,42 @@ function AuthPageContents() {
   const [birthday, setBirthday] = useState<Date>()
   const [countdown, setCountdown] = useState(0)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
-  const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
-  const [isAutoRenew, setIsAutoRenew] = useState(
-    searchParams.get("autoRenew") !== "false"
-  )
-  const [selectedPlan, setSelectedPlan] = useState(
-    searchParams.get("plan") || "3 Months"
-  )
-
-  const updateQueryParam = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set(key, value)
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
-  }
-
-  useEffect(() => {
-    updateQueryParam("autoRenew", isAutoRenew.toString())
-  }, [isAutoRenew])
+  const [countries, setCountries] = useState<
+    {
+      name: string
+      flag: string
+      code: string
+      nationality: string
+      callCode: string
+    }[]
+  >([])
+  const [loadingCountries, setLoadingCountries] = useState(true)
+  const [phoneCountry, setPhoneCountry] = useState("TH")
+  const [phone, setPhone] = useState("")
+  const fullPhoneNumber = `+${countries.find((c) => c.code === phoneCountry)?.callCode || ""}${phone}`
 
   useEffect(() => {
-    const success = searchParams.get("success")
-    const planName = searchParams.get("plan")
-    if (success && planName) {
-      toast.success("Payment Successful", {
-        description: `You have successfully purchased the ${planName} plan.`,
-      })
-      // Clean up URL
-      const params = new URLSearchParams(searchParams.toString())
-      params.delete("success")
-      params.delete("session_id")
-      router.replace(`${pathname}?${params.toString()}`, {
-        scroll: false,
-      })
-    }
-  }, [searchParams, pathname, router])
-
-  useEffect(() => {
-    const canceled = searchParams.get("canceled")
-    if (canceled) {
-      toast.error("Payment Canceled", {
-        description: "Your payment process was canceled. Please try again.",
-      })
-      // Clean up URL
-      const params = new URLSearchParams(searchParams.toString())
-      params.delete("canceled")
-      params.delete("session_id")
-      router.replace(`${pathname}?${params.toString()}`, {
-        scroll: false,
-      })
-    }
-  }, [searchParams, pathname, router])
-
-  useEffect(() => {
-    const userDataFromUrl = searchParams.get("userData")
-    if (userDataFromUrl) {
+    async function fetchCountries() {
       try {
-        const decodedUserData = JSON.parse(atob(userDataFromUrl))
-        setDetailsForm((prev) => ({
-          ...prev,
-          name: decodedUserData.name || prev.name,
-          email: decodedUserData.email || prev.email,
-          phone: decodedUserData.phone || prev.phone,
-        }))
-        setLocationForm((prev) => ({
-          ...prev,
-          nationality: decodedUserData.nationality || prev.nationality,
-          currentLocation:
-            decodedUserData.currentLocation || prev.currentLocation,
-        }))
-        if (decodedUserData.prefix) setPrefix(decodedUserData.prefix)
-        if (decodedUserData.gender) setGender(decodedUserData.gender)
-        if (decodedUserData.birthday)
-          setBirthday(new Date(decodedUserData.birthday))
-        if (decodedUserData.paymentStatus)
-          setPaymentStatus(decodedUserData.paymentStatus)
-        if (searchParams.get("plan"))
-          setSelectedPlan(searchParams.get("plan") as string)
-        setIsAutoRenew(searchParams.get("autoRenew") !== "false")
+        const res = await fetch("/api/register-interest/countries")
+
+        if (!res.ok) {
+          throw new Error("Failed loading countries")
+        }
+
+        const data = await res.json()
+
+        setCountries(data)
       } catch (error) {
-        console.error("Failed to parse user data from URL", error)
+        console.error(error)
+      } finally {
+        setLoadingCountries(false)
       }
     }
+
+    fetchCountries()
   }, [searchParams])
 
   useEffect(() => {
@@ -259,7 +175,7 @@ function AuthPageContents() {
   }, [prefix, gender])
 
   const validateAndSetStep = (
-    step: "details" | "verify-email" | "location" | "plans" | "password",
+    step: "details" | "verify-email" | "password",
     schema: z.ZodObject<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
     data: any
   ) => {
@@ -270,7 +186,6 @@ function AuthPageContents() {
         errors[String(issue.path[0])] = issue.message
       }
       setFormErrors(errors)
-      toast.error("Please fix the errors before proceeding.")
     } else {
       setFormErrors({})
       setRegistrationStep(step)
@@ -296,27 +211,22 @@ function AuthPageContents() {
 
   // Zod Schemas for validation
   const loginSchema = z.object({
-    email: z.string().email("Invalid email address."),
+    email: z.email("Invalid email address."),
     password: z.string().min(1, "Password is required."),
   })
 
   const detailsSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters."),
-    email: z.string().email("Invalid email address."),
-    phone: z
-      .string()
-      .startsWith("+", "Phone number must start with a '+'.")
-      .min(10, "Phone number seems too short."),
     birthday: z.date({
+      // phone is validated separately now
       error: "Date of birth is required.",
     }),
-  })
-
-  const verificationCodeSchema = z.object({
-    code: z.string().length(6, "Code must be 6 digits."),
-  })
-
-  const locationSchema = z.object({
+    email: z
+      .email("Invalid email address.")
+      .transform((val) => val.toLowerCase().trim())
+      .refine((val) => !/\s/.test(val), {
+        message: "Email cannot contain spaces.",
+      }),
     nationality: z.string().min(2, "Nationality is required."),
     currentLocation: z.string().min(2, "Current location is required."),
   })
@@ -331,17 +241,45 @@ function AuthPageContents() {
       path: ["confirmPassword"],
     })
 
+  const verificationCodeSchema = z.object({
+    code: z.string().length(6, "Code must be 6 digits."),
+  })
+
   const isLoginFormValid = loginSchema.safeParse(loginForm).success
 
   const isDetailsFormValid = detailsSchema.safeParse({
     ...detailsForm,
     birthday,
+    ...locationForm,
   }).success
   const isVerificationCodeFormValid = verificationCodeSchema.safeParse({
     code: verificationCode,
   }).success
-  const isLocationFormValid = locationSchema.safeParse(locationForm).success
   const isPasswordFormValid = passwordSchema.safeParse(passwordForm).success
+
+  useEffect(() => {
+    if (registrationStep === "details") {
+      const data = {
+        ...detailsForm,
+        birthday,
+        ...locationForm,
+      }
+      const result = detailsSchema.safeParse(data)
+      if (!result.success) {
+        const errors: Record<string, string> = {}
+        for (const issue of result.error.issues) {
+          const fieldName = String(issue.path[0])
+          const value = data[fieldName as keyof typeof data]
+          if (value) {
+            errors[fieldName] = issue.message
+          }
+        }
+        setFormErrors(errors)
+      } else {
+        setFormErrors({})
+      }
+    }
+  }, [detailsForm, birthday, locationForm, registrationStep])
 
   useEffect(() => {
     if (registrationStep === "password") {
@@ -377,11 +315,10 @@ function AuthPageContents() {
         gender,
         birthday: birthday?.toISOString(),
         email: detailsForm.email,
-        phone: detailsForm.phone,
+        phone: fullPhoneNumber,
         nationality: locationForm.nationality,
         currentLocation: locationForm.currentLocation,
         // avatar would be uploaded and a URL stored here
-        plan: JSON.parse(localStorage.getItem("selectedPlan") || "{}").id,
       }
 
       try {
@@ -400,122 +337,6 @@ function AuthPageContents() {
     animate: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: 20 },
   }
-
-  const handleChoosePlan = async (plan: Plan) => {
-    const priceId = isAutoRenew
-      ? plan.priceIds.subscription
-      : plan.priceIds.oneTime
-    const mode = isAutoRenew ? "subscription" : "payment"
-
-    localStorage.setItem("selectedPlan", JSON.stringify(plan))
-
-    try {
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          priceId,
-          userData: {
-            ...detailsForm,
-            prefix,
-            gender,
-            birthday: birthday?.toISOString(),
-            ...locationForm,
-          },
-          mode,
-          plan: plan.name,
-          autoRenew: isAutoRenew,
-        }),
-      })
-
-      const { url, error } = await response.json()
-
-      if (!response.ok) {
-        console.error("Server error:", error)
-        throw new Error(error.message || "Failed to create checkout session.")
-      }
-
-      if (error) {
-        throw new Error(error)
-      }
-
-      router.push(url)
-    } catch (error) {
-      console.error("Failed to create checkout session:", error)
-      alert("Failed to proceed to checkout. Please try again.")
-    }
-  }
-
-  const PlanSelector = () => (
-    <Tabs
-      value={selectedPlan}
-      onValueChange={(value) => {
-        setSelectedPlan(value)
-        updateQueryParam("plan", value)
-      }}
-      className="w-full"
-    >
-      <TabsList className="grid w-full grid-cols-3">
-        {PLANS.map((plan) => (
-          <TabsTrigger
-            key={plan.name}
-            value={plan.name}
-            className="data-[state=active]:btn-gradient data-[state=active]:text-primary-foreground"
-          >
-            {plan.name}
-            {plan.popular && <Flame className="text-gold ml-2 size-4" />}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {PLANS.map((plan) => (
-        <TabsContent key={plan.name} value={plan.name}>
-          <div
-            className={clsx(
-              "mt-4 rounded-lg border bg-card p-6 text-card-foreground",
-              plan.popular && "border-gold border-2"
-            )}
-          >
-            <div className="flex items-baseline justify-between">
-              <h3 className="text-2xl font-bold">{plan.price}</h3>
-              <p className="text-sm text-muted-foreground">
-                {plan.pricePerMonth}
-              </p>
-            </div>
-            <div className="mt-1 text-sm font-semibold text-muted-foreground">
-              {isAutoRenew ? (
-                <span>
-                  Billed for <del>{plan.recurringInterval.paid}</del>, get{" "}
-                  <b>{plan.recurringInterval.total}</b>
-                </span>
-              ) : (
-                <span>
-                  Pay for <del>{plan.duration.paid}</del>, get{" "}
-                  <b>{plan.duration.total}</b>
-                </span>
-              )}
-            </div>
-            <ul className="my-6 list-inside list-none space-y-2 text-sm">
-              {plan.features.length > 0 && (
-                <li className="text-muted-foreground">
-                  <span className="text-gradient font-bold">
-                    {plan.features[0]}
-                  </span>
-                </li>
-              )}
-            </ul>
-            <Button
-              className="btn-gradient w-full"
-              onClick={() => handleChoosePlan(plan)}
-            >
-              {isAutoRenew ? "Subscribe" : "Pay"}
-            </Button>
-          </div>
-        </TabsContent>
-      ))}
-    </Tabs>
-  )
 
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
@@ -599,7 +420,9 @@ function AuthPageContents() {
                           onChange={(e) =>
                             setLoginForm({
                               ...loginForm,
-                              email: e.target.value,
+                              email: e.target.value
+                                .replace(/\s/g, "")
+                                .toLowerCase(),
                             })
                           }
                         />
@@ -626,7 +449,9 @@ function AuthPageContents() {
                                 onChange={(e) =>
                                   setLoginForm({
                                     ...loginForm,
-                                    password: e.target.value,
+                                    email: e.target.value
+                                      .replace(/\s/g, "")
+                                      .toLowerCase(),
                                   })
                                 }
                               />
@@ -692,7 +517,7 @@ function AuthPageContents() {
                           <CardTitle>Register</CardTitle>
                           <SimpleStepper
                             steps={registrationSteps}
-                            currentStep={getEffectiveStep()}
+                            currentStep={registrationStep}
                           />
                         </div>
                         <CardDescription>
@@ -729,10 +554,10 @@ function AuthPageContents() {
                                 placeholder="Your Name"
                                 value={detailsForm.name}
                                 onChange={(e) =>
-                                  setDetailsForm({
-                                    ...detailsForm,
+                                  setDetailsForm((prev) => ({
+                                    ...prev,
                                     name: e.target.value,
-                                  })
+                                  }))
                                 }
                               />
                             </InputGroup>
@@ -790,6 +615,70 @@ function AuthPageContents() {
                           </div>
                         </div>
                         <div className="space-y-2">
+                          <div className="flex gap-4">
+                            <div className="w-[100px] space-y-2">
+                              <Label htmlFor="phone-country">Phone</Label>
+                              <Select
+                                onValueChange={setPhoneCountry}
+                                value={phoneCountry}
+                              >
+                                <SelectTrigger
+                                  id="phone-country"
+                                  className="h-8 bg-background dark:bg-input/30"
+                                >
+                                  <SelectValue>
+                                    {phoneCountry &&
+                                      `+${
+                                        countries.find(
+                                          (c) => c.code === phoneCountry
+                                        )?.callCode
+                                      }`}
+                                  </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent className="max-h-80">
+                                  {countries
+                                    .sort((a, b) =>
+                                      a.callCode.localeCompare(b.callCode)
+                                    )
+                                    .map((country) => (
+                                      <SelectItem
+                                        key={country.code}
+                                        value={country.code}
+                                      >
+                                        (+{country.callCode}) {country.flag}{" "}
+                                        {country.code}
+                                      </SelectItem>
+                                    ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="flex-1 space-y-2">
+                              <Label className="invisible">Phone Number</Label>
+                              <InputGroup>
+                                <InputGroupAddon>
+                                  <Phone className="size-4" />
+                                </InputGroupAddon>
+                                <InputGroupInput
+                                  id="phone"
+                                  placeholder="123456789"
+                                  value={phone}
+                                  onChange={(e) => {
+                                    const { value } = e.target
+                                    if (/^\d*$/.test(value)) {
+                                      setPhone(value)
+                                    }
+                                  }}
+                                />
+                              </InputGroup>
+                            </div>
+                          </div>
+                          {formErrors.phone && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.phone}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
                           <Label htmlFor="email-signup">Email</Label>
                           <InputGroup>
                             <InputGroupAddon>
@@ -803,7 +692,9 @@ function AuthPageContents() {
                               onChange={(e) =>
                                 setDetailsForm({
                                   ...detailsForm,
-                                  email: e.target.value,
+                                  email: e.target.value
+                                    .replace(/\s/g, "")
+                                    .toLowerCase(),
                                 })
                               }
                             />
@@ -815,34 +706,100 @@ function AuthPageContents() {
                           )}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="phone">Phone</Label>
-                          <InputGroup>
-                            <InputGroupAddon>
-                              <Phone className="size-4" />
-                            </InputGroupAddon>
-                            <InputGroupInput
-                              id="phone"
-                              placeholder="+1 234 567 890"
-                              value={detailsForm.phone}
-                              onChange={(e) =>
-                                setDetailsForm({
-                                  ...detailsForm,
-                                  phone: e.target.value,
-                                })
-                              }
-                              onKeyDown={(e) =>
-                                e.key === "Enter" &&
-                                isDetailsFormValid &&
-                                validateAndSetStep("location", detailsSchema, {
-                                  ...detailsForm,
-                                  birthday,
-                                })
-                              }
-                            />
-                          </InputGroup>
-                          {formErrors.phone && (
+                          <Label htmlFor="nationality">Nationality</Label>
+                          <Select
+                            onValueChange={(value) =>
+                              setLocationForm({
+                                ...locationForm,
+                                nationality: value,
+                              })
+                            }
+                            value={locationForm.nationality}
+                          >
+                            <SelectTrigger
+                              id="nationality"
+                              className="h-8 bg-background dark:bg-input/30"
+                            >
+                              <SelectValue placeholder="Select nationality" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-80">
+                              {loadingCountries ? (
+                                <SelectItem value="loading" disabled>
+                                  Loading countries...
+                                </SelectItem>
+                              ) : (
+                                [...countries]
+                                  .sort((a, b) =>
+                                    a.nationality.localeCompare(
+                                      b.nationality,
+                                      "en",
+                                      {
+                                        sensitivity: "base",
+                                      }
+                                    )
+                                  )
+                                  .map((country) => (
+                                    <SelectItem
+                                      key={country.code}
+                                      value={country.nationality}
+                                    >
+                                      {country.flag} {country.nationality}
+                                    </SelectItem>
+                                  ))
+                              )}
+                            </SelectContent>
+                          </Select>
+                          {formErrors.nationality && (
                             <p className="text-sm text-destructive">
-                              {formErrors.phone}
+                              {formErrors.nationality}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="current-location">
+                            Current Location
+                          </Label>
+                          <Select
+                            onValueChange={(value) =>
+                              setLocationForm({
+                                ...locationForm,
+                                currentLocation: value,
+                              })
+                            }
+                            value={locationForm.currentLocation}
+                          >
+                            <SelectTrigger
+                              id="current-location"
+                              className="h-8 bg-background dark:bg-input/30"
+                            >
+                              <SelectValue placeholder="Select current location" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-80">
+                              {loadingCountries ? (
+                                <SelectItem value="loading" disabled>
+                                  Loading countries...
+                                </SelectItem>
+                              ) : (
+                                [...countries]
+                                  .sort((a, b) =>
+                                    a.name.localeCompare(b.name, "en", {
+                                      sensitivity: "base",
+                                    })
+                                  )
+                                  .map((country) => (
+                                    <SelectItem
+                                      key={country.code}
+                                      value={country.name}
+                                    >
+                                      {country.flag} {country.name}
+                                    </SelectItem>
+                                  ))
+                              )}
+                            </SelectContent>
+                          </Select>
+                          {formErrors.currentLocation && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.currentLocation}
                             </p>
                           )}
                         </div>
@@ -850,11 +807,11 @@ function AuthPageContents() {
                       <CardFooter className="flex-col items-start gap-4">
                         <Button
                           className="btn-gradient w-full"
-                          disabled={!isDetailsFormValid}
                           onClick={() =>
-                            validateAndSetStep("location", detailsSchema, {
+                            validateAndSetStep("verify-email", detailsSchema, {
                               ...detailsForm,
                               birthday,
+                              ...locationForm,
                             })
                           }
                         >
@@ -887,7 +844,7 @@ function AuthPageContents() {
                           <CardTitle>Verify Your Email</CardTitle>
                           <SimpleStepper
                             steps={registrationSteps}
-                            currentStep={getEffectiveStep()}
+                            currentStep={registrationStep}
                           />
                         </div>
                         <CardDescription>
@@ -943,7 +900,7 @@ function AuthPageContents() {
                                   const userData = {
                                     ...detailsForm,
                                   }
-                                  setRegistrationStep("plans")
+                                  setRegistrationStep("password")
                                 }
                               }}
                             />
@@ -970,7 +927,7 @@ function AuthPageContents() {
                               return
                             }
 
-                            setRegistrationStep("plans")
+                            setRegistrationStep("password")
                           }}
                         >
                           Verify
@@ -999,180 +956,6 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "location" && (
-                  <motion.div
-                    key="register-location"
-                    variants={animationVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <Card>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle>Location Details</CardTitle>
-                          <div className="mb-4 pt-2">
-                            <SimpleStepper
-                              steps={registrationSteps}
-                              currentStep={getEffectiveStep()}
-                            />
-                          </div>
-                        </div>
-                        <CardDescription>
-                          Please provide your location details to complete your
-                          profile.
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="nationality">Nationality</Label>
-                          <InputGroup>
-                            <InputGroupAddon>
-                              <Home className="size-4" />
-                            </InputGroupAddon>
-                            <InputGroupInput
-                              id="nationality"
-                              placeholder="e.g. Thai"
-                              value={locationForm.nationality}
-                              onChange={(e) =>
-                                setLocationForm({
-                                  ...locationForm,
-                                  nationality: e.target.value,
-                                })
-                              }
-                            />
-                          </InputGroup>
-                          {formErrors.nationality && (
-                            <p className="text-sm text-destructive">
-                              {formErrors.nationality}
-                            </p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="current-location">
-                            Current Location
-                          </Label>
-                          <InputGroup>
-                            <InputGroupAddon>
-                              <MapPin className="size-4" />
-                            </InputGroupAddon>
-                            <InputGroupInput
-                              id="current-location"
-                              placeholder="e.g. Bangkok, Thailand"
-                              value={locationForm.currentLocation}
-                              onChange={(e) =>
-                                setLocationForm({
-                                  ...locationForm,
-                                  currentLocation: e.target.value,
-                                })
-                              }
-                              onKeyDown={(e) =>
-                                e.key === "Enter" &&
-                                isLocationFormValid &&
-                                validateAndSetStep(
-                                  "verify-email",
-                                  locationSchema,
-                                  locationForm
-                                )
-                              }
-                            />
-                          </InputGroup>
-                          {formErrors.currentLocation && (
-                            <p className="text-sm text-destructive">
-                              {formErrors.currentLocation}
-                            </p>
-                          )}
-                        </div>
-                      </CardContent>
-                      <CardFooter className="flex-col items-start gap-4">
-                        <Button
-                          className="btn-gradient w-full"
-                          disabled={!isLocationFormValid}
-                          onClick={() => {
-                            validateAndSetStep(
-                              "verify-email",
-                              locationSchema,
-                              locationForm
-                            )
-                          }}
-                        >
-                          Next
-                        </Button>
-                        <div className="flex w-full items-center justify-between text-sm">
-                          <Button
-                            variant="link"
-                            className="flex items-center p-0 text-muted-foreground"
-                            onClick={() => router.back()}
-                          >
-                            <ChevronLeft className="mr-1 size-4" />
-                            Back
-                          </Button>
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  </motion.div>
-                )}
-                {registrationStep === "plans" && (
-                  <motion.div
-                    key="register-plans"
-                    variants={animationVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <Card>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle>Choose Your Plan</CardTitle>
-                          <SimpleStepper
-                            steps={registrationSteps}
-                            currentStep={getEffectiveStep()}
-                          />
-                        </div>
-                        <CardDescription>
-                          Select a VIP membership to unlock exclusive features.
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="flex items-center justify-center space-x-2">
-                          <Label htmlFor="auto-renew-toggle">
-                            Auto-renew subscription
-                          </Label>
-                          <Switch
-                            id="auto-renew-toggle"
-                            checked={isAutoRenew}
-                            onCheckedChange={setIsAutoRenew}
-                          />
-                        </div>
-                        <PlanSelector />
-                      </CardContent>
-                      <CardFooter className="flex-col items-start gap-4">
-                        <div className="flex w-full items-center justify-between text-sm">
-                          <Button
-                            variant="link"
-                            className="flex items-center p-0 text-muted-foreground"
-                            onClick={() => router.back()}
-                          >
-                            <ChevronLeft className="mr-1 size-4" />
-                            Back
-                          </Button>
-                          <Button
-                            variant="link"
-                            className="p-0 text-muted-foreground"
-                            onClick={() => {
-                              const params = new URLSearchParams(
-                                searchParams.toString()
-                              )
-                              router.push(`/pricing?${params.toString()}`)
-                            }}
-                          >
-                            View Full Details
-                          </Button>
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  </motion.div>
-                )}
                 {registrationStep === "password" && (
                   <motion.div
                     key="register-password"
@@ -1187,13 +970,8 @@ function AuthPageContents() {
                           <CardTitle>Set Your Password</CardTitle>
                           <SimpleStepper
                             steps={registrationSteps}
-                            currentStep={getEffectiveStep()}
+                            currentStep={registrationStep}
                           />
-                          {/* {paymentStatus === "paid" && (
-                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
-                              Payment Successful
-                            </Badge>
-                          )} */}
                         </div>
                         <CardDescription>
                           Just one last step to create your account.

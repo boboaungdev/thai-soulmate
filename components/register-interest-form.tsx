@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect, useState, useTransition } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
-import { User, MapPin, Mail, Phone, Home, Cake } from "lucide-react"
+import { User, Mail, Phone, Cake } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -170,12 +170,21 @@ export function RegisterInterestForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(async () => {
       try {
+        const selectedCountry = countries.find(
+          (country) => country.code === values.phoneCountry
+        )
+
+        const payload = {
+          ...values,
+          phoneCountry: `+${selectedCountry?.callCode ?? ""}`,
+        }
+
         const response = await fetch("/api/register-interest", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify(payload),
         })
 
         if (response.ok) {
@@ -189,7 +198,6 @@ export function RegisterInterestForm() {
             description: "There was a problem with your submission.",
           })
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Uh oh! Something went wrong.", {
           description: "An unexpected error occurred. Please try again.",
@@ -203,8 +211,9 @@ export function RegisterInterestForm() {
       <div className="mx-auto w-full max-w-2xl p-4 text-center">
         <h2 className="mb-2 text-3xl font-bold">Thank You!</h2>
         <p className="text-muted-foreground">
-          Your interest has been registered successfully. We will get back to
-          you shortly.
+          Your interest has been successfully registered. Please check your
+          email and spam/junk folder for the next step and complete the
+          application form. Our team will contact you shortly.
         </p>
       </div>
     )
@@ -404,14 +413,24 @@ export function RegisterInterestForm() {
                               Loading countries...
                             </SelectItem>
                           ) : (
-                            countries.map((country) => (
-                              <SelectItem
-                                key={country.code}
-                                value={country.nationality}
-                              >
-                                {country.flag} {country.nationality}
-                              </SelectItem>
-                            ))
+                            [...countries]
+                              .sort((a, b) =>
+                                a.nationality.localeCompare(
+                                  b.nationality,
+                                  "en",
+                                  {
+                                    sensitivity: "base",
+                                  }
+                                )
+                              )
+                              .map((country) => (
+                                <SelectItem
+                                  key={country.code}
+                                  value={country.nationality}
+                                >
+                                  {country.flag} {country.nationality}
+                                </SelectItem>
+                              ))
                           )}
                         </SelectContent>
                       </Select>
@@ -443,14 +462,20 @@ export function RegisterInterestForm() {
                               Loading countries...
                             </SelectItem>
                           ) : (
-                            countries.map((country) => (
-                              <SelectItem
-                                key={country.code}
-                                value={country.name}
-                              >
-                                {country.flag} {country.name}
-                              </SelectItem>
-                            ))
+                            [...countries]
+                              .sort((a, b) =>
+                                a.name.localeCompare(b.name, "en", {
+                                  sensitivity: "base",
+                                })
+                              )
+                              .map((country) => (
+                                <SelectItem
+                                  key={country.code}
+                                  value={country.name}
+                                >
+                                  {country.flag} {country.name}
+                                </SelectItem>
+                              ))
                           )}
                         </SelectContent>
                       </Select>
@@ -481,7 +506,7 @@ export function RegisterInterestForm() {
                           onValueChange={field.onChange}
                           value={field.value}
                         >
-                        <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                          <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
                             <SelectValue>
                               {field.value &&
                                 `+${
@@ -493,15 +518,26 @@ export function RegisterInterestForm() {
                           </SelectTrigger>
 
                           <SelectContent className="max-h-80">
-                            {countries.map((country) => (
-                              <SelectItem
-                                key={country.code}
-                                value={country.code}
-                              >
-                                {country.flag} {country.code} (+
-                                {country.callCode})
-                              </SelectItem>
-                            ))}
+                            {[...countries]
+                              .sort((a, b) => {
+                                const codeA =
+                                  parseInt(a.callCode, 10) ||
+                                  Number.MAX_SAFE_INTEGER
+                                const codeB =
+                                  parseInt(b.callCode, 10) ||
+                                  Number.MAX_SAFE_INTEGER
+
+                                return codeA - codeB
+                              })
+                              .map((country) => (
+                                <SelectItem
+                                  key={country.code}
+                                  value={country.code}
+                                >
+                                  (+{country.callCode}) {country.flag}{" "}
+                                  {country.code}
+                                </SelectItem>
+                              ))}
                           </SelectContent>
                         </Select>
                       </FormControl>

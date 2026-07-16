@@ -12,12 +12,17 @@ import { calculateAge } from "@/lib/utils"
 const formSchema = z.object({
   prefix: z.string(),
   name: z.string(),
-  birthday: z.string(), // Dates are serialized as strings
+  birthday: z.string(),
   gender: z.string(),
   nationality: z.string(),
   currentLocation: z.string(),
   email: z.string().email(),
+
+  phoneCountry: z.string(), // e.g. "+44" or "GB" depending on what you send
   phone: z.string(),
+
+  source: z.string(),
+  otherSource: z.string().optional(),
 })
 
 export async function POST(req: Request) {

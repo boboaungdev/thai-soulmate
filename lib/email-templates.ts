@@ -10,7 +10,10 @@ type AdminNotificationDetails = {
   nationality: string
   location: string
   email: string
+  phoneCountry: string
   phone: string
+  source: string
+  otherSource?: string
 }
 
 const appNameGradientStyle =
@@ -67,7 +70,19 @@ export const getAdminNotificationHtml = (
           <p><strong>Nationality:</strong> ${details.nationality}</p>
           <p><strong>Location:</strong> ${details.location}</p>
           <p><strong>Email:</strong> <a href="mailto:${details.email}">${details.email}</a></p>
-          <p><strong>Phone:</strong> <a href="tel:${details.phone}">${details.phone}</a></p>
+         <p>
+  <strong>Phone:</strong>
+  <a href="tel:${details.phoneCountry}${details.phone}">
+    ${details.phoneCountry} ${details.phone}
+  </a>
+</p>
+<p><strong>How did you hear about us:</strong> ${details.source}</p>
+
+${
+  details.source === "Other"
+    ? `<p><strong>Other source:</strong> ${details.otherSource || "-"}</p>`
+    : ""
+}
         </div>
         <div style="background-color: #f4f4f4; color: #666; padding: 15px; text-align: center; font-size: 12px;">
           <p>This is an automated notification from your website.</p>

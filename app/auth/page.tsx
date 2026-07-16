@@ -659,7 +659,7 @@ function AuthPageContents() {
                         <Button
                           variant="link"
                           className="p-0 text-muted-foreground"
-                          onClick={() => setMode("register")}
+                          onClick={() => router.push("/#register-interest")}
                         >
                           Don&apos;t have an account?
                         </Button>
@@ -668,6 +668,7 @@ function AuthPageContents() {
                         variant="link"
                         className="p-0 text-muted-foreground"
                         onClick={() => setMode("forgot-password")}
+                        disabled
                       >
                         Forgot password?
                       </Button>

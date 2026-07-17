@@ -389,7 +389,16 @@ function AuthPageContents() {
     casualLifestyle: null,
     recent: null,
   })
+
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+
+  const clearFormError = (field: string) => {
+    setFormErrors((prev) => {
+      const next = { ...prev }
+      delete next[field]
+      return next
+    })
+  }
 
   const [countries, setCountries] = useState<
     {
@@ -788,7 +797,7 @@ function AuthPageContents() {
           femaleProfileForm.nickname
         ).success
       ) {
-        setFormErrors((prev) => ({ ...prev, nickname: undefined }))
+      clearFormError("nickname")
       }
     }
   }, [femaleProfileForm.nickname, registrationStep, formErrors.nickname])
@@ -800,8 +809,7 @@ function AuthPageContents() {
           femaleProfileForm.occupation
         ).success
       ) {
-        setFormErrors((prev) => ({ ...prev, occupation: undefined }))
-      }
+clearFormError("occupation")      }
     }
   }, [femaleProfileForm.occupation, registrationStep, formErrors.occupation])
 
@@ -811,8 +819,7 @@ function AuthPageContents() {
         femaleProfileSchema1.shape.company.safeParse(femaleProfileForm.company)
           .success
       ) {
-        setFormErrors((prev) => ({ ...prev, company: undefined }))
-      }
+clearFormError("company")      }
     }
   }, [femaleProfileForm.company, registrationStep, formErrors.company])
 
@@ -823,8 +830,7 @@ function AuthPageContents() {
           femaleProfileForm.education
         ).success
       ) {
-        setFormErrors((prev) => ({ ...prev, education: undefined }))
-      }
+clearFormError("education")      }
     }
   }, [femaleProfileForm.education, registrationStep, formErrors.education])
 
@@ -834,8 +840,7 @@ function AuthPageContents() {
         femaleProfileSchema2.shape.height.safeParse(femaleProfileForm.height)
           .success
       ) {
-        setFormErrors((prev) => ({ ...prev, height: undefined }))
-      }
+clearFormError("height")      }
     }
   }, [femaleProfileForm.height, registrationStep, formErrors.height])
 
@@ -845,8 +850,7 @@ function AuthPageContents() {
         femaleProfileSchema2.shape.weight.safeParse(femaleProfileForm.weight)
           .success
       ) {
-        setFormErrors((prev) => ({ ...prev, weight: undefined }))
-      }
+clearFormError("weight")      }
     }
   }, [femaleProfileForm.weight, registrationStep, formErrors.weight])
 
@@ -857,8 +861,7 @@ function AuthPageContents() {
           femaleProfileForm.religion
         ).success
       ) {
-        setFormErrors((prev) => ({ ...prev, religion: undefined }))
-      }
+clearFormError("religion")      }
     }
   }, [femaleProfileForm.religion, registrationStep, formErrors.religion])
 
@@ -869,8 +872,7 @@ function AuthPageContents() {
           femaleProfileForm.personality
         ).success
       ) {
-        setFormErrors((prev) => ({ ...prev, personality: undefined }))
-      }
+clearFormError("personality")      }
     }
   }, [femaleProfileForm.personality, registrationStep, formErrors.personality])
 
@@ -881,8 +883,7 @@ function AuthPageContents() {
         (femaleProfileForm.hasChildren === "Yes" &&
           femaleProfileForm.childrenCount > 0)
       ) {
-        setFormErrors((prev) => ({ ...prev, childrenCount: undefined }))
-      }
+clearFormError("childrenCount")      }
     }
   }, [
     femaleProfileForm.hasChildren,
@@ -894,16 +895,14 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-4" && formErrors.about) {
       if (femaleProfileForm.about.length >= 10) {
-        setFormErrors((prev) => ({ ...prev, about: undefined }))
-      }
+clearFormError("about")      }
     }
   }, [femaleProfileForm.about, registrationStep, formErrors.about])
 
   useEffect(() => {
     if (registrationStep === "female-profile-4" && formErrors.bestQualities) {
       if (femaleProfileForm.bestQualities.every((q) => q.trim().length > 0)) {
-        setFormErrors((prev) => ({ ...prev, bestQualities: undefined }))
-      }
+clearFormError("bestQualities")      }
     }
   }, [
     femaleProfileForm.bestQualities,
@@ -919,8 +918,7 @@ function AuthPageContents() {
       if (
         femaleProfileForm.lookingForQualities.every((q) => q.trim().length > 0)
       ) {
-        setFormErrors((prev) => ({ ...prev, lookingForQualities: undefined }))
-      }
+clearFormError("lookingForQualities")      }
     }
   }, [
     femaleProfileForm.lookingForQualities,
@@ -931,31 +929,28 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-5" && formErrors.lifestyle) {
       if (femaleProfileForm.lifestyle.length > 0) {
-        setFormErrors((prev) => ({ ...prev, lifestyle: undefined }))
-      }
+clearFormError("lifestyle")      }
     }
   }, [femaleProfileForm.lifestyle, registrationStep, formErrors.lifestyle])
 
   useEffect(() => {
     if (registrationStep === "female-profile-5" && formErrors.smoking) {
       if (femaleProfileForm.smoking) {
-        setFormErrors((prev) => ({ ...prev, smoking: undefined }))
-      }
+clearFormError("smoking")      }
     }
   }, [femaleProfileForm.smoking, registrationStep, formErrors.smoking])
 
   useEffect(() => {
     if (registrationStep === "female-profile-5" && formErrors.drinking) {
       if (femaleProfileForm.drinking) {
-        setFormErrors((prev) => ({ ...prev, drinking: undefined }))
-      }
+      clearFormError("drinking")  }
     }
   }, [femaleProfileForm.drinking, registrationStep, formErrors.drinking])
 
   useEffect(() => {
     if (registrationStep === "female-profile-5" && formErrors.exercise) {
       if (femaleProfileForm.exercise) {
-        setFormErrors((prev) => ({ ...prev, exercise: undefined }))
+  clearFormError("exercise")
       }
     }
   }, [femaleProfileForm.exercise, registrationStep, formErrors.exercise])
@@ -963,8 +958,7 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-6" && formErrors.interests) {
       if (femaleProfileForm.interests.length === 5) {
-        setFormErrors((prev) => ({ ...prev, interests: undefined }))
-      }
+      clearFormError("interests") }
     }
   }, [femaleProfileForm.interests, registrationStep, formErrors.interests])
 
@@ -975,8 +969,7 @@ function AuthPageContents() {
         (femaleProfileForm.interests.includes("Other") &&
           femaleProfileForm.otherInterest.trim().length > 0)
       ) {
-        setFormErrors((prev) => ({ ...prev, otherInterest: undefined }))
-      }
+       clearFormError("otherInterest")  }
     }
   }, [
     femaleProfileForm.interests,
@@ -993,8 +986,7 @@ function AuthPageContents() {
       if (
         femaleProfileForm.travelDestinations.every((d) => d.trim().length > 0)
       ) {
-        setFormErrors((prev) => ({ ...prev, travelDestinations: undefined }))
-      }
+      clearFormError("travelDestinations") }
     }
   }, [
     femaleProfileForm.travelDestinations,
@@ -1005,8 +997,7 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-6" && formErrors.weekendActivity) {
       if (femaleProfileForm.weekendActivity.length >= 10) {
-        setFormErrors((prev) => ({ ...prev, weekendActivity: undefined }))
-      }
+     clearFormError("weekendActivity")  }
     }
   }, [
     femaleProfileForm.weekendActivity,
@@ -1020,8 +1011,7 @@ function AuthPageContents() {
       formErrors.familyImportance
     ) {
       if (femaleProfileForm.familyImportance) {
-        setFormErrors((prev) => ({ ...prev, familyImportance: undefined }))
-      }
+      clearFormError("familyImportance")  }
     }
   }, [
     femaleProfileForm.familyImportance,
@@ -1032,8 +1022,7 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-7" && formErrors.futureChildren) {
       if (femaleProfileForm.futureChildren) {
-        setFormErrors((prev) => ({ ...prev, futureChildren: undefined }))
-      }
+      clearFormError("futureChildren")  }
     }
   }, [
     femaleProfileForm.futureChildren,
@@ -1044,8 +1033,7 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-7" && formErrors.values) {
       if (femaleProfileForm.values.length === 5) {
-        setFormErrors((prev) => ({ ...prev, values: undefined }))
-      }
+      clearFormError("values") }
     }
   }, [femaleProfileForm.values, registrationStep, formErrors.values])
 
@@ -1055,8 +1043,7 @@ function AuthPageContents() {
       formErrors.idealPartnerAgeRange
     ) {
       if (femaleProfileForm.idealPartnerAgeRange) {
-        setFormErrors((prev) => ({ ...prev, idealPartnerAgeRange: undefined }))
-      }
+      clearFormError("idealPartnerAgeRange")  }
     }
   }, [
     femaleProfileForm.idealPartnerAgeRange,
@@ -1070,11 +1057,7 @@ function AuthPageContents() {
       formErrors.idealPartnerNationality
     ) {
       if (femaleProfileForm.idealPartnerNationality) {
-        setFormErrors((prev) => ({
-          ...prev,
-          idealPartnerNationality: undefined,
-        }))
-      }
+        clearFormError("idealPartnerNationality") }
     }
   }, [
     femaleProfileForm.idealPartnerNationality,
@@ -1088,8 +1071,7 @@ function AuthPageContents() {
       formErrors.idealPartnerLocation
     ) {
       if (femaleProfileForm.idealPartnerLocation) {
-        setFormErrors((prev) => ({ ...prev, idealPartnerLocation: undefined }))
-      }
+       clearFormError("idealPartnerLocation") }
     }
   }, [
     femaleProfileForm.idealPartnerLocation,
@@ -1103,8 +1085,7 @@ function AuthPageContents() {
       formErrors.idealPartnerHeight
     ) {
       if (femaleProfileForm.idealPartnerHeight) {
-        setFormErrors((prev) => ({ ...prev, idealPartnerHeight: undefined }))
-      }
+       clearFormError("idealPartnerHeight")  }
     }
   }, [
     femaleProfileForm.idealPartnerHeight,
@@ -1118,8 +1099,7 @@ function AuthPageContents() {
       formErrors.idealPartnerEducation
     ) {
       if (femaleProfileForm.idealPartnerEducation) {
-        setFormErrors((prev) => ({ ...prev, idealPartnerEducation: undefined }))
-      }
+       clearFormError("idealPartnerEducation") }
     }
   }, [
     femaleProfileForm.idealPartnerEducation,
@@ -1133,10 +1113,7 @@ function AuthPageContents() {
       formErrors.idealPartnerPersonality
     ) {
       if (femaleProfileForm.idealPartnerPersonality.length === 5) {
-        setFormErrors((prev) => ({
-          ...prev,
-          idealPartnerPersonality: undefined,
-        }))
+       clearFormError("idealPartnerPersonality")
       }
     }
   }, [
@@ -1151,7 +1128,7 @@ function AuthPageContents() {
       formErrors.idealPartnerQualities
     ) {
       if (femaleProfileForm.idealPartnerQualities.length === 5) {
-        setFormErrors((prev) => ({ ...prev, idealPartnerQualities: undefined }))
+       clearFormError("idealPartnerQualities")
       }
     }
   }, [
@@ -1166,10 +1143,7 @@ function AuthPageContents() {
       formErrors.idealPartnerOtherPersonality
     ) {
       if (femaleProfileForm.idealPartnerOtherPersonality.trim().length > 0) {
-        setFormErrors((prev) => ({
-          ...prev,
-          idealPartnerOtherPersonality: undefined,
-        }))
+        clearFormError("idealPartnerOtherPersonality")
       }
     }
   }, [
@@ -1181,7 +1155,7 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-8" && formErrors.dealBreakers) {
       if (femaleProfileForm.dealBreakers.every((d) => d.trim().length > 0)) {
-        setFormErrors((prev) => ({ ...prev, dealBreakers: undefined }))
+       clearFormError("dealBreakers")
       }
     }
   }, [
@@ -1193,7 +1167,7 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-10" && formErrors.headshot) {
       if (photosForm.headshot) {
-        setFormErrors((prev) => ({ ...prev, headshot: undefined }))
+        clearFormError("headshot")
       }
     }
   }, [photosForm.headshot, registrationStep, formErrors.headshot])
@@ -1201,7 +1175,7 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-10" && formErrors.fullLength) {
       if (photosForm.fullLength) {
-        setFormErrors((prev) => ({ ...prev, fullLength: undefined }))
+        clearFormError("fullLength")
       }
     }
   }, [photosForm.fullLength, registrationStep, formErrors.fullLength])
@@ -1212,7 +1186,7 @@ function AuthPageContents() {
       formErrors.casualLifestyle
     ) {
       if (photosForm.casualLifestyle) {
-        setFormErrors((prev) => ({ ...prev, casualLifestyle: undefined }))
+        clearFormError("casualLifestyle")
       }
     }
   }, [photosForm.casualLifestyle, registrationStep, formErrors.casualLifestyle])
@@ -1220,7 +1194,7 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-10" && formErrors.recent) {
       if (photosForm.recent) {
-        setFormErrors((prev) => ({ ...prev, recent: undefined }))
+        clearFormError("recent")
       }
     }
   }, [photosForm.recent, registrationStep, formErrors.recent])
@@ -1232,7 +1206,7 @@ function AuthPageContents() {
           financialForm.income
         ).success
       ) {
-        setFormErrors((prev) => ({ ...prev, income: undefined }))
+       clearFormError("income")
       }
     }
   }, [financialForm.income, registrationStep, formErrors.income])
@@ -1244,7 +1218,7 @@ function AuthPageContents() {
           financialForm.ownProperty
         ).success
       ) {
-        setFormErrors((prev) => ({ ...prev, ownProperty: undefined }))
+        clearFormError("ownProperty")
       }
     }
   }, [financialForm.ownProperty, registrationStep, formErrors.ownProperty])
@@ -1256,7 +1230,7 @@ function AuthPageContents() {
           financialForm.ownBusiness
         ).success
       ) {
-        setFormErrors((prev) => ({ ...prev, ownBusiness: undefined }))
+      clearFormError("ownBusiness")
       }
     }
   }, [financialForm.ownBusiness, registrationStep, formErrors.ownBusiness])

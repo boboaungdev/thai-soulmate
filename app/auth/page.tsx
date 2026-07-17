@@ -10,10 +10,12 @@ import {
   EyeOff,
   Cake,
   Phone,
+  Upload,
   Briefcase,
   ChevronLeft,
   Heart,
   KeyRound,
+  X,
 } from "lucide-react"
 import Link from "next/link"
 import { APP_INFO } from "@/constants"
@@ -124,6 +126,79 @@ const interestsAndHobbies = [
   "Pets",
 ]
 
+const familyImportanceOptions = [
+  "Very Important",
+  "Important",
+  "Somewhat Important",
+  "Not Important",
+]
+
+const futureChildrenOptions = ["Yes", "No", "Maybe"]
+
+const valuesOptions = [
+  "Honesty",
+  "Loyalty",
+  "Trust",
+  "Kindness",
+  "Ambition",
+  "Family",
+  "Financial Stability",
+  "Faith",
+  "Independence",
+  "Adventure",
+  "Communication",
+  "Respect",
+]
+
+const idealPartnerAgeRanges = [
+  "29-35",
+  "36-41",
+  "42-47",
+  "48-55",
+  "56-63",
+  "63-70",
+  "70+",
+]
+
+const idealPartnerNationalities = [
+  "USA",
+  "UK",
+  "AUS",
+  "EUROPEAN",
+  "ASIAN",
+  "INDIAN",
+  "AFRICAN",
+  "OTHER",
+]
+
+const idealPartnerHeights = ["under 5'", '5"-5.5"', '5.6"-5.9"', "6:+"]
+
+const idealPartnerPersonalityTraits = [
+  "Kind",
+  "Honest",
+  "Intelligent",
+  "Ambitious",
+  "Romantic",
+  "Family-Oriented",
+  "Confident",
+  "Easy Going",
+  "Adventurous",
+  "Spiritual",
+]
+
+const idealPartnerDesiredQualities = [
+  "Honest",
+  "Loyal",
+  "Kind",
+  "Family-Oriented",
+  "Ambitious",
+  "Intelligent",
+  "Romantic",
+  "Financially Stable",
+  "Adventurous",
+  "Easy Going",
+]
+
 const femaleProfileSteps = [
   "female-profile-1",
   "female-profile-2",
@@ -131,6 +206,10 @@ const femaleProfileSteps = [
   "female-profile-4",
   "female-profile-5",
   "female-profile-6",
+  "female-profile-7",
+  "female-profile-8",
+  "female-profile-9",
+  "female-profile-10",
 ]
 
 const getFemaleStepNumber = (currentStep: string) => {
@@ -193,6 +272,10 @@ function AuthPageContents() {
       | "female-profile-4"
       | "female-profile-5"
       | "female-profile-6"
+      | "female-profile-7"
+      | "female-profile-8"
+      | "female-profile-9"
+      | "female-profile-10"
       | "verify-email"
       | "password") || "details"
 
@@ -224,6 +307,10 @@ function AuthPageContents() {
       | "female-profile-4"
       | "female-profile-5"
       | "female-profile-6"
+      | "female-profile-7"
+      | "female-profile-8"
+      | "female-profile-9"
+      | "female-profile-10"
       | "verify-email"
       | "password",
     data?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -273,6 +360,34 @@ function AuthPageContents() {
     otherInterest: "",
     travelDestinations: ["", "", ""],
     weekendActivity: "",
+    familyImportance: "",
+    futureChildren: "",
+    values: [] as string[],
+    idealPartnerAgeRange: "",
+    idealPartnerNationality: "",
+    idealPartnerLocation: "",
+    idealPartnerHeight: "",
+    idealPartnerEducation: "",
+    idealPartnerPersonality: [] as string[],
+    idealPartnerOtherPersonality: "",
+    idealPartnerQualities: [] as string[],
+    dealBreakers: ["", "", ""],
+  })
+  const [financialForm, setFinancialForm] = useState({
+    income: "",
+    ownProperty: "",
+    ownBusiness: "",
+  })
+  const [photosForm, setPhotosForm] = useState<{
+    headshot: File | null
+    fullLength: File | null
+    casualLifestyle: File | null
+    recent: File | null
+  }>({
+    headshot: null,
+    fullLength: null,
+    casualLifestyle: null,
+    recent: null,
   })
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
@@ -357,6 +472,9 @@ function AuthPageContents() {
       | "female-profile-4"
       | "female-profile-5"
       | "female-profile-6"
+      | "female-profile-7"
+      | "female-profile-8"
+      | "female-profile-9"
       | "verify-email"
       | "password",
     schema: z.ZodObject<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -421,6 +539,12 @@ function AuthPageContents() {
     occupation: z.string().min(2, "Occupation is required."),
     company: z.string().min(2, "Company/Industry is required."),
     education: z.string().min(1, "Education level is required."),
+  })
+
+  const femaleProfileSchemaFinancial = z.object({
+    income: z.string().min(1, "Please select an income range."),
+    ownProperty: z.string().min(1, "Please specify property ownership."),
+    ownBusiness: z.string().min(1, "Please specify business ownership."),
   })
 
   const femaleProfileSchema2 = z.object({
@@ -512,6 +636,73 @@ function AuthPageContents() {
       }
     )
 
+  const femaleProfileSchema7 = z.object({
+    familyImportance: z.string().min(1, "Please select an option."),
+    futureChildren: z.string().min(1, "Please select an option."),
+    values: z.array(z.string()).length(5, "Please select exactly 5 values."),
+  })
+
+  const femaleProfileSchema8 = z
+    .object({
+      idealPartnerAgeRange: z.string().min(1, "Please select an age range."),
+      idealPartnerNationality: z
+        .string()
+        .min(1, "Please select a preferred nationality."),
+      idealPartnerLocation: z
+        .string()
+        .min(1, "Please select a preferred location."),
+      idealPartnerHeight: z.string().min(1, "Please select a height range."),
+      idealPartnerEducation: z
+        .string()
+        .min(1, "Please select an education preference."),
+      idealPartnerPersonality: z
+        .array(z.string())
+        .length(5, "Please select exactly 5 personality traits."),
+      idealPartnerOtherPersonality: z.string().optional(),
+      idealPartnerQualities: z
+        .array(z.string())
+        .length(5, "Please select exactly 5 desired qualities."),
+      dealBreakers: z
+        .array(z.string())
+        .length(3, "Please list 3 deal breakers.")
+        .refine((items) => items.every((item) => item.trim().length > 0), {
+          message: "Please enter three deal breakers.",
+        }),
+    })
+    .refine(
+      (data) => {
+        if (data.idealPartnerPersonality.includes("Other")) {
+          return (
+            data.idealPartnerOtherPersonality &&
+            data.idealPartnerOtherPersonality.trim().length > 0
+          )
+        }
+        return true
+      },
+      {
+        message: "Please specify the 'Other' personality trait.",
+        path: ["idealPartnerOtherPersonality"],
+      }
+    )
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+  const ACCEPTED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+  ]
+
+  const femaleProfileSchemaPhotos = z.object({
+    headshot: z.instanceof(File, { message: "Headshot is required." }),
+    fullLength: z.instanceof(File, {
+      message: "Full-Length Photo is required.",
+    }),
+    casualLifestyle: z.instanceof(File, {
+      message: "Casual Lifestyle Photo is required.",
+    }),
+    recent: z.instanceof(File, { message: "A recent photo is required." }),
+  })
   const passwordSchema = z
     .object({
       password: z.string().min(8, "Password must be at least 8 characters."),
@@ -824,14 +1015,265 @@ function AuthPageContents() {
   ])
 
   useEffect(() => {
+    if (
+      registrationStep === "female-profile-7" &&
+      formErrors.familyImportance
+    ) {
+      if (femaleProfileForm.familyImportance) {
+        setFormErrors((prev) => ({ ...prev, familyImportance: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.familyImportance,
+    registrationStep,
+    formErrors.familyImportance,
+  ])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-7" && formErrors.futureChildren) {
+      if (femaleProfileForm.futureChildren) {
+        setFormErrors((prev) => ({ ...prev, futureChildren: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.futureChildren,
+    registrationStep,
+    formErrors.futureChildren,
+  ])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-7" && formErrors.values) {
+      if (femaleProfileForm.values.length === 5) {
+        setFormErrors((prev) => ({ ...prev, values: undefined }))
+      }
+    }
+  }, [femaleProfileForm.values, registrationStep, formErrors.values])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-8" &&
+      formErrors.idealPartnerAgeRange
+    ) {
+      if (femaleProfileForm.idealPartnerAgeRange) {
+        setFormErrors((prev) => ({ ...prev, idealPartnerAgeRange: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerAgeRange,
+    registrationStep,
+    formErrors.idealPartnerAgeRange,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-8" &&
+      formErrors.idealPartnerNationality
+    ) {
+      if (femaleProfileForm.idealPartnerNationality) {
+        setFormErrors((prev) => ({
+          ...prev,
+          idealPartnerNationality: undefined,
+        }))
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerNationality,
+    registrationStep,
+    formErrors.idealPartnerNationality,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-8" &&
+      formErrors.idealPartnerLocation
+    ) {
+      if (femaleProfileForm.idealPartnerLocation) {
+        setFormErrors((prev) => ({ ...prev, idealPartnerLocation: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerLocation,
+    registrationStep,
+    formErrors.idealPartnerLocation,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-8" &&
+      formErrors.idealPartnerHeight
+    ) {
+      if (femaleProfileForm.idealPartnerHeight) {
+        setFormErrors((prev) => ({ ...prev, idealPartnerHeight: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerHeight,
+    registrationStep,
+    formErrors.idealPartnerHeight,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-8" &&
+      formErrors.idealPartnerEducation
+    ) {
+      if (femaleProfileForm.idealPartnerEducation) {
+        setFormErrors((prev) => ({ ...prev, idealPartnerEducation: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerEducation,
+    registrationStep,
+    formErrors.idealPartnerEducation,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-8" &&
+      formErrors.idealPartnerPersonality
+    ) {
+      if (femaleProfileForm.idealPartnerPersonality.length === 5) {
+        setFormErrors((prev) => ({
+          ...prev,
+          idealPartnerPersonality: undefined,
+        }))
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerPersonality,
+    registrationStep,
+    formErrors.idealPartnerPersonality,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-8" &&
+      formErrors.idealPartnerQualities
+    ) {
+      if (femaleProfileForm.idealPartnerQualities.length === 5) {
+        setFormErrors((prev) => ({ ...prev, idealPartnerQualities: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerQualities,
+    registrationStep,
+    formErrors.idealPartnerQualities,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-8" &&
+      formErrors.idealPartnerOtherPersonality
+    ) {
+      if (femaleProfileForm.idealPartnerOtherPersonality.trim().length > 0) {
+        setFormErrors((prev) => ({
+          ...prev,
+          idealPartnerOtherPersonality: undefined,
+        }))
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerOtherPersonality,
+    registrationStep,
+    formErrors.idealPartnerOtherPersonality,
+  ])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-8" && formErrors.dealBreakers) {
+      if (femaleProfileForm.dealBreakers.every((d) => d.trim().length > 0)) {
+        setFormErrors((prev) => ({ ...prev, dealBreakers: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.dealBreakers,
+    registrationStep,
+    formErrors.dealBreakers,
+  ])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-10" && formErrors.headshot) {
+      if (photosForm.headshot) {
+        setFormErrors((prev) => ({ ...prev, headshot: undefined }))
+      }
+    }
+  }, [photosForm.headshot, registrationStep, formErrors.headshot])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-10" && formErrors.fullLength) {
+      if (photosForm.fullLength) {
+        setFormErrors((prev) => ({ ...prev, fullLength: undefined }))
+      }
+    }
+  }, [photosForm.fullLength, registrationStep, formErrors.fullLength])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-10" &&
+      formErrors.casualLifestyle
+    ) {
+      if (photosForm.casualLifestyle) {
+        setFormErrors((prev) => ({ ...prev, casualLifestyle: undefined }))
+      }
+    }
+  }, [photosForm.casualLifestyle, registrationStep, formErrors.casualLifestyle])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-10" && formErrors.recent) {
+      if (photosForm.recent) {
+        setFormErrors((prev) => ({ ...prev, recent: undefined }))
+      }
+    }
+  }, [photosForm.recent, registrationStep, formErrors.recent])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-9" && formErrors.income) {
+      if (
+        femaleProfileSchemaFinancial.shape.income.safeParse(
+          financialForm.income
+        ).success
+      ) {
+        setFormErrors((prev) => ({ ...prev, income: undefined }))
+      }
+    }
+  }, [financialForm.income, registrationStep, formErrors.income])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-9" && formErrors.ownProperty) {
+      if (
+        femaleProfileSchemaFinancial.shape.ownProperty.safeParse(
+          financialForm.ownProperty
+        ).success
+      ) {
+        setFormErrors((prev) => ({ ...prev, ownProperty: undefined }))
+      }
+    }
+  }, [financialForm.ownProperty, registrationStep, formErrors.ownProperty])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-9" && formErrors.ownBusiness) {
+      if (
+        femaleProfileSchemaFinancial.shape.ownBusiness.safeParse(
+          financialForm.ownBusiness
+        ).success
+      ) {
+        setFormErrors((prev) => ({ ...prev, ownBusiness: undefined }))
+      }
+    }
+  }, [financialForm.ownBusiness, registrationStep, formErrors.ownBusiness])
+
+  useEffect(() => {
     if (registrationStep.startsWith("female-profile")) {
       const schemaMap = {
         "female-profile-1": femaleProfileSchema1,
-        "female-profile-2": femaleProfileSchema2,
-        "female-profile-3": femaleProfileSchema3,
-        "female-profile-4": femaleProfileSchema4,
-        "female-profile-5": femaleProfileSchema5,
-        "female-profile-6": femaleProfileSchema6,
+        "female-profile-2": femaleProfileSchemaFinancial,
+        "female-profile-3": femaleProfileSchema2,
+        "female-profile-4": femaleProfileSchema3,
+        "female-profile-5": femaleProfileSchema4,
+        "female-profile-6": femaleProfileSchema5,
+        "female-profile-7": femaleProfileSchema6,
+        "female-profile-8": femaleProfileSchema7,
+        "female-profile-9": femaleProfileSchema8,
+        "female-profile-10": femaleProfileSchemaPhotos, //
       }
       const schema = schemaMap[registrationStep as keyof typeof schemaMap]
       if (schema) {
@@ -1555,7 +1997,7 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-2" && (
+                {registrationStep === "female-profile-3" && (
                   <motion.div
                     key="female-profile-2"
                     variants={animationVariants}
@@ -1683,7 +2125,7 @@ function AuthPageContents() {
                           className="btn-gradient w-full"
                           onClick={() => {
                             validateAndSetStep(
-                              "female-profile-3",
+                              "female-profile-4",
                               femaleProfileSchema2,
                               femaleProfileForm
                             )
@@ -1717,7 +2159,7 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>About You</CardTitle>
-                          <SimpleStepper
+                          <SimpleStepper //
                             steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
@@ -1900,7 +2342,7 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>About You</CardTitle>
-                          <SimpleStepper
+                          <SimpleStepper //
                             steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
@@ -2002,7 +2444,6 @@ function AuthPageContents() {
                           className="btn-gradient w-full"
                           onClick={() => {
                             validateAndSetStep(
-                              //
                               "female-profile-5",
                               femaleProfileSchema4,
                               femaleProfileForm
@@ -2037,7 +2478,7 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>Lifestyle</CardTitle>
-                          <SimpleStepper
+                          <SimpleStepper //
                             steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
@@ -2176,7 +2617,6 @@ function AuthPageContents() {
                           className="btn-gradient w-full"
                           onClick={() => {
                             validateAndSetStep(
-                              //
                               "female-profile-6",
                               femaleProfileSchema5, //
                               femaleProfileForm
@@ -2211,7 +2651,7 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>Interests & Hobbies</CardTitle>
-                          <SimpleStepper
+                          <SimpleStepper //
                             steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
@@ -2348,9 +2788,761 @@ function AuthPageContents() {
                           className="btn-gradient w-full"
                           onClick={() => {
                             validateAndSetStep(
-                              "verify-email",
+                              "female-profile-7",
                               femaleProfileSchema6,
                               femaleProfileForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-7" && (
+                  <motion.div
+                    key="female-profile-7"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Family & Values</CardTitle>
+                          <SimpleStepper //
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          Share what's important to you.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="space-y-3">
+                          <Label>How important is family?</Label>
+                          <RadioGroup
+                            value={femaleProfileForm.familyImportance}
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                familyImportance: value,
+                              }))
+                            }
+                            className="flex flex-wrap gap-x-4 gap-y-2"
+                          >
+                            {familyImportanceOptions.map((option) => (
+                              <div
+                                key={option}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={option} id={option} />
+                                <Label htmlFor={option}>{option}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.familyImportance && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.familyImportance}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          <Label>Would you like children in the future?</Label>
+                          <RadioGroup
+                            value={femaleProfileForm.futureChildren}
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                futureChildren: value,
+                              }))
+                            }
+                            className="flex space-x-4"
+                          >
+                            {futureChildrenOptions.map((option) => (
+                              <div
+                                key={option}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={option} id={option} />
+                                <Label htmlFor={option}>{option}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.futureChildren && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.futureChildren}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Most important values (choose 5)</Label>
+                          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            {valuesOptions.map((value) => (
+                              <div
+                                key={value}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  id={`value-${value}`}
+                                  checked={femaleProfileForm.values.includes(
+                                    value
+                                  )}
+                                  disabled={
+                                    femaleProfileForm.values.length >= 5 &&
+                                    !femaleProfileForm.values.includes(value)
+                                  }
+                                  onCheckedChange={(checked) => {
+                                    setFemaleProfileForm((prev) => ({
+                                      ...prev,
+                                      values: checked
+                                        ? [...prev.values, value]
+                                        : prev.values.filter(
+                                            (v) => v !== value
+                                          ),
+                                    }))
+                                  }}
+                                />
+                                <label
+                                  htmlFor={`value-${value}`}
+                                  className="text-sm leading-none font-medium"
+                                >
+                                  {value}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                          {formErrors.values && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.values}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            validateAndSetStep(
+                              "female-profile-8",
+                              femaleProfileSchema7,
+                              femaleProfileForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-8" && (
+                  <motion.div
+                    key="female-profile-8"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Your Ideal Partner</CardTitle>
+                          <SimpleStepper //
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          Describe the qualities you're looking for in a
+                          partner.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="ideal-age-range">Age Range</Label>
+                            <Select
+                              onValueChange={(value) =>
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerAgeRange: value,
+                                }))
+                              }
+                              value={femaleProfileForm.idealPartnerAgeRange}
+                            >
+                              <SelectTrigger
+                                id="ideal-age-range"
+                                className="h-8 bg-background dark:bg-input/30"
+                              >
+                                <SelectValue placeholder="Select age range" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {idealPartnerAgeRanges.map((range) => (
+                                  <SelectItem key={range} value={range}>
+                                    {range}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {formErrors.idealPartnerAgeRange && (
+                              <p className="text-sm text-destructive">
+                                {formErrors.idealPartnerAgeRange}
+                              </p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="ideal-height">
+                              Preferred Height
+                            </Label>
+                            <Select
+                              onValueChange={(value) =>
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerHeight: value,
+                                }))
+                              }
+                              value={femaleProfileForm.idealPartnerHeight}
+                            >
+                              <SelectTrigger
+                                id="ideal-height"
+                                className="h-8 bg-background dark:bg-input/30"
+                              >
+                                <SelectValue placeholder="Select height" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {idealPartnerHeights.map((height) => (
+                                  <SelectItem key={height} value={height}>
+                                    {height}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {formErrors.idealPartnerHeight && (
+                              <p className="text-sm text-destructive">
+                                {formErrors.idealPartnerHeight}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="ideal-nationality">
+                              Preferred Nationality
+                            </Label>
+                            <Select
+                              onValueChange={(value) =>
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerNationality: value,
+                                }))
+                              }
+                              value={femaleProfileForm.idealPartnerNationality}
+                            >
+                              <SelectTrigger
+                                id="ideal-nationality"
+                                className="h-8 bg-background dark:bg-input/30"
+                              >
+                                <SelectValue placeholder="Select nationality" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {idealPartnerNationalities.map((nat) => (
+                                  <SelectItem key={nat} value={nat}>
+                                    {nat}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {formErrors.idealPartnerNationality && (
+                              <p className="text-sm text-destructive">
+                                {formErrors.idealPartnerNationality}
+                              </p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="ideal-location">
+                              Preferred Location
+                            </Label>
+                            <Select
+                              onValueChange={(value) =>
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerLocation: value,
+                                }))
+                              }
+                              value={femaleProfileForm.idealPartnerLocation}
+                            >
+                              <SelectTrigger
+                                id="ideal-location"
+                                className="h-8 bg-background dark:bg-input/30"
+                              >
+                                <SelectValue placeholder="Select location" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {idealPartnerNationalities.map((loc) => (
+                                  <SelectItem key={loc} value={loc}>
+                                    {loc}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {formErrors.idealPartnerLocation && (
+                              <p className="text-sm text-destructive">
+                                {formErrors.idealPartnerLocation}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ideal-education">
+                            Education Preference
+                          </Label>
+                          <Select
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                idealPartnerEducation: value,
+                              }))
+                            }
+                            value={femaleProfileForm.idealPartnerEducation}
+                          >
+                            <SelectTrigger
+                              id="ideal-education"
+                              className="h-8 bg-background dark:bg-input/30"
+                            >
+                              <SelectValue placeholder="Select education" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {[...educationLevels, "Not Important"].map(
+                                (edu) => (
+                                  <SelectItem key={edu} value={edu}>
+                                    {edu}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectContent>
+                          </Select>
+                          {formErrors.idealPartnerEducation && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.idealPartnerEducation}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Personality traits (choose 5)</Label>
+                          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            {[...idealPartnerPersonalityTraits, "Other"].map(
+                              (trait) => (
+                                <div
+                                  key={trait}
+                                  className="flex items-center space-x-2"
+                                >
+                                  <Checkbox
+                                    id={`ideal-personality-${trait}`}
+                                    checked={femaleProfileForm.idealPartnerPersonality.includes(
+                                      trait
+                                    )}
+                                    disabled={
+                                      femaleProfileForm.idealPartnerPersonality
+                                        .length >= 5 &&
+                                      !femaleProfileForm.idealPartnerPersonality.includes(
+                                        trait
+                                      )
+                                    }
+                                    onCheckedChange={(checked) => {
+                                      setFemaleProfileForm((prev) => ({
+                                        ...prev,
+                                        idealPartnerPersonality: checked
+                                          ? [
+                                              ...prev.idealPartnerPersonality,
+                                              trait,
+                                            ]
+                                          : prev.idealPartnerPersonality.filter(
+                                              (p) => p !== trait
+                                            ),
+                                      }))
+                                    }}
+                                  />
+                                  <label
+                                    htmlFor={`ideal-personality-${trait}`}
+                                    className="text-sm leading-none font-medium"
+                                  >
+                                    {trait}
+                                  </label>
+                                </div>
+                              )
+                            )}
+                          </div>
+                          {formErrors.idealPartnerPersonality && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.idealPartnerPersonality}
+                            </p>
+                          )}
+                          {femaleProfileForm.idealPartnerPersonality.includes(
+                            "Other"
+                          ) && (
+                            <div className="pt-2">
+                              <InputGroup>
+                                <InputGroupInput
+                                  placeholder="Please specify other trait"
+                                  value={
+                                    femaleProfileForm.idealPartnerOtherPersonality
+                                  }
+                                  onChange={(e) =>
+                                    setFemaleProfileForm((prev) => ({
+                                      ...prev,
+                                      idealPartnerOtherPersonality:
+                                        e.target.value,
+                                    }))
+                                  }
+                                />
+                              </InputGroup>
+                              {formErrors.idealPartnerOtherPersonality && (
+                                <p className="text-sm text-destructive">
+                                  {formErrors.idealPartnerOtherPersonality}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Desired Qualities (choose 5)</Label>
+                          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            {idealPartnerDesiredQualities.map((quality) => (
+                              <div
+                                key={quality}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  id={`ideal-quality-${quality}`}
+                                  checked={femaleProfileForm.idealPartnerQualities.includes(
+                                    quality
+                                  )}
+                                  disabled={
+                                    femaleProfileForm.idealPartnerQualities
+                                      .length >= 5 &&
+                                    !femaleProfileForm.idealPartnerQualities.includes(
+                                      quality
+                                    )
+                                  }
+                                  onCheckedChange={(checked) => {
+                                    setFemaleProfileForm((prev) => ({
+                                      ...prev,
+                                      idealPartnerQualities: checked
+                                        ? [
+                                            ...prev.idealPartnerQualities,
+                                            quality,
+                                          ]
+                                        : prev.idealPartnerQualities.filter(
+                                            (q) => q !== quality
+                                          ),
+                                    }))
+                                  }}
+                                />
+                                <label
+                                  htmlFor={`ideal-quality-${quality}`}
+                                  className="text-sm leading-none font-medium"
+                                >
+                                  {quality}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                          {formErrors.idealPartnerQualities && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.idealPartnerQualities}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Deal Breakers (list 3)</Label>
+                          {[
+                            "e.g. Dishonesty",
+                            "e.g. Smoker",
+                            "e.g. Poor hygiene",
+                          ].map((placeholder, index) => (
+                            <InputGroup key={index}>
+                              <InputGroupAddon className="w-10 justify-center">
+                                {index + 1}
+                              </InputGroupAddon>
+                              <InputGroupInput
+                                placeholder={placeholder}
+                                value={femaleProfileForm.dealBreakers[index]}
+                                onChange={(e) => {
+                                  const newDealBreakers = [
+                                    ...femaleProfileForm.dealBreakers,
+                                  ]
+                                  newDealBreakers[index] = e.target.value
+                                  setFemaleProfileForm((prev) => ({
+                                    ...prev,
+                                    dealBreakers: newDealBreakers,
+                                  }))
+                                }}
+                              />
+                            </InputGroup>
+                          ))}
+                          {formErrors.dealBreakers && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.dealBreakers}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            validateAndSetStep(
+                              "female-profile-9",
+                              femaleProfileSchema8,
+                              femaleProfileForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-9" && (
+                  <motion.div
+                    key="female-profile-financial"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Financial & Career</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          This information is confidential and used only for
+                          matchmaking.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="space-y-3">
+                          <Label>Annual Income Range (USD)</Label>
+                          <RadioGroup
+                            value={financialForm.income}
+                            onValueChange={(value) =>
+                              setFinancialForm((prev) => ({
+                                ...prev,
+                                income: value,
+                              }))
+                            }
+                          >
+                            {[
+                              "Prefer Not To Say",
+                              "Under $25,000",
+                              "$25,000 - $50,000",
+                              "$50,000 - $100,000",
+                              "$100,000 - $250,000",
+                              "$250,000+",
+                            ].map((range) => (
+                              <div
+                                key={range}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={range} id={range} />
+                                <Label htmlFor={range}>{range}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.income && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.income}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          <Label>Do you own property?</Label>
+                          <RadioGroup
+                            className="flex space-x-4"
+                            value={financialForm.ownProperty}
+                            onValueChange={(value) =>
+                              setFinancialForm((prev) => ({
+                                ...prev,
+                                ownProperty: value,
+                              }))
+                            }
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="Yes" id="prop-yes" />
+                              <Label htmlFor="prop-yes">Yes</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="No" id="prop-no" />
+                              <Label htmlFor="prop-no">No</Label>
+                            </div>
+                          </RadioGroup>
+                          {formErrors.ownProperty && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.ownProperty}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          <Label>Do you own a business?</Label>
+                          <RadioGroup
+                            className="flex space-x-4"
+                            value={financialForm.ownBusiness}
+                            onValueChange={(value) =>
+                              setFinancialForm((prev) => ({
+                                ...prev,
+                                ownBusiness: value,
+                              }))
+                            }
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="Yes" id="biz-yes" />
+                              <Label htmlFor="biz-yes">Yes</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="No" id="biz-no" />
+                              <Label htmlFor="biz-no">No</Label>
+                            </div>
+                          </RadioGroup>
+                          {formErrors.ownBusiness && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.ownBusiness}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            validateAndSetStep(
+                              "female-profile-10",
+                              femaleProfileSchemaFinancial, //
+                              financialForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-10" && (
+                  <motion.div
+                    key="female-profile-photos"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Photos</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          Please provide: All within 6 months.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <FileInput
+                          label="Headshot"
+                          file={photosForm.headshot}
+                          onFileChange={(file) =>
+                            setPhotosForm((p) => ({ ...p, headshot: file }))
+                          }
+                          error={formErrors.headshot}
+                        />
+                        <FileInput
+                          label="Full-Length Photo"
+                          file={photosForm.fullLength}
+                          onFileChange={(file) =>
+                            setPhotosForm((p) => ({ ...p, fullLength: file }))
+                          }
+                          error={formErrors.fullLength}
+                        />
+                        <FileInput
+                          label="Casual Lifestyle Photo"
+                          file={photosForm.casualLifestyle}
+                          onFileChange={(file) =>
+                            setPhotosForm((p) => ({
+                              ...p,
+                              casualLifestyle: file,
+                            }))
+                          }
+                          error={formErrors.casualLifestyle}
+                        />
+                        <FileInput
+                          label="Recent Photo"
+                          file={photosForm.recent}
+                          onFileChange={(file) =>
+                            setPhotosForm((p) => ({ ...p, recent: file }))
+                          }
+                          error={formErrors.recent}
+                        />
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            validateAndSetStep(
+                              "verify-email",
+                              femaleProfileSchemaPhotos,
+                              photosForm
                             )
                           }}
                         >
@@ -2632,6 +3824,62 @@ function AuthPageContents() {
         </div>
       </div>
     </main>
+  )
+}
+
+function FileInput({
+  label,
+  file,
+  onFileChange,
+  error,
+}: {
+  label: string
+  file: File | null
+  onFileChange: (file: File | null) => void
+  error?: string
+}) {
+  const id = label.toLowerCase().replace(/\s/g, "-")
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>{label}</Label>
+      <InputGroup>
+        <InputGroupAddon>
+          <Upload className="size-4" />
+        </InputGroupAddon>
+        <div className="relative flex-1">
+          <InputGroupInput
+            id={`${id}-display`}
+            readOnly
+            value={file ? file.name : ""}
+            placeholder="Choose a file..."
+            className="cursor-pointer pr-16"
+          />
+          <label
+            htmlFor={id}
+            className="absolute inset-0 cursor-pointer"
+          ></label>
+          <input
+            id={id}
+            type="file"
+            className="sr-only"
+            onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
+            accept="image/png, image/jpeg, image/webp" //
+          />
+          {file && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => onFileChange(null)}
+              className="absolute top-1/2 right-2 -translate-y-1/2 text-destructive/80 hover:text-destructive"
+            >
+              <X className="size-4" />
+              <span className="sr-only">Clear file</span>
+            </Button>
+          )}
+        </div>
+      </InputGroup>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+    </div>
   )
 }
 

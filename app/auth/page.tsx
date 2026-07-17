@@ -89,6 +89,55 @@ const religions = [
   "Other",
 ]
 
+const lifestyleOptions = [
+  "Relaxed",
+  "Active",
+  "Luxury-Oriented",
+  "Family-Focused",
+  "Career-Focused",
+  "Adventurous",
+]
+
+const smokingHabits = ["Never", "Occasionally", "Regularly"]
+
+const drinkingHabits = ["Never", "Occasionally", "Socially", "Frequently"]
+
+const exerciseFrequencies = ["Daily", "Weekly", "Occasionally", "Never"]
+
+const interestsAndHobbies = [
+  "Travel",
+  "Fitness",
+  "Reading",
+  "Cooking",
+  "Fine Dining",
+  "Music",
+  "Movies",
+  "Business",
+  "Investing",
+  "Golf",
+  "Tennis",
+  "Hiking",
+  "Yoga",
+  "Art",
+  "Photography",
+  "Volunteering",
+  "Pets",
+]
+
+const femaleProfileSteps = [
+  "female-profile-1",
+  "female-profile-2",
+  "female-profile-3",
+  "female-profile-4",
+  "female-profile-5",
+  "female-profile-6",
+]
+
+const getFemaleStepNumber = (currentStep: string) => {
+  const index = femaleProfileSteps.indexOf(currentStep)
+  return index !== -1 ? index + 1 : 0
+}
+
 const getRegistrationSteps = (gender: string) => {
   const baseSteps = [
     { id: "details", name: "Details & Location" },
@@ -100,10 +149,10 @@ const getRegistrationSteps = (gender: string) => {
     baseSteps.splice(
       1,
       0,
-      { id: "female-profile-1", name: "Basic Info" },
-      { id: "female-profile-2", name: "Appearance & Lifestyle" },
-      { id: "female-profile-3", name: "About You" },
-      { id: "female-profile-4", name: "Your Qualities" }
+      ...femaleProfileSteps.map((id, index) => ({
+        id,
+        name: `Profile Step ${index + 1}`,
+      }))
     )
   }
 
@@ -142,8 +191,22 @@ function AuthPageContents() {
       | "female-profile-2"
       | "female-profile-3"
       | "female-profile-4"
+      | "female-profile-5"
+      | "female-profile-6"
       | "verify-email"
       | "password") || "details"
+
+  const bestQualitiesPlaceholders = ["e.g. Honest", "e.g. Kind", "e.g. Funny"]
+  const lookingForQualitiesPlaceholders = [
+    "e.g. Ambitious",
+    "e.g. Loyal",
+    "e.g. Supportive",
+  ]
+  const travelDestinationsPlaceholders = [
+    "e.g. Paris",
+    "e.g. Tokyo",
+    "e.g. New York",
+  ]
 
   const setMode = (newMode: "login" | "register" | "forgot-password") => {
     // When switching modes, we should probably clear the step and userData
@@ -159,6 +222,8 @@ function AuthPageContents() {
       | "female-profile-2"
       | "female-profile-3"
       | "female-profile-4"
+      | "female-profile-5"
+      | "female-profile-6"
       | "verify-email"
       | "password",
     data?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -193,13 +258,21 @@ function AuthPageContents() {
     height: "",
     weight: "",
     religion: "",
-    maritalStatus: "",
+    maritalStatus: "Never Married",
     hasChildren: "No",
     childrenCount: 0,
     personality: [] as string[],
     about: "",
     bestQualities: ["", "", ""],
     lookingForQualities: ["", "", ""],
+    lifestyle: [] as string[],
+    smoking: "",
+    drinking: "",
+    exercise: "",
+    interests: [] as string[],
+    otherInterest: "",
+    travelDestinations: ["", "", ""],
+    weekendActivity: "",
   })
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
@@ -282,6 +355,8 @@ function AuthPageContents() {
       | "female-profile-2"
       | "female-profile-3"
       | "female-profile-4"
+      | "female-profile-5"
+      | "female-profile-6"
       | "verify-email"
       | "password",
     schema: z.ZodObject<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -303,6 +378,7 @@ function AuthPageContents() {
   // Form States
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
   const [detailsForm, setDetailsForm] = useState({
+    prefix: "Mr.",
     name: "",
     email: "",
     phone: "",
@@ -324,6 +400,7 @@ function AuthPageContents() {
   })
 
   const detailsSchema = z.object({
+    prefix: z.string().min(1, "Prefix is required."),
     name: z.string().min(2, "Name must be at least 2 characters."),
     birthday: z.date({
       // phone is validated separately now
@@ -359,39 +436,81 @@ function AuthPageContents() {
     religion: z.string().min(2, "Religion is required."),
   })
 
-  const femaleProfileSchema3 = z.object({
-    maritalStatus: z.string().min(1, "Marital status is required."),
-    hasChildren: z.enum(["Yes", "No"]),
-    childrenCount: z.number().optional(),
-    personality: z
-      .array(z.string())
-      .min(1, "Please select at least one personality trait."),
-    about: z.string().min(10, "Please tell us a little about yourself."),
-  })
+  const femaleProfileSchema3 = z
+    .object({
+      maritalStatus: z.string().min(1, "Marital status is required."),
+      hasChildren: z.enum(["Yes", "No"]),
+      childrenCount: z.number().optional(),
+      personality: z
+        .array(z.string())
+        .min(1, "Please select at least one personality trait."),
+    })
+    .refine(
+      (data) => {
+        if (data.hasChildren === "Yes") {
+          return data.childrenCount && data.childrenCount > 0
+        }
+        return true
+      },
+      {
+        message: "Please specify the number of children.",
+        path: ["childrenCount"],
+      }
+    )
 
   const femaleProfileSchema4 = z.object({
-    maritalStatus: z.string().min(1, "Marital status is required."),
-    hasChildren: z.enum(["Yes", "No"]),
-    childrenCount: z.number().optional(),
-    personality: z
-      .array(z.string())
-      .min(1, "Please select at least one personality trait."),
     about: z.string().min(10, "Please tell us a little about yourself."),
     bestQualities: z
-      .array(z.string().min(1, "Quality cannot be empty."))
-      .length(3, "Please list 3 qualities.")
-      .refine(
-        (q) => q.every((val) => val.length > 0),
-        "Please list 3 qualities."
-      ),
+      .array(z.string())
+      .length(3)
+      .refine((q) => q.every((val) => val.trim().length > 0), {
+        message: "Please enter three qualities.",
+      }),
     lookingForQualities: z
-      .array(z.string().min(1, "Quality cannot be empty."))
-      .length(3, "Please list 3 qualities.")
-      .refine(
-        (q) => q.every((val) => val.length > 0),
-        "Please list 3 qualities."
-      ),
+      .array(z.string())
+      .length(3)
+      .refine((q) => q.every((val) => val.trim().length > 0), {
+        message: "Please enter three qualities.",
+      }),
   })
+
+  const femaleProfileSchema5 = z.object({
+    lifestyle: z
+      .array(z.string())
+      .min(1, "Please select at least one lifestyle description."),
+    smoking: z.string().min(1, "Please select your smoking habits."),
+    drinking: z.string().min(1, "Please select your drinking habits."),
+    exercise: z.string().min(1, "Please select your exercise frequency."),
+  })
+
+  const femaleProfileSchema6 = z
+    .object({
+      interests: z
+        .array(z.string())
+        .length(5, "Please select exactly 5 interests."),
+      otherInterest: z.string().optional(),
+      travelDestinations: z
+        .array(z.string())
+        .length(3)
+        .refine((d) => d.every((dest) => dest.trim().length > 0), {
+          message: "Please list 3 favorite travel destinations.",
+        }),
+      weekendActivity: z
+        .string()
+        .min(10, "Please describe how you spend your weekends."),
+    })
+    .refine(
+      (data) => {
+        if (data.interests.includes("Other")) {
+          return data.otherInterest && data.otherInterest.trim().length > 0
+        }
+        return true
+      },
+      {
+        message: "Please specify your 'Other' interest.",
+        path: ["otherInterest"],
+      }
+    )
 
   const passwordSchema = z
     .object({
@@ -409,6 +528,12 @@ function AuthPageContents() {
 
   const isLoginFormValid = loginSchema.safeParse(loginForm).success
 
+  const isDetailsFormValid = detailsSchema.safeParse({
+    ...detailsForm,
+    prefix,
+    birthday,
+    ...locationForm,
+  }).success
   const isVerificationCodeFormValid = verificationCodeSchema.safeParse({
     code: verificationCode,
   }).success
@@ -418,6 +543,7 @@ function AuthPageContents() {
     if (registrationStep === "details") {
       const data = {
         ...detailsForm,
+        prefix,
         birthday,
         ...locationForm,
       }
@@ -546,12 +672,166 @@ function AuthPageContents() {
   }, [femaleProfileForm.religion, registrationStep, formErrors.religion])
 
   useEffect(() => {
+    if (registrationStep === "female-profile-3" && formErrors.personality) {
+      if (
+        femaleProfileSchema3.shape.personality.safeParse(
+          femaleProfileForm.personality
+        ).success
+      ) {
+        setFormErrors((prev) => ({ ...prev, personality: undefined }))
+      }
+    }
+  }, [femaleProfileForm.personality, registrationStep, formErrors.personality])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-3" && formErrors.childrenCount) {
+      if (
+        femaleProfileForm.hasChildren === "No" ||
+        (femaleProfileForm.hasChildren === "Yes" &&
+          femaleProfileForm.childrenCount > 0)
+      ) {
+        setFormErrors((prev) => ({ ...prev, childrenCount: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.hasChildren,
+    femaleProfileForm.childrenCount,
+    registrationStep,
+    formErrors.childrenCount,
+  ])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-4" && formErrors.about) {
+      if (femaleProfileForm.about.length >= 10) {
+        setFormErrors((prev) => ({ ...prev, about: undefined }))
+      }
+    }
+  }, [femaleProfileForm.about, registrationStep, formErrors.about])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-4" && formErrors.bestQualities) {
+      if (femaleProfileForm.bestQualities.every((q) => q.trim().length > 0)) {
+        setFormErrors((prev) => ({ ...prev, bestQualities: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.bestQualities,
+    registrationStep,
+    formErrors.bestQualities,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-4" &&
+      formErrors.lookingForQualities
+    ) {
+      if (
+        femaleProfileForm.lookingForQualities.every((q) => q.trim().length > 0)
+      ) {
+        setFormErrors((prev) => ({ ...prev, lookingForQualities: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.lookingForQualities,
+    registrationStep,
+    formErrors.lookingForQualities,
+  ])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-5" && formErrors.lifestyle) {
+      if (femaleProfileForm.lifestyle.length > 0) {
+        setFormErrors((prev) => ({ ...prev, lifestyle: undefined }))
+      }
+    }
+  }, [femaleProfileForm.lifestyle, registrationStep, formErrors.lifestyle])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-5" && formErrors.smoking) {
+      if (femaleProfileForm.smoking) {
+        setFormErrors((prev) => ({ ...prev, smoking: undefined }))
+      }
+    }
+  }, [femaleProfileForm.smoking, registrationStep, formErrors.smoking])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-5" && formErrors.drinking) {
+      if (femaleProfileForm.drinking) {
+        setFormErrors((prev) => ({ ...prev, drinking: undefined }))
+      }
+    }
+  }, [femaleProfileForm.drinking, registrationStep, formErrors.drinking])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-5" && formErrors.exercise) {
+      if (femaleProfileForm.exercise) {
+        setFormErrors((prev) => ({ ...prev, exercise: undefined }))
+      }
+    }
+  }, [femaleProfileForm.exercise, registrationStep, formErrors.exercise])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-6" && formErrors.interests) {
+      if (femaleProfileForm.interests.length === 5) {
+        setFormErrors((prev) => ({ ...prev, interests: undefined }))
+      }
+    }
+  }, [femaleProfileForm.interests, registrationStep, formErrors.interests])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-6" && formErrors.otherInterest) {
+      if (
+        !femaleProfileForm.interests.includes("Other") ||
+        (femaleProfileForm.interests.includes("Other") &&
+          femaleProfileForm.otherInterest.trim().length > 0)
+      ) {
+        setFormErrors((prev) => ({ ...prev, otherInterest: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.interests,
+    femaleProfileForm.otherInterest,
+    registrationStep,
+    formErrors.otherInterest,
+  ])
+
+  useEffect(() => {
+    if (
+      registrationStep === "female-profile-6" &&
+      formErrors.travelDestinations
+    ) {
+      if (
+        femaleProfileForm.travelDestinations.every((d) => d.trim().length > 0)
+      ) {
+        setFormErrors((prev) => ({ ...prev, travelDestinations: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.travelDestinations,
+    registrationStep,
+    formErrors.travelDestinations,
+  ])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-6" && formErrors.weekendActivity) {
+      if (femaleProfileForm.weekendActivity.length >= 10) {
+        setFormErrors((prev) => ({ ...prev, weekendActivity: undefined }))
+      }
+    }
+  }, [
+    femaleProfileForm.weekendActivity,
+    registrationStep,
+    formErrors.weekendActivity,
+  ])
+
+  useEffect(() => {
     if (registrationStep.startsWith("female-profile")) {
       const schemaMap = {
         "female-profile-1": femaleProfileSchema1,
         "female-profile-2": femaleProfileSchema2,
         "female-profile-3": femaleProfileSchema3,
         "female-profile-4": femaleProfileSchema4,
+        "female-profile-5": femaleProfileSchema5,
+        "female-profile-6": femaleProfileSchema6,
       }
       const schema = schemaMap[registrationStep as keyof typeof schemaMap]
       if (schema) {
@@ -797,6 +1077,11 @@ function AuthPageContents() {
                               </SelectContent>
                             </Select>
                           </div>
+                          {formErrors.prefix && (
+                            <p className="col-start-1 text-sm text-destructive">
+                              {formErrors.prefix}
+                            </p>
+                          )}
                           <div className="space-y-2">
                             <Label htmlFor="name">Name</Label>
                             <InputGroup>
@@ -1062,6 +1347,7 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
                             const nextStep =
                               gender === "Female"
                                 ? "female-profile-1"
@@ -1076,6 +1362,7 @@ function AuthPageContents() {
                               ...locationForm,
                             })
                           }}
+                          disabled={!isDetailsFormValid}
                         >
                           Next
                         </Button>
@@ -1116,8 +1403,8 @@ function AuthPageContents() {
                       </CardHeader>
                       <div className="px-6 pb-4">
                         <p className="text-sm text-muted-foreground">
-                          Dear {detailsForm.name}, if you want to edit your
-                          profile details,{" "}
+                          Dear {prefix} {detailsForm.name}, if you want to edit
+                          your profile details,{" "}
                           <Link
                             href={{
                               pathname,
@@ -1241,19 +1528,29 @@ function AuthPageContents() {
                           )}
                         </div>
                       </CardContent>
-                      <CardFooter>
+                      <CardFooter className="flex-col items-start gap-4">
                         <Button
                           className="btn-gradient w-full"
-                          onClick={() =>
+                          onClick={() => {
                             validateAndSetStep(
                               "female-profile-2",
                               femaleProfileSchema1,
                               femaleProfileForm
                             )
-                          }
+                          }}
                         >
                           Next
                         </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
                       </CardFooter>
                     </Card>
                   </motion.div>
@@ -1282,7 +1579,10 @@ function AuthPageContents() {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="space-y-2">
-                          <Label>English Fluency</Label>
+                          <Label>
+                            English Fluency ({femaleProfileForm.englishFluency}
+                            %)
+                          </Label>
                           <Slider
                             value={femaleProfileForm.englishFluency}
                             onValueChange={(value) =>
@@ -1328,7 +1628,7 @@ function AuthPageContents() {
                             <InputGroup>
                               <InputGroupInput
                                 id="weight"
-                                placeholder="e.g. 55"
+                                placeholder="e.g. 55.5"
                                 value={femaleProfileForm.weight}
                                 onChange={(e) =>
                                   /^\d*\.?\d{0,2}$/.test(e.target.value) &&
@@ -1378,19 +1678,29 @@ function AuthPageContents() {
                           )}
                         </div>
                       </CardContent>
-                      <CardFooter>
+                      <CardFooter className="flex-col items-start gap-4">
                         <Button
                           className="btn-gradient w-full"
-                          onClick={() =>
+                          onClick={() => {
                             validateAndSetStep(
                               "female-profile-3",
                               femaleProfileSchema2,
                               femaleProfileForm
                             )
-                          }
+                          }}
                         >
                           Next
                         </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
                       </CardFooter>
                     </Card>
                   </motion.div>
@@ -1485,52 +1795,123 @@ function AuthPageContents() {
                             </p>
                           )}
                         </div>
-                        <div className="space-y-2">
-                          <Label>Do you have children?</Label>
-                          <RadioGroup
-                            value={femaleProfileForm.hasChildren}
-                            onValueChange={(value) =>
-                              setFemaleProfileForm((prev) => ({
-                                ...prev,
-                                hasChildren: value,
-                                childrenCount:
-                                  value === "No" ? 0 : prev.childrenCount,
-                              }))
-                            }
-                            className="flex space-x-4"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="No" id="children-no" />
-                              <Label htmlFor="children-no">No</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="Yes" id="children-yes" />
-                              <Label htmlFor="children-yes">Yes</Label>
-                            </div>
-                          </RadioGroup>
-                          {femaleProfileForm.hasChildren === "Yes" && (
-                            <div className="pt-2 pl-2">
-                              <Label htmlFor="children-count">
-                                If yes, how many?
-                              </Label>
-                              <InputGroupInput
-                                id="children-count"
-                                type="number"
-                                min="1"
-                                value={femaleProfileForm.childrenCount || ""}
-                                onChange={(e) =>
-                                  setFemaleProfileForm((prev) => ({
-                                    ...prev,
-                                    childrenCount: parseInt(e.target.value),
-                                  }))
-                                }
-                                className="mt-1 w-24"
-                              />
+                        {femaleProfileForm.maritalStatus &&
+                          femaleProfileForm.maritalStatus !==
+                            "Never Married" && (
+                            <div className="space-y-2">
+                              <Label>Do you have children?</Label>
+                              <div className="flex items-center gap-4">
+                                <RadioGroup
+                                  value={femaleProfileForm.hasChildren}
+                                  onValueChange={(value) =>
+                                    setFemaleProfileForm((prev) => ({
+                                      ...prev,
+                                      hasChildren: value,
+                                      childrenCount:
+                                        value === "No" ? 0 : prev.childrenCount,
+                                    }))
+                                  }
+                                  className="flex space-x-4"
+                                >
+                                  <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                      value="No"
+                                      id="children-no"
+                                    />
+                                    <Label htmlFor="children-no">No</Label>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                      value="Yes"
+                                      id="children-yes"
+                                    />
+                                    <Label htmlFor="children-yes">Yes</Label>
+                                  </div>
+                                </RadioGroup>
+                                {femaleProfileForm.hasChildren === "Yes" && (
+                                  <InputGroup className="w-28">
+                                    <InputGroupInput
+                                      id="children-count"
+                                      placeholder="Count"
+                                      type="number"
+                                      min="1"
+                                      value={
+                                        femaleProfileForm.childrenCount > 0
+                                          ? String(
+                                              femaleProfileForm.childrenCount
+                                            )
+                                          : "" // Display nothing if count is 0
+                                      }
+                                      onChange={(e) =>
+                                        setFemaleProfileForm((prev) => ({
+                                          ...prev,
+                                          childrenCount:
+                                            parseInt(e.target.value) || 0,
+                                        }))
+                                      }
+                                    />
+                                  </InputGroup>
+                                )}
+                              </div>
+                              {formErrors.childrenCount && (
+                                <p className="text-sm text-destructive">
+                                  {formErrors.childrenCount}
+                                </p>
+                              )}
                             </div>
                           )}
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            validateAndSetStep(
+                              "female-profile-4",
+                              femaleProfileSchema3,
+                              femaleProfileForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
                         </div>
-                        <div className="space-y-2 pt-4">
-                          <h3 className="text-lg font-semibold">About You</h3>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-4" && (
+                  <motion.div
+                    key="female-profile-4"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>About You</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          This information is confidential and used only for
+                          matchmaking.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
                           <Label htmlFor="about-you">
                             Describe yourself in a few sentences
                           </Label>
@@ -1551,65 +1932,28 @@ function AuthPageContents() {
                             </p>
                           )}
                         </div>
-                      </CardContent>
-                      <CardFooter>
-                        <Button
-                          className="btn-gradient w-full"
-                          onClick={() =>
-                            validateAndSetStep(
-                              "female-profile-4",
-                              femaleProfileSchema3,
-                              femaleProfileForm
-                            )
-                          }
-                        >
-                          Next
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </motion.div>
-                )}
-                {registrationStep === "female-profile-4" && (
-                  <motion.div
-                    key="female-profile-4"
-                    variants={animationVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <Card>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle>Your Qualities</CardTitle>
-                          <SimpleStepper
-                            steps={getRegistrationSteps(gender)}
-                            currentStep={registrationStep}
-                          />
-                        </div>
-                        <CardDescription>
-                          This information is confidential and used only for
-                          matchmaking.
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
                         <div className="space-y-2">
                           <Label>What are your three best qualities?</Label>
                           {[0, 1, 2].map((index) => (
-                            <InputGroupInput
-                              key={index}
-                              placeholder={`Quality ${index + 1}`}
-                              value={femaleProfileForm.bestQualities[index]}
-                              onChange={(e) => {
-                                const newQualities = [
-                                  ...femaleProfileForm.bestQualities,
-                                ]
-                                newQualities[index] = e.target.value
-                                setFemaleProfileForm((prev) => ({
-                                  ...prev,
-                                  bestQualities: newQualities,
-                                }))
-                              }}
-                            />
+                            <InputGroup key={index}>
+                              <InputGroupAddon className="w-10 justify-center">
+                                {index + 1}
+                              </InputGroupAddon>
+                              <InputGroupInput
+                                placeholder={bestQualitiesPlaceholders[index]}
+                                value={femaleProfileForm.bestQualities[index]}
+                                onChange={(e) => {
+                                  const newQualities = [
+                                    ...femaleProfileForm.bestQualities,
+                                  ]
+                                  newQualities[index] = e.target.value
+                                  setFemaleProfileForm((prev) => ({
+                                    ...prev,
+                                    bestQualities: newQualities,
+                                  }))
+                                }}
+                              />
+                            </InputGroup>
                           ))}
                           {formErrors.bestQualities && (
                             <p className="text-sm text-destructive">
@@ -1622,23 +1966,29 @@ function AuthPageContents() {
                             What three qualities you look for in a man?
                           </Label>
                           {[0, 1, 2].map((index) => (
-                            <InputGroupInput
-                              key={index}
-                              placeholder={`Quality ${index + 1}`}
-                              value={
-                                femaleProfileForm.lookingForQualities[index]
-                              }
-                              onChange={(e) => {
-                                const newQualities = [
-                                  ...femaleProfileForm.lookingForQualities,
-                                ]
-                                newQualities[index] = e.target.value
-                                setFemaleProfileForm((prev) => ({
-                                  ...prev,
-                                  lookingForQualities: newQualities,
-                                }))
-                              }}
-                            />
+                            <InputGroup key={index}>
+                              <InputGroupAddon className="w-10 justify-center">
+                                {index + 1}
+                              </InputGroupAddon>
+                              <InputGroupInput
+                                placeholder={
+                                  lookingForQualitiesPlaceholders[index]
+                                }
+                                value={
+                                  femaleProfileForm.lookingForQualities[index]
+                                }
+                                onChange={(e) => {
+                                  const newQualities = [
+                                    ...femaleProfileForm.lookingForQualities,
+                                  ]
+                                  newQualities[index] = e.target.value
+                                  setFemaleProfileForm((prev) => ({
+                                    ...prev,
+                                    lookingForQualities: newQualities,
+                                  }))
+                                }}
+                              />
+                            </InputGroup>
                           ))}
                           {formErrors.lookingForQualities && (
                             <p className="text-sm text-destructive">
@@ -1647,26 +1997,382 @@ function AuthPageContents() {
                           )}
                         </div>
                       </CardContent>
-                      <CardFooter>
+                      <CardFooter className="flex-col items-start gap-4">
                         <Button
                           className="btn-gradient w-full"
-                          onClick={() =>
+                          onClick={() => {
                             validateAndSetStep(
-                              "verify-email",
+                              //
+                              "female-profile-5",
                               femaleProfileSchema4,
                               femaleProfileForm
                             )
-                          }
+                          }}
                         >
                           Next
                         </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-5" && (
+                  <motion.div
+                    key="female-profile-5"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Lifestyle</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          Tell us a bit about your lifestyle habits.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="space-y-2">
+                          <Label>How would you describe your lifestyle?</Label>
+                          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            {lifestyleOptions.map((item) => (
+                              <div
+                                key={item}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  id={`lifestyle-${item}`}
+                                  checked={femaleProfileForm.lifestyle.includes(
+                                    item
+                                  )}
+                                  onCheckedChange={(checked) => {
+                                    setFemaleProfileForm((prev) => ({
+                                      ...prev,
+                                      lifestyle: checked
+                                        ? [...prev.lifestyle, item]
+                                        : prev.lifestyle.filter(
+                                            (l) => l !== item
+                                          ),
+                                    }))
+                                  }}
+                                />
+                                <label
+                                  htmlFor={`lifestyle-${item}`}
+                                  className="text-sm leading-none font-medium"
+                                >
+                                  {item}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                          {formErrors.lifestyle && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.lifestyle}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          <Label>Do you smoke?</Label>
+                          <RadioGroup
+                            value={femaleProfileForm.smoking}
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                smoking: value,
+                              }))
+                            }
+                            className="flex space-x-4"
+                          >
+                            {smokingHabits.map((habit) => (
+                              <div
+                                key={habit}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={habit} id={habit} />
+                                <Label htmlFor={habit}>{habit}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.smoking && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.smoking}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          <Label>Do you drink alcohol?</Label>
+                          <RadioGroup
+                            value={femaleProfileForm.drinking}
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                drinking: value,
+                              }))
+                            }
+                            className="flex flex-wrap gap-x-4 gap-y-2"
+                          >
+                            {drinkingHabits.map((habit) => (
+                              <div
+                                key={habit}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={habit} id={habit} />
+                                <Label htmlFor={habit}>{habit}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.drinking && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.drinking}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          <Label>Exercise Frequency</Label>
+                          <RadioGroup
+                            value={femaleProfileForm.exercise}
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                exercise: value,
+                              }))
+                            }
+                            className="flex flex-wrap gap-x-4 gap-y-2"
+                          >
+                            {exerciseFrequencies.map((freq) => (
+                              <div
+                                key={freq}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={freq} id={freq} />
+                                <Label htmlFor={freq}>{freq}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.exercise && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.exercise}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            validateAndSetStep(
+                              //
+                              "female-profile-6",
+                              femaleProfileSchema5, //
+                              femaleProfileForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-6" && (
+                  <motion.div
+                    key="female-profile-6"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Interests & Hobbies</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          Share what you love to do.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="space-y-2">
+                          <Label>Select 5 that apply</Label>
+                          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            {[...interestsAndHobbies, "Other"].map((item) => (
+                              <div
+                                key={item}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  id={`interest-${item}`}
+                                  checked={femaleProfileForm.interests.includes(
+                                    item
+                                  )}
+                                  disabled={
+                                    femaleProfileForm.interests.length >= 5 &&
+                                    !femaleProfileForm.interests.includes(item)
+                                  }
+                                  onCheckedChange={(checked) => {
+                                    setFemaleProfileForm((prev) => {
+                                      const newInterests = checked
+                                        ? [...prev.interests, item]
+                                        : prev.interests.filter(
+                                            (i) => i !== item
+                                          )
+                                      return {
+                                        ...prev,
+                                        interests: newInterests,
+                                      }
+                                    })
+                                  }}
+                                />
+                                <label
+                                  htmlFor={`interest-${item}`}
+                                  className="text-sm leading-none font-medium"
+                                >
+                                  {item}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                          {femaleProfileForm.interests.includes("Other") && (
+                            <div className="pt-2">
+                              <InputGroup>
+                                <InputGroupInput
+                                  placeholder="Please specify other interest"
+                                  value={femaleProfileForm.otherInterest}
+                                  onChange={(e) =>
+                                    setFemaleProfileForm((prev) => ({
+                                      ...prev,
+                                      otherInterest: e.target.value,
+                                    }))
+                                  }
+                                />
+                              </InputGroup>
+                            </div>
+                          )}
+                          {formErrors.interests && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.interests}
+                            </p>
+                          )}
+                          {formErrors.otherInterest && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.otherInterest}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Favourite travel destinations (top 3)</Label>
+                          {[0, 1, 2].map((index) => (
+                            <InputGroup key={index}>
+                              <InputGroupAddon className="w-10 justify-center">
+                                {index + 1}
+                              </InputGroupAddon>
+                              <InputGroupInput
+                                placeholder={
+                                  travelDestinationsPlaceholders[index]
+                                }
+                                value={
+                                  femaleProfileForm.travelDestinations[index]
+                                }
+                                onChange={(e) => {
+                                  const newDestinations = [
+                                    ...femaleProfileForm.travelDestinations,
+                                  ]
+                                  newDestinations[index] = e.target.value
+                                  setFemaleProfileForm((prev) => ({
+                                    ...prev,
+                                    travelDestinations: newDestinations,
+                                  }))
+                                }}
+                              />
+                            </InputGroup>
+                          ))}
+                          {formErrors.travelDestinations && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.travelDestinations}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="weekend-activity">
+                            Favourite way to spend a weekend
+                          </Label>
+                          <Textarea
+                            id="weekend-activity"
+                            placeholder="e.g., Reading a book, hiking, or trying new cafes..."
+                            value={femaleProfileForm.weekendActivity}
+                            onChange={(e) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                weekendActivity: e.target.value,
+                              }))
+                            }
+                          />
+                          {formErrors.weekendActivity && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.weekendActivity}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            validateAndSetStep(
+                              "verify-email",
+                              femaleProfileSchema6,
+                              femaleProfileForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
                       </CardFooter>
                     </Card>
                   </motion.div>
                 )}
                 {registrationStep === "verify-email" && (
                   <motion.div
-                    key="register-verify-email"
+                    key="register-verify-email" //
                     variants={animationVariants}
                     initial="initial"
                     animate="animate"

@@ -10,9 +10,12 @@ import {
   EyeOff,
   Cake,
   Phone,
+  Briefcase,
   ChevronLeft,
+  Heart,
   KeyRound,
 } from "lucide-react"
+import Link from "next/link"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
@@ -37,6 +40,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Slider } from "@/components/ui/slider"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, forwardRef, useEffect, Suspense } from "react"
@@ -45,11 +52,63 @@ import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
 
-const registrationSteps = [
-  { id: "details", name: "Details & Location" },
-  { id: "verify-email", name: "Verification" },
-  { id: "password", name: "Password" },
+const educationLevels = [
+  "High School",
+  "Diploma",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "Doctorate",
+  "Other",
 ]
+
+const maritalStatuses = ["Never Married", "Divorced", "Widowed"]
+
+const personalityTraits = [
+  "Kind",
+  "Loyal",
+  "Ambitious",
+  "Romantic",
+  "Family-Oriented",
+  "Easy Going",
+  "Adventurous",
+  "Spiritual",
+  "Confident",
+  "Humorous",
+  "Intelligent",
+  "Creative",
+]
+
+const religions = [
+  "Buddhism",
+  "Christianity",
+  "Islam",
+  "Hinduism",
+  "Sikhism",
+  "Judaism",
+  "Not religious",
+  "Other",
+]
+
+const getRegistrationSteps = (gender: string) => {
+  const baseSteps = [
+    { id: "details", name: "Details & Location" },
+    { id: "verify-email", name: "Verification" },
+    { id: "password", name: "Password" },
+  ]
+
+  if (gender === "Female") {
+    baseSteps.splice(
+      1,
+      0,
+      { id: "female-profile-1", name: "Basic Info" },
+      { id: "female-profile-2", name: "Appearance & Lifestyle" },
+      { id: "female-profile-3", name: "About You" },
+      { id: "female-profile-4", name: "Your Qualities" }
+    )
+  }
+
+  return baseSteps
+}
 
 function SimpleStepper({
   steps,
@@ -77,24 +136,45 @@ function AuthPageContents() {
   const searchParams = useSearchParams()
   const mode = searchParams.get("mode") || "login"
   const registrationStep =
-    (searchParams.get("step") as "details" | "verify-email" | "password") ||
-    "details"
+    (searchParams.get("step") as  //
+      | "details"
+      | "female-profile-1"
+      | "female-profile-2"
+      | "female-profile-3"
+      | "female-profile-4"
+      | "verify-email"
+      | "password") || "details"
 
   const setMode = (newMode: "login" | "register" | "forgot-password") => {
+    // When switching modes, we should probably clear the step and userData
     const params = new URLSearchParams(searchParams)
     params.set("mode", newMode)
     router.push(`${pathname}?${params.toString()}`)
   }
 
   const setRegistrationStep = (
-    newStep: "details" | "verify-email" | "password",
-    data?: any // eslint-disable-line @typescript-eslint/no-explicit-any
+    newStep:
+      | "details"
+      | "female-profile-1"
+      | "female-profile-2"
+      | "female-profile-3"
+      | "female-profile-4"
+      | "verify-email"
+      | "password",
+    data?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    options?: {
+      // This will allow us to go back without losing the new step's data
+      keepExistingUserData?: boolean
+    }
   ) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set("step", newStep)
     if (data) {
       const encodedUserData = btoa(JSON.stringify(data))
       params.set("userData", encodedUserData)
+    }
+    if (!options?.keepExistingUserData) {
+      // params.delete("userData") // This was in the original code, but we need to keep it.
     }
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
@@ -104,6 +184,23 @@ function AuthPageContents() {
   const [birthday, setBirthday] = useState<Date>()
   const [countdown, setCountdown] = useState(0)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
+  const [femaleProfileForm, setFemaleProfileForm] = useState({
+    nickname: "",
+    occupation: "",
+    company: "",
+    education: "",
+    englishFluency: [50],
+    height: "",
+    weight: "",
+    religion: "",
+    maritalStatus: "",
+    hasChildren: "No",
+    childrenCount: 0,
+    personality: [] as string[],
+    about: "",
+    bestQualities: ["", "", ""],
+    lookingForQualities: ["", "", ""],
+  })
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
   const [countries, setCountries] = useState<
@@ -179,7 +276,14 @@ function AuthPageContents() {
   }, [prefix, gender])
 
   const validateAndSetStep = (
-    step: "details" | "verify-email" | "password",
+    step:
+      | "details"
+      | "female-profile-1"
+      | "female-profile-2"
+      | "female-profile-3"
+      | "female-profile-4"
+      | "verify-email"
+      | "password",
     schema: z.ZodObject<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
     data: any
   ) => {
@@ -235,6 +339,65 @@ function AuthPageContents() {
     currentLocation: z.string().min(2, "Current location is required."),
   })
 
+  const femaleProfileSchema1 = z.object({
+    nickname: z.string().min(2, "Nickname is required."),
+    occupation: z.string().min(2, "Occupation is required."),
+    company: z.string().min(2, "Company/Industry is required."),
+    education: z.string().min(1, "Education level is required."),
+  })
+
+  const femaleProfileSchema2 = z.object({
+    englishFluency: z.array(z.number()).min(1),
+    height: z
+      .string()
+      .min(2, "Height is required.")
+      .refine((val) => !isNaN(parseFloat(val)), "Height must be a number."),
+    weight: z
+      .string()
+      .min(1, "Weight is required.")
+      .refine((val) => !isNaN(parseFloat(val)), "Weight must be a number."),
+    religion: z.string().min(2, "Religion is required."),
+  })
+
+  const femaleProfileSchema3 = z.object({
+    maritalStatus: z.string().min(1, "Marital status is required."),
+    hasChildren: z.enum(["Yes", "No"]),
+    childrenCount: z.number().optional(),
+    personality: z
+      .array(z.string())
+      .min(1, "Please select at least one personality trait."),
+    about: z.string().min(10, "Please tell us a little about yourself."),
+  })
+
+  const femaleProfileSchema4 = z.object({
+    maritalStatus: z.string().min(1, "Marital status is required."),
+    hasChildren: z.enum(["Yes", "No"]),
+    childrenCount: z.number().optional(),
+    personality: z
+      .array(z.string())
+      .min(1, "Please select at least one personality trait."),
+    about: z.string().min(10, "Please tell us a little about yourself."),
+    bestQualities: z
+      .array(z.string().min(1, "Quality cannot be empty."))
+      .length(3, "Please list 3 qualities.")
+      .refine(
+        (q) => q.every((val) => val.length > 0),
+        "Please list 3 qualities."
+      ),
+    lookingForQualities: z
+      .array(z.string().min(1, "Quality cannot be empty."))
+      .length(3, "Please list 3 qualities.")
+      .refine(
+        (q) => q.every((val) => val.length > 0),
+        "Please list 3 qualities."
+      ),
+  })
+
+  const femaleProfileSchema = femaleProfileSchema1
+    .merge(femaleProfileSchema2)
+    .merge(femaleProfileSchema3)
+    .merge(femaleProfileSchema4)
+
   const passwordSchema = z
     .object({
       password: z.string().min(8, "Password must be at least 8 characters."),
@@ -256,6 +419,9 @@ function AuthPageContents() {
     birthday,
     ...locationForm,
   }).success
+  const isFemaleProfileFormValid =
+    femaleProfileSchema.safeParse(femaleProfileForm).success
+
   const isVerificationCodeFormValid = verificationCodeSchema.safeParse({
     code: verificationCode,
   }).success
@@ -310,6 +476,101 @@ function AuthPageContents() {
       }
     }
   }, [passwordForm, registrationStep])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-1" && formErrors.nickname) {
+      if (
+        femaleProfileSchema1.shape.nickname.safeParse(
+          femaleProfileForm.nickname
+        ).success
+      ) {
+        setFormErrors((prev) => ({ ...prev, nickname: undefined }))
+      }
+    }
+  }, [femaleProfileForm.nickname, registrationStep, formErrors.nickname])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-1" && formErrors.occupation) {
+      if (
+        femaleProfileSchema1.shape.occupation.safeParse(
+          femaleProfileForm.occupation
+        ).success
+      ) {
+        setFormErrors((prev) => ({ ...prev, occupation: undefined }))
+      }
+    }
+  }, [femaleProfileForm.occupation, registrationStep, formErrors.occupation])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-1" && formErrors.company) {
+      if (
+        femaleProfileSchema1.shape.company.safeParse(femaleProfileForm.company)
+          .success
+      ) {
+        setFormErrors((prev) => ({ ...prev, company: undefined }))
+      }
+    }
+  }, [femaleProfileForm.company, registrationStep, formErrors.company])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-1" && formErrors.education) {
+      if (
+        femaleProfileSchema1.shape.education.safeParse(
+          femaleProfileForm.education
+        ).success
+      ) {
+        setFormErrors((prev) => ({ ...prev, education: undefined }))
+      }
+    }
+  }, [femaleProfileForm.education, registrationStep, formErrors.education])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-2" && formErrors.height) {
+      if (
+        femaleProfileSchema2.shape.height.safeParse(femaleProfileForm.height)
+          .success
+      ) {
+        setFormErrors((prev) => ({ ...prev, height: undefined }))
+      }
+    }
+  }, [femaleProfileForm.height, registrationStep, formErrors.height])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-2" && formErrors.weight) {
+      if (
+        femaleProfileSchema2.shape.weight.safeParse(femaleProfileForm.weight)
+          .success
+      ) {
+        setFormErrors((prev) => ({ ...prev, weight: undefined }))
+      }
+    }
+  }, [femaleProfileForm.weight, registrationStep, formErrors.weight])
+
+  useEffect(() => {
+    if (registrationStep === "female-profile-2" && formErrors.religion) {
+      if (
+        femaleProfileSchema2.shape.religion.safeParse(femaleProfileForm.religion)
+          .success
+      ) {
+        setFormErrors((prev) => ({ ...prev, religion: undefined }))
+      }
+    }
+  }, [femaleProfileForm.religion, registrationStep, formErrors.religion])
+
+  useEffect(() => {
+    if (registrationStep.startsWith("female-profile")) {
+      const schemaMap = {
+        "female-profile-1": femaleProfileSchema1,
+        "female-profile-2": femaleProfileSchema2,
+        "female-profile-3": femaleProfileSchema3,
+        "female-profile-4": femaleProfileSchema4,
+      }
+      const schema = schemaMap[registrationStep as keyof typeof schemaMap]
+      if (schema) {
+        setFormErrors({})
+      }
+    }
+  }, [registrationStep])
 
   const handleFinalRegistration = () => {
     if (isPasswordFormValid) {
@@ -403,6 +664,7 @@ function AuthPageContents() {
                 exit={{ opacity: 0 }}
               >
                 <Card>
+                  {/* This is the login form */}
                   <CardHeader>
                     <CardTitle>Login</CardTitle>
                     <CardDescription>
@@ -519,8 +781,8 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>Register</CardTitle>
-                          <SimpleStepper
-                            steps={registrationSteps}
+                          <SimpleStepper //
+                            steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
                         </div>
@@ -811,19 +1073,21 @@ function AuthPageContents() {
                       <CardFooter className="flex-col items-start gap-4">
                         <Button
                           className="btn-gradient w-full"
-                          onClick={() =>
-                            validateAndSetStep("verify-email", detailsSchema, {
+                          onClick={() => {
+                            const nextStep =
+                              gender === "Female"
+                                ? "female-profile-1"
+                                : "verify-email"
+                            validateAndSetStep(nextStep, detailsSchema, {
                               ...detailsForm,
                               prefix,
                               gender,
                               phone: fullPhoneNumber,
-                              // The birthday from the state is a Date object, which needs to be
-                              // converted to a string before being serialized.
                               birthday: birthday?.toISOString(),
                               birthday,
                               ...locationForm,
                             })
-                          }
+                          }}
                         >
                           Next
                         </Button>
@@ -836,6 +1100,578 @@ function AuthPageContents() {
                             Already have an account?
                           </Button>
                         </p>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-1" && (
+                  <motion.div
+                    key="female-profile"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Basic Info</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          This information is confidential and used only for
+                          matchmaking.
+                        </CardDescription>
+                      </CardHeader>
+                      <div className="px-6 pb-4">
+                        <p className="text-sm text-muted-foreground">
+                          Dear {detailsForm.name}, if you want to edit your
+                          profile details,{" "}
+                          <Link
+                            href={{
+                              pathname,
+                              query: {
+                                ...Object.fromEntries(searchParams.entries()),
+                                step: "details",
+                              },
+                            }}
+                            className="text-primary underline"
+                            scroll={false}
+                          >
+                            click here
+                          </Link>
+                          .
+                        </p>
+                      </div>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="nickname">Nickname</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <User className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="nickname"
+                              placeholder="Your Nickname"
+                              value={femaleProfileForm.nickname}
+                              onChange={(e) =>
+                                setFemaleProfileForm({
+                                  ...femaleProfileForm,
+                                  nickname: e.target.value,
+                                })
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.nickname && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.nickname}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="occupation">Occupation</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Briefcase className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="occupation"
+                              placeholder="e.g. Doctor, Entrepreneur"
+                              value={femaleProfileForm.occupation}
+                              onChange={(e) =>
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  occupation: e.target.value,
+                                }))
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.occupation && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.occupation}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="company">
+                            Company/Business/Industry
+                          </Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Briefcase className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="company"
+                              placeholder="e.g. Tech, Healthcare"
+                              value={femaleProfileForm.company}
+                              onChange={(e) =>
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  company: e.target.value,
+                                }))
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.company && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.company}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="education">Education Level</Label>
+                          <Select
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                education: value,
+                              }))
+                            }
+                            value={femaleProfileForm.education}
+                          >
+                            <SelectTrigger
+                              id="education"
+                              className="h-8 bg-background dark:bg-input/30"
+                            >
+                              <SelectValue placeholder="Select education level" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {educationLevels.map((level) => (
+                                <SelectItem key={level} value={level}>
+                                  {level}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {formErrors.education && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.education}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() =>
+                            validateAndSetStep(
+                              "female-profile-2",
+                              femaleProfileSchema1,
+                              femaleProfileForm
+                            )
+                          }
+                        >
+                          Next
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-2" && (
+                  <motion.div
+                    key="female-profile-2"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Appearance & Lifestyle</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          This information is confidential and used only for
+                          matchmaking.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>English Fluency</Label>
+                          <Slider
+                            value={femaleProfileForm.englishFluency}
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                englishFluency: value,
+                              }))
+                            }
+                            max={100}
+                            step={10}
+                          />
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>Beginner</span>
+                            <span>Intermediate</span>
+                            <span>Fluent</span>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="height">Height (cm)</Label>
+                            <InputGroup>
+                              <InputGroupInput
+                                id="height"
+                                placeholder="e.g. 165"
+                                value={femaleProfileForm.height}
+                                onChange={(e) =>
+                                  /^\d*\.?\d{0,2}$/.test(e.target.value) &&
+                                  setFemaleProfileForm((prev) => ({
+                                    ...prev,
+                                    height: e.target.value,
+                                  }))
+                                }
+                              />
+                            </InputGroup>
+                            {formErrors.height && (
+                              <p className="text-sm text-destructive">
+                                {formErrors.height}
+                              </p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="weight">Weight (kg)</Label>
+                            <InputGroup>
+                              <InputGroupInput
+                                id="weight"
+                                placeholder="e.g. 55"
+                                value={femaleProfileForm.weight}
+                                onChange={(e) =>
+                                  /^\d*\.?\d{0,2}$/.test(e.target.value) &&
+                                  setFemaleProfileForm((prev) => ({
+                                    ...prev,
+                                    weight: e.target.value,
+                                  }))
+                                }
+                              />
+                            </InputGroup>
+                            {formErrors.weight && (
+                              <p className="text-sm text-destructive">
+                                {formErrors.weight}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="religion">Religion</Label>
+                          <Select
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                religion: value,
+                              }))
+                            }
+                            value={femaleProfileForm.religion}
+                          >
+                            <SelectTrigger
+                              id="religion"
+                              className="h-8 bg-background dark:bg-input/30"
+                            >
+                              <SelectValue placeholder="Select your religion" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {religions.map((religion) => (
+                                <SelectItem key={religion} value={religion}>
+                                  {religion}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {formErrors.religion && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.religion}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() =>
+                            validateAndSetStep(
+                              "female-profile-3",
+                              femaleProfileSchema2,
+                              femaleProfileForm
+                            )
+                          }
+                        >
+                          Next
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-3" && (
+                  <motion.div
+                    key="female-profile-3"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>About You</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          This information is confidential and used only for
+                          matchmaking.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>My Personality (select all that apply)</Label>
+                          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            {personalityTraits.map((trait) => (
+                              <div
+                                key={trait}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  id={`personality-${trait}`}
+                                  checked={femaleProfileForm.personality.includes(
+                                    trait
+                                  )}
+                                  onCheckedChange={(checked) => {
+                                    setFemaleProfileForm((prev) => ({
+                                      ...prev,
+                                      personality: checked
+                                        ? [...prev.personality, trait]
+                                        : prev.personality.filter(
+                                            (p) => p !== trait
+                                          ),
+                                    }))
+                                  }}
+                                />
+                                <label
+                                  htmlFor={`personality-${trait}`}
+                                  className="text-sm leading-none font-medium"
+                                >
+                                  {trait}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                          {formErrors.personality && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.personality}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Marital Status</Label>
+                          <RadioGroup
+                            value={femaleProfileForm.maritalStatus}
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                maritalStatus: value,
+                              }))
+                            }
+                            className="flex space-x-4"
+                          >
+                            {maritalStatuses.map((status) => (
+                              <div
+                                key={status}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={status} id={status} />
+                                <Label htmlFor={status}>{status}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.maritalStatus && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.maritalStatus}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Do you have children?</Label>
+                          <RadioGroup
+                            value={femaleProfileForm.hasChildren}
+                            onValueChange={(value) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                hasChildren: value,
+                                childrenCount:
+                                  value === "No" ? 0 : prev.childrenCount,
+                              }))
+                            }
+                            className="flex space-x-4"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="No" id="children-no" />
+                              <Label htmlFor="children-no">No</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="Yes" id="children-yes" />
+                              <Label htmlFor="children-yes">Yes</Label>
+                            </div>
+                          </RadioGroup>
+                          {femaleProfileForm.hasChildren === "Yes" && (
+                            <div className="pt-2 pl-2">
+                              <Label htmlFor="children-count">
+                                If yes, how many?
+                              </Label>
+                              <InputGroupInput
+                                id="children-count"
+                                type="number"
+                                min="1"
+                                value={femaleProfileForm.childrenCount || ""}
+                                onChange={(e) =>
+                                  setFemaleProfileForm((prev) => ({
+                                    ...prev,
+                                    childrenCount: parseInt(e.target.value),
+                                  }))
+                                }
+                                className="mt-1 w-24"
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <div className="space-y-2 pt-4">
+                          <h3 className="text-lg font-semibold">About You</h3>
+                          <Label htmlFor="about-you">
+                            Describe yourself in a few sentences
+                          </Label>
+                          <Textarea
+                            id="about-you"
+                            placeholder="Tell us about your personality, passions, and what makes you unique."
+                            value={femaleProfileForm.about}
+                            onChange={(e) =>
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                about: e.target.value,
+                              }))
+                            }
+                          />
+                          {formErrors.about && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.about}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() =>
+                            validateAndSetStep(
+                              "female-profile-4",
+                              femaleProfileSchema3,
+                              femaleProfileForm
+                            )
+                          }
+                        >
+                          Next
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "female-profile-4" && (
+                  <motion.div
+                    key="female-profile-4"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Your Qualities</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          This information is confidential and used only for
+                          matchmaking.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>What are your three best qualities?</Label>
+                          {[0, 1, 2].map((index) => (
+                            <InputGroupInput
+                              key={index}
+                              placeholder={`Quality ${index + 1}`}
+                              value={femaleProfileForm.bestQualities[index]}
+                              onChange={(e) => {
+                                const newQualities = [
+                                  ...femaleProfileForm.bestQualities,
+                                ]
+                                newQualities[index] = e.target.value
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  bestQualities: newQualities,
+                                }))
+                              }}
+                            />
+                          ))}
+                          {formErrors.bestQualities && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.bestQualities}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>
+                            What three qualities you look for in a man?
+                          </Label>
+                          {[0, 1, 2].map((index) => (
+                            <InputGroupInput
+                              key={index}
+                              placeholder={`Quality ${index + 1}`}
+                              value={
+                                femaleProfileForm.lookingForQualities[index]
+                              }
+                              onChange={(e) => {
+                                const newQualities = [
+                                  ...femaleProfileForm.lookingForQualities,
+                                ]
+                                newQualities[index] = e.target.value
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  lookingForQualities: newQualities,
+                                }))
+                              }}
+                            />
+                          ))}
+                          {formErrors.lookingForQualities && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.lookingForQualities}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() =>
+                            validateAndSetStep(
+                              "verify-email",
+                              femaleProfileSchema4,
+                              femaleProfileForm
+                            )
+                          }
+                        >
+                          Next
+                        </Button>
                       </CardFooter>
                     </Card>
                   </motion.div>
@@ -853,7 +1689,7 @@ function AuthPageContents() {
                         <div className="flex items-center justify-between">
                           <CardTitle>Verify Your Email</CardTitle>
                           <SimpleStepper
-                            steps={registrationSteps}
+                            steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
                         </div>
@@ -979,7 +1815,7 @@ function AuthPageContents() {
                         <div className="flex items-center justify-between">
                           <CardTitle>Set Your Password</CardTitle>
                           <SimpleStepper
-                            steps={registrationSteps}
+                            steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
                         </div>

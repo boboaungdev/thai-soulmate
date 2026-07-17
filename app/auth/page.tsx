@@ -490,6 +490,7 @@ function AuthPageContents() {
       | "female-profile-8"
       | "female-profile-9"
       | "female-profile-10"
+      | "female-profile-11"
       | "verify-email"
       | "password",
     schema: z.ZodObject<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any

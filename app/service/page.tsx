@@ -196,7 +196,7 @@ export default function ServicePage() {
             >
               <p className="pt-4 text-lg font-bold md:text-xl">
                 <span className="text-gradient">
-                  Beyond Dating Apps — Professional One-to-One Matchmaking
+                  Beyond Dating Apps — Professional 1-2-1 Matchmaking
                 </span>
               </p>
             </MotionDiv>

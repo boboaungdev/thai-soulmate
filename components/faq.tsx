@@ -18,7 +18,7 @@ const faqs = [
     ),
     answer: (
       <>
-        <AppName /> is an exclusive one-to-one matchmaking service where we
+        <AppName /> is an exclusive 1-2-1 matchmaking service where we
         function as your personal assistant in your search for a life partner in
         Thailand. We provide a discreet, confidential, and highly personalized
         experience to help you find a genuine, long-lasting relationship.
@@ -72,7 +72,7 @@ const faqs = [
     id: "service-fees",
     question: "What are your service fees?",
     answer:
-      "We offer a bespoke service tailored to each client's unique needs. Our fees reflect the comprehensive, one-to-one attention and professional expertise you receive. For a detailed consultation and a personalized quote, please register your interest, and one of our matchmakers will be in touch.",
+      "We offer a bespoke service tailored to each client's unique needs. Our fees reflect the comprehensive, 1-2-1 attention and professional expertise you receive. For a detailed consultation and a personalized quote, please register your interest, and one of our matchmakers will be in touch.",
   },
 ]
 

@@ -393,11 +393,6 @@ function AuthPageContents() {
       ),
   })
 
-  const femaleProfileSchema = femaleProfileSchema1
-    .merge(femaleProfileSchema2)
-    .merge(femaleProfileSchema3)
-    .merge(femaleProfileSchema4)
-
   const passwordSchema = z
     .object({
       password: z.string().min(8, "Password must be at least 8 characters."),
@@ -413,14 +408,6 @@ function AuthPageContents() {
   })
 
   const isLoginFormValid = loginSchema.safeParse(loginForm).success
-
-  const isDetailsFormValid = detailsSchema.safeParse({
-    ...detailsForm,
-    birthday,
-    ...locationForm,
-  }).success
-  const isFemaleProfileFormValid =
-    femaleProfileSchema.safeParse(femaleProfileForm).success
 
   const isVerificationCodeFormValid = verificationCodeSchema.safeParse({
     code: verificationCode,
@@ -549,8 +536,9 @@ function AuthPageContents() {
   useEffect(() => {
     if (registrationStep === "female-profile-2" && formErrors.religion) {
       if (
-        femaleProfileSchema2.shape.religion.safeParse(femaleProfileForm.religion)
-          .success
+        femaleProfileSchema2.shape.religion.safeParse(
+          femaleProfileForm.religion
+        ).success
       ) {
         setFormErrors((prev) => ({ ...prev, religion: undefined }))
       }

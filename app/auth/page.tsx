@@ -87,11 +87,15 @@ function AuthPageContents() {
   }
 
   const setRegistrationStep = (
-    newStep: "details" | "verify-email" | "password"
+    newStep: "details" | "verify-email" | "password",
+    data?: any // eslint-disable-line @typescript-eslint/no-explicit-any
   ) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set("step", newStep)
-    params.delete("userData")
+    if (data) {
+      const encodedUserData = btoa(JSON.stringify(data))
+      params.set("userData", encodedUserData)
+    }
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
@@ -188,7 +192,7 @@ function AuthPageContents() {
       setFormErrors(errors)
     } else {
       setFormErrors({})
-      setRegistrationStep(step)
+      setRegistrationStep(step, data)
     }
   }
 
@@ -810,6 +814,12 @@ function AuthPageContents() {
                           onClick={() =>
                             validateAndSetStep("verify-email", detailsSchema, {
                               ...detailsForm,
+                              prefix,
+                              gender,
+                              phone: fullPhoneNumber,
+                              // The birthday from the state is a Date object, which needs to be
+                              // converted to a string before being serialized.
+                              birthday: birthday?.toISOString(),
                               birthday,
                               ...locationForm,
                             })

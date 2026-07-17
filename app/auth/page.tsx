@@ -211,11 +211,6 @@ const femaleProfileSteps = [
   "female-profile-11",
 ]
 
-const getFemaleStepNumber = (currentStep: string) => {
-  const index = femaleProfileSteps.indexOf(currentStep)
-  return index !== -1 ? index + 2 : 0
-}
-
 const getRegistrationSteps = (gender: string) => {
   const baseSteps = [
     { id: "details", name: "Details & Location" },
@@ -693,14 +688,6 @@ function AuthPageContents() {
       }
     )
 
-  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-  const ACCEPTED_IMAGE_TYPES = [
-    "image/jpeg",
-    "image/jpg",
-    "image/png",
-    "image/webp",
-  ]
-
   const femaleProfileSchemaPhotos = z.object({
     headshot: z.instanceof(File, { message: "Headshot is required." }),
     fullLength: z.instanceof(File, {
@@ -727,12 +714,6 @@ function AuthPageContents() {
 
   const isLoginFormValid = loginSchema.safeParse(loginForm).success
 
-  const isDetailsFormValid = detailsSchema.safeParse({
-    ...detailsForm,
-    prefix,
-    birthday,
-    ...locationForm,
-  }).success
   const isVerificationCodeFormValid = verificationCodeSchema.safeParse({
     code: verificationCode,
   }).success

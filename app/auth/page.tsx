@@ -402,8 +402,15 @@ function AuthPageContents() {
   >([])
   const [loadingCountries, setLoadingCountries] = useState(true)
   const [phoneCountry, setPhoneCountry] = useState("TH")
-  const [phone, setPhone] = useState("")
-  const fullPhoneNumber = `+${countries.find((c) => c.code === phoneCountry)?.callCode || ""}${phone}`
+  // Form States
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" })
+  const [detailsForm, setDetailsForm] = useState({
+    prefix: "Mr.",
+    name: "",
+    email: "",
+    phone: "",
+  })
+  const fullPhoneNumber = `+${countries.find((c) => c.code === phoneCountry)?.callCode || ""}${detailsForm.phone}`
 
   useEffect(() => {
     async function fetchCountries() {
@@ -493,14 +500,6 @@ function AuthPageContents() {
     }
   }
 
-  // Form States
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" })
-  const [detailsForm, setDetailsForm] = useState({
-    prefix: "Mr.",
-    name: "",
-    email: "",
-    phone: "",
-  })
   const [verificationCode, setVerificationCode] = useState("")
   const [locationForm, setLocationForm] = useState({
     nationality: "",
@@ -521,9 +520,9 @@ function AuthPageContents() {
     prefix: z.string().min(1, "Prefix is required."),
     name: z.string().min(2, "Name must be at least 2 characters."),
     birthday: z.date({
-      // phone is validated separately now
       error: "Date of birth is required.",
     }),
+    phone: z.string().min(10, "Please enter a valid phone number."),
     email: z
       .email("Invalid email address.")
       .transform((val) => val.toLowerCase().trim())
@@ -732,25 +731,26 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (registrationStep === "details") {
+      if (Object.keys(formErrors).length === 0) return
+
       const data = {
         ...detailsForm,
         prefix,
         birthday,
         ...locationForm,
+        phone: detailsForm.phone,
       }
-      const result = detailsSchema.safeParse(data)
-      if (!result.success) {
-        const errors: Record<string, string> = {}
-        for (const issue of result.error.issues) {
-          const fieldName = String(issue.path[0])
-          const value = data[fieldName as keyof typeof data]
-          if (value) {
-            errors[fieldName] = issue.message
-          }
-        }
-        setFormErrors(errors)
-      } else {
+      const result = detailsSchema.safeParse(data) //
+      if (result.success) {
         setFormErrors({})
+      } else {
+        const newErrors = { ...formErrors }
+        Object.keys(formErrors).forEach((key) => {
+          if (!result.error.issues.some((issue) => issue.path[0] === key)) {
+            delete newErrors[key]
+          }
+        })
+        setFormErrors(newErrors)
       }
     }
   }, [detailsForm, birthday, locationForm, registrationStep])
@@ -1491,7 +1491,7 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>Register</CardTitle>
-                          <SimpleStepper //
+                          <SimpleStepper
                             steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
@@ -1642,11 +1642,14 @@ function AuthPageContents() {
                                 <InputGroupInput
                                   id="phone"
                                   placeholder="123456789"
-                                  value={phone}
+                                  value={detailsForm.phone}
                                   onChange={(e) => {
                                     const { value } = e.target
                                     if (/^\d*$/.test(value)) {
-                                      setPhone(value)
+                                      setDetailsForm((p) => ({
+                                        ...p,
+                                        phone: value,
+                                      }))
                                     }
                                   }}
                                 />
@@ -1804,7 +1807,6 @@ function AuthPageContents() {
                               ...locationForm,
                             })
                           }}
-                          disabled={!isDetailsFormValid}
                         >
                           Next
                         </Button>
@@ -2009,7 +2011,7 @@ function AuthPageContents() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>Appearance & Lifestyle</CardTitle>
-                          <SimpleStepper
+                          <SimpleStepper //
                             steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />

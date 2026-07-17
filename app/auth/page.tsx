@@ -1282,27 +1282,34 @@ function AuthPageContents() {
   }, [registrationStep])
 
   const handleFinalRegistration = () => {
-    if (isPasswordFormValid) {
-      const userData = {
-        prefix,
-        name: detailsForm.name,
-        gender,
-        birthday: birthday?.toISOString(),
-        email: detailsForm.email,
-        phone: fullPhoneNumber,
-        nationality: locationForm.nationality,
-        currentLocation: locationForm.currentLocation,
-        // avatar would be uploaded and a URL stored here
+    const result = passwordSchema.safeParse(passwordForm)
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        errors[String(issue.path[0])] = issue.message
       }
+      setFormErrors(errors)
+      return
+    }
 
-      try {
-        localStorage.setItem("user", JSON.stringify(userData))
-        toast.success("Account registered successfully!")
-        router.replace("/dashboard")
-      } catch (error) {
-        console.error("Failed to save user data to localStorage", error)
-        toast.error("Something went wrong. Please try again.")
-      }
+    const userData = {
+      prefix,
+      name: detailsForm.name,
+      gender,
+      birthday: birthday?.toISOString(),
+      email: detailsForm.email,
+      phone: fullPhoneNumber,
+      nationality: locationForm.nationality,
+      currentLocation: locationForm.currentLocation,
+    }
+
+    try {
+      localStorage.setItem("user", JSON.stringify(userData))
+      toast.success("Account registered successfully!")
+      router.replace("/dashboard")
+    } catch (error) {
+      console.error("Failed to save user data to localStorage", error)
+      toast.error("Something went wrong. Please try again.")
     }
   }
 
@@ -3616,6 +3623,9 @@ function AuthPageContents() {
                                 const value = e.target.value
                                 if (/^\d{0,6}$/.test(value)) {
                                   setVerificationCode(value)
+                                  if (value.length === 6) {
+                                    clearFormError("code")
+                                  }
                                 }
                               }}
                               onKeyDown={(e) => {
@@ -3647,19 +3657,20 @@ function AuthPageContents() {
                       <CardFooter className="flex-col items-start gap-4">
                         <Button
                           className="btn-gradient w-full"
-                          disabled={
-                            !isVerificationCodeFormValid || !detailsForm.email
-                          }
                           onClick={() => {
                             const result = verificationCodeSchema.safeParse({
                               code: verificationCode,
                             })
                             if (!result.success) {
-                              toast.error("Please enter a valid 6-digit code.")
+                              const errors: Record<string, string> = {}
+                              for (const issue of result.error.issues) {
+                                errors[String(issue.path[0])] = issue.message
+                              }
+                              setFormErrors(errors)
                               return
                             }
-
                             setRegistrationStep("password")
+                            setFormErrors({})
                           }}
                         >
                           Verify
@@ -3810,7 +3821,6 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={handleFinalRegistration}
-                          disabled={!isPasswordFormValid || !detailsForm.email}
                         >
                           Register account
                         </Button>

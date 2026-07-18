@@ -4,7 +4,7 @@ import { User } from "@/types"
 type AdminNotificationDetails = {
   prefix: string
   name: string
-  birthday: string
+  dob: string
   age: number
   gender: string
   nationality: string
@@ -65,7 +65,7 @@ export const getAdminNotificationHtml = (
           <p>A new user has registered their interest on ${appNameWithStyle}.</p>
           <h2 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 20px;">User Details</h2>
           <p><strong>Name:</strong> ${details.prefix} ${details.name}</p>
-          <p><strong>Date of Birth:</strong> ${new Date(details.birthday).toLocaleDateString()} (Age: ${details.age})</p>
+          <p><strong>Date of Birth:</strong> ${new Date(details.dob).toLocaleDateString()} (Age: ${details.age})</p>
           <p><strong>Gender:</strong> ${details.gender}</p>
           <p><strong>Nationality:</strong> ${details.nationality}</p>
           <p><strong>Location:</strong> ${details.location}</p>

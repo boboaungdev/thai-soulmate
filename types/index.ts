@@ -23,7 +23,7 @@ export interface User {
   prefix?: string
   name?: string
   gender?: string
-  birthday?: string
+  dob?: string
   email?: string
   phone?: string
   nationality?: string

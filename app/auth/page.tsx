@@ -327,7 +327,7 @@ function AuthPageContents() {
 
   const [prefix, setPrefix] = useState("Mr.")
   const [gender, setGender] = useState("Male")
-  const [birthday, setBirthday] = useState<Date>()
+  const [dob, setBirthday] = useState<Date>()
   const [countdown, setCountdown] = useState(0)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
   const [femaleProfileForm, setFemaleProfileForm] = useState({
@@ -523,7 +523,7 @@ function AuthPageContents() {
   const detailsSchema = z.object({
     prefix: z.string().min(1, "Prefix is required."),
     name: z.string().min(2, "Name must be at least 2 characters."),
-    birthday: z.date({
+    dob: z.date({
       error: "Date of birth is required.",
     }),
     phone: z.string().min(10, "Please enter a valid phone number."),
@@ -726,7 +726,7 @@ function AuthPageContents() {
       const data = {
         ...detailsForm,
         prefix,
-        birthday,
+        dob,
         ...locationForm,
         phone: detailsForm.phone,
       }
@@ -743,7 +743,7 @@ function AuthPageContents() {
         setFormErrors(newErrors)
       }
     }
-  }, [detailsForm, birthday, locationForm, registrationStep])
+  }, [detailsForm, dob, locationForm, registrationStep])
 
   useEffect(() => {
     if (registrationStep === "password" && mode === "register") {
@@ -1278,7 +1278,7 @@ function AuthPageContents() {
       prefix,
       name: detailsForm.name,
       gender,
-      birthday: birthday?.toISOString(),
+      dob: dob?.toISOString(),
       email: detailsForm.email,
       phone: fullPhoneNumber,
       nationality: locationForm.nationality,
@@ -1566,19 +1566,19 @@ function AuthPageContents() {
                             </Select>
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="birthday">Date of Birth</Label>
+                            <Label htmlFor="dob">Date of Birth</Label>
                             <InputGroup>
                               <InputGroupAddon>
                                 <Cake className="size-4" />
                               </InputGroupAddon>
                               <DatePickerInput
-                                value={birthday}
+                                value={dob}
                                 onSelect={setBirthday}
                               />
                             </InputGroup>
-                            {formErrors.birthday && (
+                            {formErrors.dob && (
                               <p className="text-sm text-destructive">
-                                {formErrors.birthday}
+                                {formErrors.dob}
                               </p>
                             )}
                           </div>
@@ -1791,7 +1791,7 @@ function AuthPageContents() {
                               prefix,
                               gender,
                               phone: fullPhoneNumber,
-                              birthday,
+                              dob,
                               ...locationForm,
                             })
                           }}

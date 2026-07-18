@@ -13,11 +13,13 @@ export function calculateAge(birthDate: Date): number {
 
   let age = today.getFullYear() - birthYear
 
-  // Adjust age if birthday hasn't occurred yet this year
-  if (today.getMonth() < birthMonth || (today.getMonth() === birthMonth && today.getDate() < birthDay)) {
+  // Adjust age if dob hasn't occurred yet this year
+  if (
+    today.getMonth() < birthMonth ||
+    (today.getMonth() === birthMonth && today.getDate() < birthDay)
+  ) {
     age--
   }
 
   return Math.max(0, age) // Ensure age is not negative
 }
-

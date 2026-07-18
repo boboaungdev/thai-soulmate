@@ -43,7 +43,7 @@ const formSchema = z
     name: z.string().min(2, {
       message: "Name must be at least 2 characters.",
     }),
-    birthday: z.date({
+    dob: z.date({
       message: "A date of birth is required.",
     }),
     gender: z.string().refine((val) => ["Male", "Female"].includes(val), {
@@ -84,7 +84,7 @@ export function RegisterInterestForm() {
     defaultValues: {
       prefix: "Mr.",
       name: "",
-      birthday: undefined,
+      dob: undefined,
       gender: "Male",
       nationality: "",
       currentLocation: "",
@@ -334,7 +334,7 @@ export function RegisterInterestForm() {
               />
               <FormField
                 control={form.control}
-                name="birthday"
+                name="dob"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Date of Birth</FormLabel>

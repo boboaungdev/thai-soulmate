@@ -12,7 +12,7 @@ import { calculateAge } from "@/lib/utils"
 const formSchema = z.object({
   prefix: z.string(),
   name: z.string(),
-  birthday: z.string(),
+  dob: z.string(),
   gender: z.string(),
   nationality: z.string(),
   currentLocation: z.string(),
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const body = await req.json()
     const validatedData = formSchema.parse(body)
 
-    const birthDate = new Date(validatedData.birthday)
+    const birthDate = new Date(validatedData.dob)
     const age = calculateAge(birthDate)
 
     // 1. Prepare the admin notification email

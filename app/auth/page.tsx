@@ -438,6 +438,49 @@ function AuthPageContents() {
   }, [searchParams])
 
   useEffect(() => {
+    if (mode === "register" && searchParams.has("userData")) {
+      try {
+        const userDataStr = atob(searchParams.get("userData")!)
+        const userData = JSON.parse(userDataStr)
+
+        // Populate state from URL userData
+        if (userData.prefix) setPrefix(userData.prefix)
+        if (userData.gender) setGender(userData.gender)
+        if (userData.dob) setBirthday(new Date(userData.dob))
+        if (userData.name || userData.email || userData.phone) {
+          setDetailsForm((prev) => ({
+            ...prev,
+            name: userData.name || prev.name,
+            email: userData.email || prev.email,
+            phone: userData.phone || prev.phone,
+          }))
+        }
+        if (userData.nationality || userData.currentLocation) {
+          setLocationForm((prev) => ({
+            ...prev,
+            nationality: userData.nationality || prev.nationality,
+            currentLocation: userData.currentLocation || prev.currentLocation,
+          }))
+        }
+        if (userData.phoneCountry) {
+          const country = countries.find(
+            (c) => `+${c.callCode}` === userData.phoneCountry
+          )
+          if (country) setPhoneCountry(country.code)
+        }
+
+        // If we have user data and are on the first step, advance to the next one.
+        if (registrationStep === "details") {
+          const nextStep = userData.gender === "Female" ? "female-profile-2" : "verify-email"
+          setRegistrationStep(nextStep, userData, { keepExistingUserData: true })
+        }
+      } catch (error) {
+        console.error("Failed to parse userData from URL", error)
+      }
+    }
+  }, [mode, searchParams, countries, registrationStep])
+
+  useEffect(() => {
     let timer: NodeJS.Timeout
     if (registrationStep === "verify-email" && countdown > 0) {
       timer = setInterval(() => {
@@ -1263,7 +1306,7 @@ function AuthPageContents() {
     }
   }, [registrationStep])
 
-  const handleFinalRegistration = () => {
+  const handleFinalRegistration = async () => {
     const result = passwordSchema.safeParse(passwordForm)
     if (!result.success) {
       const errors: Record<string, string> = {}
@@ -1273,24 +1316,67 @@ function AuthPageContents() {
       setFormErrors(errors)
       return
     }
-
-    const userData = {
-      prefix,
-      name: detailsForm.name,
-      gender,
-      dob: dob?.toISOString(),
-      email: detailsForm.email,
-      phone: fullPhoneNumber,
-      nationality: locationForm.nationality,
-      currentLocation: locationForm.currentLocation,
-    }
+    setFormErrors({})
 
     try {
-      localStorage.setItem("user", JSON.stringify(userData))
-      toast.success("Account registered successfully!")
-      router.replace("/dashboard")
+      // 1. Check if email already exists
+      const emailCheckResponse = await fetch(
+        `/api/register-interest?email=${encodeURIComponent(detailsForm.email)}`
+      )
+
+      if (emailCheckResponse.ok) {
+        const { isRegistered } = await emailCheckResponse.json()
+        if (isRegistered) {
+          toast.error("Registration Failed", {
+            description: "This email address is already registered.",
+          })
+          return
+        }
+      } else {
+        // If the check fails, maybe still proceed but log a warning
+        console.warn("Email check failed, proceeding with registration anyway.")
+      }
+
+      // 2. Consolidate all user data from different steps
+      const fullUserData = {
+        details: {
+          prefix,
+          name: detailsForm.name,
+          gender,
+          dob: dob?.toISOString(),
+          email: detailsForm.email,
+          phone: fullPhoneNumber,
+          nationality: locationForm.nationality,
+          currentLocation: locationForm.currentLocation,
+        },
+        password: passwordForm.password,
+        ...(gender === "Female" && {
+          profile: femaleProfileForm,
+          financial: financialForm,
+        }),
+      }
+
+      // 3. Submit final registration data
+      const registrationResponse = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullUserData),
+      })
+
+      if (registrationResponse.ok) {
+        toast.success("Registration Submitted!", {
+          description:
+            "Please check your email to verify your account and complete registration.",
+        })
+        setMode("login")
+      } else {
+        const errorData = await registrationResponse.json()
+        toast.error("Registration Failed", {
+          description: errorData.message || "An unknown error occurred.",
+        })
+      }
     } catch (error) {
-      console.error("Failed to save user data to localStorage", error)
+      console.error("Registration process failed:", error)
       toast.error("Something went wrong. Please try again.")
     }
   }

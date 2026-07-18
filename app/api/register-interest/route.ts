@@ -10,7 +10,6 @@ import {
   getUserConfirmationHtml,
 } from "@/lib/email-templates"
 import { calculateAge } from "@/lib/utils"
-import { Prisma } from "@/lib/generated/prisma/client"
 
 const formSchema = z.object({
   prefix: z.string(),

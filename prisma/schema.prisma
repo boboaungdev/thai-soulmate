@@ -12,8 +12,23 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id String @id @default(cuid())
+
+  email    String @unique
+  password String
+
+  role Role @default(USER)
+
+  registerInterest RegisterInterest?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model RegisterInterest {
-  id              String   @id @default(cuid())
+  id String @id @default(cuid())
+
   prefix          String
   name            String
   dob             DateTime
@@ -28,6 +43,15 @@ model RegisterInterest {
   source      String
   otherSource String?
 
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  USER
 }

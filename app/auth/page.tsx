@@ -886,6 +886,22 @@ function AuthPageContents() {
   const isPasswordFormValid = passwordSchema.safeParse(passwordForm).success
 
   useEffect(() => {
+    if (mode === "login" && formErrors.email) {
+      if (loginSchema.shape.email.safeParse(loginForm.email).success) {
+        clearFormError("email")
+      }
+    }
+  }, [loginForm.email, mode, formErrors.email])
+
+  useEffect(() => {
+    if (mode === "login" && formErrors.password) {
+      if (loginSchema.shape.password.safeParse(loginForm.password).success) {
+        clearFormError("password")
+      }
+    }
+  }, [loginForm.password, mode, formErrors.password])
+
+  useEffect(() => {
     if (registrationStep === "details") {
       if (Object.keys(formErrors).length === 0) return
 
@@ -1646,6 +1662,54 @@ function AuthPageContents() {
     }
   }, [registrationStep])
 
+  const handleLogin = async () => {
+    const result = loginSchema.safeParse(loginForm)
+
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+
+      for (const issue of result.error.issues) {
+        errors[String(issue.path[0])] = issue.message
+      }
+
+      setFormErrors(errors)
+      return
+    }
+
+    setFormErrors({})
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginForm),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        toast.error("Login Failed", {
+          description: data.error,
+        })
+        return
+      }
+
+      toast.success("Login Successful!")
+
+      localStorage.setItem("user", JSON.stringify(data.user))
+
+      router.push("/dashboard")
+    } catch (error) {
+      console.error(error)
+
+      toast.error("Something went wrong.", {
+        description: "Please try again.",
+      })
+    }
+  }
+
   const handleFinalRegistration = async () => {
     const result = passwordSchema.safeParse(passwordForm)
     if (!result.success) {
@@ -1848,9 +1912,7 @@ function AuthPageContents() {
                                 onChange={(e) =>
                                   setLoginForm({
                                     ...loginForm,
-                                    email: e.target.value
-                                      .replace(/\s/g, "")
-                                      .toLowerCase(),
+                                    password: e.target.value,
                                   })
                                 }
                               />
@@ -1871,10 +1933,7 @@ function AuthPageContents() {
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      disabled={!isLoginFormValid}
-                      onClick={() => {
-                        // Handle Login
-                      }}
+                      onClick={handleLogin}
                     >
                       Login
                     </Button>

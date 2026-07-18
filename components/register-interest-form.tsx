@@ -202,6 +202,7 @@ export function RegisterInterestForm() {
         toast.error("Uh oh! Something went wrong.", {
           description: "An unexpected error occurred. Please try again.",
         })
+        console.error(error)
       }
     })
   }
@@ -507,13 +508,14 @@ export function RegisterInterestForm() {
                           value={field.value}
                         >
                           <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                            <SelectValue>
-                              {field.value &&
-                                `+${
-                                  countries.find(
-                                    (country) => country.code === field.value
-                                  )?.callCode
-                                }`}
+                            <SelectValue placeholder="+66">
+                              {loadingCountries && field.value === "TH"
+                                ? "+66"
+                                : `+${
+                                    countries.find(
+                                      (country) => country.code === field.value
+                                    )?.callCode
+                                  }`}
                             </SelectValue>
                           </SelectTrigger>
 

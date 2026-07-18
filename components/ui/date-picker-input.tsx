@@ -18,26 +18,37 @@ interface DatePickerInputProps {
 }
 
 export function DatePickerInput({ value, onSelect }: DatePickerInputProps) {
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  const handleSelect = (date: Date | undefined) => {
+    if (onSelect) {
+      onSelect(date)
+    }
+    setIsOpen(false)
+  }
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           data-slot="input-group-control"
           variant={"ghost"}
           className={cn(
-            "w-full flex-1 justify-start text-left font-normal border-0",
+            "w-full flex-1 justify-start border-0 text-left font-normal",
             !value && "text-muted-foreground"
           )}
         >
-          {value ? `${format(value, "MM/dd/yyyy")} (Age: ${calculateAge(value)})` : <span>Pick a date</span>}
+          {value ? (
+            `${format(value, "MM/dd/yyyy")} (Age: ${calculateAge(value)})`
+          ) : (
+            <span>Pick a date</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
           selected={value}
-          onSelect={onSelect}
-
+          onSelect={handleSelect}
           captionLayout="dropdown"
         />
       </PopoverContent>

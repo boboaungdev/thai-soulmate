@@ -1595,13 +1595,14 @@ function AuthPageContents() {
                                   id="phone-country"
                                   className="h-8 bg-background dark:bg-input/30"
                                 >
-                                  <SelectValue>
-                                    {phoneCountry &&
-                                      `+${
-                                        countries.find(
-                                          (c) => c.code === phoneCountry
-                                        )?.callCode
-                                      }`}
+                                  <SelectValue placeholder="+66">
+                                    {loadingCountries && phoneCountry === "TH"
+                                      ? "+66"
+                                      : `+${
+                                          countries.find(
+                                            (c) => c.code === phoneCountry
+                                          )?.callCode
+                                        }`}
                                   </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent className="max-h-80">

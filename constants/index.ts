@@ -34,6 +34,14 @@ export const NODEMAILER = {
   pass: process.env.SMTP_PASS,
 } as const
 
+export const R2 = {
+  R2_BUCKET: process.env.R2_BUCKET,
+  R2_ENDPOINT: process.env.R2_ENDPOINT,
+  R2_PUBLIC_URL: process.env.R2_PUBLIC_URL,
+  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
+  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
+} as const
+
 export const STRIPE = {
   PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   SECRET_KEY: process.env.STRIPE_SECRET_KEY,

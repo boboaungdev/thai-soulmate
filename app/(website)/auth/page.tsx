@@ -484,6 +484,7 @@ function AuthPageContents() {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
   // Form States
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
+  const [isSubmittingApplication, setIsSubmittingApplication] = useState(false)
   const [detailsForm, setDetailsForm] = useState({
     prefix: "Mr.",
     name: "",
@@ -1804,6 +1805,95 @@ function AuthPageContents() {
     initial: { opacity: 0, x: -20 },
     animate: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: 20 },
+  }
+
+  const uploadImage = async (file: File) => {
+    const data = new FormData()
+
+    data.append("file", file)
+
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: data,
+    })
+
+    const result = await res.json()
+
+    return result.url
+  }
+
+  const submitApplicationForm = async () => {
+    const result = femaleProfileSchemaPhotos.safeParse(photosForm)
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        errors[String(issue.path[0])] = issue.message
+      }
+      setFormErrors(errors)
+      return
+    }
+    setFormErrors({})
+    setIsSubmittingApplication(true)
+    try {
+      const headshotUrl = await uploadImage(photosForm.headshot!)
+      const fullLengthUrl = await uploadImage(photosForm.fullLength!)
+      const casualLifestyleUrl = await uploadImage(photosForm.casualLifestyle!)
+      const recentUrl = await uploadImage(photosForm.recent!)
+
+      const formData = {
+        details: {
+          prefix,
+          name: detailsForm.name,
+          gender,
+          dob: dob?.toISOString(),
+          email: detailsForm.email,
+          phone: fullPhoneNumber,
+          nationality: locationForm.nationality,
+          currentLocation: locationForm.currentLocation,
+        },
+
+        profile: femaleProfileForm,
+
+        relationshipGoals: relationshipGoalsForm,
+
+        financial: financialForm,
+
+        photos: {
+          headshot: headshotUrl,
+          fullLength: fullLengthUrl,
+          casualLifestyle: casualLifestyleUrl,
+          recent: recentUrl,
+        },
+      }
+
+      const response = await fetch("/api/application-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Application submission failed")
+      }
+
+      toast.success("Application Submitted!", {
+        description:
+          "We have received your application and will review it shortly.",
+      })
+
+      validateAndSetStep("thank-you", femaleProfileSchemaPhotos, formData)
+    } catch (error) {
+      console.error("Application submit error:", error)
+
+      toast.error("Submission Failed", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "There was a problem submitting your application.",
+      })
+    }
   }
 
   return (
@@ -4286,15 +4376,17 @@ function AuthPageContents() {
                       <CardFooter className="flex-col items-start gap-4">
                         <Button
                           className="btn-gradient w-full"
-                          onClick={() => {
-                            validateAndSetStep(
-                              "thank-you",
-                              femaleProfileSchemaPhotos,
-                              { ...femaleProfileForm, ...photosForm }
-                            )
-                          }}
+                          disabled={isSubmittingApplication}
+                          onClick={submitApplicationForm}
                         >
-                          Next
+                          {isSubmittingApplication ? (
+                            <>
+                              <Spinner className="mr-2" />
+                              Submitting...
+                            </>
+                          ) : (
+                            "Submit Application"
+                          )}
                         </Button>
                         <div className="flex w-full items-center justify-between text-sm">
                           <Button

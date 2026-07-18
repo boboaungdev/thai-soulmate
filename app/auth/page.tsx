@@ -15,6 +15,8 @@ import {
   ChevronLeft,
   KeyRound,
   X,
+  Clock,
+  CheckCircle,
 } from "lucide-react"
 import Link from "next/link"
 import { APP_INFO } from "@/constants"
@@ -227,6 +229,7 @@ const maleProfileSteps = [
 const getRegistrationSteps = (gender: string) => {
   const baseSteps = [
     { id: "details", name: "Details & Location" },
+    { id: "thank-you", name: "Thank You" },
     { id: "verify-email", name: "Verification" }, // This will be shifted
     { id: "password", name: "Password" },
   ]
@@ -234,7 +237,7 @@ const getRegistrationSteps = (gender: string) => {
   if (gender === "Female") {
     baseSteps.splice(
       1,
-      0,
+      1,
       ...femaleProfileSteps.map((id, index) => ({
         id,
         name: `Profile Step ${index + 2}`,
@@ -244,7 +247,7 @@ const getRegistrationSteps = (gender: string) => {
   if (gender === "Male") {
     baseSteps.splice(
       1,
-      0,
+      1,
       ...maleProfileSteps.map((id, index) => ({
         id,
         name: `Profile Step ${index + 2}`,
@@ -303,6 +306,7 @@ function AuthPageContents() {
       | "female-profile-9"
       | "female-profile-10"
       | "female-profile-11"
+      | "thank-you"
       | "verify-email"
       | "password") || "details"
 
@@ -348,6 +352,7 @@ function AuthPageContents() {
       | "female-profile-9"
       | "female-profile-10"
       | "female-profile-11"
+      | "thank-you"
       | "verify-email"
       | "password",
     data?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -596,6 +601,7 @@ function AuthPageContents() {
       | "female-profile-9"
       | "female-profile-10"
       | "female-profile-11"
+      | "thank-you"
       | "verify-email"
       | "password",
     schema: z.ZodObject<any, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -3955,9 +3961,9 @@ function AuthPageContents() {
                           className="btn-gradient w-full"
                           onClick={() => {
                             validateAndSetStep(
-                              "verify-email",
+                              "thank-you",
                               femaleProfileSchemaPhotos,
-                              photosForm
+                              { ...femaleProfileForm, ...photosForm }
                             )
                           }}
                         >
@@ -3973,6 +3979,76 @@ function AuthPageContents() {
                             Back
                           </Button>
                         </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {registrationStep === "thank-you" && (
+                  <motion.div
+                    key="thank-you"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Thank You!</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          Your registration has been submitted successfully.
+                        </CardDescription>
+                      </CardHeader>
+                      {detailsForm.name && (
+                        <div className="px-6 pb-0">
+                          <p>
+                            Dear {prefix} {detailsForm.name},
+                          </p>
+                        </div>
+                      )}
+                      <CardContent className="space-y-4 text-center">
+                        <motion.div
+                          className="flex justify-center"
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 260,
+                            damping: 20,
+                            delay: 0.2,
+                          }}
+                        >
+                          <CheckCircle className="size-16 text-green-500" />
+                        </motion.div>
+                        <div className="flex items-center justify-center gap-2 pt-2">
+                          <Badge className="flex items-center gap-2 border-yellow-500/50 bg-yellow-400/20 text-yellow-700 dark:text-yellow-400">
+                            <Clock className="size-4 animate-spin" />
+                            Status: Reviewing
+                          </Badge>
+                        </div>
+                        <p className="text-muted-foreground">
+                          We have received your application and our team will
+                          review it shortly.
+                        </p>
+                        <p className="text-muted-foreground">
+                          Stay tuned! We will contact you for the next steps via
+                          email or a WhatsApp call.
+                        </p>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            router.replace("/")
+                          }}
+                        >
+                          Back to Home
+                        </Button>
                       </CardFooter>
                     </Card>
                   </motion.div>

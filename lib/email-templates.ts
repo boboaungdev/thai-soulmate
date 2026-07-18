@@ -1,4 +1,4 @@
-import { APP_INFO, BASE_URL } from "@/constants"
+import { APP_INFO, BASE_URL,CONTACT } from "@/constants"
 import { User } from "@/types"
 
 type AdminNotificationDetails = {
@@ -15,19 +15,6 @@ type AdminNotificationDetails = {
   source: string
   otherSource?: string
 }
-
-const appNameWithStyle = `
-<span style="
-  color:#cfa14f;
-  font-weight:bold;
-  font-family:Arial,sans-serif;
-  background-image:linear-gradient(to right,#cfa14f,#cb5d7a);
-  -webkit-background-clip:text;
-  background-clip:text;
-">
-${APP_INFO.name}
-</span>
-`
 
 export const getUserConfirmationHtml = ({ ...userDetails }: User): string => {
   const encodedUserData = Buffer.from(JSON.stringify(userDetails)).toString(
@@ -70,8 +57,7 @@ Dear ${userDetails.prefix} ${userDetails.name},
 
 
 <p>
-Thank you for registering your interest with
-${appNameWithStyle}.
+Thank you for registering your interest with us.
 We're excited to have you on board!
 </p>
 
@@ -147,8 +133,20 @@ Register Application Form
 
 <p>
 Best regards,
-<br>
-${appNameWithStyle} Team
+</p>
+<div style="margin-top: 20px;">
+  <img src="${BASE_URL}/email-logo.png" alt="${APP_INFO.name} Logo" style="width: 150px; height: auto;"/>
+  <p style="margin-top: 10px; font-weight: bold; color: #333;">
+    The ${APP_INFO.name} Team
+  </p>
+  <p style="margin-top: 10px; font-size: 12px; color: #666;">
+    Email: <a href="mailto:${CONTACT.email}" style="text-decoration: none;">${CONTACT.email}</a>
+  </p>
+  <p style="margin-top: 5px; font-size: 12px; color: #666;">
+    Phone: <a href="tel:${CONTACT.primaryPhone}" style="text-decoration: none;">${CONTACT.primaryPhone}</a>
+  </p>
+</div>
+
 </p>
 
 
@@ -177,9 +175,7 @@ Please do not reply to this email.
 
 <p>
 Copyright &copy; ${new Date().getFullYear()}
-<br>
-${appNameWithStyle}
-<br>
+<br />
 All rights reserved.
 </p>
 
@@ -226,8 +222,7 @@ New Interest Registration
 
 
 <p>
-A new user has registered their interest on
-${appNameWithStyle}.
+A new user has registered their interest on the website.
 </p>
 
 

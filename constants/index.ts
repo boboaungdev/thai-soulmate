@@ -14,7 +14,7 @@ export const CONTACT = {
   facebook: "https://facebook.com/thaisoulmate",
   line: "https://line.me/R/ti/p/thaisoulmate",
   instagram: "https://instagram.com/thaisoulmate",
-  primaryPhone: "+44 79 563 85061",
+  primaryPhone: "+66 69 999 8888",
   secondaryPhone: "+66 69 999 9999",
 } as const
 

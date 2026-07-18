@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
+import { prisma } from "@/lib/prisma"
+
 import { APP_INFO, EMAIL } from "@/constants"
 import { transporter } from "@/lib/nodemailer"
 import {
@@ -8,6 +10,7 @@ import {
   getUserConfirmationHtml,
 } from "@/lib/email-templates"
 import { calculateAge } from "@/lib/utils"
+import { Prisma } from "@/lib/generated/prisma/client"
 
 const formSchema = z.object({
   prefix: z.string(),
@@ -18,7 +21,7 @@ const formSchema = z.object({
   currentLocation: z.string(),
   email: z.string().email(),
 
-  phoneCountry: z.string(), // e.g. "+44" or "GB" depending on what you send
+  phoneCountry: z.string(),
   phone: z.string(),
 
   source: z.string(),
@@ -30,12 +33,55 @@ export async function POST(req: Request) {
     const body = await req.json()
     const validatedData = formSchema.parse(body)
 
+    const existingInterest = await prisma.registerInterest.findUnique({
+      where: {
+        email: validatedData.email,
+      },
+    })
+
+    if (existingInterest) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "This email has already been registered.",
+        },
+        { status: 409 }
+      )
+    }
     const birthDate = new Date(validatedData.dob)
     const age = calculateAge(birthDate)
 
-    // 1. Prepare the admin notification email
+    // Save registration to database
+    try {
+      await prisma.registerInterest.create({
+        data: {
+          prefix: validatedData.prefix,
+          name: validatedData.name,
+          dob: birthDate,
+          gender: validatedData.gender,
+          nationality: validatedData.nationality,
+          currentLocation: validatedData.currentLocation,
+          email: validatedData.email,
+          phoneCountry: validatedData.phoneCountry,
+          phone: validatedData.phone,
+          source: validatedData.source,
+          otherSource: validatedData.otherSource,
+        },
+      })
+    } catch (dbError) {
+      console.error("Database error:", dbError)
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to save registration.",
+        },
+        { status: 500 }
+      )
+    }
+
     const adminMailOptions = {
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`, // Use noreply for automated emails
+      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
       to: EMAIL.contact,
       subject: `New Interest Registration: ${validatedData.name}`,
       html: getAdminNotificationHtml({
@@ -45,36 +91,52 @@ export async function POST(req: Request) {
       }),
     }
 
-    // 2. Prepare the user confirmation email
     const userMailOptions = {
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`, // Use noreply for automated emails
+      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
       to: validatedData.email,
       subject: `Thank you for your interest in ${APP_INFO.name}!`,
       html: getUserConfirmationHtml(validatedData),
     }
 
-    // 3. Send both emails
     try {
-      await transporter.sendMail(adminMailOptions)
-      await transporter.sendMail(userMailOptions)
+      await Promise.all([
+        transporter.sendMail(adminMailOptions),
+        transporter.sendMail(userMailOptions),
+      ])
     } catch (emailError) {
-      console.error("Failed to send email:", emailError)
-      // Decide if you want to fail the whole request if emails fail
-      return NextResponse.json(
-        { success: false, error: "Form submitted but failed to send email." },
-        { status: 500 }
-      )
+      console.error("Email error:", emailError)
+
+      // Registration is already saved, so just report the email issue.
+      return NextResponse.json({
+        success: true,
+        warning:
+          "Your registration has been received, but we couldn't send the confirmation email.",
+      })
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({
+      success: true,
+      message: "Registration submitted successfully.",
+    })
   } catch (error) {
     console.error(error)
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { success: false, error: "Invalid form data." },
+        {
+          success: false,
+          error: "Invalid form data.",
+        },
         { status: 400 }
       )
     }
-    return NextResponse.json({ success: false }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal server error.",
+      },
+      { status: 500 }
+    )
   }
 }

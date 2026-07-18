@@ -12,20 +12,21 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id               String   @id @default(cuid())
-  name             String
-  prefix           String
-  gender           String
-  dob              DateTime
-  email            String   @unique
-  password         String
-  phone            String
-  phoneCountryCode String
-  nationality      String
-  currentLocation  String
-  source           String
-  otherSource      String?
+model RegisterInterest {
+  id              String   @id @default(cuid())
+  prefix          String
+  name            String
+  dob             DateTime
+  gender          String
+  nationality     String
+  currentLocation String
+
+  email        String @unique
+  phoneCountry String
+  phone        String
+
+  source      String
+  otherSource String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

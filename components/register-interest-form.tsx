@@ -194,8 +194,10 @@ export function RegisterInterestForm() {
           setIsSubmitted(true)
           form.reset()
         } else {
+          const errorData = await response.json()
           toast.error("Uh oh! Something went wrong.", {
-            description: "There was a problem with your submission.",
+            description:
+              errorData.error || "There was a problem with your submission.",
           })
         }
       } catch (error) {

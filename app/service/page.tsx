@@ -128,8 +128,8 @@ export default function ServicePage() {
                   ladies will the most suitable.
                 </li>
                 <li>
-                  Profiles will be sent to the member first for approval and then
-                  the members profile will be forwarded to the ladies.
+                  Profiles will be sent to the member first for approval and
+                  then the members profile will be forwarded to the ladies.
                 </li>
                 <li>
                   The matchmaker will then follow up with both parties to
@@ -179,13 +179,39 @@ export default function ServicePage() {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <h2 className="py-8 text-3xl font-bold tracking-tight">FEES</h2>
-              <p className="text-muted-foreground md:text-xl">
-                <AppName className="inline font-bold" /> structured fee service
-                and payment terms for male and female members varies. Our
-                friendly team can discuss with you in more detail once you have
-                registered your interest.
-              </p>
+              <h2 className="py-8 text-3xl font-bold tracking-tight">
+                MEMBERSHIP FEES
+              </h2>
+              <div className="space-y-4 text-muted-foreground md:text-xl">
+                <p className="text-gradient text-center font-bold">
+                  LETS CREATE A NEW CHAPTER IN YOUR LIFE
+                </p>
+                <p>
+                  <AppName /> offer a simple and straight forward package.
+                  Whichever membership is chosen the service is exactly same.
+                </p>
+                <p>
+                  <AppName /> seek to fully customise your match making
+                  experience. You will receive exceptional attention every step
+                  of the way.
+                </p>
+                <p>
+                  <AppName /> matches each individual member personally. We
+                  search our database and then carefully filter the most
+                  appropriate matches. We strive to ensure you get 3-5 matches a
+                  month.
+                </p>
+                <p>
+                  <AppName /> offers a personal match maker with complementary
+                  interpreter services for your virtual meetings.
+                </p>
+                <p>
+                  <AppName /> takes care of you every step of the way – even
+                  when you are matched, we carefully monitor your progress
+                  ensuring everything is effortless in your exciting new journey
+                  of love.
+                </p>
+              </div>
             </MotionDiv>
             <MotionDiv
               initial={{ opacity: 0, y: 20 }}
@@ -196,7 +222,8 @@ export default function ServicePage() {
             >
               <p className="pt-4 text-lg font-bold md:text-xl">
                 <span className="text-gradient">
-                  Beyond Dating Apps — Professional 1-2-1 Matchmaking
+                  Register your interest and get one of our matchmakers to
+                  discuss your personal service.
                 </span>
               </p>
             </MotionDiv>

@@ -404,6 +404,7 @@ function AuthPageContents() {
     }[]
   >([])
   const [loadingCountries, setLoadingCountries] = useState(true)
+  const [initialRedirectDone, setInitialRedirectDone] = useState(false)
   const [phoneCountry, setPhoneCountry] = useState("TH")
   // Form States
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
@@ -438,7 +439,11 @@ function AuthPageContents() {
   }, [searchParams])
 
   useEffect(() => {
-    if (mode === "register" && searchParams.has("userData")) {
+    if (
+      mode === "register" &&
+      searchParams.has("userData") &&
+      !initialRedirectDone
+    ) {
       try {
         const userDataStr = atob(searchParams.get("userData")!)
         const userData = JSON.parse(userDataStr)
@@ -471,14 +476,18 @@ function AuthPageContents() {
 
         // If we have user data and are on the first step, advance to the next one.
         if (registrationStep === "details") {
-          const nextStep = userData.gender === "Female" ? "female-profile-2" : "verify-email"
-          setRegistrationStep(nextStep, userData, { keepExistingUserData: true })
+          const nextStep =
+            userData.gender === "Female" ? "female-profile-2" : "verify-email"
+          setRegistrationStep(nextStep, userData, {
+            keepExistingUserData: true,
+          })
+          setInitialRedirectDone(true)
         }
       } catch (error) {
         console.error("Failed to parse userData from URL", error)
       }
     }
-  }, [mode, searchParams, countries, registrationStep])
+  }, [mode, searchParams, countries, registrationStep, initialRedirectDone])
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -1884,15 +1893,17 @@ function AuthPageContents() {
                         >
                           Next
                         </Button>
-                        <p className="text-sm text-muted-foreground">
-                          <Button
-                            variant="link"
-                            className="p-0 text-muted-foreground"
-                            onClick={() => setMode("login")}
-                          >
-                            Already have an account?
-                          </Button>
-                        </p>
+                        {!searchParams.has("userData") && (
+                          <p className="text-sm text-muted-foreground">
+                            <Button
+                              variant="link"
+                              className="p-0 text-muted-foreground"
+                              onClick={() => setMode("login")}
+                            >
+                              Already have an account?
+                            </Button>
+                          </p>
+                        )}
                       </CardFooter>
                     </Card>
                   </motion.div>
@@ -1972,7 +1983,7 @@ function AuthPageContents() {
                             </InputGroupAddon>
                             <InputGroupInput
                               id="occupation"
-                              placeholder="e.g. Doctor, Entrepreneur"
+                              placeholder="e.g. Doctor"
                               value={femaleProfileForm.occupation}
                               onChange={(e) =>
                                 setFemaleProfileForm((prev) => ({
@@ -1998,7 +2009,7 @@ function AuthPageContents() {
                             </InputGroupAddon>
                             <InputGroupInput
                               id="company"
-                              placeholder="e.g. Tech, Healthcare"
+                              placeholder="e.g. Tech"
                               value={femaleProfileForm.company}
                               onChange={(e) =>
                                 setFemaleProfileForm((prev) => ({

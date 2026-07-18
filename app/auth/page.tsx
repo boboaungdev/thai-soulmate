@@ -211,6 +211,19 @@ const femaleProfileSteps = [
   "female-profile-11",
 ]
 
+const maleProfileSteps = [
+  "male-profile-2",
+  "male-profile-3",
+  "male-profile-4",
+  "male-profile-5",
+  "male-profile-6",
+  "male-profile-7",
+  "male-profile-8",
+  "male-profile-9",
+  "male-profile-10",
+  "male-profile-11",
+]
+
 const getRegistrationSteps = (gender: string) => {
   const baseSteps = [
     { id: "details", name: "Details & Location" },
@@ -223,6 +236,16 @@ const getRegistrationSteps = (gender: string) => {
       1,
       0,
       ...femaleProfileSteps.map((id, index) => ({
+        id,
+        name: `Profile Step ${index + 2}`,
+      }))
+    )
+  }
+  if (gender === "Male") {
+    baseSteps.splice(
+      1,
+      0,
+      ...maleProfileSteps.map((id, index) => ({
         id,
         name: `Profile Step ${index + 2}`,
       }))
@@ -260,6 +283,16 @@ function AuthPageContents() {
   const registrationStep =
     (searchParams.get("step") as
       | "details"
+      | "male-profile-2"
+      | "male-profile-3"
+      | "male-profile-4"
+      | "male-profile-5"
+      | "male-profile-6"
+      | "male-profile-7"
+      | "male-profile-8"
+      | "male-profile-9"
+      | "male-profile-10"
+      | "male-profile-11"
       | "female-profile-2"
       | "female-profile-3"
       | "female-profile-4"
@@ -295,6 +328,16 @@ function AuthPageContents() {
   const setRegistrationStep = (
     newStep:
       | "details"
+      | "male-profile-2"
+      | "male-profile-3"
+      | "male-profile-4"
+      | "male-profile-5"
+      | "male-profile-6"
+      | "male-profile-7"
+      | "male-profile-8"
+      | "male-profile-9"
+      | "male-profile-10"
+      | "male-profile-11"
       | "female-profile-2"
       | "female-profile-3"
       | "female-profile-4"
@@ -334,6 +377,7 @@ function AuthPageContents() {
     nickname: "",
     occupation: "",
     company: "",
+    thaiFluency: [50],
     education: "",
     englishFluency: [50],
     height: "",
@@ -476,9 +520,13 @@ function AuthPageContents() {
 
         // If we have user data and are on the first step, advance to the next one.
         if (registrationStep === "details") {
-          const nextStep =
-            userData.gender === "Female" ? "female-profile-2" : "verify-email"
-          setRegistrationStep(nextStep, userData, {
+          const genderKey = userData.gender as "Male" | "Female"
+          const nextStepMap = {
+            Female: "female-profile-2" as const,
+            Male: "male-profile-2" as const,
+          }
+
+          setRegistrationStep(nextStepMap[genderKey], userData, {
             keepExistingUserData: true,
           })
           setInitialRedirectDone(true)
@@ -528,6 +576,16 @@ function AuthPageContents() {
   const validateAndSetStep = (
     step:
       | "details"
+      | "male-profile-2"
+      | "male-profile-3"
+      | "male-profile-4"
+      | "male-profile-5"
+      | "male-profile-6"
+      | "male-profile-7"
+      | "male-profile-8"
+      | "male-profile-9"
+      | "male-profile-10"
+      | "male-profile-11"
       | "female-profile-2"
       | "female-profile-3"
       | "female-profile-4"
@@ -589,12 +647,20 @@ function AuthPageContents() {
     currentLocation: z.string().min(2, "Current location is required."),
   })
 
-  const femaleProfileSchema1 = z.object({
-    nickname: z.string().min(2, "Nickname is required."), // This corresponds to female-profile-2
-    occupation: z.string().min(2, "Occupation is required."),
-    company: z.string().min(2, "Company/Industry is required."),
-    education: z.string().min(1, "Education level is required."),
-  })
+  const getProfileSchema1 = (gender: string) => {
+    const baseSchema = {
+      occupation: z.string().min(2, "Occupation is required."),
+      company: z.string().min(2, "Company/Industry is required."),
+      education: z.string().min(1, "Education level is required."),
+    }
+    if (gender === "Female") {
+      return z.object({
+        ...baseSchema,
+        nickname: z.string().min(2, "Nickname is required."),
+      })
+    }
+    return z.object(baseSchema)
+  }
 
   const femaleProfileSchemaFinancial = z.object({
     income: z.string().min(1, "Please select an income range."),
@@ -602,18 +668,28 @@ function AuthPageContents() {
     ownBusiness: z.string().min(1, "Please specify business ownership."),
   })
 
-  const femaleProfileSchema3 = z.object({
-    englishFluency: z.array(z.number()).min(1),
-    height: z
-      .string()
-      .min(2, "Height is required.")
-      .refine((val) => !isNaN(parseFloat(val)), "Height must be a number."),
-    weight: z
-      .string()
-      .min(1, "Weight is required.")
-      .refine((val) => !isNaN(parseFloat(val)), "Weight must be a number."),
-    religion: z.string().min(2, "Religion is required."),
-  })
+  const getProfileSchema3 = (gender: string) => {
+    const baseSchema = {
+      englishFluency: z.array(z.number()).min(1),
+      height: z
+        .string()
+        .min(2, "Height is required.")
+        .refine((val) => !isNaN(parseFloat(val)), "Height must be a number."),
+      weight: z
+        .string()
+        .min(1, "Weight is required.")
+        .refine((val) => !isNaN(parseFloat(val)), "Weight must be a number."),
+      religion: z.string().min(2, "Religion is required."),
+    }
+
+    if (gender === "Male") {
+      return z.object({
+        ...baseSchema,
+        thaiFluency: z.array(z.number()).min(1),
+      })
+    }
+    return z.object(baseSchema)
+  }
 
   const femaleProfileSchema4 = z
     .object({
@@ -824,9 +900,16 @@ function AuthPageContents() {
   }, [passwordForm, registrationStep, mode])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-2" && formErrors.nickname) {
+    if (
+      (registrationStep === "female-profile-2" ||
+        registrationStep === "male-profile-2") &&
+      formErrors.nickname
+    ) {
+      //
+      const schema = getProfileSchema1(gender)
       if (
-        femaleProfileSchema1.shape.nickname.safeParse(
+        "nickname" in schema.shape &&
+        (schema.shape as { nickname: z.ZodString })["nickname"].safeParse(
           femaleProfileForm.nickname
         ).success
       ) {
@@ -836,9 +919,13 @@ function AuthPageContents() {
   }, [femaleProfileForm.nickname, registrationStep, formErrors.nickname])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-2" && formErrors.occupation) {
+    if (
+      (registrationStep === "female-profile-2" ||
+        registrationStep === "male-profile-2") &&
+      formErrors.occupation
+    ) {
       if (
-        femaleProfileSchema1.shape.occupation.safeParse(
+        getProfileSchema1(gender).shape.occupation.safeParse(
           femaleProfileForm.occupation
         ).success
       ) {
@@ -848,10 +935,15 @@ function AuthPageContents() {
   }, [femaleProfileForm.occupation, registrationStep, formErrors.occupation])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-2" && formErrors.company) {
+    if (
+      (registrationStep === "female-profile-2" ||
+        registrationStep === "male-profile-2") &&
+      formErrors.company
+    ) {
       if (
-        femaleProfileSchema1.shape.company.safeParse(femaleProfileForm.company)
-          .success
+        getProfileSchema1(gender).shape.company.safeParse(
+          femaleProfileForm.company
+        ).success
       ) {
         clearFormError("company")
       }
@@ -859,9 +951,13 @@ function AuthPageContents() {
   }, [femaleProfileForm.company, registrationStep, formErrors.company])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-2" && formErrors.education) {
+    if (
+      (registrationStep === "female-profile-2" ||
+        registrationStep === "male-profile-2") &&
+      formErrors.education
+    ) {
       if (
-        femaleProfileSchema1.shape.education.safeParse(
+        getProfileSchema1(gender).shape.education.safeParse(
           femaleProfileForm.education
         ).success
       ) {
@@ -871,10 +967,15 @@ function AuthPageContents() {
   }, [femaleProfileForm.education, registrationStep, formErrors.education])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-3" && formErrors.height) {
+    if (
+      (registrationStep === "female-profile-3" ||
+        registrationStep === "male-profile-3") &&
+      formErrors.height
+    ) {
       if (
-        femaleProfileSchema3.shape.height.safeParse(femaleProfileForm.height)
-          .success
+        getProfileSchema3(gender).shape.height.safeParse(
+          femaleProfileForm.height
+        ).success
       ) {
         clearFormError("height")
       }
@@ -882,10 +983,15 @@ function AuthPageContents() {
   }, [femaleProfileForm.height, registrationStep, formErrors.height])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-3" && formErrors.weight) {
+    if (
+      (registrationStep === "female-profile-3" ||
+        registrationStep === "male-profile-3") &&
+      formErrors.weight
+    ) {
       if (
-        femaleProfileSchema3.shape.weight.safeParse(femaleProfileForm.weight)
-          .success
+        getProfileSchema3(gender).shape.weight.safeParse(
+          femaleProfileForm.weight
+        ).success
       ) {
         clearFormError("weight")
       }
@@ -893,9 +999,13 @@ function AuthPageContents() {
   }, [femaleProfileForm.weight, registrationStep, formErrors.weight])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-3" && formErrors.religion) {
+    if (
+      (registrationStep === "female-profile-3" ||
+        registrationStep === "male-profile-3") &&
+      formErrors.religion
+    ) {
       if (
-        femaleProfileSchema3.shape.religion.safeParse(
+        getProfileSchema3(gender).shape.religion.safeParse(
           femaleProfileForm.religion
         ).success
       ) {
@@ -905,7 +1015,25 @@ function AuthPageContents() {
   }, [femaleProfileForm.religion, registrationStep, formErrors.religion])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-4" && formErrors.personality) {
+    if (registrationStep === "male-profile-3" && formErrors.thaiFluency) {
+      const schema = getProfileSchema3("Male")
+      if (
+        "thaiFluency" in schema.shape &&
+        (schema.shape as { thaiFluency: z.ZodArray<z.ZodNumber> })[
+          "thaiFluency"
+        ].safeParse(femaleProfileForm.thaiFluency).success
+      ) {
+        clearFormError("thaiFluency")
+      }
+    }
+  }, [femaleProfileForm.thaiFluency, registrationStep, formErrors.thaiFluency])
+
+  useEffect(() => {
+    if (
+      (registrationStep === "female-profile-4" ||
+        registrationStep === "male-profile-4") &&
+      formErrors.personality
+    ) {
       if (
         femaleProfileSchema4.shape.personality.safeParse(
           femaleProfileForm.personality
@@ -917,7 +1045,11 @@ function AuthPageContents() {
   }, [femaleProfileForm.personality, registrationStep, formErrors.personality])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-4" && formErrors.childrenCount) {
+    if (
+      (registrationStep === "female-profile-4" ||
+        registrationStep === "male-profile-4") &&
+      formErrors.childrenCount
+    ) {
       if (
         femaleProfileForm.hasChildren === "No" ||
         (femaleProfileForm.hasChildren === "Yes" &&
@@ -934,7 +1066,11 @@ function AuthPageContents() {
   ])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-5" && formErrors.about) {
+    if (
+      (registrationStep === "female-profile-5" ||
+        registrationStep === "male-profile-5") &&
+      formErrors.about
+    ) {
       if (femaleProfileForm.about.length >= 10) {
         clearFormError("about")
       }
@@ -942,7 +1078,11 @@ function AuthPageContents() {
   }, [femaleProfileForm.about, registrationStep, formErrors.about])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-5" && formErrors.bestQualities) {
+    if (
+      (registrationStep === "female-profile-5" ||
+        registrationStep === "male-profile-5") &&
+      formErrors.bestQualities
+    ) {
       if (femaleProfileForm.bestQualities.every((q) => q.trim().length > 0)) {
         clearFormError("bestQualities")
       }
@@ -955,7 +1095,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-5" &&
+      (registrationStep === "female-profile-5" ||
+        registrationStep === "male-profile-5") &&
       formErrors.lookingForQualities
     ) {
       if (
@@ -971,7 +1112,11 @@ function AuthPageContents() {
   ])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-6" && formErrors.lifestyle) {
+    if (
+      (registrationStep === "female-profile-6" ||
+        registrationStep === "male-profile-6") &&
+      formErrors.lifestyle
+    ) {
       if (femaleProfileForm.lifestyle.length > 0) {
         clearFormError("lifestyle")
       }
@@ -979,7 +1124,11 @@ function AuthPageContents() {
   }, [femaleProfileForm.lifestyle, registrationStep, formErrors.lifestyle])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-6" && formErrors.smoking) {
+    if (
+      (registrationStep === "female-profile-6" ||
+        registrationStep === "male-profile-6") &&
+      formErrors.smoking
+    ) {
       if (femaleProfileForm.smoking) {
         clearFormError("smoking")
       }
@@ -987,7 +1136,11 @@ function AuthPageContents() {
   }, [femaleProfileForm.smoking, registrationStep, formErrors.smoking])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-6" && formErrors.drinking) {
+    if (
+      (registrationStep === "female-profile-6" ||
+        registrationStep === "male-profile-6") &&
+      formErrors.drinking
+    ) {
       if (femaleProfileForm.drinking) {
         clearFormError("drinking")
       }
@@ -995,7 +1148,11 @@ function AuthPageContents() {
   }, [femaleProfileForm.drinking, registrationStep, formErrors.drinking])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-6" && formErrors.exercise) {
+    if (
+      (registrationStep === "female-profile-6" ||
+        registrationStep === "male-profile-6") &&
+      formErrors.exercise
+    ) {
       if (femaleProfileForm.exercise) {
         clearFormError("exercise")
       }
@@ -1003,7 +1160,11 @@ function AuthPageContents() {
   }, [femaleProfileForm.exercise, registrationStep, formErrors.exercise])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-7" && formErrors.interests) {
+    if (
+      (registrationStep === "female-profile-7" ||
+        registrationStep === "male-profile-7") &&
+      formErrors.interests
+    ) {
       if (femaleProfileForm.interests.length === 5) {
         clearFormError("interests")
       }
@@ -1011,7 +1172,11 @@ function AuthPageContents() {
   }, [femaleProfileForm.interests, registrationStep, formErrors.interests])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-7" && formErrors.otherInterest) {
+    if (
+      (registrationStep === "female-profile-7" ||
+        registrationStep === "male-profile-7") &&
+      formErrors.otherInterest
+    ) {
       if (
         !femaleProfileForm.interests.includes("Other") ||
         (femaleProfileForm.interests.includes("Other") &&
@@ -1029,7 +1194,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-7" &&
+      (registrationStep === "female-profile-7" ||
+        registrationStep === "male-profile-7") &&
       formErrors.travelDestinations
     ) {
       if (
@@ -1045,7 +1211,11 @@ function AuthPageContents() {
   ])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-7" && formErrors.weekendActivity) {
+    if (
+      (registrationStep === "female-profile-7" ||
+        registrationStep === "male-profile-7") &&
+      formErrors.weekendActivity
+    ) {
       if (femaleProfileForm.weekendActivity.length >= 10) {
         clearFormError("weekendActivity")
       }
@@ -1058,7 +1228,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-8" &&
+      (registrationStep === "female-profile-8" ||
+        registrationStep === "male-profile-8") &&
       formErrors.familyImportance
     ) {
       if (femaleProfileForm.familyImportance) {
@@ -1072,7 +1243,11 @@ function AuthPageContents() {
   ])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-8" && formErrors.futureChildren) {
+    if (
+      (registrationStep === "female-profile-8" ||
+        registrationStep === "male-profile-8") &&
+      formErrors.futureChildren
+    ) {
       if (femaleProfileForm.futureChildren) {
         clearFormError("futureChildren")
       }
@@ -1084,7 +1259,11 @@ function AuthPageContents() {
   ])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-8" && formErrors.values) {
+    if (
+      (registrationStep === "female-profile-8" ||
+        registrationStep === "male-profile-8") &&
+      formErrors.values
+    ) {
       if (femaleProfileForm.values.length === 5) {
         clearFormError("values")
       }
@@ -1093,7 +1272,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-9" &&
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
       formErrors.idealPartnerAgeRange
     ) {
       if (femaleProfileForm.idealPartnerAgeRange) {
@@ -1108,7 +1288,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-9" &&
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
       formErrors.idealPartnerNationality
     ) {
       if (femaleProfileForm.idealPartnerNationality) {
@@ -1123,7 +1304,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-9" &&
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
       formErrors.idealPartnerLocation
     ) {
       if (femaleProfileForm.idealPartnerLocation) {
@@ -1138,7 +1320,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-9" &&
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
       formErrors.idealPartnerHeight
     ) {
       if (femaleProfileForm.idealPartnerHeight) {
@@ -1153,7 +1336,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-9" &&
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
       formErrors.idealPartnerEducation
     ) {
       if (femaleProfileForm.idealPartnerEducation) {
@@ -1168,7 +1352,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-9" &&
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
       formErrors.idealPartnerPersonality
     ) {
       if (femaleProfileForm.idealPartnerPersonality.length === 5) {
@@ -1183,7 +1368,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-9" &&
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
       formErrors.idealPartnerQualities
     ) {
       if (femaleProfileForm.idealPartnerQualities.length === 5) {
@@ -1198,7 +1384,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-9" &&
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
       formErrors.idealPartnerOtherPersonality
     ) {
       if (femaleProfileForm.idealPartnerOtherPersonality.trim().length > 0) {
@@ -1212,7 +1399,11 @@ function AuthPageContents() {
   ])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-9" && formErrors.dealBreakers) {
+    if (
+      (registrationStep === "female-profile-9" ||
+        registrationStep === "male-profile-9") &&
+      formErrors.dealBreakers
+    ) {
       if (femaleProfileForm.dealBreakers.every((d) => d.trim().length > 0)) {
         clearFormError("dealBreakers")
       }
@@ -1224,7 +1415,11 @@ function AuthPageContents() {
   ])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-11" && formErrors.headshot) {
+    if (
+      (registrationStep === "female-profile-11" ||
+        registrationStep === "male-profile-11") &&
+      formErrors.headshot
+    ) {
       if (photosForm.headshot) {
         clearFormError("headshot")
       }
@@ -1232,7 +1427,11 @@ function AuthPageContents() {
   }, [photosForm.headshot, registrationStep, formErrors.headshot])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-11" && formErrors.fullLength) {
+    if (
+      (registrationStep === "female-profile-11" ||
+        registrationStep === "male-profile-11") &&
+      formErrors.fullLength
+    ) {
       if (photosForm.fullLength) {
         clearFormError("fullLength")
       }
@@ -1241,7 +1440,8 @@ function AuthPageContents() {
 
   useEffect(() => {
     if (
-      registrationStep === "female-profile-11" &&
+      (registrationStep === "female-profile-11" ||
+        registrationStep === "male-profile-11") &&
       formErrors.casualLifestyle
     ) {
       if (photosForm.casualLifestyle) {
@@ -1251,7 +1451,11 @@ function AuthPageContents() {
   }, [photosForm.casualLifestyle, registrationStep, formErrors.casualLifestyle])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-11" && formErrors.recent) {
+    if (
+      (registrationStep === "female-profile-11" ||
+        registrationStep === "male-profile-11") &&
+      formErrors.recent
+    ) {
       if (photosForm.recent) {
         clearFormError("recent")
       }
@@ -1259,7 +1463,11 @@ function AuthPageContents() {
   }, [photosForm.recent, registrationStep, formErrors.recent])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-10" && formErrors.income) {
+    if (
+      (registrationStep === "female-profile-10" ||
+        registrationStep === "male-profile-10") &&
+      formErrors.income
+    ) {
       if (
         femaleProfileSchemaFinancial.shape.income.safeParse(
           financialForm.income
@@ -1271,7 +1479,11 @@ function AuthPageContents() {
   }, [financialForm.income, registrationStep, formErrors.income])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-10" && formErrors.ownProperty) {
+    if (
+      (registrationStep === "female-profile-10" ||
+        registrationStep === "male-profile-10") &&
+      formErrors.ownProperty
+    ) {
       if (
         femaleProfileSchemaFinancial.shape.ownProperty.safeParse(
           financialForm.ownProperty
@@ -1283,7 +1495,11 @@ function AuthPageContents() {
   }, [financialForm.ownProperty, registrationStep, formErrors.ownProperty])
 
   useEffect(() => {
-    if (registrationStep === "female-profile-10" && formErrors.ownBusiness) {
+    if (
+      (registrationStep === "female-profile-10" ||
+        registrationStep === "male-profile-10") &&
+      formErrors.ownBusiness
+    ) {
       if (
         femaleProfileSchemaFinancial.shape.ownBusiness.safeParse(
           financialForm.ownBusiness
@@ -1295,11 +1511,14 @@ function AuthPageContents() {
   }, [financialForm.ownBusiness, registrationStep, formErrors.ownBusiness])
 
   useEffect(() => {
-    if (registrationStep.startsWith("female-profile")) {
+    if (
+      registrationStep.startsWith("female-profile") ||
+      registrationStep.startsWith("male-profile")
+    ) {
       const schemaMap = {
-        "female-profile-2": femaleProfileSchema1,
+        "female-profile-2": getProfileSchema1("Female"),
         "female-profile-3": femaleProfileSchemaFinancial,
-        "female-profile-4": femaleProfileSchema3,
+        "female-profile-4": getProfileSchema3("Female"),
         "female-profile-5": femaleProfileSchema4,
         "female-profile-6": femaleProfileSchema5,
         "female-profile-7": femaleProfileSchema6,
@@ -1307,10 +1526,20 @@ function AuthPageContents() {
         "female-profile-9": femaleProfileSchema8,
         "female-profile-10": femaleProfileSchema9,
         "female-profile-11": femaleProfileSchemaPhotos,
+        "male-profile-2": getProfileSchema1("Male"),
+        "male-profile-3": getProfileSchema3("Male"),
+        "male-profile-4": getProfileSchema3("Male"),
+        "male-profile-5": femaleProfileSchema4,
+        "male-profile-6": femaleProfileSchema5,
+        "male-profile-7": femaleProfileSchema6,
+        "male-profile-8": femaleProfileSchema7,
+        "male-profile-9": femaleProfileSchema8,
+        "male-profile-10": femaleProfileSchema9,
+        "male-profile-11": femaleProfileSchemaPhotos,
       }
       const schema = schemaMap[registrationStep as keyof typeof schemaMap]
       if (schema) {
-        setFormErrors({})
+        setFormErrors({}) //
       }
     }
   }, [registrationStep])
@@ -1359,10 +1588,9 @@ function AuthPageContents() {
           currentLocation: locationForm.currentLocation,
         },
         password: passwordForm.password,
-        ...(gender === "Female" && {
-          profile: femaleProfileForm,
-          financial: financialForm,
-        }),
+        // Include profile and financial data for both genders
+        profile: femaleProfileForm,
+        financial: financialForm,
       }
 
       // 3. Submit final registration data
@@ -1379,9 +1607,18 @@ function AuthPageContents() {
         })
         setMode("login")
       } else {
-        const errorData = await registrationResponse.json()
+        const contentType = registrationResponse.headers.get("content-type")
+        let errorMessage = "An unknown error occurred."
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await registrationResponse.json()
+          errorMessage = errorData.message || errorMessage
+        } else {
+          // The response is not JSON, so it might be an HTML error page.
+          errorMessage =
+            "The server returned an unexpected response. Please try again."
+        }
         toast.error("Registration Failed", {
-          description: errorData.message || "An unknown error occurred.",
+          description: errorMessage,
         })
       }
     } catch (error) {
@@ -1876,10 +2113,11 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
-                            const nextStep =
-                              gender === "Female"
-                                ? "female-profile-2"
-                                : "verify-email"
+                            //
+                            const nextStep = {
+                              Female: "female-profile-2",
+                              Male: "male-profile-2",
+                            }[gender] as "female-profile-2" | "male-profile-2"
 
                             validateAndSetStep(nextStep, detailsSchema, {
                               ...detailsForm,
@@ -1908,7 +2146,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-2" && (
+                {(registrationStep === "female-profile-2" ||
+                  registrationStep === "male-profile-2") && (
                   <motion.div
                     key="female-profile"
                     variants={animationVariants}
@@ -1951,30 +2190,32 @@ function AuthPageContents() {
                         </p>
                       </div>
                       <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="nickname">Nickname</Label>
-                          <InputGroup>
-                            <InputGroupAddon>
-                              <User className="size-4" />
-                            </InputGroupAddon>
-                            <InputGroupInput
-                              id="nickname"
-                              placeholder="Your Nickname"
-                              value={femaleProfileForm.nickname}
-                              onChange={(e) =>
-                                setFemaleProfileForm({
-                                  ...femaleProfileForm,
-                                  nickname: e.target.value,
-                                })
-                              }
-                            />
-                          </InputGroup>
-                          {formErrors.nickname && (
-                            <p className="text-sm text-destructive">
-                              {formErrors.nickname}
-                            </p>
-                          )}
-                        </div>
+                        {gender === "Female" && (
+                          <div className="space-y-2">
+                            <Label htmlFor="nickname">Nickname</Label>
+                            <InputGroup>
+                              <InputGroupAddon>
+                                <User className="size-4" />
+                              </InputGroupAddon>
+                              <InputGroupInput
+                                id="nickname"
+                                placeholder="Your Nickname"
+                                value={femaleProfileForm.nickname}
+                                onChange={(e) =>
+                                  setFemaleProfileForm({
+                                    ...femaleProfileForm,
+                                    nickname: e.target.value,
+                                  })
+                                }
+                              />
+                            </InputGroup>
+                            {formErrors.nickname && (
+                              <p className="text-sm text-destructive">
+                                {formErrors.nickname}
+                              </p>
+                            )}
+                          </div>
+                        )}
                         <div className="space-y-2">
                           <Label htmlFor="occupation">Occupation</Label>
                           <InputGroup>
@@ -2061,9 +2302,14 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-3"
+                                : "male-profile-3"
+                            ) as "female-profile-3" | "male-profile-3"
                             validateAndSetStep(
-                              "female-profile-3",
-                              femaleProfileSchema1, // This is now the schema for step 2
+                              nextStep,
+                              getProfileSchema1(gender),
                               femaleProfileForm
                             )
                           }}
@@ -2084,7 +2330,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-3" && (
+                {(registrationStep === "female-profile-3" ||
+                  registrationStep === "male-profile-3") && (
                   <motion.div
                     key="female-profile-2"
                     variants={animationVariants}
@@ -2106,6 +2353,31 @@ function AuthPageContents() {
                           matchmaking.
                         </CardDescription>
                       </CardHeader>
+                      {gender === "Male" && (
+                        <CardContent>
+                          <div className="space-y-2">
+                            <Label>
+                              Thai Fluency ({femaleProfileForm.thaiFluency}%)
+                            </Label>
+                            <Slider
+                              value={femaleProfileForm.thaiFluency}
+                              onValueChange={(value) =>
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  thaiFluency: value,
+                                }))
+                              }
+                              max={100}
+                              step={10}
+                            />
+                            <div className="flex justify-between text-xs text-muted-foreground">
+                              <span>Beginner</span>
+                              <span>Intermediate</span>
+                              <span>Fluent</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      )}
                       <CardContent className="space-y-4">
                         <div className="space-y-2">
                           <Label>
@@ -2211,9 +2483,15 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-4"
+                                : "male-profile-4"
+                            ) as "female-profile-4" | "male-profile-4"
                             validateAndSetStep(
-                              "female-profile-4",
-                              femaleProfileSchema3,
+                              nextStep,
+                              getProfileSchema3(gender),
                               femaleProfileForm
                             )
                           }}
@@ -2234,7 +2512,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-4" && (
+                {(registrationStep === "female-profile-4" ||
+                  registrationStep === "male-profile-4") && (
                   <motion.div
                     key="female-profile-3"
                     variants={animationVariants}
@@ -2394,8 +2673,14 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-5"
+                                : "male-profile-5"
+                            ) as "female-profile-5" | "male-profile-5"
                             validateAndSetStep(
-                              "female-profile-5",
+                              nextStep,
                               femaleProfileSchema4,
                               femaleProfileForm
                             )
@@ -2417,7 +2702,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-5" && (
+                {(registrationStep === "female-profile-5" ||
+                  registrationStep === "male-profile-5") && (
                   <motion.div
                     key="female-profile-4"
                     variants={animationVariants}
@@ -2530,8 +2816,14 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-6"
+                                : "male-profile-6"
+                            ) as "female-profile-6" | "male-profile-6"
                             validateAndSetStep(
-                              "female-profile-6",
+                              nextStep,
                               femaleProfileSchema5,
                               femaleProfileForm
                             )
@@ -2553,7 +2845,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-6" && (
+                {(registrationStep === "female-profile-6" ||
+                  registrationStep === "male-profile-6") && (
                   <motion.div
                     key="female-profile-5"
                     variants={animationVariants}
@@ -2703,8 +2996,14 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-7"
+                                : "male-profile-7"
+                            ) as "female-profile-7" | "male-profile-7"
                             validateAndSetStep(
-                              "female-profile-7",
+                              nextStep,
                               femaleProfileSchema6,
                               femaleProfileForm
                             )
@@ -2726,7 +3025,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-7" && (
+                {(registrationStep === "female-profile-7" ||
+                  registrationStep === "male-profile-7") && (
                   <motion.div
                     key="female-profile-6"
                     variants={animationVariants}
@@ -2874,8 +3174,14 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-8"
+                                : "male-profile-8"
+                            ) as "female-profile-8" | "male-profile-8"
                             validateAndSetStep(
-                              "female-profile-8",
+                              nextStep,
                               femaleProfileSchema7,
                               femaleProfileForm
                             )
@@ -2897,7 +3203,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-8" && (
+                {(registrationStep === "female-profile-8" ||
+                  registrationStep === "male-profile-8") && (
                   <motion.div
                     key="female-profile-7"
                     variants={animationVariants}
@@ -3023,8 +3330,14 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-9"
+                                : "male-profile-9"
+                            ) as "female-profile-9" | "male-profile-9"
                             validateAndSetStep(
-                              "female-profile-9",
+                              nextStep,
                               femaleProfileSchema8,
                               femaleProfileForm
                             )
@@ -3046,7 +3359,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-9" && (
+                {(registrationStep === "female-profile-9" ||
+                  registrationStep === "male-profile-9") && (
                   <motion.div
                     key="female-profile-8"
                     variants={animationVariants}
@@ -3402,8 +3716,14 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-10"
+                                : "male-profile-10"
+                            ) as "female-profile-10" | "male-profile-10"
                             validateAndSetStep(
-                              "female-profile-10",
+                              nextStep,
                               femaleProfileSchema9,
                               femaleProfileForm
                             )
@@ -3425,7 +3745,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-10" && (
+                {(registrationStep === "female-profile-10" ||
+                  registrationStep === "male-profile-10") && (
                   <motion.div
                     key="female-profile-financial"
                     variants={animationVariants}
@@ -3541,8 +3862,14 @@ function AuthPageContents() {
                         <Button
                           className="btn-gradient w-full"
                           onClick={() => {
+                            //
+                            const nextStep = (
+                              gender === "Female"
+                                ? "female-profile-11"
+                                : "male-profile-11"
+                            ) as "female-profile-11" | "male-profile-11"
                             validateAndSetStep(
-                              "female-profile-11",
+                              nextStep,
                               femaleProfileSchemaFinancial,
                               financialForm
                             )
@@ -3564,7 +3891,8 @@ function AuthPageContents() {
                     </Card>
                   </motion.div>
                 )}
-                {registrationStep === "female-profile-11" && (
+                {(registrationStep === "female-profile-11" ||
+                  registrationStep === "male-profile-11") && (
                   <motion.div
                     key="female-profile-photos"
                     variants={animationVariants}

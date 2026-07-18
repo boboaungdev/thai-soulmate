@@ -115,7 +115,7 @@ font-family:Arial,sans-serif;
 font-size:16px;
 font-weight:bold;
 ">
-Register Account
+Register Application Form
 </center>
 
 </v:roundrect>
@@ -135,7 +135,7 @@ border-radius:5px;
 font-weight:bold;
 display:inline-block;
 ">
-Register Account
+Register Application Form
 </a>
 
 <!--<![endif]-->

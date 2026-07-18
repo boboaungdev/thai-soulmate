@@ -135,9 +135,9 @@ Register Application Form
 Best regards,
 </p>
 <div style="margin-top: 20px;">
-  <img src="${BASE_URL}/email-logo.png" alt="${APP_INFO.name} Logo" style="width: 150px; height: auto;"/>
+  <img src="${BASE_URL}/logo.png" alt="${APP_INFO.name} Logo" style="width: 150px; height: auto;"/>
   <p style="margin-top: 10px; font-weight: bold; color: #333;">
-    The ${APP_INFO.name} Team
+    ${APP_INFO.name}
   </p>
   <p style="margin-top: 10px; font-size: 12px; color: #666;">
     Email: <a href="mailto:${CONTACT.email}" style="text-decoration: none;">${CONTACT.email}</a>

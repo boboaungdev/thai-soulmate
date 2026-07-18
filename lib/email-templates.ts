@@ -16,11 +16,11 @@ type AdminNotificationDetails = {
   otherSource?: string
 }
 
-const appNameGradientStyle =
-  "background-image: linear-gradient(to right, #cfa14f, #cb5d7a); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold;"
+const appNameGradientStyle = `font-weight: bold; color: #cfa14f;`
+const appNameGradientSpan = `<span style="background-image: linear-gradient(to right, #cfa14f, #cb5d7a); -webkit-background-clip: text; background-clip: text; color: transparent;">${APP_INFO.name}</span>`
 
 export const getUserConfirmationHtml = ({ ...userDetails }: User): string => {
-  const appNameWithStyle = `<span style="${appNameGradientStyle}">${APP_INFO.name}</span>`
+  const appNameWithStyle = `<span style="${appNameGradientStyle}">${appNameGradientSpan}</span>`
 
   // The btoa function is not available in Node.js by default.
   // Using Buffer for server-side Base64 encoding.
@@ -39,7 +39,13 @@ export const getUserConfirmationHtml = ({ ...userDetails }: User): string => {
           <p>We have successfully received your details. A member of our matchmaking team will review your information and contact you as soon as possible to discuss the next steps.</p>
           <p>In the meantime, you can get started by creating your account by filling application form. Please click the button below to complete your profile application process.</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${BASE_URL}/auth?mode=register&userData=${encodedUserData}" style="background-image: linear-gradient(to right, #cfa14f, #cb5d7a); color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Register Account</a>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${BASE_URL}/auth?mode=register&userData=${encodedUserData}" style="height:44px;v-text-anchor:middle;width:200px;" arcsize="10%" strokecolor="#cfa14f" fillcolor="#cfa14f">
+              <w:anchorlock/>
+              <center style="color:#ffffff;font-family:sans-serif;font-size:16px;font-weight:bold;">Register Account</center>
+            </v:roundrect>
+            <![endif]-->
+            <a href="${BASE_URL}/auth?mode=register&userData=${encodedUserData}" style="background-color: #cfa14f; background-image: linear-gradient(to right, #cfa14f, #cb5d7a); color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; mso-hide: all;">Register Account</a>
           </div>
           <p>Best regards,<br>${APP_INFO.name} Team</p>
         </div>
@@ -54,7 +60,7 @@ export const getUserConfirmationHtml = ({ ...userDetails }: User): string => {
 export const getAdminNotificationHtml = (
   details: AdminNotificationDetails
 ): string => {
-  const appNameWithStyle = `<span style="${appNameGradientStyle}">${APP_INFO.name}</span>`
+  const appNameWithStyle = `<span style="${appNameGradientStyle}">${appNameGradientSpan}</span>`
 
   return `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">

@@ -1866,112 +1866,118 @@ function AuthPageContents() {
                 exit={{ opacity: 0 }}
               >
                 <Card>
-                  {/* This is the login form */}
-                  <CardHeader>
-                    <CardTitle>Login</CardTitle>
-                    <CardDescription>
-                      Enter your credentials to access your account.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Mail className="size-4" />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="email"
-                          type="email"
-                          placeholder="you@example.com"
-                          value={loginForm.email}
-                          onChange={(e) =>
-                            setLoginForm({
-                              ...loginForm,
-                              email: e.target.value
-                                .replace(/\s/g, "")
-                                .toLowerCase(),
-                            })
-                          }
-                          disabled={isLoggingIn}
-                        />
-                      </InputGroup>
-                      {formErrors.email && (
-                        <p className="text-sm text-destructive">
-                          {formErrors.email}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      handleLogin()
+                    }}
+                  >
+                    <CardHeader>
+                      <CardTitle>Login</CardTitle>
+                      <CardDescription>
+                        Enter your credentials to access your account.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="pt-4">Email</Label>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <Mail className="size-4" />
+                          </InputGroupAddon>
+                          <InputGroupInput
+                            id="email"
+                            type="email"
+                            placeholder="you@example.com"
+                            value={loginForm.email}
+                            onChange={(e) =>
+                              setLoginForm({
+                                ...loginForm,
+                                email: e.target.value
+                                  .replace(/\s/g, "")
+                                  .toLowerCase(),
+                              })
+                            }
+                            disabled={isLoggingIn}
+                          />
+                        </InputGroup>
+                        {formErrors.email && (
+                          <p className="text-sm text-destructive">
+                            {formErrors.email}
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-2 pb-4">
+                        <Label htmlFor="password">Password</Label>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <Lock className="size-4" />
+                          </InputGroupAddon>
+                          <div className="flex-1">
+                            <PasswordToggleField.Root>
+                              <PasswordToggleField.Input asChild>
+                                <InputGroupInput
+                                  id="password"
+                                  placeholder="password"
+                                  value={loginForm.password}
+                                  onChange={(e) =>
+                                    setLoginForm({
+                                      ...loginForm,
+                                      password: e.target.value,
+                                    })
+                                  }
+                                  disabled={isLoggingIn}
+                                />
+                              </PasswordToggleField.Input>
+                              <PasswordToggleField.Toggle asChild>
+                                <PasswordToggle value={loginForm.password} />
+                              </PasswordToggleField.Toggle>
+                            </PasswordToggleField.Root>
+                          </div>
+                        </InputGroup>
+                        {formErrors.password && (
+                          <p className="text-sm text-destructive">
+                            {formErrors.password}
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex-col items-start gap-4">
+                      <Button
+                        type="submit"
+                        className="btn-gradient w-full"
+                        disabled={isLoggingIn}
+                      >
+                        {isLoggingIn ? (
+                          <>
+                            <Spinner className="mr-2" />
+                            Logging in...
+                          </>
+                        ) : (
+                          "Login"
+                        )}
+                      </Button>
+                      <div className="flex w-full items-center justify-between text-sm">
+                        <p className="text-muted-foreground">
+                          <Button
+                            variant="link"
+                            className="p-0 text-muted-foreground"
+                            onClick={() => router.push("/#register-interest")}
+                          >
+                            Don&apos;t have an account?
+                          </Button>
                         </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Lock className="size-4" />
-                        </InputGroupAddon>
-                        <div className="flex-1">
-                          <PasswordToggleField.Root>
-                            <PasswordToggleField.Input asChild>
-                              <InputGroupInput
-                                id="password"
-                                placeholder="password"
-                                value={loginForm.password}
-                                onChange={(e) =>
-                                  setLoginForm({
-                                    ...loginForm,
-                                    password: e.target.value,
-                                  })
-                                }
-                                disabled={isLoggingIn}
-                              />
-                            </PasswordToggleField.Input>
-                            <PasswordToggleField.Toggle asChild>
-                              <PasswordToggle value={loginForm.password} />
-                            </PasswordToggleField.Toggle>
-                          </PasswordToggleField.Root>
-                        </div>
-                      </InputGroup>
-                      {formErrors.password && (
-                        <p className="text-sm text-destructive">
-                          {formErrors.password}
-                        </p>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex-col items-start gap-4">
-                    <Button
-                      className="btn-gradient w-full"
-                      onClick={handleLogin}
-                      disabled={isLoggingIn}
-                    >
-                      {isLoggingIn ? (
-                        <>
-                          <Spinner className="mr-2" />
-                          Logging in...
-                        </>
-                      ) : (
-                        "Login"
-                      )}
-                    </Button>
-                    <div className="flex w-full items-center justify-between text-sm">
-                      <p className="text-muted-foreground">
                         <Button
                           variant="link"
                           className="p-0 text-muted-foreground"
-                          onClick={() => router.push("/#register-interest")}
+                          onClick={() => setMode("forgot-password")}
+                          disabled
                         >
-                          Don&apos;t have an account?
+                          Forgot password?
                         </Button>
-                      </p>
-                      <Button
-                        variant="link"
-                        className="p-0 text-muted-foreground"
-                        onClick={() => setMode("forgot-password")}
-                        disabled
-                      >
-                        Forgot password?
-                      </Button>
-                    </div>
-                  </CardFooter>
+                      </div>
+                    </CardFooter>
+                  </form>
                 </Card>
               </motion.div>
             ) : (

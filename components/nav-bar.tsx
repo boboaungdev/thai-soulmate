@@ -77,13 +77,22 @@ export function NavBar() {
     }
   }, [pathname])
 
-  const getInitials = (name = "") =>
-    name
-      .split(" ")
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase()
+  const getAvatarFallback = (
+    user: { name?: string; email?: string } | null
+  ) => {
+    if (!user) return ""
+    if (user.name) {
+      return user.name
+        .split(" ")
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    } else if (user.email) {
+      return user.email[0].toUpperCase()
+    }
+    return ""
+  }
 
   const handleNavClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
     if (pathname === href) {
@@ -160,7 +169,7 @@ export function NavBar() {
                 <MotionDiv variants={navItemVariants}>
                   <Avatar size="lg" className="cursor-pointer">
                     <AvatarFallback className="bg-gradient-to-r from-[#cfa14f] to-[#cb5d7a] text-white">
-                      {getInitials(user.name)}
+                      {getAvatarFallback(user)}
                     </AvatarFallback>
                   </Avatar>
                 </MotionDiv>

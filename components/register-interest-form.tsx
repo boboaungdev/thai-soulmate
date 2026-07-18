@@ -238,55 +238,150 @@ export function RegisterInterestForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <MotionDiv
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="grid grid-cols-[100px_1fr] gap-4">
-              <FormField
-                control={form.control}
-                name="prefix"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prefix</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+          <fieldset disabled={isPending} className="space-y-4">
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <div className="grid grid-cols-[100px_1fr] gap-4">
+                <FormField
+                  control={form.control}
+                  name="prefix"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Prefix</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            id="prefix"
+                            className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
+                          >
+                            <SelectValue placeholder="Select your prefix" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Mr.">Mr.</SelectItem>
+                          <SelectItem value="Ms.">Ms.</SelectItem>
+                          <SelectItem value="Mrs.">Mrs.</SelectItem>
+                          <SelectItem value="Dr.">Dr.</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <SelectTrigger
-                          id="prefix"
-                          className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
-                        >
-                          <SelectValue placeholder="Select your prefix" />
-                        </SelectTrigger>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <User className="size-4" />
+                          </InputGroupAddon>
+                          <InputGroupInput
+                            placeholder="Enter your name"
+                            {...field}
+                          />
+                        </InputGroup>
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Mr.">Mr.</SelectItem>
-                        <SelectItem value="Ms.">Ms.</SelectItem>
-                        <SelectItem value="Mrs.">Mrs.</SelectItem>
-                        <SelectItem value="Dr.">Dr.</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </MotionDiv>
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <div className="grid grid-cols-[100px_1fr] gap-4">
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gender</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                            <SelectValue placeholder="Select your gender" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem
+                            value="Male"
+                            disabled={prefix === "Ms." || prefix === "Mrs."}
+                          >
+                            Male
+                          </SelectItem>
+                          <SelectItem
+                            value="Female"
+                            disabled={prefix === "Mr."}
+                          >
+                            Female
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dob"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Birth</FormLabel>
+                      <FormControl>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <Cake className="size-4" />
+                          </InputGroupAddon>
+                          <DatePickerInput
+                            value={field.value}
+                            onSelect={field.onChange}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </MotionDiv>
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
               <FormField
                 control={form.control}
-                name="name"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <InputGroup>
                         <InputGroupAddon>
-                          <User className="size-4" />
+                          <Mail className="size-4" />
                         </InputGroupAddon>
                         <InputGroupInput
-                          placeholder="Enter your name"
+                          type="email"
+                          placeholder="your@example.com"
                           {...field}
                         />
                       </InputGroup>
@@ -295,350 +390,266 @@ export function RegisterInterestForm() {
                   </FormItem>
                 )}
               />
-            </div>
-          </MotionDiv>
-          <MotionDiv
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <div className="grid grid-cols-[100px_1fr] gap-4">
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gender</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                          <SelectValue placeholder="Select your gender" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem
-                          value="Male"
-                          disabled={prefix === "Ms." || prefix === "Mrs."}
-                        >
-                          Male
-                        </SelectItem>
-                        <SelectItem value="Female" disabled={prefix === "Mr."}>
-                          Female
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="dob"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Date of Birth</FormLabel>
-                    <FormControl>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <Cake className="size-4" />
-                        </InputGroupAddon>
-                        <DatePickerInput
-                          value={field.value}
-                          onSelect={field.onChange}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </MotionDiv>
-          <MotionDiv
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <InputGroup>
-                      <InputGroupAddon>
-                        <Mail className="size-4" />
-                      </InputGroupAddon>
-                      <InputGroupInput
-                        type="email"
-                        placeholder="your@example.com"
-                        {...field}
-                      />
-                    </InputGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </MotionDiv>
-          <MotionDiv
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="nationality"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nationality</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                            <SelectValue placeholder="Select nationality" />
-                          </SelectTrigger>
-                        </FormControl>
-
-                        <SelectContent className="max-h-80 w-[var(--radix-select-trigger-width)]">
-                          {loadingCountries ? (
-                            <SelectItem value="loading" disabled>
-                              Loading countries...
-                            </SelectItem>
-                          ) : (
-                            [...countries]
-                              .sort((a, b) =>
-                                a.nationality.localeCompare(
-                                  b.nationality,
-                                  "en",
-                                  {
-                                    sensitivity: "base",
-                                  }
-                                )
-                              )
-                              .map((country) => (
-                                <SelectItem
-                                  key={country.code}
-                                  value={country.nationality}
-                                >
-                                  {country.flag} {country.nationality}
-                                </SelectItem>
-                              ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="currentLocation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Current Location</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                            <SelectValue placeholder="Select current location" />
-                          </SelectTrigger>
-                        </FormControl>
-
-                        <SelectContent className="max-h-80 w-[var(--radix-select-trigger-width)]">
-                          {loadingCountries ? (
-                            <SelectItem value="loading" disabled>
-                              Loading countries...
-                            </SelectItem>
-                          ) : (
-                            [...countries]
-                              .sort((a, b) =>
-                                a.name.localeCompare(b.name, "en", {
-                                  sensitivity: "base",
-                                })
-                              )
-                              .map((country) => (
-                                <SelectItem
-                                  key={country.code}
-                                  value={country.name}
-                                >
-                                  {country.flag} {country.name}
-                                </SelectItem>
-                              ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </MotionDiv>
-          <MotionDiv
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="flex gap-4">
-                {/* Country code */}
+            </MotionDiv>
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField
                   control={form.control}
-                  name="phoneCountry"
+                  name="nationality"
                   render={({ field }) => (
-                    <FormItem className="w-[100px]">
-                      <FormLabel>Phone</FormLabel>
+                    <FormItem>
+                      <FormLabel>Nationality</FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
                           value={field.value}
                         >
-                          <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                            <SelectValue placeholder="+66">
-                              {loadingCountries && field.value === "TH"
-                                ? "+66"
-                                : `+${
-                                    countries.find(
-                                      (country) => country.code === field.value
-                                    )?.callCode
-                                  }`}
-                            </SelectValue>
-                          </SelectTrigger>
+                          <FormControl>
+                            <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                              <SelectValue placeholder="Select nationality" />
+                            </SelectTrigger>
+                          </FormControl>
 
-                          <SelectContent className="max-h-80">
-                            {[...countries]
-                              .sort((a, b) => {
-                                const codeA =
-                                  parseInt(a.callCode, 10) ||
-                                  Number.MAX_SAFE_INTEGER
-                                const codeB =
-                                  parseInt(b.callCode, 10) ||
-                                  Number.MAX_SAFE_INTEGER
-
-                                return codeA - codeB
-                              })
-                              .map((country) => (
-                                <SelectItem
-                                  key={country.code}
-                                  value={country.code}
-                                >
-                                  (+{country.callCode}) {country.flag}{" "}
-                                  {country.code}
-                                </SelectItem>
-                              ))}
+                          <SelectContent className="max-h-80 w-[var(--radix-select-trigger-width)]">
+                            {loadingCountries ? (
+                              <SelectItem value="loading" disabled>
+                                Loading countries...
+                              </SelectItem>
+                            ) : (
+                              [...countries]
+                                .sort((a, b) =>
+                                  a.nationality.localeCompare(
+                                    b.nationality,
+                                    "en",
+                                    {
+                                      sensitivity: "base",
+                                    }
+                                  )
+                                )
+                                .map((country) => (
+                                  <SelectItem
+                                    key={country.code}
+                                    value={country.nationality}
+                                  >
+                                    {country.flag} {country.nationality}
+                                  </SelectItem>
+                                ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                {/* Phone number */}
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="currentLocation"
                   render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel className="invisible">Phone</FormLabel>
-
+                    <FormItem>
+                      <FormLabel>Current Location</FormLabel>
                       <FormControl>
-                        <InputGroup>
-                          <InputGroupAddon>
-                            <Phone className="size-4" />
-                          </InputGroupAddon>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                              <SelectValue placeholder="Select current location" />
+                            </SelectTrigger>
+                          </FormControl>
 
-                          <InputGroupInput
-                            type="tel"
-                            placeholder="123456789"
-                            {...field}
-                            onChange={(e) => {
-                              const { value } = e.target
-                              if (/^\d*$/.test(value)) {
-                                field.onChange(value)
-                              }
-                            }}
-                          />
-                        </InputGroup>
+                          <SelectContent className="max-h-80 w-[var(--radix-select-trigger-width)]">
+                            {loadingCountries ? (
+                              <SelectItem value="loading" disabled>
+                                Loading countries...
+                              </SelectItem>
+                            ) : (
+                              [...countries]
+                                .sort((a, b) =>
+                                  a.name.localeCompare(b.name, "en", {
+                                    sensitivity: "base",
+                                  })
+                                )
+                                .map((country) => (
+                                  <SelectItem
+                                    key={country.code}
+                                    value={country.name}
+                                  >
+                                    {country.flag} {country.name}
+                                  </SelectItem>
+                                ))
+                            )}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
-
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="source"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>How did you hear about us?</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                          <SelectValue placeholder="Select an option" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="w-[var(--radix-select-trigger-width)]">
-                        <SelectItem value="Search Engine">
-                          Search Engine (Google, Bing, etc.)
-                        </SelectItem>
-                        <SelectItem value="Social Media">
-                          Social Media (Facebook, Instagram, etc.)
-                        </SelectItem>
-                        <SelectItem value="Friend or Family">
-                          Friend or Family
-                        </SelectItem>
-                        <SelectItem value="Advertisement">
-                          Advertisement
-                        </SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </MotionDiv>
-
-          {source === "Other" && (
-            <MotionDiv
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <FormField
-                control={form.control}
-                name="otherSource"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Please specify</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Tell us where you heard about us"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </MotionDiv>
-          )}
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="flex gap-4">
+                  {/* Country code */}
+                  <FormField
+                    control={form.control}
+                    name="phoneCountry"
+                    render={({ field }) => (
+                      <FormItem className="w-[100px]">
+                        <FormLabel>Phone</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                              <SelectValue placeholder="+66">
+                                {loadingCountries && field.value === "TH"
+                                  ? "+66"
+                                  : `+${
+                                      countries.find(
+                                        (country) =>
+                                          country.code === field.value
+                                      )?.callCode
+                                    }`}
+                              </SelectValue>
+                            </SelectTrigger>
+
+                            <SelectContent className="max-h-80">
+                              {[...countries]
+                                .sort((a, b) => {
+                                  const codeA =
+                                    parseInt(a.callCode, 10) ||
+                                    Number.MAX_SAFE_INTEGER
+                                  const codeB =
+                                    parseInt(b.callCode, 10) ||
+                                    Number.MAX_SAFE_INTEGER
+
+                                  return codeA - codeB
+                                })
+                                .map((country) => (
+                                  <SelectItem
+                                    key={country.code}
+                                    value={country.code}
+                                  >
+                                    (+{country.callCode}) {country.flag}{" "}
+                                    {country.code}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Phone number */}
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel className="invisible">Phone</FormLabel>
+
+                        <FormControl>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <Phone className="size-4" />
+                            </InputGroupAddon>
+
+                            <InputGroupInput
+                              type="tel"
+                              placeholder="123456789"
+                              {...field}
+                              onChange={(e) => {
+                                const { value } = e.target
+                                if (/^\d*$/.test(value)) {
+                                  field.onChange(value)
+                                }
+                              }}
+                            />
+                          </InputGroup>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="source"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>How did you hear about us?</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                            <SelectValue placeholder="Select an option" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                          <SelectItem value="Search Engine">
+                            Search Engine (Google, Bing, etc.)
+                          </SelectItem>
+                          <SelectItem value="Facebook">Facebook</SelectItem>
+                          <SelectItem value="Instagram">Instagram</SelectItem>
+                          <SelectItem value="Friend or Family">
+                            Friend or Family
+                          </SelectItem>
+                          <SelectItem value="Advertisement">
+                            Advertisement
+                          </SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </MotionDiv>
+
+            {source === "Other" && (
+              <MotionDiv
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <FormField
+                  control={form.control}
+                  name="otherSource"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Please specify</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Tell us where you heard about us"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </MotionDiv>
+            )}
+          </fieldset>
 
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}

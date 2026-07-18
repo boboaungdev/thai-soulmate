@@ -1,25 +1,26 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useAuthStore } from "@/stores/auth-store"
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState<{ name?: string } | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { user } = useAuthStore()
 
   useEffect(() => {
-    const userData = localStorage.getItem("user")
-    if (userData) {
-      setUser(JSON.parse(userData))
-    } else {
-      router.replace("/auth")
-    }
-    setLoading(false)
-  }, [router])
+    // This check now relies on the persisted state from Zustand.
+    // We add a small delay to allow Zustand to hydrate from localStorage.
+    const timer = setTimeout(() => {
+      if (!user) {
+        router.replace("/auth")
+      }
+    }, 100) // A short delay to prevent flicker if the user is logged in.
+    return () => clearTimeout(timer)
+  }, [router, user])
 
-  if (loading || !user) {
+  if (!user) {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         <Skeleton className="h-8 w-48" />

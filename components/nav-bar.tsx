@@ -33,6 +33,8 @@ import {
 } from "./ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 
+import { useAuthStore } from "@/stores/auth-store"
+
 const SITE_NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
@@ -43,10 +45,8 @@ const SITE_NAV_LINKS = [
 export function NavBar() {
   const pathname = usePathname()
   const router = useRouter()
-  // Use undefined for initial state to represent "not yet loaded"
-  const [user, setUser] = useState<
-    { name?: string; email?: string } | null | undefined
-  >(undefined)
+  const { user, logout } = useAuthStore()
+  const [isClient, setIsClient] = useState(false)
 
   const navContainerVariants = {
     hidden: { opacity: 0 },
@@ -62,37 +62,10 @@ export function NavBar() {
     hidden: { y: -20, opacity: 0 },
     show: { y: 0, opacity: 1 },
   }
-  useEffect(() => {
-    const userData = localStorage.getItem("user")
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData))
-      } catch (error) {
-        console.error("Failed to parse user data from localStorage", error)
-        localStorage.removeItem("user") // Clear corrupted data
-        setUser(null)
-      }
-    } else {
-      setUser(null)
-    }
-  }, [pathname])
 
-  const getAvatarFallback = (
-    user: { name?: string; email?: string } | null
-  ) => {
-    if (!user) return ""
-    if (user.name) {
-      return user.name
-        .split(" ")
-        .map((n) => n[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase()
-    } else if (user.email) {
-      return user.email[0].toUpperCase()
-    }
-    return ""
-  }
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const handleNavClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
     if (pathname === href) {
@@ -161,7 +134,7 @@ export function NavBar() {
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
           <LanguageSwitcher />
-          {user === undefined ? ( // Loading state
+          {!isClient ? ( // Loading state on server
             <div className="hidden h-10 w-[70px] items-center justify-center lg:flex" />
           ) : user ? (
             <DropdownMenu>
@@ -169,7 +142,7 @@ export function NavBar() {
                 <MotionDiv variants={navItemVariants}>
                   <Avatar size="lg" className="cursor-pointer">
                     <AvatarFallback className="bg-gradient-to-r from-[#cfa14f] to-[#cb5d7a] text-white">
-                      {getAvatarFallback(user)}
+                      {user.fallback}
                     </AvatarFallback>
                   </Avatar>
                 </MotionDiv>
@@ -193,8 +166,7 @@ export function NavBar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => {
-                    localStorage.removeItem("user")
-                    setUser(null)
+                    logout()
                     router.push("/auth")
                   }}
                   variant="destructive"

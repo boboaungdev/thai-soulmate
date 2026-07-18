@@ -55,6 +55,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
 import { Spinner } from "@/components/ui/spinner"
+import { useAuthStore } from "@/stores/auth-store"
 
 const educationLevels = [
   "High School",
@@ -298,6 +299,7 @@ function AuthPageContents() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const mode = searchParams.get("mode") || "login"
+  const { setUser } = useAuthStore()
   const registrationStep =
     (searchParams.get("step") as
       | "details"
@@ -1701,8 +1703,7 @@ function AuthPageContents() {
 
       toast.success("Login Successful!")
 
-      localStorage.setItem("user", JSON.stringify(data.user))
-
+      setUser(data.user)
       router.push("/dashboard")
     } catch (error) {
       console.error(error)
@@ -1880,7 +1881,9 @@ function AuthPageContents() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="email" className="pt-4">Email</Label>
+                        <Label htmlFor="email" className="pt-4">
+                          Email
+                        </Label>
                         <InputGroup>
                           <InputGroupAddon>
                             <Mail className="size-4" />

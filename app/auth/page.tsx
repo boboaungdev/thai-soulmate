@@ -54,6 +54,7 @@ import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
+import { Spinner } from "@/components/ui/spinner"
 
 const educationLevels = [
   "High School",
@@ -478,6 +479,7 @@ function AuthPageContents() {
   const [loadingCountries, setLoadingCountries] = useState(true)
   const [initialRedirectDone, setInitialRedirectDone] = useState(false)
   const [phoneCountry, setPhoneCountry] = useState("TH")
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
   // Form States
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
   const [detailsForm, setDetailsForm] = useState({
@@ -1677,6 +1679,7 @@ function AuthPageContents() {
     }
 
     setFormErrors({})
+    setIsLoggingIn(true)
 
     try {
       const response = await fetch("/api/auth/login", {
@@ -1707,6 +1710,8 @@ function AuthPageContents() {
       toast.error("Something went wrong.", {
         description: "Please try again.",
       })
+    } finally {
+      setIsLoggingIn(false)
     }
   }
 
@@ -1888,6 +1893,7 @@ function AuthPageContents() {
                                 .toLowerCase(),
                             })
                           }
+                          disabled={isLoggingIn}
                         />
                       </InputGroup>
                       {formErrors.email && (
@@ -1915,6 +1921,7 @@ function AuthPageContents() {
                                     password: e.target.value,
                                   })
                                 }
+                                disabled={isLoggingIn}
                               />
                             </PasswordToggleField.Input>
                             <PasswordToggleField.Toggle asChild>
@@ -1934,8 +1941,16 @@ function AuthPageContents() {
                     <Button
                       className="btn-gradient w-full"
                       onClick={handleLogin}
+                      disabled={isLoggingIn}
                     >
-                      Login
+                      {isLoggingIn ? (
+                        <>
+                          <Spinner className="mr-2" />
+                          Logging in...
+                        </>
+                      ) : (
+                        "Login"
+                      )}
                     </Button>
                     <div className="flex w-full items-center justify-between text-sm">
                       <p className="text-muted-foreground">
@@ -4694,6 +4709,7 @@ const PasswordToggle = forwardRef<
       size="icon-sm"
       className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:bg-transparent"
       {...props}
+      disabled={props.disabled}
     >
       <PasswordToggleField.Icon
         visible={<Eye className="size-4" />}

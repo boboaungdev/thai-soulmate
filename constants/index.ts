@@ -20,6 +20,10 @@ export const CONTACT = {
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
+export const DATABASE = {
+  DATABASE_URL: process.env.DATABASE_URL,
+} as const
+
 export const EMAIL = {
   noreply: "bobo@kkhay.com",
   contact: "boboaungdev@gmail.com",

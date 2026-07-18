@@ -2,7 +2,6 @@ import { Suspense } from "react"
 
 import { Footer } from "@/components/footer"
 import { NavBar } from "@/components/nav-bar"
-import { RouteGuard } from "@/components/route-guard"
 
 export default function WebsiteLayout({
   children,
@@ -15,9 +14,7 @@ export default function WebsiteLayout({
         <NavBar />
       </Suspense>
 
-      <main className="flex-1">
-        <RouteGuard>{children}</RouteGuard>
-      </main>
+      <main className="flex-1">{children}</main>
 
       <Footer />
     </div>

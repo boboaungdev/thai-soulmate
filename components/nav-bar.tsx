@@ -134,47 +134,17 @@ export function NavBar() {
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
           <LanguageSwitcher />
-          {!isClient ? ( // Loading state on server
-            <div className="hidden h-10 w-[70px] items-center justify-center lg:flex" />
+          {!isClient ? (
+            <div className="hidden h-10 w-[100px] items-center justify-center lg:flex" />
           ) : user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <MotionDiv variants={navItemVariants}>
-                  <Avatar size="lg" className="cursor-pointer">
-                    <AvatarFallback className="bg-gradient-to-r from-[#cfa14f] to-[#cb5d7a] text-white">
-                      {user.fallback}
-                    </AvatarFallback>
-                  </Avatar>
-                </MotionDiv>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm leading-none font-medium">
-                      {user.name}
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push("/dashboard")}>
-                  Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    logout()
-                    router.push("/auth")
-                  }}
-                  variant="destructive"
-                >
-                  Log out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <MotionDiv
+              className="hidden items-center gap-2 lg:flex"
+              variants={navItemVariants}
+            >
+              <Button asChild className="btn-gradient rounded-md font-medium">
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+            </MotionDiv>
           ) : (
             <MotionDiv
               className="hidden items-center gap-2 lg:flex"

@@ -6,11 +6,13 @@ import { useRouter } from "next/navigation"
 import {
   ClipboardPen,
   ChevronUp,
+  Home,
   LayoutDashboard,
   LogOut,
   Settings,
   User,
   Users,
+  Form,
 } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
@@ -62,6 +64,11 @@ const adminItems = [
     icon: ClipboardPen,
   },
   {
+    title: "Application Form",
+    url: "/dashboard/admin/application-form",
+    icon: Form,
+  },
+  {
     title: "Users",
     url: "/dashboard/admin/users",
     icon: Users,
@@ -85,7 +92,7 @@ export function AppSidebar() {
             priority
           />
 
-          <div className="group-data-[collapsible=icon]:hidden">
+          <div className="flex-1 text-center group-data-[collapsible=icon]:hidden">
             <AppName className="text-base font-semibold" />
             <p className="text-xs text-muted-foreground">{APP_INFO.tagline}</p>
           </div>
@@ -93,6 +100,24 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+            Main
+          </SidebarGroupLabel>
+
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Home">
+                  <Link href="/">
+                    <Home />
+                    <span>Home</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
             User Menu
@@ -175,6 +200,13 @@ export function AppSidebar() {
               <Link href="/dashboard/settings">
                 <Settings className="mr-2 size-4" />
                 <span>Settings</span>
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem asChild>
+              <Link href="/">
+                <Home className="mr-2 size-4" />
+                <span>Back to Website</span>
               </Link>
             </DropdownMenuItem>
 

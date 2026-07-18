@@ -14,40 +14,31 @@ datasource db {
 
 model User {
   id String @id @default(cuid())
-
   name     String
   avatar   String?
   email    String @unique
   password String
-
   role Role @default(USER)
-
   registerInterest RegisterInterest?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model RegisterInterest {
   id String @id @default(cuid())
-
   prefix          String
   name            String
   dob             DateTime
   gender          String
   nationality     String
   currentLocation String
-
   email        String @unique
   phoneCountry String
   phone        String
-
   source      String
   otherSource String?
-
   userId String? @unique
   user   User?   @relation(fields: [userId], references: [id])
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -139,3 +139,48 @@ export async function POST(req: Request) {
     )
   }
 }
+
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url)
+
+    const page = Number(searchParams.get("page")) || 1
+    const limit = Number(searchParams.get("limit")) || 10
+
+    const skip = (page - 1) * limit
+
+    const [interests, total] = await Promise.all([
+      prisma.registerInterest.findMany({
+        skip,
+        take: limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+
+      prisma.registerInterest.count(),
+    ])
+
+    return NextResponse.json({
+      success: true,
+      data: interests,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    })
+  } catch (error) {
+    console.error("Fetch register interests error:", error)
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to fetch registrations.",
+      },
+      { status: 500 }
+    )
+  }
+}

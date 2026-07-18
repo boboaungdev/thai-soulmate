@@ -200,11 +200,24 @@ const idealPartnerDesiredQualities = [
   "Easy Going",
 ]
 
+const relationshipGoalsOptions = [
+  "Marriage",
+  "Long-Term Relationship",
+  "Serious Dating",
+  "Companionship",
+  "Open to Possibilities",
+]
+
+const relocationOptions = ["Yes", "No", "Maybe"]
+
+const settleDownOptions = ["Within 1 Year", "1–3 Years", "No Specific Timeline"]
+
 const femaleProfileSteps = [
   "female-profile-2",
   "female-profile-3",
   "female-profile-4",
   "female-profile-5",
+  "female-profile-goals",
   "female-profile-6",
   "female-profile-7",
   "female-profile-8",
@@ -218,6 +231,7 @@ const maleProfileSteps = [
   "male-profile-3",
   "male-profile-4",
   "male-profile-5",
+  "male-profile-goals",
   "male-profile-6",
   "male-profile-7",
   "male-profile-8",
@@ -290,6 +304,7 @@ function AuthPageContents() {
       | "male-profile-3"
       | "male-profile-4"
       | "male-profile-5"
+      | "male-profile-goals"
       | "male-profile-6"
       | "male-profile-7"
       | "male-profile-8"
@@ -300,6 +315,7 @@ function AuthPageContents() {
       | "female-profile-3"
       | "female-profile-4"
       | "female-profile-5"
+      | "female-profile-goals"
       | "female-profile-6"
       | "female-profile-7"
       | "female-profile-8"
@@ -336,6 +352,7 @@ function AuthPageContents() {
       | "male-profile-3"
       | "male-profile-4"
       | "male-profile-5"
+      | "male-profile-goals"
       | "male-profile-6"
       | "male-profile-7"
       | "male-profile-8"
@@ -346,6 +363,7 @@ function AuthPageContents() {
       | "female-profile-3"
       | "female-profile-4"
       | "female-profile-5"
+      | "female-profile-goals"
       | "female-profile-6"
       | "female-profile-7"
       | "female-profile-8"
@@ -431,6 +449,11 @@ function AuthPageContents() {
     fullLength: null,
     casualLifestyle: null,
     recent: null,
+  })
+  const [relationshipGoalsForm, setRelationshipGoalsForm] = useState({
+    lookingFor: [] as string[],
+    relocate: "",
+    settleDown: "",
   })
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
@@ -585,6 +608,7 @@ function AuthPageContents() {
       | "male-profile-3"
       | "male-profile-4"
       | "male-profile-5"
+      | "male-profile-goals"
       | "male-profile-6"
       | "male-profile-7"
       | "male-profile-8"
@@ -595,6 +619,7 @@ function AuthPageContents() {
       | "female-profile-3"
       | "female-profile-4"
       | "female-profile-5"
+      | "female-profile-goals"
       | "female-profile-6"
       | "female-profile-7"
       | "female-profile-8"
@@ -735,6 +760,13 @@ function AuthPageContents() {
       }),
   })
 
+  const relationshipGoalsSchema = z.object({
+    lookingFor: z
+      .array(z.string())
+      .min(1, "Please select at least one option."),
+    relocate: z.string().min(1, "Please select an option for relocation."),
+    settleDown: z.string().min(1, "Please select a timeline."),
+  })
   const femaleProfileSchema6 = z.object({
     lifestyle: z
       .array(z.string())
@@ -1097,6 +1129,68 @@ function AuthPageContents() {
     femaleProfileForm.bestQualities,
     registrationStep,
     formErrors.bestQualities,
+  ])
+
+  useEffect(() => {
+    if (
+      (registrationStep === "female-profile-5" ||
+        registrationStep === "male-profile-5") &&
+      formErrors.lookingForQualities
+    ) {
+      if (
+        femaleProfileForm.lookingForQualities.every((q) => q.trim().length > 0)
+      ) {
+        clearFormError("lookingForQualities")
+      }
+    }
+  }, [
+    femaleProfileForm.lookingForQualities,
+    registrationStep,
+    formErrors.lookingForQualities,
+  ])
+
+  useEffect(() => {
+    if (
+      (registrationStep === "female-profile-goals" ||
+        registrationStep === "male-profile-goals") &&
+      formErrors.lookingFor
+    ) {
+      if (relationshipGoalsForm.lookingFor.length > 0) {
+        clearFormError("lookingFor")
+      }
+    }
+  }, [
+    relationshipGoalsForm.lookingFor,
+    registrationStep,
+    formErrors.lookingFor,
+  ])
+
+  useEffect(() => {
+    if (
+      (registrationStep === "female-profile-goals" ||
+        registrationStep === "male-profile-goals") &&
+      formErrors.relocate
+    ) {
+      if (relationshipGoalsForm.relocate) {
+        clearFormError("relocate")
+      }
+    }
+  }, [relationshipGoalsForm.relocate, registrationStep, formErrors.relocate])
+
+  useEffect(() => {
+    if (
+      (registrationStep === "female-profile-goals" ||
+        registrationStep === "male-profile-goals") &&
+      formErrors.settleDown
+    ) {
+      if (relationshipGoalsForm.settleDown) {
+        clearFormError("settleDown")
+      }
+    }
+  }, [
+    relationshipGoalsForm.settleDown,
+    registrationStep,
+    formErrors.settleDown,
   ])
 
   useEffect(() => {
@@ -1526,6 +1620,7 @@ function AuthPageContents() {
         "female-profile-3": femaleProfileSchemaFinancial,
         "female-profile-4": getProfileSchema3("Female"),
         "female-profile-5": femaleProfileSchema4,
+        "female-profile-goals": relationshipGoalsSchema,
         "female-profile-6": femaleProfileSchema5,
         "female-profile-7": femaleProfileSchema6,
         "female-profile-8": femaleProfileSchema7,
@@ -1535,6 +1630,7 @@ function AuthPageContents() {
         "male-profile-2": getProfileSchema1("Male"),
         "male-profile-3": getProfileSchema3("Male"),
         "male-profile-4": getProfileSchema3("Male"),
+        "male-profile-goals": relationshipGoalsSchema,
         "male-profile-5": femaleProfileSchema4,
         "male-profile-6": femaleProfileSchema5,
         "male-profile-7": femaleProfileSchema6,
@@ -1596,6 +1692,7 @@ function AuthPageContents() {
         password: passwordForm.password,
         // Include profile and financial data for both genders
         profile: femaleProfileForm,
+        relationshipGoals: relationshipGoalsForm,
         financial: financialForm,
       }
 
@@ -2823,15 +2920,161 @@ function AuthPageContents() {
                           className="btn-gradient w-full"
                           onClick={() => {
                             //
-                            const nextStep = (
+                            const nextStep =
                               gender === "Female"
-                                ? "female-profile-6"
-                                : "male-profile-6"
-                            ) as "female-profile-6" | "male-profile-6"
+                                ? "female-profile-goals"
+                                : "male-profile-goals"
                             validateAndSetStep(
                               nextStep,
                               femaleProfileSchema5,
                               femaleProfileForm
+                            )
+                          }}
+                        >
+                          Next
+                        </Button>
+                        <div className="flex w-full items-center justify-between text-sm">
+                          <Button
+                            variant="link"
+                            className="flex items-center p-0 text-muted-foreground"
+                            onClick={() => router.back()}
+                          >
+                            <ChevronLeft className="mr-1 size-4" />
+                            Back
+                          </Button>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                )}
+                {(registrationStep === "female-profile-goals" ||
+                  registrationStep === "male-profile-goals") && (
+                  <motion.div
+                    key="relationship-goals"
+                    variants={animationVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Relationship Goals</CardTitle>
+                          <SimpleStepper
+                            steps={getRegistrationSteps(gender)}
+                            currentStep={registrationStep}
+                          />
+                        </div>
+                        <CardDescription>
+                          Tell us what you&apos;re looking for.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="space-y-3">
+                          <Label>What are you looking for?</Label>
+                          <div className="grid grid-cols-2 gap-2">
+                            {relationshipGoalsOptions.map((goal) => (
+                              <div
+                                key={goal}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  id={`goal-${goal}`}
+                                  checked={relationshipGoalsForm.lookingFor.includes(
+                                    goal
+                                  )}
+                                  onCheckedChange={(checked) =>
+                                    setRelationshipGoalsForm((prev) => ({
+                                      ...prev,
+                                      lookingFor: checked
+                                        ? [...prev.lookingFor, goal]
+                                        : prev.lookingFor.filter(
+                                            (g) => g !== goal
+                                          ),
+                                    }))
+                                  }
+                                />
+                                <Label htmlFor={`goal-${goal}`}>{goal}</Label>
+                              </div>
+                            ))}
+                          </div>
+                          {formErrors.lookingFor && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.lookingFor}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          <Label>
+                            Are you willing to relocate for the right partner?
+                          </Label>
+                          <RadioGroup
+                            value={relationshipGoalsForm.relocate}
+                            onValueChange={(value) =>
+                              setRelationshipGoalsForm((prev) => ({
+                                ...prev,
+                                relocate: value,
+                              }))
+                            }
+                            className="flex space-x-4"
+                          >
+                            {relocationOptions.map((option) => (
+                              <div
+                                key={option}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={option} id={option} />
+                                <Label htmlFor={option}>{option}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.relocate && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.relocate}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          <Label>How soon would you like to settle down?</Label>
+                          <RadioGroup
+                            value={relationshipGoalsForm.settleDown}
+                            onValueChange={(value) =>
+                              setRelationshipGoalsForm((prev) => ({
+                                ...prev,
+                                settleDown: value,
+                              }))
+                            }
+                            className="flex flex-col space-y-2"
+                          >
+                            {settleDownOptions.map((option) => (
+                              <div
+                                key={option}
+                                className="flex items-center space-x-2"
+                              >
+                                <RadioGroupItem value={option} id={option} />
+                                <Label htmlFor={option}>{option}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                          {formErrors.settleDown && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.settleDown}
+                            </p>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex-col items-start gap-4">
+                        <Button
+                          className="btn-gradient w-full"
+                          onClick={() => {
+                            const nextStep =
+                              gender === "Female"
+                                ? "female-profile-6"
+                                : "male-profile-6"
+                            validateAndSetStep(
+                              nextStep,
+                              relationshipGoalsSchema,
+                              relationshipGoalsForm
                             )
                           }}
                         >
@@ -3009,6 +3252,7 @@ function AuthPageContents() {
                                 : "male-profile-7"
                             ) as "female-profile-7" | "male-profile-7"
                             validateAndSetStep(
+                              //
                               nextStep,
                               femaleProfileSchema6,
                               femaleProfileForm

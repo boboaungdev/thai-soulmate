@@ -594,14 +594,7 @@ function AuthPageContents() {
     if (!loadingCountries) {
       initializeApplication()
     }
-  }, [
-    mode,
-    searchParams,
-    initialRedirectDone,
-    countries,
-    loadingCountries,
-    setInitialUserData,
-  ])
+  }, [mode, searchParams, initialRedirectDone, countries, loadingCountries])
 
   useEffect(() => {
     let timer: NodeJS.Timeout

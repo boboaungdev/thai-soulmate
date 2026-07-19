@@ -124,9 +124,7 @@ export default function RegisterInterestPage() {
                 <TableBody>
                   {users.map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell className="font-medium">
-                        {user.prefix} {user.name}
-                      </TableCell>
+                      <TableCell className="font-medium">{user.name}</TableCell>
 
                       <TableCell>
                         <Badge variant="outline">{user.gender}</Badge>

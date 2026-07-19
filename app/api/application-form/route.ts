@@ -81,19 +81,12 @@ export async function POST(req: Request) {
 
         idealPartner: {
           ageRange: body.profile.idealPartnerAgeRange,
-
           nationality: body.profile.idealPartnerNationality,
-
           location: body.profile.idealPartnerLocation,
-
           height: body.profile.idealPartnerHeight,
-
           education: body.profile.idealPartnerEducation,
-
           personality: body.profile.idealPartnerPersonality,
-
           qualities: body.profile.idealPartnerQualities,
-
           dealBreakers: body.profile.dealBreakers,
         },
 

@@ -26,12 +26,12 @@ type Application = {
   personalDetails?: {
     name?: string
     gender?: string
-    nationality?: string
   }
 
   contact?: {
     email?: string
     phone?: string
+    nationality: string
     currentLocation?: string
   }
 
@@ -171,7 +171,7 @@ export default function ApplicationsPage() {
                       </TableCell>
 
                       <TableCell>
-                        {app.personalDetails?.nationality || "-"}
+                        {app.contact?.nationality || "-"}
                       </TableCell>
 
                       <TableCell>

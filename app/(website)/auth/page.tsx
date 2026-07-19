@@ -2247,7 +2247,7 @@ function AuthPageContents() {
                               </InputGroupAddon>
                               <DatePickerInput
                                 value={dob}
-                                onSelect={setBirthday} 
+                                onSelect={setBirthday}
                                 disabled={isInitializing || loadingCountries}
                               />
                             </InputGroup>
@@ -2510,14 +2510,14 @@ function AuthPageContents() {
                           />
                         </div>
                         <CardDescription>
-                          This information is confidential and used only for
-                          matchmaking.
+                          Register application form
                         </CardDescription>
                       </CardHeader>
                       <div className="px-6 pb-4">
                         <p className="text-sm text-muted-foreground">
-                          Dear {prefix} {detailsForm.name}, if you want to edit
-                          your profile details,
+                          Dear {prefix} {detailsForm.name}, <br />
+                          Your register interest data are auto filled in
+                          application form, if you want to edit profile
                           <button
                             type="button"
                             onClick={() => setRegistrationStep("details")}

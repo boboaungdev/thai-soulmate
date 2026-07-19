@@ -60,6 +60,8 @@ export async function POST(req: Request) {
           height: body.profile.height,
           weight: body.profile.weight,
           religion: body.profile.religion,
+          thaiFluency: body.profile.thaiFluency,
+          englishFluency: body.profile.englishFluency,
         },
 
         personality: {
@@ -67,6 +69,9 @@ export async function POST(req: Request) {
           about: body.profile.about,
           bestQualities: body.profile.bestQualities,
           lookingForQualities: body.profile.lookingForQualities,
+          maritalStatus: body.profile.maritalStatus,
+          hasChildren: body.profile.hasChildren,
+          childrenCount: body.profile.childrenCount,
         },
 
         lifestyle: {
@@ -75,6 +80,12 @@ export async function POST(req: Request) {
           drinking: body.profile.drinking,
           exercise: body.profile.exercise,
           interests: body.profile.interests,
+          otherInterest: body.profile.otherInterest,
+          travelDestinations: body.profile.travelDestinations,
+          weekendActivity: body.profile.weekendActivity,
+          familyImportance: body.profile.familyImportance,
+          futureChildren: body.profile.futureChildren,
+          values: body.profile.values,
         },
 
         relationshipGoals: body.relationshipGoals,

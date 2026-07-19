@@ -494,41 +494,25 @@ function AuthPageContents() {
   const fullPhoneNumber = `+${countries.find((c) => c.code === phoneCountry)?.callCode || ""}${detailsForm.phone}`
 
   useEffect(() => {
-    async function fetchCountries() {
-      try {
-        const res = await fetch("/api/register-interest/countries")
-
-        if (!res.ok) {
-          throw new Error("Failed loading countries")
-        }
-
-        const data = await res.json()
-
-        setCountries(data)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setLoadingCountries(false)
+    const initializeApplication = async () => {
+      if (
+        loadingCountries ||
+        mode !== "register" ||
+        !searchParams.has("userData") ||
+        initialRedirectDone
+      ) {
+        return
       }
-    }
 
-    fetchCountries()
-  }, [searchParams])
-
-  useEffect(() => {
-    if (
-      mode === "register" &&
-      searchParams.has("userData") &&
-      !initialRedirectDone
-    ) {
       try {
         const userDataStr = atob(searchParams.get("userData")!)
         const userData = JSON.parse(userDataStr)
 
-        // Populate state from URL userData
+        // Populate state from URL
         if (userData.prefix) setPrefix(userData.prefix)
         if (userData.gender) setGender(userData.gender)
         if (userData.dob) setBirthday(new Date(userData.dob))
+
         if (userData.name || userData.email || userData.phone) {
           setDetailsForm((prev) => ({
             ...prev,
@@ -537,6 +521,7 @@ function AuthPageContents() {
             phone: userData.phone || prev.phone,
           }))
         }
+
         if (userData.nationality || userData.currentLocation) {
           setLocationForm((prev) => ({
             ...prev,
@@ -544,16 +529,44 @@ function AuthPageContents() {
             currentLocation: userData.currentLocation || prev.currentLocation,
           }))
         }
+
         if (userData.phoneCountry) {
           const country = countries.find(
             (c) => `+${c.callCode}` === userData.phoneCountry
           )
-          if (country) setPhoneCountry(country.code)
+
+          if (country) {
+            setPhoneCountry(country.code)
+          }
         }
 
-        // If we have user data and are on the first step, advance to the next one.
+        // Check whether the application already exists
+        const response = await fetch(
+          `/api/application-form/check?email=${encodeURIComponent(
+            userData.email
+          )}`
+        )
+
+        if (!response.ok) {
+          throw new Error("Failed to check application status")
+        }
+
+        const data = await response.json()
+
+        // Already submitted -> go directly to Thank You page
+        if (data.exists) {
+          setRegistrationStep("thank-you", userData, {
+            keepExistingUserData: true,
+          })
+
+          setInitialRedirectDone(true)
+          return
+        }
+
+        // New application -> continue to application form
         if (registrationStep === "details") {
           const genderKey = userData.gender as "Male" | "Female"
+
           const nextStepMap = {
             Female: "female-profile-2" as const,
             Male: "male-profile-2" as const,
@@ -562,13 +575,23 @@ function AuthPageContents() {
           setRegistrationStep(nextStepMap[genderKey], userData, {
             keepExistingUserData: true,
           })
+
           setInitialRedirectDone(true)
         }
       } catch (error) {
-        console.error("Failed to parse userData from URL", error)
+        console.error("Failed to initialize application:", error)
       }
     }
-  }, [mode, searchParams, countries, registrationStep, initialRedirectDone])
+
+    initializeApplication()
+  }, [
+    loadingCountries,
+    mode,
+    searchParams,
+    countries,
+    registrationStep,
+    initialRedirectDone,
+  ])
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -1835,10 +1858,13 @@ function AuthPageContents() {
     setFormErrors({})
     setIsSubmittingApplication(true)
     try {
-      const headshotUrl = await uploadImage(photosForm.headshot!)
-      const fullLengthUrl = await uploadImage(photosForm.fullLength!)
-      const casualLifestyleUrl = await uploadImage(photosForm.casualLifestyle!)
-      const recentUrl = await uploadImage(photosForm.recent!)
+      const [headshotUrl, fullLengthUrl, casualLifestyleUrl, recentUrl] =
+        await Promise.all([
+          uploadImage(photosForm.headshot!),
+          uploadImage(photosForm.fullLength!),
+          uploadImage(photosForm.casualLifestyle!),
+          uploadImage(photosForm.recent!),
+        ])
 
       const formData = {
         details: {

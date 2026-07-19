@@ -15,9 +15,14 @@ import {
 interface DatePickerInputProps {
   value: Date | undefined
   onSelect: ((date: Date | undefined) => void) | undefined
+  disabled?: boolean
 }
 
-export function DatePickerInput({ value, onSelect }: DatePickerInputProps) {
+export function DatePickerInput({
+  value,
+  onSelect,
+  disabled,
+}: DatePickerInputProps) {
   const [isOpen, setIsOpen] = React.useState(false)
 
   const handleSelect = (date: Date | undefined) => {
@@ -36,6 +41,7 @@ export function DatePickerInput({ value, onSelect }: DatePickerInputProps) {
             "w-full flex-1 justify-start border-0 text-left font-normal",
             !value && "text-muted-foreground"
           )}
+          disabled={disabled}
         >
           {value ? (
             `${format(value, "MM/dd/yyyy")} (Age: ${calculateAge(value)})`

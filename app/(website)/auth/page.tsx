@@ -472,6 +472,7 @@ function AuthPageContents() {
   const [loadingCountries, setLoadingCountries] = useState(true)
   const [initialRedirectDone, setInitialRedirectDone] = useState(false)
   const [phoneCountry, setPhoneCountry] = useState("TH")
+  const [isInitializing, setIsInitializing] = useState(true)
   const [isLoggingIn, setIsLoggingIn] = useState(false)
   // Form States
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
@@ -506,8 +507,10 @@ function AuthPageContents() {
 
   useEffect(() => {
     const initializeApplication = async () => {
+      setIsInitializing(true) // Set loading state to true
       const userEmail = searchParams.get("email")
       if (mode !== "register" || !userEmail || initialRedirectDone) {
+        setIsInitializing(false) // Reset if conditions are not met
         return
       }
 
@@ -583,6 +586,8 @@ function AuthPageContents() {
         toast.error("Could not initialize registration.", {
           description: "Please try again later.",
         })
+      } finally {
+        setIsInitializing(false) // Always reset loading state
       }
     }
 
@@ -1840,10 +1845,13 @@ function AuthPageContents() {
 
     formData.append("file", file)
 
-    const response = await fetch(`/api/upload?email=${encodeURIComponent(detailsForm.email)}`, {
-      method: "POST",
-      body: formData,
-    })
+    const response = await fetch(
+      `/api/upload?email=${encodeURIComponent(detailsForm.email)}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    )
 
     const data = await response.json()
 
@@ -2159,6 +2167,7 @@ function AuthPageContents() {
                               <SelectTrigger
                                 id="prefix"
                                 className="h-8 bg-background dark:bg-input/30"
+                                disabled={isInitializing || loadingCountries}
                               >
                                 <SelectValue placeholder="Mr." />
                               </SelectTrigger>
@@ -2191,6 +2200,7 @@ function AuthPageContents() {
                                     name: e.target.value,
                                   }))
                                 }
+                                disabled={isInitializing || loadingCountries}
                               />
                             </InputGroup>
                           </div>
@@ -2207,6 +2217,7 @@ function AuthPageContents() {
                               <SelectTrigger
                                 id="gender"
                                 className="h-8 bg-background dark:bg-input/30"
+                                disabled={isInitializing || loadingCountries}
                               >
                                 <SelectValue placeholder="Select gender" />
                               </SelectTrigger>
@@ -2236,7 +2247,8 @@ function AuthPageContents() {
                               </InputGroupAddon>
                               <DatePickerInput
                                 value={dob}
-                                onSelect={setBirthday}
+                                onSelect={setBirthday} 
+                                disabled={isInitializing || loadingCountries}
                               />
                             </InputGroup>
                             {formErrors.dob && (
@@ -2257,6 +2269,7 @@ function AuthPageContents() {
                                 <SelectTrigger
                                   id="phone-country"
                                   className="h-8 bg-background dark:bg-input/30"
+                                  disabled={isInitializing || loadingCountries}
                                 >
                                   <SelectValue placeholder="+66">
                                     {loadingCountries && phoneCountry === "TH"
@@ -2304,6 +2317,7 @@ function AuthPageContents() {
                                       }))
                                     }
                                   }}
+                                  disabled={isInitializing || loadingCountries}
                                 />
                               </InputGroup>
                             </div>
@@ -2333,6 +2347,7 @@ function AuthPageContents() {
                                     .toLowerCase(),
                                 })
                               }
+                              disabled={isInitializing || loadingCountries}
                             />
                           </InputGroup>
                           {formErrors.email && (
@@ -2355,6 +2370,7 @@ function AuthPageContents() {
                             <SelectTrigger
                               id="nationality"
                               className="h-8 bg-background dark:bg-input/30"
+                              disabled={isInitializing || loadingCountries}
                             >
                               <SelectValue placeholder="Select nationality" />
                             </SelectTrigger>
@@ -2407,6 +2423,7 @@ function AuthPageContents() {
                             <SelectTrigger
                               id="current-location"
                               className="h-8 bg-background dark:bg-input/30"
+                              disabled={isInitializing || loadingCountries}
                             >
                               <SelectValue placeholder="Select current location" />
                             </SelectTrigger>
@@ -2459,8 +2476,16 @@ function AuthPageContents() {
                               ...locationForm,
                             })
                           }}
+                          disabled={isInitializing || loadingCountries}
                         >
-                          Next
+                          {isInitializing ? (
+                            <>
+                              <Spinner className="mr-2" />
+                              Loading...
+                            </>
+                          ) : (
+                            "Next"
+                          )}
                         </Button>
                       </CardFooter>
                     </Card>

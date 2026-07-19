@@ -23,15 +23,6 @@ import { AppName } from "@/components/app-name"
 import { cn } from "@/lib/utils"
 import { MotionDiv } from "./motion"
 import { useEffect, useState } from "react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "./ui/avatar"
 
 import { useAuthStore } from "@/stores/auth-store"
 
@@ -45,7 +36,7 @@ const SITE_NAV_LINKS = [
 export function NavBar() {
   const pathname = usePathname()
   const router = useRouter()
-  const { user, logout } = useAuthStore()
+  const { user } = useAuthStore()
   const [isClient, setIsClient] = useState(false)
 
   const navContainerVariants = {
@@ -104,31 +95,30 @@ export function NavBar() {
           initial="hidden"
           animate="show"
         >
-          {!user &&
-            SITE_NAV_LINKS.map((item) => {
-              const active = pathname === item.href
+          {SITE_NAV_LINKS.map((item) => {
+            const active = pathname === item.href
 
-              return (
-                <MotionDiv key={item.href} variants={navItemVariants}>
-                  <Button
-                    asChild
-                    variant={active ? "default" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "rounded-full px-3 font-medium transition-all",
-                      active && "btn-gradient text-white"
-                    )}
+            return (
+              <MotionDiv key={item.href} variants={navItemVariants}>
+                <Button
+                  asChild
+                  variant={active ? "default" : "ghost"}
+                  size="sm"
+                  className={cn(
+                    "rounded-full px-3 font-medium transition-all",
+                    active && "btn-gradient text-white"
+                  )}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={(e) => handleNavClick(e, item.href)}
                   >
-                    <Link
-                      href={item.href}
-                      onClick={(e) => handleNavClick(e, item.href)}
-                    >
-                      {item.label}
-                    </Link>
-                  </Button>
-                </MotionDiv>
-              )
-            })}
+                    {item.label}
+                  </Link>
+                </Button>
+              </MotionDiv>
+            )
+          })}
         </motion.nav>
 
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
@@ -156,52 +146,50 @@ export function NavBar() {
             </MotionDiv>
           )}
 
-          {user === null && (
-            <div className="lg:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon-sm"
-                    className="rounded-full"
-                  >
-                    <Menu className="size-4" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent
-                  side="right"
-                  className="flex w-3/4 flex-col sm:max-w-sm"
+          <div className="lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  className="rounded-full"
                 >
-                  <SheetHeader className="p-4 pb-2">
-                    <SheetTitle>Menu</SheetTitle>
-                  </SheetHeader>
-                  <div className="flex flex-col gap-2 px-4">
-                    {SITE_NAV_LINKS.map((item) => (
-                      <SheetClose asChild key={item.href}>
-                        <a
-                          onClick={(e) => handleNavClick(e, item.href)}
-                          className="flex cursor-pointer items-center justify-between px-3 py-2.5"
-                        >
-                          <span>{item.label}</span>
-                          <ArrowUpRight className="size-4 text-muted-foreground" />
-                        </a>
-                      </SheetClose>
-                    ))}
-                    <SheetClose asChild>
-                      <Link
-                        href="/auth"
-                        className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
+                  <Menu className="size-4" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="flex w-3/4 flex-col sm:max-w-sm"
+              >
+                <SheetHeader className="p-4 pb-2">
+                  <SheetTitle>Menu</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-2 px-4">
+                  {SITE_NAV_LINKS.map((item) => (
+                    <SheetClose asChild key={item.href}>
+                      <a
+                        onClick={(e) => handleNavClick(e, item.href)}
+                        className="flex cursor-pointer items-center justify-between px-3 py-2.5"
                       >
-                        <span>Login</span>
-                        <ArrowUpRight className="size-4" />
-                      </Link>
+                        <span>{item.label}</span>
+                        <ArrowUpRight className="size-4 text-muted-foreground" />
+                      </a>
                     </SheetClose>
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
-          )}
+                  ))}
+                  <SheetClose asChild>
+                    <Link
+                      href="/auth"
+                      className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
+                    >
+                      <span>Login</span>
+                      <ArrowUpRight className="size-4" />
+                    </Link>
+                  </SheetClose>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

@@ -13,6 +13,7 @@ import {
   User,
   Users,
   Form,
+  GalleryHorizontal,
 } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
@@ -46,14 +47,14 @@ const items = [
     icon: LayoutDashboard,
   },
   {
+    title: "Gallery",
+    url: "/dashboard/gallery",
+    icon: GalleryHorizontal,
+  },
+  {
     title: "Profile",
     url: "/dashboard/profile",
     icon: User,
-  },
-  {
-    title: "Settings",
-    url: "/dashboard/settings",
-    icon: Settings,
   },
 ]
 
@@ -111,7 +112,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild tooltip="Home">
                   <Link href="/">
                     <Home />
-                    <span>Home</span>
+                    <span>Go to Website</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

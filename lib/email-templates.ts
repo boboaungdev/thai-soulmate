@@ -17,9 +17,7 @@ type AdminNotificationDetails = {
 }
 
 export const getUserConfirmationHtml = ({ ...userDetails }: User): string => {
-  const encodedUserData = Buffer.from(JSON.stringify(userDetails)).toString(
-    "base64"
-  )
+  // Removed encodedUserData generation as per user request.
 
   return `
 <div style="
@@ -83,7 +81,7 @@ to complete your profile application process.
 <v:roundrect
 xmlns:v="urn:schemas-microsoft-com:vml"
 xmlns:w="urn:schemas-microsoft-com:office:word"
-href="${BASE_URL}/auth?mode=register&userData=${encodedUserData}"
+href="${BASE_URL}/auth?mode=register&email=${userDetails.email}"
 style="
 height:44px;
 v-text-anchor:middle;
@@ -110,7 +108,7 @@ Register Application Form
 <!--[if !mso]><!-->
 
 <a
-href="${BASE_URL}/auth?mode=register&userData=${encodedUserData}"
+href="${BASE_URL}/auth?mode=register&email=${userDetails.email}"
 style="
 background-color:#cfa14f;
 background-image:linear-gradient(to right,#cfa14f,#cb5d7a);

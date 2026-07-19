@@ -300,6 +300,8 @@ function AuthPageContents() {
   const searchParams = useSearchParams()
   const mode = searchParams.get("mode") || "login"
   const { setUser } = useAuthStore()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [initialUserData, setInitialUserData] = useState<any | null>(null)
   const registrationStep =
     (searchParams.get("step") as
       | "details"
@@ -375,22 +377,11 @@ function AuthPageContents() {
       | "female-profile-11"
       | "thank-you"
       | "verify-email"
-      | "password",
-    data?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
-    options?: {
-      // This will allow us to go back without losing the new step's data
-      keepExistingUserData?: boolean
-    }
+      | "password"
   ) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set("step", newStep)
-    if (data) {
-      const encodedUserData = btoa(JSON.stringify(data))
-      params.set("userData", encodedUserData)
-    }
-    if (!options?.keepExistingUserData) {
-      // params.delete("userData") // This was in the original code, but we need to keep it.
-    }
+    params.delete("userData")
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
@@ -515,95 +506,97 @@ function AuthPageContents() {
 
   useEffect(() => {
     const initializeApplication = async () => {
-      if (
-        mode !== "register" ||
-        !searchParams.has("userData") ||
-        initialRedirectDone
-      ) {
+      const userEmail = searchParams.get("email")
+      if (mode !== "register" || !userEmail || initialRedirectDone) {
         return
       }
 
       try {
-        const userDataStr = atob(searchParams.get("userData")!)
-        const userData = JSON.parse(userDataStr)
-
-        // -----------------------
-        // Prefill Step 1 data
-        // -----------------------
-
-        if (userData.prefix) setPrefix(userData.prefix)
-
-        if (userData.gender) setGender(userData.gender)
-
-        if (userData.dob) {
-          setBirthday(new Date(userData.dob))
-        }
-
-        setDetailsForm((prev) => ({
-          ...prev,
-          name: userData.name ?? prev.name,
-          email: userData.email ?? prev.email,
-          phone: userData.phone ?? prev.phone,
-        }))
-
-        setLocationForm((prev) => ({
-          ...prev,
-          nationality: userData.nationality ?? prev.nationality,
-          currentLocation: userData.currentLocation ?? prev.currentLocation,
-        }))
-
-        if (userData.phoneCountry) {
-          const country = countries.find(
-            (c) => `+${c.callCode}` === userData.phoneCountry
-          )
-
-          if (country) {
-            setPhoneCountry(country.code)
-          }
-        }
-
-        // -----------------------
-        // Already applied?
-        // -----------------------
-
-        const response = await fetch(
-          `/api/application-form/check?email=${encodeURIComponent(
-            userData.email
-          )}`
+        // 1. Check for registered interest AND get data
+        const registerInterestResponse = await fetch(
+          `/api/register-interest/check?email=${encodeURIComponent(userEmail)}`
         )
+        const registerInterestData = await registerInterestResponse.json()
 
-        const data = await response.json()
+        if (registerInterestData.exists) {
+          // Data exists, PRE-FILL the form state
+          const interestData = registerInterestData.interest
+          setInitialUserData(interestData) // Store all of it
 
-        // Already submitted
-        if (data.exists) {
-          setRegistrationStep("thank-you", userData, {
-            keepExistingUserData: true,
-          })
+          // Prefill all form fields from the fetched data
+          if (interestData.prefix) setPrefix(interestData.prefix)
+          if (interestData.gender) setGender(interestData.gender)
+          if (interestData.dob) setBirthday(new Date(interestData.dob))
 
-          setInitialRedirectDone(true)
-          return
+          setDetailsForm((prev) => ({
+            ...prev,
+            name: interestData.name ?? prev.name,
+            email: interestData.email ?? prev.email,
+            phone: interestData.phone ?? prev.phone,
+          }))
+
+          setLocationForm((prev) => ({
+            ...prev,
+            nationality: interestData.nationality ?? prev.nationality,
+            currentLocation:
+              interestData.currentLocation ?? prev.currentLocation,
+          }))
+
+          if (interestData.phoneCountry) {
+            const country = countries.find(
+              (c) =>
+                c.callCode === interestData.phoneCountry ||
+                `+${c.callCode}` === interestData.phoneCountry
+            )
+            if (country) setPhoneCountry(country.code)
+          }
+
+          // 2. Check if they have a full application
+          const applicationFormResponse = await fetch(
+            `/api/application-form/check?email=${encodeURIComponent(userEmail)}`
+          )
+          const applicationFormData = await applicationFormResponse.json()
+
+          if (applicationFormData.exists) {
+            // They have registered interest AND completed application.
+            setRegistrationStep("thank-you")
+          } else {
+            // They have registered interest but NOT completed application.
+            // Auto move to step 2 as requested.
+            const nextStep =
+              interestData.gender === "Female"
+                ? "female-profile-2"
+                : "male-profile-2"
+            setRegistrationStep(nextStep)
+          }
+        } else {
+          // Email does NOT exist in RegisterInterest.
+          // Stay on step 1, with only email pre-filled.
+          setInitialUserData({ email: userEmail })
+          setDetailsForm((prev) => ({ ...prev, email: userEmail }))
+          // We don't auto-move. The user is on the 'details' step by default.
         }
-
-        // -----------------------
-        // First time
-        // Skip Step 1
-        // -----------------------
-
-        const nextStep =
-          userData.gender === "Female" ? "female-profile-2" : "male-profile-2"
-
-        setRegistrationStep(nextStep, userData, {
-          keepExistingUserData: true,
-        })
 
         setInitialRedirectDone(true)
       } catch (error) {
-        console.error(error)
+        console.error("Error during application initialization:", error)
+        toast.error("Could not initialize registration.", {
+          description: "Please try again later.",
+        })
       }
     }
 
-    initializeApplication()
-  }, [mode, searchParams, countries])
+    if (!loadingCountries) {
+      initializeApplication()
+    }
+  }, [
+    mode,
+    searchParams,
+    initialRedirectDone,
+    countries,
+    loadingCountries,
+    setInitialUserData,
+  ])
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -681,7 +674,7 @@ function AuthPageContents() {
       setFormErrors(errors)
     } else {
       setFormErrors({})
-      setRegistrationStep(step, data)
+      setRegistrationStep(step)
     }
   }
 
@@ -1882,48 +1875,36 @@ function AuthPageContents() {
           uploadImage(photosForm.recent!),
         ])
 
-      // Retrieve and parse user data from URL to ensure all details are included
-      const userDataStr = searchParams.get("userData")
-      const initialUserData = userDataStr ? JSON.parse(atob(userDataStr)) : {}
+      // The initial user data is now in state, no need to read from URL
+      const detailsData = {
+        ...initialUserData, // Keep any other properties from the initial step
+        prefix: detailsForm.prefix,
+        name: detailsForm.name,
+        gender: gender,
+        dob: dob?.toISOString(),
+        email: detailsForm.email,
+        phone: fullPhoneNumber,
+        nationality: locationForm.nationality,
+        currentLocation: locationForm.currentLocation,
+      }
+
+      const profileData = {
+        ...femaleProfileForm,
+      }
+
+      const photosData = {
+        headshot: headshotUrl,
+        fullLength: fullLengthUrl,
+        casualLifestyle: casualLifestyleUrl,
+        recent: recentUrl,
+      }
 
       const formData = {
-        details: initialUserData, // Pass the original details object
-        profile: {
-          ...femaleProfileForm,
-          ...relationshipGoalsForm,
-          ...financialForm,
-        },
-        personalDetails: {
-          name: detailsForm.name,
-          gender: gender,
-          nationality: locationForm.nationality,
-          dob: dob?.toISOString(),
-          nickname: femaleProfileForm.nickname,
-        },
-        contact: {
-          email: detailsForm.email,
-          phone: fullPhoneNumber,
-          currentLocation: locationForm.currentLocation,
-        },
-        career: {
-          occupation: femaleProfileForm.occupation,
-          education: femaleProfileForm.education,
-        },
-
-        photos: {
-          headshot: headshotUrl,
-          fullLength: fullLengthUrl,
-          casualLifestyle: casualLifestyleUrl,
-          recent: recentUrl,
-        },
-        // Merging the rest of the form data
-        ...femaleProfileForm,
-        ...relationshipGoalsForm,
-        ...financialForm,
-        // Ensure nested objects that are also top-level in the form state are handled correctly
+        details: detailsData,
+        profile: profileData,
         relationshipGoals: relationshipGoalsForm,
         financial: financialForm,
-        // The profile data is already spread from femaleProfileForm
+        photos: photosData,
       }
 
       const response = await fetch("/api/application-form", {
@@ -1943,7 +1924,7 @@ function AuthPageContents() {
           "We have received your application and will review it shortly.",
       })
 
-      setRegistrationStep("thank-you", formData)
+      setRegistrationStep("thank-you")
     } catch (error) {
       console.error("Application submit error:", error)
 
@@ -2160,14 +2141,14 @@ function AuthPageContents() {
                     <Card>
                       <CardHeader>
                         <div className="flex items-center justify-between">
-                          <CardTitle>Register</CardTitle>
+                          <CardTitle>Register Application Form</CardTitle>
                           <SimpleStepper
                             steps={getRegistrationSteps(gender)}
                             currentStep={registrationStep}
                           />
                         </div>
                         <CardDescription>
-                          Create an account to start your journey with us.
+                          Create application form to start matchmaking.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
@@ -2481,17 +2462,6 @@ function AuthPageContents() {
                         >
                           Next
                         </Button>
-                        {!searchParams.has("userData") && (
-                          <p className="text-sm text-muted-foreground">
-                            <Button
-                              variant="link"
-                              className="p-0 text-muted-foreground"
-                              onClick={() => setMode("login")}
-                            >
-                              Already have an account?
-                            </Button>
-                          </p>
-                        )}
                       </CardFooter>
                     </Card>
                   </motion.div>
@@ -2525,11 +2495,7 @@ function AuthPageContents() {
                           your profile details,
                           <button
                             type="button"
-                            onClick={() =>
-                              setRegistrationStep("details", undefined, {
-                                keepExistingUserData: true,
-                              })
-                            }
+                            onClick={() => setRegistrationStep("details")}
                             className="ml-1 text-primary underline"
                           >
                             click here

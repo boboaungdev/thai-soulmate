@@ -235,7 +235,7 @@ export default function ApplicationsPage() {
                   </div>
 
                   <div className="space-y-1 text-sm">
-                    <p>🌍 {app.personalDetails?.nationality}</p>
+                    <p>🌍 {app.contact?.nationality}</p>
 
                     <p>📍 {app.contact?.currentLocation}</p>
 

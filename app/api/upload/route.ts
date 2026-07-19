@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
+
 import { r2 } from "@/lib/r2"
 import { R2 } from "@/constants"
 
@@ -7,22 +8,24 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    const file = formData.get("file") as File
-    const email = formData.get("email") as string
+    const file = formData.get("file") as File | null
 
     if (!file) {
-      return NextResponse.json({ error: "No file" }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: "No file found",
+        },
+        {
+          status: 400,
+        }
+      )
     }
-
-    if (!email) {
-      return NextResponse.json({ error: "Email required" }, { status: 400 })
-    }
-
-    const safeEmail = email.toLowerCase().replace(/[^a-z0-9]/g, "_")
 
     const buffer = Buffer.from(await file.arrayBuffer())
 
-    const fileName = `applications/photos/${safeEmail}/${Date.now()}-${file.name}`
+    const extension = file.name.split(".").pop()
+
+    const fileName = `applications/photos/${Date.now()}.${extension}`
 
     await r2.send(
       new PutObjectCommand({
@@ -34,10 +37,11 @@ export async function POST(req: Request) {
     )
 
     return NextResponse.json({
+      success: true,
       url: `${R2.R2_PUBLIC_URL}/${fileName}`,
     })
   } catch (error) {
-    console.error("R2 Upload Error:", error)
+    console.error("UPLOAD ERROR:", error)
 
     return NextResponse.json(
       {

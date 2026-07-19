@@ -515,7 +515,11 @@ function AuthPageContents() {
 
   useEffect(() => {
     const initializeApplication = async () => {
-      if (mode !== "register" || !searchParams.has("userData")) {
+      if (
+        mode !== "register" ||
+        !searchParams.has("userData") ||
+        initialRedirectDone
+      ) {
         return
       }
 
@@ -1839,18 +1843,22 @@ function AuthPageContents() {
   }
 
   const uploadImage = async (file: File) => {
-    const data = new FormData()
+    const formData = new FormData()
 
-    data.append("file", file)
+    formData.append("file", file)
 
-    const res = await fetch("/api/upload", {
+    const response = await fetch("/api/upload", {
       method: "POST",
-      body: data,
+      body: formData,
     })
 
-    const result = await res.json()
+    const data = await response.json()
 
-    return result.url
+    if (!response.ok) {
+      throw new Error(data.error || "Upload failed")
+    }
+
+    return data.url
   }
 
   const submitApplicationForm = async () => {
@@ -1874,23 +1882,33 @@ function AuthPageContents() {
           uploadImage(photosForm.recent!),
         ])
 
+      // Retrieve and parse user data from URL to ensure all details are included
+      const userDataStr = searchParams.get("userData")
+      const initialUserData = userDataStr ? JSON.parse(atob(userDataStr)) : {}
+
       const formData = {
-        details: {
-          prefix,
+        details: initialUserData, // Pass the original details object
+        profile: {
+          ...femaleProfileForm,
+          ...relationshipGoalsForm,
+          ...financialForm,
+        },
+        personalDetails: {
           name: detailsForm.name,
-          gender,
+          gender: gender,
+          nationality: locationForm.nationality,
           dob: dob?.toISOString(),
+          nickname: femaleProfileForm.nickname,
+        },
+        contact: {
           email: detailsForm.email,
           phone: fullPhoneNumber,
-          nationality: locationForm.nationality,
           currentLocation: locationForm.currentLocation,
         },
-
-        profile: femaleProfileForm,
-
-        relationshipGoals: relationshipGoalsForm,
-
-        financial: financialForm,
+        career: {
+          occupation: femaleProfileForm.occupation,
+          education: femaleProfileForm.education,
+        },
 
         photos: {
           headshot: headshotUrl,
@@ -1898,6 +1916,14 @@ function AuthPageContents() {
           casualLifestyle: casualLifestyleUrl,
           recent: recentUrl,
         },
+        // Merging the rest of the form data
+        ...femaleProfileForm,
+        ...relationshipGoalsForm,
+        ...financialForm,
+        // Ensure nested objects that are also top-level in the form state are handled correctly
+        relationshipGoals: relationshipGoalsForm,
+        financial: financialForm,
+        // The profile data is already spread from femaleProfileForm
       }
 
       const response = await fetch("/api/application-form", {
@@ -1958,6 +1984,12 @@ function AuthPageContents() {
             <p className="mt-3 text-lg text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
+            {mode === "register" && (
+              <p className="mt-4 text-base text-muted-foreground">
+                Complete this confidential application to begin your
+                personalized matchmaking journey with our experts.
+              </p>
+            )}
           </div>
         </motion.div>
         <div className="w-full max-w-md justify-self-center lg:justify-self-end">
@@ -1983,6 +2015,12 @@ function AuthPageContents() {
             <p className="mt-2 text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
+            {mode === "register" && (
+              <p className="mt-4 text-sm text-muted-foreground">
+                Complete this confidential application to begin your
+                personalized matchmaking journey with our experts.
+              </p>
+            )}
           </motion.div>
           <AnimatePresence mode="wait">
             {mode === "login" ? (
@@ -2484,20 +2522,18 @@ function AuthPageContents() {
                       <div className="px-6 pb-4">
                         <p className="text-sm text-muted-foreground">
                           Dear {prefix} {detailsForm.name}, if you want to edit
-                          your profile details,{" "}
-                          <Link
-                            href={{
-                              pathname,
-                              query: {
-                                ...Object.fromEntries(searchParams.entries()),
-                                step: "details",
-                              },
-                            }}
-                            className="text-primary underline"
-                            scroll={false}
+                          your profile details,
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setRegistrationStep("details", undefined, {
+                                keepExistingUserData: true,
+                              })
+                            }
+                            className="ml-1 text-primary underline"
                           >
                             click here
-                          </Link>
+                          </button>
                           .
                         </p>
                       </div>

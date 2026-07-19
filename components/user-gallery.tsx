@@ -104,7 +104,7 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
                 ))
               : users.map((user) => (
                   <Link
-                    href="/auth?mode=register"
+                    href="/#register-interest"
                     key={user.login.uuid}
                     className="bg-gold block rounded-lg p-[2px]"
                   >

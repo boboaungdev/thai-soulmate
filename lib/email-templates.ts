@@ -1,4 +1,4 @@
-import { APP_INFO, BASE_URL,CONTACT } from "@/constants"
+import { APP_INFO, BASE_URL, CONTACT } from "@/constants"
 import { User } from "@/types"
 
 type AdminNotificationDetails = {
@@ -81,7 +81,7 @@ to complete your profile application process.
 <v:roundrect
 xmlns:v="urn:schemas-microsoft-com:vml"
 xmlns:w="urn:schemas-microsoft-com:office:word"
-href="${BASE_URL}/auth?mode=register&email=${userDetails.email}"
+href="${BASE_URL}/application-form?email=${userDetails.email}"
 style="
 height:44px;
 v-text-anchor:middle;
@@ -108,7 +108,7 @@ Register Application Form
 <!--[if !mso]><!-->
 
 <a
-href="${BASE_URL}/auth?mode=register&email=${userDetails.email}"
+href="${BASE_URL}/application-form?email=${userDetails.email}"
 style="
 background-color:#cfa14f;
 background-image:linear-gradient(to right,#cfa14f,#cb5d7a);

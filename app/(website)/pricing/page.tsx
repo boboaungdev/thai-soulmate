@@ -24,7 +24,7 @@ export function PricingPageContents({
   const router = useRouter()
   const [expandedPlan, setExpandedPlan] = useState<string | null>(null)
   const searchParams = useSearchParams()
-  const isFromAuth = searchParams.get("mode") === "register"
+  const isFromApplicationForm = searchParams.get("mode") === "register"
   const userDataFromUrl = searchParams.get("userData")
   const [userData, setUserData] = useState<User | null>(embeddedUserData)
 
@@ -47,12 +47,13 @@ export function PricingPageContents({
   }, [userDataFromUrl, isEmbedded, embeddedUserData])
 
   const handleChoosePlan = (plan: Plan) => {
-    if (isFromAuth) {
+    if (isFromApplicationForm) {
       const params = new URLSearchParams(searchParams.toString())
       params.set("step", "plans")
       params.set("plan", plan.name)
       params.set("autoRenew", isAutoRenew.toString())
-      router.push(`/auth?${params.toString()}`)
+      params.delete("mode")
+      router.push(`/application-form?${params.toString()}`)
       return
     }
 
@@ -70,7 +71,7 @@ export function PricingPageContents({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {!isEmbedded && !isFromAuth && (
+          {!isEmbedded && !isFromApplicationForm && (
             <>
               <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
                 VIP Membership
@@ -80,7 +81,7 @@ export function PricingPageContents({
               </p>
             </>
           )}
-          {isFromAuth && (
+          {isFromApplicationForm && (
             <>
               <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
                 VIP Membership Details

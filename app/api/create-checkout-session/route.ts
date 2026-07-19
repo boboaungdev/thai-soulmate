@@ -29,8 +29,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: mode,
-      success_url: `${BASE_URL}/application-form?step=password&userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
-      cancel_url: `${BASE_URL}/application-form?step=plans&userData=${encodedUserData}&canceled=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
+      success_url: `${BASE_URL}/application-form?userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
+      cancel_url: `${BASE_URL}/application-form?userData=${encodedUserData}&canceled=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
     })
 
     return NextResponse.json({ url: checkoutSession.url })

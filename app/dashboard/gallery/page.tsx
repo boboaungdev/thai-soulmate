@@ -13,7 +13,7 @@ export default function GalleryPage() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await fetch("/api/users")
+        const response = await fetch("/api/gallery")
         if (!response.ok) {
           throw new Error("Failed to fetch users")
         }

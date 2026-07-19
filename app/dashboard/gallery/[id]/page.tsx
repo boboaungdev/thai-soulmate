@@ -5,6 +5,7 @@ import { useParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
+import { ApplicationForm } from "@/types/application-form-types"
 
 export default function UserDetailPage() {
   const params = useParams()
@@ -55,9 +56,8 @@ export default function UserDetailPage() {
     )
   }
 
-  // The API now returns parsed objects, no need for manual parsing
   const {
-
+    personalDetails,
     contact,
     career,
     appearance,
@@ -67,18 +67,19 @@ export default function UserDetailPage() {
     idealPartner,
     financial,
     photos,
-  } = user as ApplicationForm
+  } = user
 
-  const age = personalDetails?.dob
-    ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
-    : "N/A"
+  const age =
+    personalDetails?.dob && !isNaN(new Date(personalDetails.dob).getTime())
+      ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
+      : "N/A"
 
   return (
     <div className="container mx-auto py-8">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">
-            {personalDetails?.name || "User Details"} (ID:{" "}
+            {personalDetails?.name || "User Profile"} (ID:{" "}
             {user.id.slice(0, 4).toUpperCase()})
           </CardTitle>
         </CardHeader>
@@ -87,25 +88,35 @@ export default function UserDetailPage() {
           <section>
             <h2 className="mb-4 text-xl font-semibold">Photos</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-              {Object.entries(photos || {}).map(([key, url]) =>
-                url ? (
-                  <div key={key} className="relative aspect-square w-full">
-                    <Image
-                      src={url as string}
-                      alt={key}
-                      fill
-                      className="rounded-lg object-cover"
-                    />
-                  </div>
-                ) : null
-              )}
+              {photos &&
+                Object.entries(photos).map(([key, url]) =>
+                  url ? (
+                    <div key={key} className="relative aspect-square w-full">
+                      <Image
+                        src={url}
+                        alt={key}
+                        fill
+                        className="rounded-lg object-cover"
+                      />
+                    </div>
+                  ) : null
+                )}
             </div>
+          </section>
+
+          {/* About Section */}
+          <section>
+            <h2 className="mb-4 text-xl font-semibold">About</h2>
+            <p>{personality?.about || "N/A"}</p>
           </section>
 
           {/* Details Section */}
           <section>
             <h2 className="mb-4 text-xl font-semibold">Personal Details</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              <p>
+                <strong>Name:</strong> {personalDetails?.name || "N/A"}
+              </p>
               <p>
                 <strong>Age:</strong> {age}
               </p>
@@ -146,10 +157,12 @@ export default function UserDetailPage() {
             <h2 className="mb-4 text-xl font-semibold">Appearance</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               <p>
-                <strong>Height:</strong> {appearance?.height || "N/A"} cm
+                <strong>Height:</strong>{" "}
+                {appearance?.height ? `${appearance.height} cm` : "N/A"}
               </p>
               <p>
-                <strong>Weight:</strong> {appearance?.weight || "N/A"} kg
+                <strong>Weight:</strong>{" "}
+                {appearance?.weight ? `${appearance.weight} kg` : "N/A"}
               </p>
               <p>
                 <strong>Religion:</strong> {appearance?.religion || "N/A"}
@@ -159,9 +172,6 @@ export default function UserDetailPage() {
 
           <section>
             <h2 className="mb-4 text-xl font-semibold">Personality</h2>
-            <p>
-              <strong>About:</strong> {personality?.about || "N/A"}
-            </p>
             <p>
               <strong>Personality Traits:</strong>{" "}
               {personality?.personality?.join(", ") || "N/A"}

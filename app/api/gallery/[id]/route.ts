@@ -44,19 +44,17 @@ export async function GET(
     }
 
     const parsedApplication = {
-      id: application.id,
-      personalDetails: {
-        name: parseJSONField(application.personalDetails).name,
-        dob: parseJSONField(application.personalDetails).dob,
-        gender: parseJSONField(application.personalDetails).gender,
-        prefix: parseJSONField(application.personalDetails).prefix,
-      },
-      contact: {
-        currentLocation: parseJSONField(application.contact).currentLocation,
-      },
-      photos: {
-        headshot: parseJSONField(application.photos).headshot,
-      },
+      ...application,
+      personalDetails: parseJSONField(application.personalDetails),
+      contact: parseJSONField(application.contact),
+      career: parseJSONField(application.career),
+      appearance: parseJSONField(application.appearance),
+      personality: parseJSONField(application.personality),
+      lifestyle: parseJSONField(application.lifestyle),
+      relationshipGoals: parseJSONField(application.relationshipGoals),
+      idealPartner: parseJSONField(application.idealPartner),
+      financial: parseJSONField(application.financial),
+      photos: parseJSONField(application.photos),
     }
 
     return NextResponse.json({

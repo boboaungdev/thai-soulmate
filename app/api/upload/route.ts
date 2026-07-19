@@ -7,6 +7,19 @@ import { R2 } from "@/constants"
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
+    const { searchParams } = new URL(req.url)
+    const email = searchParams.get("email")
+
+    if (!email) {
+      return NextResponse.json(
+        {
+          error: "Email is required for file upload.",
+        },
+        {
+          status: 400,
+        }
+      )
+    }
 
     const file = formData.get("file") as File | null
 
@@ -25,7 +38,7 @@ export async function POST(req: Request) {
 
     const extension = file.name.split(".").pop()
 
-    const fileName = `applications/photos/${Date.now()}.${extension}`
+    const fileName = `applications/photos/${email}/${email}-${Date.now()}.${extension}`
 
     await r2.send(
       new PutObjectCommand({

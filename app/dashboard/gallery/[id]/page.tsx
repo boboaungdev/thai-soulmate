@@ -59,13 +59,11 @@ export default function UserDetailPage() {
   const {
     personalDetails,
     contact,
-    career,
     appearance,
     personality,
     lifestyle,
     relationshipGoals,
     idealPartner,
-    financial,
     photos,
   } = user
 
@@ -74,124 +72,118 @@ export default function UserDetailPage() {
       ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
       : "N/A"
 
+  const mainPhoto =
+    photos?.headshot || Object.values(photos || {}).find((p) => p)
+  const galleryPhotos = Object.entries(photos || {}).filter(
+    ([key, url]) => url && url !== mainPhoto
+  )
+
   return (
     <div className="container mx-auto py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">
-            {personalDetails?.name || "User Profile"} (ID:{" "}
-            {user.id.slice(0, 4).toUpperCase()})
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          {/* Photos Section */}
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">Photos</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-              {photos &&
-                Object.entries(photos).map(([key, url]) =>
-                  url ? (
-                    <div key={key} className="relative aspect-square w-full">
-                      <Image
-                        src={url}
-                        alt={key}
-                        fill
-                        className="rounded-lg object-cover"
-                      />
-                    </div>
-                  ) : null
-                )}
-            </div>
-          </section>
+      <div className="space-y-8">
+        {mainPhoto && (
+          <div className="relative h-96 w-full overflow-hidden rounded-lg">
+            <Image
+              src={mainPhoto}
+              alt="Main profile photo"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
 
-          {/* About Section */}
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">About</h2>
-            <p>{personality?.about || "N/A"}</p>
-          </section>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold">
+            {personalDetails?.name || "User"}, {age}
+          </h1>
+          <p className="text-muted-foreground">
+            🇹🇭 {contact?.currentLocation || "N/A"}
+          </p>
+        </div>
 
-          {/* Details Section */}
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">Personal Details</h2>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-              <p>
-                <strong>Name:</strong> {personalDetails?.name || "N/A"}
-              </p>
-              <p>
-                <strong>Age:</strong> {age}
-              </p>
-              <p>
-                <strong>Gender:</strong> {personalDetails?.gender || "N/A"}
-              </p>
-              <p>
-                <strong>Nationality:</strong> {contact?.nationality || "N/A"}
-              </p>
-              <p>
-                <strong>Location:</strong> {contact?.currentLocation || "N/A"}
-              </p>
-              <p>
-                <strong>Email:</strong> {contact?.email || "N/A"}
-              </p>
-              <p>
-                <strong>Phone:</strong> {contact?.phone || "N/A"}
+        <Card>
+          <CardHeader>
+            <CardTitle>About Me</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              {personality?.about || "N/A"}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Basic Information</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="font-semibold">Nickname</p>
+              <p className="text-muted-foreground">
+                {personalDetails?.name || "N/A"}
               </p>
             </div>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">Career & Education</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <p>
-                <strong>Occupation:</strong> {career?.occupation || "N/A"}
-              </p>
-              <p>
-                <strong>Company:</strong> {career?.company || "N/A"}
-              </p>
-              <p>
-                <strong>Education:</strong> {career?.education || "N/A"}
+            <div>
+              <p className="font-semibold">Age</p>
+              <p className="text-muted-foreground">{age}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Gender</p>
+              <p className="text-muted-foreground">
+                {personalDetails?.gender || "N/A"}
               </p>
             </div>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">Appearance</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-              <p>
-                <strong>Height:</strong>{" "}
+            <div>
+              <p className="font-semibold">Height</p>
+              <p className="text-muted-foreground">
                 {appearance?.height ? `${appearance.height} cm` : "N/A"}
               </p>
-              <p>
-                <strong>Weight:</strong>{" "}
+            </div>
+            <div>
+              <p className="font-semibold">Weight</p>
+              <p className="text-muted-foreground">
                 {appearance?.weight ? `${appearance.weight} kg` : "N/A"}
               </p>
-              <p>
-                <strong>Religion:</strong> {appearance?.religion || "N/A"}
+            </div>
+            <div>
+              <p className="font-semibold">Nationality</p>
+              <p className="text-muted-foreground">
+                {contact?.nationality || "N/A"}
               </p>
             </div>
-          </section>
+            <div>
+              <p className="font-semibold">Religion</p>
+              <p className="text-muted-foreground">
+                {appearance?.religion || "N/A"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">Personality</h2>
-            <p>
-              <strong>Personality Traits:</strong>{" "}
-              {personality?.personality?.join(", ") || "N/A"}
-            </p>
-            <p>
-              <strong>Best Qualities:</strong>{" "}
-              {personality?.bestQualities?.join(", ") || "N/A"}
-            </p>
-            <p>
-              <strong>Qualities Looking For:</strong>{" "}
-              {personality?.lookingForQualities?.join(", ") || "N/A"}
-            </p>
-          </section>
+        <Card>
+          <CardHeader>
+            <CardTitle>Interests</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {lifestyle?.interests?.map((interest) => (
+                <div
+                  key={interest}
+                  className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground"
+                >
+                  {interest}
+                </div>
+              )) || <p className="text-muted-foreground">N/A</p>}
+            </div>
+          </CardContent>
+        </Card>
 
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">Lifestyle</h2>
-            <p>
-              <strong>Lifestyle:</strong>{" "}
-              {lifestyle?.lifestyle?.join(", ") || "N/A"}
-            </p>
+        <Card>
+          <CardHeader>
+            <CardTitle>Lifestyle</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
             <p>
               <strong>Smoking:</strong> {lifestyle?.smoking || "N/A"}
             </p>
@@ -201,75 +193,48 @@ export default function UserDetailPage() {
             <p>
               <strong>Exercise:</strong> {lifestyle?.exercise || "N/A"}
             </p>
-            <p>
-              <strong>Interests:</strong>{" "}
-              {lifestyle?.interests?.join(", ") || "N/A"}
-            </p>
-          </section>
+          </CardContent>
+        </Card>
 
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">Relationship Goals</h2>
-            <p>
-              <strong>Looking For:</strong>{" "}
-              {relationshipGoals?.lookingFor?.join(", ") || "N/A"}
-            </p>
-            <p>
-              <strong>Willing to Relocate:</strong>{" "}
-              {relationshipGoals?.relocate || "N/A"}
-            </p>
-            <p>
-              <strong>Settle Down Timeline:</strong>{" "}
-              {relationshipGoals?.settleDown || "N/A"}
-            </p>
-          </section>
+        <Card>
+          <CardHeader>
+            <CardTitle>Looking For</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="list-inside list-disc space-y-1 text-muted-foreground">
+              {relationshipGoals?.lookingFor?.map((item, index) => (
+                <li key={`lookingFor-${item}-${index}`}>{item}</li>
+              ))}
+              {personality?.lookingForQualities?.map((item, index) => (
+                <li key={`qualities-${item}-${index}`}>{item}</li>
+              ))}
+              {idealPartner?.ageRange && <li>Age {idealPartner.ageRange}</li>}
+            </ul>
+          </CardContent>
+        </Card>
 
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">Ideal Partner</h2>
-            <p>
-              <strong>Age Range:</strong> {idealPartner?.ageRange || "N/A"}
-            </p>
-            <p>
-              <strong>Nationality:</strong> {idealPartner?.nationality || "N/A"}
-            </p>
-            <p>
-              <strong>Location:</strong> {idealPartner?.location || "N/A"}
-            </p>
-            <p>
-              <strong>Height:</strong> {idealPartner?.height || "N/A"}
-            </p>
-            <p>
-              <strong>Education:</strong> {idealPartner?.education || "N/A"}
-            </p>
-            <p>
-              <strong>Personality:</strong>{" "}
-              {idealPartner?.personality?.join(", ") || "N/A"}
-            </p>
-            <p>
-              <strong>Qualities:</strong>{" "}
-              {idealPartner?.qualities?.join(", ") || "N/A"}
-            </p>
-            <p>
-              <strong>Deal Breakers:</strong>{" "}
-              {idealPartner?.dealBreakers?.join(", ") || "N/A"}
-            </p>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-semibold">
-              Financial Information
-            </h2>
-            <p>
-              <strong>Income:</strong> {financial?.income || "N/A"}
-            </p>
-            <p>
-              <strong>Owns Property:</strong> {financial?.ownProperty || "N/A"}
-            </p>
-            <p>
-              <strong>Owns Business:</strong> {financial?.ownBusiness || "N/A"}
-            </p>
-          </section>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Gallery</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+            {galleryPhotos.length > 0 ? (
+              galleryPhotos.map(([key, url]) => (
+                <div key={key} className="relative aspect-square w-full">
+                  <Image
+                    src={url as string}
+                    alt={`Gallery photo ${key}`}
+                    fill
+                    className="rounded-lg object-cover"
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="text-muted-foreground">No additional photos.</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

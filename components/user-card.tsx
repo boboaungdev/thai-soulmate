@@ -4,32 +4,44 @@ import Link from "next/link"
 import Image from "next/image"
 import { MapPin } from "lucide-react"
 import { Card } from "@/components/ui/card"
-import { ApplicationForm } from "@/lib/generated/prisma"
+import { ApplicationForm } from "@/lib/generated/prisma/client"
 
 // Assuming the JSON fields have these structures
 interface PersonalDetails {
-  firstName: string
-  lastName: string
+  name: string
   dob: string
 }
-
 interface Contact {
-  city: string
-  country: string
+  currentLocation: string
 }
-
-interface Photos extends Array<string> {}
+interface Photos {
+  headshot: string
+  fullLength: string
+  casualLifestyle: string
+  recent: string
+}
 
 interface UserCardProps {
   user: ApplicationForm
 }
 
 export function UserCard({ user }: UserCardProps) {
-  const personalDetails = user.personalDetails as unknown as PersonalDetails
-  const contact = user.contact as unknown as Contact
-  const photos = user.photos as unknown as Photos
+  const personalDetails: PersonalDetails =
+    user.personalDetails && typeof user.personalDetails === "string"
+      ? JSON.parse(user.personalDetails)
+      : user.personalDetails || {}
+  const contact: Contact =
+    user.contact && typeof user.contact === "string"
+      ? JSON.parse(user.contact)
+      : user.contact || {}
+  const photos: Photos =
+    user.photos && typeof user.photos === "string"
+      ? JSON.parse(user.photos)
+      : (user.photos as unknown as Photos) || {}
 
-  const age = new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
+  const age = personalDetails.dob
+    ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
+    : "N/A"
 
   return (
     <Link
@@ -37,10 +49,10 @@ export function UserCard({ user }: UserCardProps) {
       className="bg-gold block w-[280px] rounded-lg p-[2px]"
     >
       <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
-        {photos && photos.length > 0 ? (
+        {photos?.headshot ? (
           <Image
-            src={photos[0]}
-            alt={`${personalDetails.firstName} ${personalDetails.lastName}`}
+            src={photos.headshot}
+            alt={personalDetails?.name || "User"}
             fill
             sizes="280px"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -60,7 +72,7 @@ export function UserCard({ user }: UserCardProps) {
           </p>
           <p className="flex items-center gap-1 text-sm">
             <MapPin className="size-3" />
-            {contact.city}, {contact.country}
+            {contact?.currentLocation || "N/A"}
           </p>
         </div>
       </Card>

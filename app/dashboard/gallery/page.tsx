@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ApplicationForm } from "@/lib/generated/prisma"
 import { UserCard } from "@/components/user-card"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ApplicationForm } from "@/lib/generated/prisma/client"
 
 export default function GalleryPage() {
   const [users, setUsers] = useState<ApplicationForm[]>([])

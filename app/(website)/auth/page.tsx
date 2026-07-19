@@ -4365,6 +4365,7 @@ function AuthPageContents() {
                             setPhotosForm((p) => ({ ...p, headshot: file }))
                           }
                           error={formErrors.headshot}
+                          disabled={isSubmittingApplication}
                         />
                         <FileInput
                           label="Full-Length Photo"
@@ -4373,6 +4374,7 @@ function AuthPageContents() {
                             setPhotosForm((p) => ({ ...p, fullLength: file }))
                           }
                           error={formErrors.fullLength}
+                          disabled={isSubmittingApplication}
                         />
                         <FileInput
                           label="Casual Lifestyle Photo"
@@ -4384,6 +4386,7 @@ function AuthPageContents() {
                             }))
                           }
                           error={formErrors.casualLifestyle}
+                          disabled={isSubmittingApplication}
                         />
                         <FileInput
                           label="Recent Photo"
@@ -4392,6 +4395,7 @@ function AuthPageContents() {
                             setPhotosForm((p) => ({ ...p, recent: file }))
                           }
                           error={formErrors.recent}
+                          disabled={isSubmittingApplication}
                         />
                       </CardContent>
                       <CardFooter className="flex-col items-start gap-4">
@@ -4766,18 +4770,22 @@ function FileInput({
   file,
   onFileChange,
   error,
+  disabled,
 }: {
   label: string
   file: File | null
   onFileChange: (file: File | null) => void
   error?: string
+  disabled?: boolean
 }) {
   const id = label.toLowerCase().replace(/\s/g, "-")
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id} className={disabled ? "text-muted-foreground" : ""}>
+        {label}
+      </Label>
       <InputGroup>
-        <InputGroupAddon>
+        <InputGroupAddon disabled={disabled}>
           <Upload className="size-4" />
         </InputGroupAddon>
         <div className="relative flex-1">
@@ -4786,11 +4794,14 @@ function FileInput({
             readOnly
             value={file ? file.name : ""}
             placeholder="Choose a file..."
-            className="cursor-pointer pr-16"
+            className={disabled ? "cursor-not-allowed" : "cursor-pointer pr-16"}
+            disabled={disabled}
           />
           <label
             htmlFor={id}
-            className="absolute inset-0 cursor-pointer"
+            className={`absolute inset-0 ${
+              disabled ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
           ></label>
           <input
             id={id}
@@ -4798,12 +4809,14 @@ function FileInput({
             className="sr-only"
             onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
             accept="image/png, image/jpeg, image/webp" //
+            disabled={disabled}
           />
           {file && (
             <Button
               variant="ghost"
               size="icon-sm"
               onClick={() => onFileChange(null)}
+              disabled={disabled}
               className="absolute top-1/2 right-2 -translate-y-1/2 text-destructive/80 hover:text-destructive"
             >
               <X className="size-4" />

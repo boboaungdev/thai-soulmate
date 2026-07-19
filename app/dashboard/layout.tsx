@@ -10,6 +10,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { useMounted } from "@/hooks/use-mounted"
 import { useAuthStore } from "@/stores/auth-store"
 
 export default function DashboardLayout({
@@ -19,19 +20,16 @@ export default function DashboardLayout({
 }) {
   const router = useRouter()
   const { user } = useAuthStore()
+  const mounted = useMounted()
 
   useEffect(() => {
-    if (!user) {
+    if (mounted && !user) {
       router.replace("/auth")
     }
-  }, [router, user])
+  }, [router, user, mounted])
 
-  if (!user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Skeleton className="h-10 w-48" />
-      </div>
-    )
+  if (!mounted || !user) {
+    return
   }
 
   return (

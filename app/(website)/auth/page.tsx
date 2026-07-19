@@ -494,13 +494,28 @@ function AuthPageContents() {
   const fullPhoneNumber = `+${countries.find((c) => c.code === phoneCountry)?.callCode || ""}${detailsForm.phone}`
 
   useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        setLoadingCountries(true)
+        const response = await fetch("/api/register-interest/countries")
+        const data = await response.json()
+        setCountries(data)
+      } catch (error) {
+        console.error("Failed to fetch countries:", error)
+        toast.error("Could not load country data.", {
+          description: "Please refresh the page to try again.",
+        })
+      } finally {
+        setLoadingCountries(false)
+      }
+    }
+
+    fetchCountries()
+  }, [])
+
+  useEffect(() => {
     const initializeApplication = async () => {
-      if (
-        mode !== "register" ||
-        !searchParams.has("userData") ||
-        initialRedirectDone ||
-        countries.length === 0
-      ) {
+      if (mode !== "register" || !searchParams.has("userData")) {
         return
       }
 
@@ -584,7 +599,7 @@ function AuthPageContents() {
     }
 
     initializeApplication()
-  }, [mode, searchParams, countries, initialRedirectDone])
+  }, [mode, searchParams, countries])
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -4785,7 +4800,9 @@ function FileInput({
         {label}
       </Label>
       <InputGroup>
-        <InputGroupAddon disabled={disabled}>
+        <InputGroupAddon
+          className={disabled ? "cursor-not-allowed text-muted-foreground" : ""}
+        >
           <Upload className="size-4" />
         </InputGroupAddon>
         <div className="relative flex-1">

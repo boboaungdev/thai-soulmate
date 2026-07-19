@@ -496,10 +496,10 @@ function AuthPageContents() {
   useEffect(() => {
     const initializeApplication = async () => {
       if (
-        loadingCountries ||
         mode !== "register" ||
         !searchParams.has("userData") ||
-        initialRedirectDone
+        initialRedirectDone ||
+        countries.length === 0
       ) {
         return
       }
@@ -508,27 +508,30 @@ function AuthPageContents() {
         const userDataStr = atob(searchParams.get("userData")!)
         const userData = JSON.parse(userDataStr)
 
-        // Populate state from URL
+        // -----------------------
+        // Prefill Step 1 data
+        // -----------------------
+
         if (userData.prefix) setPrefix(userData.prefix)
+
         if (userData.gender) setGender(userData.gender)
-        if (userData.dob) setBirthday(new Date(userData.dob))
 
-        if (userData.name || userData.email || userData.phone) {
-          setDetailsForm((prev) => ({
-            ...prev,
-            name: userData.name || prev.name,
-            email: userData.email || prev.email,
-            phone: userData.phone || prev.phone,
-          }))
+        if (userData.dob) {
+          setBirthday(new Date(userData.dob))
         }
 
-        if (userData.nationality || userData.currentLocation) {
-          setLocationForm((prev) => ({
-            ...prev,
-            nationality: userData.nationality || prev.nationality,
-            currentLocation: userData.currentLocation || prev.currentLocation,
-          }))
-        }
+        setDetailsForm((prev) => ({
+          ...prev,
+          name: userData.name ?? prev.name,
+          email: userData.email ?? prev.email,
+          phone: userData.phone ?? prev.phone,
+        }))
+
+        setLocationForm((prev) => ({
+          ...prev,
+          nationality: userData.nationality ?? prev.nationality,
+          currentLocation: userData.currentLocation ?? prev.currentLocation,
+        }))
 
         if (userData.phoneCountry) {
           const country = countries.find(
@@ -540,20 +543,19 @@ function AuthPageContents() {
           }
         }
 
-        // Check whether the application already exists
+        // -----------------------
+        // Already applied?
+        // -----------------------
+
         const response = await fetch(
           `/api/application-form/check?email=${encodeURIComponent(
             userData.email
           )}`
         )
 
-        if (!response.ok) {
-          throw new Error("Failed to check application status")
-        }
-
         const data = await response.json()
 
-        // Already submitted -> go directly to Thank You page
+        // Already submitted
         if (data.exists) {
           setRegistrationStep("thank-you", userData, {
             keepExistingUserData: true,
@@ -563,35 +565,26 @@ function AuthPageContents() {
           return
         }
 
-        // New application -> continue to application form
-        if (registrationStep === "details") {
-          const genderKey = userData.gender as "Male" | "Female"
+        // -----------------------
+        // First time
+        // Skip Step 1
+        // -----------------------
 
-          const nextStepMap = {
-            Female: "female-profile-2" as const,
-            Male: "male-profile-2" as const,
-          }
+        const nextStep =
+          userData.gender === "Female" ? "female-profile-2" : "male-profile-2"
 
-          setRegistrationStep(nextStepMap[genderKey], userData, {
-            keepExistingUserData: true,
-          })
+        setRegistrationStep(nextStep, userData, {
+          keepExistingUserData: true,
+        })
 
-          setInitialRedirectDone(true)
-        }
+        setInitialRedirectDone(true)
       } catch (error) {
-        console.error("Failed to initialize application:", error)
+        console.error(error)
       }
     }
 
     initializeApplication()
-  }, [
-    loadingCountries,
-    mode,
-    searchParams,
-    countries,
-    registrationStep,
-    initialRedirectDone,
-  ])
+  }, [mode, searchParams, countries, initialRedirectDone])
 
   useEffect(() => {
     let timer: NodeJS.Timeout

@@ -36,7 +36,12 @@ export async function POST(req: Request) {
 
     const application = await prisma.applicationForm.create({
       data: {
-        personalDetails: body.details,
+        personalDetails: {
+          prefix: body.details.prefix,
+          name: body.details.name,
+          gender: body.details.gender,
+          dob: body.details.dob,
+        },
 
         contact: {
           email: body.details.email,

@@ -19,6 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 type Application = {
   id: string
@@ -141,23 +142,18 @@ export default function ApplicationsPage() {
                       }
                     >
                       <TableCell>
-                        {app.photos?.headshot ? (
-                          <Image
-                            src={app.photos.headshot}
-
-                            width={45}
-
-                            height={45}
-
-                            alt="profile"
-
-                            className="rounded-full object-cover"
+                        <Avatar className="h-11 w-11">
+                          <AvatarImage
+                            src={app.photos?.headshot}
+                            alt={app.personalDetails?.name || "Profile"}
+                            className="h-full w-full scale-110 object-cover object-center"
                           />
-                        ) : (
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted font-semibold uppercase">
-                            {app.personalDetails?.name?.charAt(0) || "?"}
-                          </div>
-                        )}
+                          <AvatarFallback>
+                            {app.personalDetails?.name
+                              ?.charAt(0)
+                              .toUpperCase() || "?"}
+                          </AvatarFallback>
+                        </Avatar>
                       </TableCell>
 
                       <TableCell className="font-medium">
@@ -170,9 +166,7 @@ export default function ApplicationsPage() {
                         </Badge>
                       </TableCell>
 
-                      <TableCell>
-                        {app.contact?.nationality || "-"}
-                      </TableCell>
+                      <TableCell>{app.contact?.nationality || "-"}</TableCell>
 
                       <TableCell>
                         {app.contact?.currentLocation || "-"}
@@ -205,23 +199,17 @@ export default function ApplicationsPage() {
               >
                 <CardContent className="space-y-4 p-4">
                   <div className="flex items-center gap-3">
-                    {app.photos?.headshot ? (
-                      <Image
-                        src={app.photos.headshot}
-
-                        width={60}
-
-                        height={60}
-
-                        alt="profile"
-
-                        className="rounded-full object-cover"
+                    <Avatar className="h-[60px] w-[60px]">
+                      <AvatarImage
+                        src={app.photos?.headshot}
+                        alt={app.personalDetails?.name || "Profile"}
+                        className="h-full w-full scale-110 object-cover object-center"
                       />
-                    ) : (
-                      <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full bg-muted text-xl font-semibold uppercase">
-                        {app.personalDetails?.name?.charAt(0) || "?"}
-                      </div>
-                    )}
+                      <AvatarFallback className="text-xl">
+                        {app.personalDetails?.name?.charAt(0).toUpperCase() ||
+                          "?"}
+                      </AvatarFallback>
+                    </Avatar>
 
                     <div>
                       <h2 className="font-semibold">
@@ -236,9 +224,7 @@ export default function ApplicationsPage() {
 
                   <div className="space-y-1 text-sm">
                     <p>🌍 {app.contact?.nationality}</p>
-
                     <p>📍 {app.contact?.currentLocation}</p>
-
                     <p>✉️ {app.contact?.email}</p>
                   </div>
                 </CardContent>

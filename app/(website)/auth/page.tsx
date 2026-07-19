@@ -1883,7 +1883,7 @@ function AuthPageContents() {
           "We have received your application and will review it shortly.",
       })
 
-      validateAndSetStep("thank-you", femaleProfileSchemaPhotos, formData)
+      setRegistrationStep("thank-you", formData)
     } catch (error) {
       console.error("Application submit error:", error)
 
@@ -1893,6 +1893,8 @@ function AuthPageContents() {
             ? error.message
             : "There was a problem submitting your application.",
       })
+    } finally {
+      setIsSubmittingApplication(false)
     }
   }
 

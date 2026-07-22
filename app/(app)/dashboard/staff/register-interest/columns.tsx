@@ -9,6 +9,10 @@ import {
   Mail,
   Phone,
 } from "lucide-react"
+import dayjs from "dayjs"
+import localizedFormat from "dayjs/plugin/localizedFormat"
+
+dayjs.extend(localizedFormat)
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
@@ -77,9 +81,48 @@ export const columns: ColumnDef<RegisterInterest>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="w-[150px]">{row.original.prefix} {row.getValue("name")}</div>,
     enableSorting: false,
-    enableHiding: false,
+  },
+  {
+    accessorKey: "gender",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Gender" />
+    ),
+    cell: ({ row }) => <div className="w-[80px]">{row.getValue("gender")}</div>,
+  },
+  {
+    accessorKey: "nationality",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nationality" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-[80px]">{row.getValue("nationality")}</div>
+    ),
+  },
+  {
+    accessorKey: "currentLocation",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Location" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-[80px]">{row.getValue("currentLocation")}</div>
+    ),
+  },
+  {
+    accessorKey: "dob",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="DOB (Age)" />
+    ),
+    cell: ({ row }) => {
+      const dob = dayjs(row.getValue("dob") as string)
+      const age = dayjs().diff(dob, "year")
+      return (
+        <div className="w-[120px]">
+          {dob.format("L")} ({age})
+        </div>
+      )
+    },
   },
   {
     accessorKey: "phone",

@@ -3,12 +3,15 @@
 import { useEffect, useState } from "react"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
-import { RegisterInterest } from "@/lib/generated/prisma/client"
+import { RegisterInterest } from "@prisma/client"
+import { RegisterInterestDetails } from "./register-interest-details"
 
 async function getData(): Promise<RegisterInterest[]> {
   const res = await fetch("/api/register-interest")
 
   if (!res.ok) {
+    const error = await res.json()
+    console.error("Failed to fetch data:", res.status, error)
     throw new Error("Failed to fetch data")
   }
 
@@ -18,6 +21,9 @@ async function getData(): Promise<RegisterInterest[]> {
 export default function TaskPage() {
   const [data, setData] = useState<RegisterInterest[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedItem, setSelectedItem] = useState<RegisterInterest | null>(
+    null
+  )
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +38,14 @@ export default function TaskPage() {
     }
     fetchData()
   }, [])
+
+  const handleRowClick = (item: RegisterInterest) => {
+    setSelectedItem(item)
+  }
+
+  const handleCloseDetails = () => {
+    setSelectedItem(null)
+  }
 
   if (loading) {
     return <div>Loading...</div>
@@ -51,8 +65,16 @@ export default function TaskPage() {
           </div>
           <div className="flex items-center space-x-2"></div>
         </div>
-        <DataTable data={data} columns={columns} />
+        <DataTable
+          data={data}
+          columns={columns}
+          onRowClick={handleRowClick}
+        />
       </div>
+      <RegisterInterestDetails
+        item={selectedItem}
+        onClose={handleCloseDetails}
+      />
     </>
   )
 }

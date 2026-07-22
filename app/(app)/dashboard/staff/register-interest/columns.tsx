@@ -23,31 +23,37 @@ export const statuses: {
   value: RegisterInterestStatus
   label: string
   icon: React.ComponentType<{ className?: string }>
+  color: string
 }[] = [
   {
     value: "PENDING",
     label: "Pending",
     icon: Clock,
+    color: "text-yellow-500",
   },
   {
     value: "CONTACTED_EMAIL",
     label: "Contacted by email",
     icon: Mail,
+    color: "text-blue-500",
   },
   {
     value: "CONTACTED_PHONE",
     label: "Contacted by phone",
     icon: Phone,
+    color: "text-indigo-500",
   },
   {
     value: "COMPLETED",
     label: "Completed",
     icon: CircleCheck,
+    color: "text-green-500",
   },
   {
     value: "REJECTED",
     label: "Rejected",
     icon: CircleX,
+    color: "text-red-500",
   },
 ]
 
@@ -90,7 +96,12 @@ export const columns: ColumnDef<RegisterInterest>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Gender" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("gender")}</div>,
+    cell: ({ row }) => {
+      const gender = row.getValue("gender") as string
+      const genderColorClass =
+        gender === "Male" ? "text-amber-500" : gender === "Female" ? "text-pink-500" : ""
+      return <div className={`w-[80px] ${genderColorClass}`}>{gender}</div>
+    },
   },
   {
     accessorKey: "nationality",
@@ -186,9 +197,9 @@ export const columns: ColumnDef<RegisterInterest>[] = [
       }
 
       return (
-        <div className="flex w-[100px] items-center">
+        <div className={`flex w-[100px] items-center ${status.color}`}>
           {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+            <status.icon className="mr-2 h-4 w-4" />
           )}
           <span>{status.label}</span>
         </div>

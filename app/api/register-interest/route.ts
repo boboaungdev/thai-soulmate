@@ -32,21 +32,31 @@ export async function POST(req: Request) {
     const body = await req.json()
     const validatedData = formSchema.parse(body)
 
+    const existingAppForm = await prisma.applicationForm.findFirst({
+      where: {
+        contact: {
+          path: ["email"],
+          equals: validatedData.email,
+        },
+      },
+    })
+
+    if (existingAppForm) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "This email has already been registered application.",
+        },
+        { status: 409 }
+      )
+    }
+
     const existingInterest = await prisma.registerInterest.findUnique({
       where: {
         email: validatedData.email,
       },
     })
 
-    if (existingInterest) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "This email has already been registered.",
-        },
-        { status: 409 }
-      )
-    }
     const birthDate = new Date(validatedData.dob)
     const age = calculateAge(birthDate)
 
@@ -139,7 +149,6 @@ export async function POST(req: Request) {
     )
   }
 }
-
 
 export async function GET(req: Request) {
   try {

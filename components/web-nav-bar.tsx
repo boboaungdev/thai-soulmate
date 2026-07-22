@@ -34,7 +34,7 @@ const SITE_NAV_LINKS = [
   { label: "Pricing", href: "/pricing" },
 ] as const
 
-export function NavBar() {
+export function WebNavBar() {
   const pathname = usePathname()
   const router = useRouter()
   const { user } = useAuthStore()

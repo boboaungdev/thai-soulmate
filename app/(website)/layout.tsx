@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 
 import { Footer } from "@/components/footer"
-import { NavBar } from "@/components/nav-bar"
+import { WebNavBar } from "@/components/web-nav-bar"
 
 export default function WebsiteLayout({
   children,
@@ -11,7 +11,7 @@ export default function WebsiteLayout({
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-clip">
       <Suspense fallback={null}>
-        <NavBar />
+        <WebNavBar />
       </Suspense>
 
       <main className="flex-1">{children}</main>

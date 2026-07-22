@@ -43,10 +43,11 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
-      phone: false,
+      phone: true,
       nationality: false,
       currentLocation: false,
       dob: false,
+      createdAt: true,
     })
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

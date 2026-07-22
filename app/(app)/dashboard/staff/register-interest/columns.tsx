@@ -71,6 +71,7 @@ export const columns: ColumnDef<RegisterInterest>[] = [
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
         className="translate-y-[2px]"
+        onClick={(e) => e.stopPropagation()}
       />
     ),
     enableSorting: false,
@@ -133,7 +134,7 @@ export const columns: ColumnDef<RegisterInterest>[] = [
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("phone")}
+            (+66) {row.getValue("phone")}
           </span>
         </div>
       )
@@ -152,6 +153,22 @@ export const columns: ColumnDef<RegisterInterest>[] = [
           </span>
         </div>
       )
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Registered On" />
+    ),
+    cell: ({ row }) => {
+      const createdAt = dayjs(row.getValue("createdAt") as string);
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {createdAt.format("YYYY-MM-DD HH:mm")}
+          </span>
+        </div>
+      );
     },
   },
   {

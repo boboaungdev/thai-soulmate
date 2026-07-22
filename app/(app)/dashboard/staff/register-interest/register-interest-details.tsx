@@ -73,7 +73,7 @@ export function RegisterInterestDetails({
 
       <DetailItem
         label="Phone"
-        value={`${item.phoneCountry} ${item.phone}`}
+        value={`(${item.phoneCountry}) ${item.phone}`}
       />
 
       <DetailItem

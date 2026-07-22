@@ -41,13 +41,12 @@ export async function POST(req: Request) {
       )
     }
 
+    // Exclude password from the user object before sending it to the client
+    const { password: _, ...userWithoutPassword } = user
+
     return NextResponse.json({
       success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      },
+      user: userWithoutPassword,
     })
   } catch (error) {
     console.error(error)

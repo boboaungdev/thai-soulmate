@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
-import { RegisterInterest } from "@prisma/client"
 import { RegisterInterestDetails } from "./register-interest-details"
+import { RegisterInterest } from "@/lib/generated/prisma/client"
 
 async function getData(): Promise<RegisterInterest[]> {
   const res = await fetch("/api/register-interest")

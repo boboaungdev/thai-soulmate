@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
 
-const items = [
+const userItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -58,20 +58,28 @@ const items = [
   },
 ]
 
-const adminItems = [
+const staffItems = [
   {
     title: "Register Interest",
-    url: "/dashboard/admin/register-interest",
+    url: "/dashboard/staff/register-interest",
     icon: ClipboardPen,
   },
   {
     title: "Application Form",
-    url: "/dashboard/admin/application-form",
+    url: "/dashboard/staff/application-form",
     icon: Form,
   },
   {
-    title: "Users",
-    url: "/dashboard/admin/users",
+    title: "Payment",
+    url: "/dashboard/staff/payment",
+    icon: Form,
+  },
+]
+
+const adminItems = [
+  {
+    title: "Login User",
+    url: "/dashboard/admin/login-user",
     icon: Users,
   },
 ]
@@ -103,7 +111,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
-            Main
+            Main Menu
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
@@ -126,7 +134,7 @@ export function AppSidebar() {
 
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {userItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <Link href={item.url}>
@@ -139,6 +147,30 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {user?.role === "STAFF" ||
+          (user?.role === "ADMIN" && (
+            <SidebarGroup>
+              <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+                Staff
+              </SidebarGroupLabel>
+
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {staffItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild tooltip={item.title}>
+                        <Link href={item.url}>
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
 
         {user?.role === "ADMIN" && (
           <SidebarGroup>

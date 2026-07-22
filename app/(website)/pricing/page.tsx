@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { AnimatePresence } from "framer-motion"
 import type { User, Plan } from "@/types"
+import { useAuthStore } from "@/stores/auth-store"
 
 interface PricingPageContentsProps {
   isEmbedded?: boolean
@@ -20,18 +21,19 @@ export function PricingPageContents({
   isEmbedded = false,
   embeddedUserData = null,
 }: PricingPageContentsProps) {
-  const [isAutoRenew, setIsAutoRenew] = useState(true)
+  const [isAutoRenew, setIsAutoRenew] = useState(false)
   const router = useRouter()
   const [expandedPlan, setExpandedPlan] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const isFromApplicationForm = searchParams.get("mode") === "register"
   const userDataFromUrl = searchParams.get("userData")
   const [userData, setUserData] = useState<User | null>(embeddedUserData)
+  const { user } = useAuthStore()
 
   useEffect(() => {
     const autoRenew = searchParams.get("autoRenew")
     if (autoRenew !== null) {
-      setIsAutoRenew(autoRenew === "true")
+      setIsAutoRenew(autoRenew === "false")
     }
 
     if (isEmbedded && embeddedUserData) {
@@ -46,7 +48,7 @@ export function PricingPageContents({
     }
   }, [userDataFromUrl, isEmbedded, embeddedUserData])
 
-  const handleChoosePlan = (plan: Plan) => {
+  const handleChoosePlan = async (plan: Plan) => {
     if (isFromApplicationForm) {
       const params = new URLSearchParams(searchParams.toString())
       params.set("step", "plans")
@@ -57,10 +59,43 @@ export function PricingPageContents({
       return
     }
 
-    // If the user is not in the registration flow (i.e., they landed on
-    // /pricing directly), send them to the start of the auth flow without
-    // any query parameters.
-    router.push("/auth")
+    // if (!user) {
+    //   console.error("User is not authenticated.")
+    //   router.push("/auth/login")
+    //   return
+    // }
+
+    const priceId = isAutoRenew
+      ? plan.priceIds.subscription
+      : plan.priceIds.oneTime
+
+    const mode = isAutoRenew ? "subscription" : "payment"
+
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          priceId: priceId,
+          userData: user,
+          mode: mode,
+          autoRenew: isAutoRenew,
+          plan: plan.name,
+        }),
+      })
+
+      if (response.ok) {
+        const { url } = await response.json()
+        window.open(url, "_blank")
+      } else {
+        console.error("Failed to create Stripe checkout session")
+        // Optionally, show an error to the user
+      }
+    } catch (error) {
+      console.error("An error occurred:", error)
+    }
   }
 
   return (

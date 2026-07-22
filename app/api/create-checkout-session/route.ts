@@ -5,9 +5,9 @@ import { BASE_URL } from "@/constants"
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { priceId, userData, mode, autoRenew, plan } = body
+    const { priceId, mode, autoRenew, plan } = body
 
-    if (!priceId || !userData || !mode || autoRenew === undefined || !plan) {
+    if (!priceId || !mode || autoRenew === undefined || !plan) {
       return NextResponse.json(
         {
           error: "Price ID, user data, mode, autoRenew, and plan are required",
@@ -16,12 +16,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const encodedUserData = Buffer.from(JSON.stringify(userData)).toString(
-      "base64"
-    )
-
     const checkoutSession = await stripe.checkout.sessions.create({
-      customer_email: userData.email,
       line_items: [
         {
           price: priceId,
@@ -29,8 +24,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: mode,
-      success_url: `${BASE_URL}/application-form?userData=${encodedUserData}&success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
-      cancel_url: `${BASE_URL}/application-form?userData=${encodedUserData}&canceled=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
+      success_url: `${BASE_URL}/application-form?success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
+      cancel_url: `${BASE_URL}/application-form?canceled=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
     })
 
     return NextResponse.json({ url: checkoutSession.url })

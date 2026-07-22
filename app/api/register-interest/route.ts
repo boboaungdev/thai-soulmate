@@ -51,30 +51,32 @@ export async function POST(req: Request) {
       )
     }
 
-    const existingInterest = await prisma.registerInterest.findUnique({
-      where: {
-        email: validatedData.email,
-      },
-    })
-
     const birthDate = new Date(validatedData.dob)
     const age = calculateAge(birthDate)
 
+    const interestData = {
+      prefix: validatedData.prefix,
+      name: validatedData.name,
+      dob: birthDate,
+      gender: validatedData.gender,
+      nationality: validatedData.nationality,
+      currentLocation: validatedData.currentLocation,
+      phoneCountry: validatedData.phoneCountry,
+      phone: validatedData.phone,
+      source: validatedData.source,
+      otherSource: validatedData.otherSource,
+    }
+
     // Save registration to database
     try {
-      await prisma.registerInterest.create({
-        data: {
-          prefix: validatedData.prefix,
-          name: validatedData.name,
-          dob: birthDate,
-          gender: validatedData.gender,
-          nationality: validatedData.nationality,
-          currentLocation: validatedData.currentLocation,
+      await prisma.registerInterest.upsert({
+        where: {
           email: validatedData.email,
-          phoneCountry: validatedData.phoneCountry,
-          phone: validatedData.phone,
-          source: validatedData.source,
-          otherSource: validatedData.otherSource,
+        },
+        update: interestData,
+        create: {
+          email: validatedData.email,
+          ...interestData,
         },
       })
     } catch (dbError) {

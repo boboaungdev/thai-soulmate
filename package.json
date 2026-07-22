@@ -19,6 +19,7 @@
     "@prisma/client": "^7.8.0",
     "@radix-ui/react-popover": "^1.1.18",
     "@stripe/stripe-js": "^9.9.0",
+    "@tanstack/react-table": "^8.21.3",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",

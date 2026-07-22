@@ -23,3 +23,13 @@ export function calculateAge(birthDate: Date): number {
 
   return Math.max(0, age) // Ensure age is not negative
 }
+
+export const formatDate = (date: string) =>
+  new Date(date).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: false,
+  })

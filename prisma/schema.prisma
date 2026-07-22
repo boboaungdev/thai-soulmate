@@ -40,6 +40,8 @@ model RegisterInterest {
   source       String
   otherSource  String?
 
+  status RegisterInterestStatus @default(PENDING)
+
   userId String? @unique
   user   User?   @relation(fields: [userId], references: [id])
 
@@ -88,4 +90,12 @@ enum Role {
   ADMIN
   STAFF
   USER
+}
+
+enum RegisterInterestStatus {
+  PENDING
+  CONTACTED_EMAIL
+  CONTACTED_PHONE
+  COMPLETED
+  REJECTED
 }

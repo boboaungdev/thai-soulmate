@@ -50,13 +50,13 @@ export default function TaskPage() {
 
   if (loading) {
     return (
-      <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
+      <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-2xl font-bold tracking-tight">
               Register Interest
-            </h2>
-            <p className="text-muted-foreground">
+            </h1>
+            <p className="text-muted-foreground text-sm">
               Users who submitted matchmaking interest forms
             </p>
           </div>
@@ -79,13 +79,13 @@ export default function TaskPage() {
 
   return (
     <>
-      <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
+      <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-2xl font-bold tracking-tight">
               Register Interest
-            </h2>
-            <p className="text-muted-foreground">
+            </h1>
+            <p className="text-muted-foreground text-sm">
               Users who submitted matchmaking interest forms
             </p>
           </div>

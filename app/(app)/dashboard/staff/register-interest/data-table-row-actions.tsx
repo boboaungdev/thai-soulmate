@@ -1,6 +1,6 @@
 "use client"
 
-import { MoreHorizontal } from "lucide-react"
+import { Mail, MoreHorizontal, Printer, Trash } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -32,13 +32,9 @@ export function DataTableRowActions<TData>({
   const router = useRouter()
   const task = row.original as RegisterInterest
 
-  const handleEdit = () => {
-    router.push(`/dashboard/staff/application-form/${task.id}`)
-  }
-
   const handleDelete = async () => {
     try {
-      await fetch(`/api/application-form/${task.id}`, {
+      await fetch(`/api/register-interest/${task.id}`, {
         method: "DELETE",
       })
       router.refresh()
@@ -62,6 +58,10 @@ export function DataTableRowActions<TData>({
     }
   }
 
+ const handlePrint = () => {
+  window.open(`/dashboard/staff/register-interest/${task.id}/print`, "_blank")
+}
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -73,10 +73,19 @@ export function DataTableRowActions<TData>({
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]" onClick={(e) => e.stopPropagation()}>
-        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
+      <DropdownMenuContent
+        align="end"
+        className="w-[160px]"
+        onClick={(e) => e.stopPropagation()}
+      >
+       <DropdownMenuItem onClick={handlePrint}>
+  <Printer className="mr-2 h-4 w-4" />
+  Print
+</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Mail className="mr-2 h-4 w-4" />
+          Sent mail to user
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
@@ -86,7 +95,12 @@ export function DataTableRowActions<TData>({
               onValueChange={handleStatusChange}
             >
               {statuses.map((status) => (
-                <DropdownMenuRadioItem key={status.value} value={status.value}>
+                <DropdownMenuRadioItem
+                  key={status.value}
+                  value={status.value}
+                  className={status.color}
+                >
+                  {status.icon && <status.icon className="mr-2 h-4 w-4" />}
                   {status.label}
                 </DropdownMenuRadioItem>
               ))}
@@ -94,7 +108,8 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleDelete}>
+        <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+          <Trash className="mr-2 h-4 w-4" />
           Delete
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>

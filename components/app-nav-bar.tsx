@@ -111,7 +111,7 @@ export function AppNavBar() {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
+              <DropdownMenuItem variant="destructive" onClick={handleLogout}>
                 <LogOut className="mr-2 size-4" />
                 <span>Log out</span>
               </DropdownMenuItem>

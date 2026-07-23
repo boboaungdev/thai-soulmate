@@ -657,7 +657,7 @@ export function RegisterInterestForm() {
                                     )
                                     .map((country) => (
                                       <CommandItem
-                                        value={`${country.name} ${country.code} ${country.callCode}`}
+                                        value={`${country.name} ${country.code} ${country.callCode} ${country.nationality}`}
                                         key={country.code}
                                         onSelect={() => {
                                           field.onChange(country.code)

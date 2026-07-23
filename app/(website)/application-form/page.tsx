@@ -17,6 +17,8 @@ import {
   X,
   Clock,
   CheckCircle,
+  ChevronsUpDown,
+  Check,
 } from "lucide-react"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
@@ -54,6 +56,19 @@ import { motion, AnimatePresence } from "framer-motion"
 import { DatePickerInput } from "@/components/ui/date-picker-input"
 import { toast } from "sonner"
 import { Spinner } from "@/components/ui/spinner"
+import { cn } from "@/lib/utils"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 const educationLevels = [
   "High School",
@@ -284,6 +299,9 @@ function AuthPageContents() {
   const [dob, setBirthday] = useState<Date>()
   const [countdown, setCountdown] = useState(0)
   const [isResendDisabled, setIsResendDisabled] = useState(true)
+  const [openNationality, setOpenNationality] = useState(false)
+  const [openCurrentLocation, setOpenCurrentLocation] = useState(false)
+  const [openPhoneCountry, setOpenPhoneCountry] = useState(false)
   const [femaleProfileForm, setFemaleProfileForm] = useState({
     nickname: "",
     occupation: "",
@@ -1723,45 +1741,80 @@ function AuthPageContents() {
                       <div className="flex gap-4">
                         <div className="w-[100px] space-y-2">
                           <Label htmlFor="phone-country">Phone</Label>
-                          <Select
-                            onValueChange={setPhoneCountry}
-                            value={phoneCountry}
+                          <Popover
+                            open={openPhoneCountry}
+                            onOpenChange={setOpenPhoneCountry}
                           >
-                            <SelectTrigger
-                              id="phone-country"
-                              className="h-8 bg-background dark:bg-input/30"
-                              disabled={isInitializing || loadingCountries}
-                            >
-                              <SelectValue placeholder="+66">
-                                {loadingCountries && phoneCountry === "TH"
-                                  ? "+66"
-                                  : `+${
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "h-8 w-full justify-between rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+                                  !phoneCountry && "text-muted-foreground"
+                                )}
+                                disabled={isInitializing || loadingCountries}
+                              >
+                                {phoneCountry
+                                  ? `+${
                                       countries.find(
                                         (c) => c.code === phoneCountry
-                                      )?.callCode
-                                    }`}
-                              </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent className="max-h-80">
-                              {countries
-                                .sort((a, b) => {
-                                  return a.callCode.localeCompare(
-                                    b.callCode,
-                                    "en",
-                                    { numeric: true }
-                                  )
-                                })
-                                .map((country) => (
-                                  <SelectItem
-                                    key={country.code}
-                                    value={country.code}
-                                  >
-                                    (+{country.callCode}) {country.flag}{" "}
-                                    {country.code}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
+                                      )?.callCode ?? ""
+                                    }`
+                                  : "+66"}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-[250px] p-0"
+                              align="start"
+                            >
+                              <Command>
+                                <CommandInput
+                                  placeholder="Search country..."
+                                  className="h-9"
+                                />
+                                <CommandEmpty>No country found.</CommandEmpty>
+                                <CommandGroup className="max-h-60 overflow-y-auto">
+                                  {loadingCountries ? (
+                                    <CommandItem disabled>
+                                      Loading...
+                                    </CommandItem>
+                                  ) : (
+                                    [...countries]
+                                      .sort((a, b) =>
+                                        a.callCode.localeCompare(
+                                          b.callCode,
+                                          "en",
+                                          { numeric: true }
+                                        )
+                                      )
+                                      .map((country) => (
+                                        <CommandItem
+                                          value={`${country.name} ${country.code} ${country.callCode} ${country.nationality}`}
+                                          key={country.code}
+                                          onSelect={() => {
+                                            setPhoneCountry(country.code)
+                                            setOpenPhoneCountry(false)
+                                          }}
+                                        >
+                                          <Check
+                                            className={cn(
+                                              "mr-2 h-4 w-4",
+                                              country.code === phoneCountry
+                                                ? "opacity-100"
+                                                : "opacity-0"
+                                            )}
+                                          />
+                                          {country.flag} (+
+                                          {country.callCode})
+                                        </CommandItem>
+                                      ))
+                                  )}
+                                </CommandGroup>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
                         </div>
                         <div className="flex-1 space-y-2">
                           <Label className="invisible">Phone Number</Label>
@@ -1823,49 +1876,90 @@ function AuthPageContents() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="nationality">Nationality</Label>
-                      <Select
-                        onValueChange={(value) =>
-                          setLocationForm({
-                            ...locationForm,
-                            nationality: value,
-                          })
-                        }
-                        value={locationForm.nationality}
+                      <Popover
+                        open={openNationality}
+                        onOpenChange={setOpenNationality}
                       >
-                        <SelectTrigger
-                          id="nationality"
-                          className="h-8 bg-background dark:bg-input/30"
-                          disabled={isInitializing || loadingCountries}
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "h-8 w-full justify-between rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+                              !locationForm.nationality &&
+                                "text-muted-foreground"
+                            )}
+                            disabled={isInitializing || loadingCountries}
+                          >
+                            {locationForm.nationality ? (
+                              <>
+                                {
+                                  countries.find(
+                                    (country) =>
+                                      country.nationality ===
+                                      locationForm.nationality
+                                  )?.flag
+                                }{" "}
+                                {locationForm.nationality}
+                              </>
+                            ) : (
+                              "Select nationality"
+                            )}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-[--radix-popover-trigger-width] p-0"
+                          align="start"
                         >
-                          <SelectValue placeholder="Select nationality" />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-80">
-                          {loadingCountries ? (
-                            <SelectItem value="loading" disabled>
-                              Loading countries...
-                            </SelectItem>
-                          ) : (
-                            [...countries]
-                              .sort((a, b) =>
-                                a.nationality.localeCompare(
-                                  b.nationality,
-                                  "en",
-                                  {
-                                    sensitivity: "base",
-                                  }
-                                )
-                              )
-                              .map((country) => (
-                                <SelectItem
-                                  key={country.code}
-                                  value={country.nationality}
-                                >
-                                  {country.flag} {country.nationality}
-                                </SelectItem>
-                              ))
-                          )}
-                        </SelectContent>
-                      </Select>
+                          <Command>
+                            <CommandInput placeholder="Search nationality..." />
+                            <CommandEmpty>No nationality found.</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {loadingCountries ? (
+                                <CommandItem disabled>
+                                  Loading countries...
+                                </CommandItem>
+                              ) : (
+                                [...countries]
+                                  .sort((a, b) =>
+                                    a.nationality.localeCompare(
+                                      b.nationality,
+                                      "en",
+                                      {
+                                        sensitivity: "base",
+                                      }
+                                    )
+                                  )
+                                  .map((country) => (
+                                    <CommandItem
+                                      value={country.nationality}
+                                      key={country.code}
+                                      onSelect={() => {
+                                        setLocationForm((prev) => ({
+                                          ...prev,
+                                          nationality: country.nationality,
+                                        }))
+                                        setOpenNationality(false)
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          country.nationality ===
+                                            locationForm.nationality
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {country.flag} {country.nationality}
+                                    </CommandItem>
+                                  ))
+                              )}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       {formErrors.nationality && (
                         <p className="text-sm text-destructive">
                           {formErrors.nationality}
@@ -1874,45 +1968,86 @@ function AuthPageContents() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="current-location">Current Location</Label>
-                      <Select
-                        onValueChange={(value) =>
-                          setLocationForm({
-                            ...locationForm,
-                            currentLocation: value,
-                          })
-                        }
-                        value={locationForm.currentLocation}
+                      <Popover
+                        open={openCurrentLocation}
+                        onOpenChange={setOpenCurrentLocation}
                       >
-                        <SelectTrigger
-                          id="current-location"
-                          className="h-8 bg-background dark:bg-input/30"
-                          disabled={isInitializing || loadingCountries}
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "h-8 w-full justify-between rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+                              !locationForm.currentLocation &&
+                                "text-muted-foreground"
+                            )}
+                            disabled={isInitializing || loadingCountries}
+                          >
+                            {locationForm.currentLocation ? (
+                              <>
+                                {
+                                  countries.find(
+                                    (country) =>
+                                      country.name ===
+                                      locationForm.currentLocation
+                                  )?.flag
+                                }{" "}
+                                {locationForm.currentLocation}
+                              </>
+                            ) : (
+                              "Select current location"
+                            )}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-[--radix-popover-trigger-width] p-0"
+                          align="start"
                         >
-                          <SelectValue placeholder="Select current location" />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-80">
-                          {loadingCountries ? (
-                            <SelectItem value="loading" disabled>
-                              Loading countries...
-                            </SelectItem>
-                          ) : (
-                            [...countries]
-                              .sort((a, b) =>
-                                a.name.localeCompare(b.name, "en", {
-                                  sensitivity: "base",
-                                })
-                              )
-                              .map((country) => (
-                                <SelectItem
-                                  key={country.code}
-                                  value={country.name}
-                                >
-                                  {country.flag} {country.name}
-                                </SelectItem>
-                              ))
-                          )}
-                        </SelectContent>
-                      </Select>
+                          <Command>
+                            <CommandInput placeholder="Search location..." />
+                            <CommandEmpty>No location found.</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {loadingCountries ? (
+                                <CommandItem disabled>
+                                  Loading countries...
+                                </CommandItem>
+                              ) : (
+                                [...countries]
+                                  .sort((a, b) =>
+                                    a.name.localeCompare(b.name, "en", {
+                                      sensitivity: "base",
+                                    })
+                                  )
+                                  .map((country) => (
+                                    <CommandItem
+                                      value={country.name}
+                                      key={country.code}
+                                      onSelect={() => {
+                                        setLocationForm((prev) => ({
+                                          ...prev,
+                                          currentLocation: country.name,
+                                        }))
+                                        setOpenCurrentLocation(false)
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          country.name ===
+                                            locationForm.currentLocation
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {country.flag} {country.name}
+                                    </CommandItem>
+                                  ))
+                              )}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       {formErrors.currentLocation && (
                         <p className="text-sm text-destructive">
                           {formErrors.currentLocation}

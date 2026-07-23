@@ -18,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
+import { Venus } from "lucide-react"
 
 // Mock data for demonstration purposes
 const maleUsers = [
@@ -51,7 +53,7 @@ const femaleMatches = [
     name: "Emily White",
     age: 31,
     imageUrl: "/placeholder-user.jpg",
-    matchScore: 88,
+    matchScore: 80,
     bio: "Adores animals and outdoor activities.",
   },
   {
@@ -59,7 +61,7 @@ const femaleMatches = [
     name: "Sarah Green",
     age: 27,
     imageUrl: "/placeholder-user.jpg",
-    matchScore: 85,
+    matchScore: 79,
     bio: "Tech enthusiast and movie lover.",
   },
   {
@@ -67,10 +69,29 @@ const femaleMatches = [
     name: "Lisa Brown",
     age: 33,
     imageUrl: "/placeholder-user.jpg",
-    matchScore: 95,
+    matchScore: 75,
     bio: "Fitness and wellness advocate.",
   },
+  {
+    id: "f5",
+    name: "Cathy Blue",
+    age: 30,
+    imageUrl: "/placeholder-user.jpg",
+    matchScore: 45,
+    bio: "Loves to read sci-fi.",
+  },
 ]
+
+const getMatchScoreBadgeClass = (score: number) => {
+  if (score > 80) {
+    return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+  }
+  if (score >= 50) {
+    // This will now include scores up to 80
+    return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+  }
+  return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+}
 
 export default function MatchingPage() {
   // In a real application, you would use state (e.g., useState) to manage the selected user.
@@ -133,8 +154,16 @@ export default function MatchingPage() {
           {femaleMatches.map((match) => (
             <Card
               key={match.id}
-              className="flex flex-col items-center p-4 text-center"
+              className="relative flex flex-col items-center text-center"
             >
+              <Badge
+                className={cn(
+                  "absolute top-2 right-2 hover:bg-primary/80",
+                  getMatchScoreBadgeClass(match.matchScore)
+                )}
+              >
+                {match.matchScore}%
+              </Badge>
               <CardHeader className="flex items-center justify-center p-2">
                 <Avatar className="h-24 w-24">
                   <AvatarImage src={match.imageUrl} alt={match.name} />
@@ -146,11 +175,12 @@ export default function MatchingPage() {
                 <CardDescription>
                   ID: {match.id.replace(/\D/g, "").padStart(4, "0")}
                 </CardDescription>
-                <CardDescription>Age: {match.age}</CardDescription>
-                <Badge variant="secondary">Female</Badge>
+                <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
+                  <Venus className="h-4 w-4 text-pink-500" />
+                  <span>Age: {match.age}</span>
+                </div>
               </CardContent>
-              <CardFooter className="flex w-full flex-col gap-2 p-2">
-                <Badge>Match: {match.matchScore}%</Badge>
+              <CardFooter className="flex w-full flex-col gap-2 p-2 pt-4">
                 <Button variant="outline" className="w-full">
                   Details
                 </Button>

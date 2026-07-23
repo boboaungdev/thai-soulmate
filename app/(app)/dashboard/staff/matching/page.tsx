@@ -341,26 +341,26 @@ export default function MatchingPage() {
               </PopoverContent>
             </Popover>
             {selectedMale && (
-              <div className="flex items-center gap-4 rounded-lg border p-4 md:col-span-2">
-                <Avatar className="hidden h-16 w-16 sm:flex">
+              <div className="flex flex-col items-center rounded-lg border p-4 text-center md:col-span-2">
+                <Avatar className="h-24 w-24">
                   <AvatarImage
                     src={selectedMale.imageUrl}
                     alt={selectedMale.name}
                   />
                   <AvatarFallback>{selectedMale.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <div className="grid gap-1">
+                <div className="mt-4 grid gap-1">
                   <div className="flex items-center gap-2">
                     <p className="text-lg font-semibold">
                       {selectedMale.prefix} {selectedMale.name},{" "}
                       {selectedMale.age}
                     </p>
-                    <Mars className="text-gold h-5 w-5" />
+                    <Mars className="h-5 w-5 text-blue-500" />
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {selectedMale.bio}
                   </p>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <div className="flex items-center justify-center gap-4 pt-1 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1.5">
                       <Globe className="h-3.5 w-3.5" />
                       <span>{selectedMale.nationality}</span>
@@ -369,26 +369,26 @@ export default function MatchingPage() {
                       <MapPin className="h-3.5 w-3.5" />
                       <span>{selectedMale.currentLocation}</span>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Calendar className="h-3.5 w-3.5" />
-                    <span>
-                      Joined on: {selectedMale.createdAt.toLocaleDateString()}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3.5 w-3.5" />
+                      <span>
+                        Joined: {selectedMale.createdAt.toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
           </CardContent>
         </Card>
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-4">
+          <div>
             <h2 className="text-lg font-semibold">Potential Matches</h2>
             <p className="text-sm text-muted-foreground">
               Female users who are potential matches for the selected male user.
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between">
             <ToggleGroup
               type="single"
               defaultValue="all"
@@ -413,7 +413,7 @@ export default function MatchingPage() {
                     variant="outline"
                     className="w-[180px] justify-between"
                   >
-                    Sort by: {sortLabels[sortKey]}
+                    Sort: {sortLabels[sortKey]}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -438,7 +438,7 @@ export default function MatchingPage() {
                     variant="outline"
                     className="w-[180px] justify-between"
                   >
-                    {sortOrderLabels[sortOrder]}
+                    Order: {sortOrderLabels[sortOrder]}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -501,7 +501,7 @@ export default function MatchingPage() {
               </CardContent>
               <CardFooter className="flex w-full flex-col gap-2 p-2 pt-4">
                 <Button variant="outline" className="w-full">
-                  Details
+                  Matching
                 </Button>
               </CardFooter>
             </Card>

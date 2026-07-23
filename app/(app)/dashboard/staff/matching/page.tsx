@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -12,14 +13,19 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { Venus } from "lucide-react"
+import { Check, ChevronsUpDown, Venus } from "lucide-react"
 
 // Mock data for demonstration purposes
 const maleUsers = [
@@ -94,15 +100,15 @@ const getMatchScoreBadgeClass = (score: number) => {
 }
 
 export default function MatchingPage() {
-  // In a real application, you would use state (e.g., useState) to manage the selected user.
-  const selectedMale = maleUsers[0]
+  const [selectedMale, setSelectedMale] = useState(maleUsers[0])
+  const [open, setOpen] = useState(false)
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-lg font-semibold md:text-2xl">Matching</h1>
         <p className="text-sm text-muted-foreground">
-          Select a male user and compare with potential female matches.
+          Select a male user to view and compare potential female matches.
         </p>
       </div>
       <div className="flex flex-1 flex-col gap-6">
@@ -114,21 +120,50 @@ export default function MatchingPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-3">
-            <Select defaultValue={selectedMale.id}>
-              <SelectTrigger
-                id="male-user-select"
-                aria-label="Select male user"
-              >
-                <SelectValue placeholder="Select a male user" />
-              </SelectTrigger>
-              <SelectContent>
-                {maleUsers.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-full justify-between md:w-[250px]"
+                >
+                  {selectedMale
+                    ? maleUsers.find((user) => user.id === selectedMale.id)
+                        ?.name
+                    : "Select user..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0 md:w-[250px]">
+                <Command>
+                  <CommandInput placeholder="Search user..." />
+                  <CommandEmpty>No user found.</CommandEmpty>
+                  <CommandGroup>
+                    {maleUsers.map((user) => (
+                      <CommandItem
+                        key={user.id}
+                        value={user.name}
+                        onSelect={() => {
+                          setSelectedMale(user)
+                          setOpen(false)
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedMale.id === user.id
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {user.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
             {selectedMale && (
               <div className="flex items-center gap-4 rounded-lg border p-4 md:col-span-2">
                 <Avatar className="hidden h-16 w-16 sm:flex">

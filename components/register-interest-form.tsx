@@ -40,7 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { DatePickerInput } from "@/components/ui/date-picker-input"
+import { DateOfBirthInput } from "@/components/ui/date-of-birth-input"
 import { Textarea } from "@/components/ui/textarea"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
@@ -364,17 +364,14 @@ export function RegisterInterestForm() {
                   name="dob"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date of Birth</FormLabel>
+                      <FormLabel className="flex items-center">
+                        <Cake className="mr-2 size-4" /> Date of Birth
+                      </FormLabel>
                       <FormControl>
-                        <InputGroup>
-                          <InputGroupAddon>
-                            <Cake className="size-4" />
-                          </InputGroupAddon>
-                          <DatePickerInput
-                            value={field.value}
-                            onSelect={field.onChange}
-                          />
-                        </InputGroup>
+                        <DateOfBirthInput
+                          value={field.value}
+                          onSelect={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

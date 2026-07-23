@@ -33,8 +33,6 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 import {
-  ArrowDown,
-  ArrowUp,
   Calendar,
   Check,
   ChevronsUpDown,
@@ -42,6 +40,7 @@ import {
   Venus,
   Globe,
   MapPin,
+  XCircle,
 } from "lucide-react"
 
 // Mock data for demonstration purposes
@@ -210,6 +209,7 @@ const sortLabels: Record<string, string> = {
   matchScore: "Match %",
   age: "Age",
   createdAt: "Joined Date",
+  id: "ID",
 }
 
 const sortOrderLabels: Record<string, string> = {
@@ -242,6 +242,10 @@ export default function MatchingPage() {
       let valB: number | Date
 
       switch (sortKey) {
+        case "id":
+          valA = parseInt(a.id.replace(/\D/g, ""), 10)
+          valB = parseInt(b.id.replace(/\D/g, ""), 10)
+          break
         case "age":
           valA = a.age
           valB = b.age
@@ -285,61 +289,76 @@ export default function MatchingPage() {
               Choose a male user to find potential matches for.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-6 md:grid-cols-1">
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
+          <CardContent className="flex flex-col gap-6">
+            <div className="flex items-center gap-2">
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between md:w-[250px]"
+                  >
+                    {selectedMale ? selectedMale.name : "Select user..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0 md:w-[250px]">
+                  <Command>
+                    <CommandInput placeholder="Search user..." />
+                    <CommandEmpty>No user found.</CommandEmpty>
+                    <CommandGroup>
+                      {maleUsers.map((user) => (
+                        <CommandItem
+                          key={user.id}
+                          value={`${user.prefix} ${user.name}`}
+                          onSelect={() => {
+                            setSelectedMale(user)
+                            setOpen(false)
+                          }}
+                          className="flex cursor-pointer items-center gap-3"
+                        >
+                          <Check
+                            className={cn(
+                              "h-4 w-4",
+                              selectedMale?.id === user.id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          <Avatar className="h-9 w-9">
+                            <AvatarImage src={user.imageUrl} alt={user.name} />
+                            <AvatarFallback>
+                              {user.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <span className="font-medium">
+                              {user.prefix} {user.name}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {user.age} years old, {user.nationality} from{" "}
+                              {user.currentLocation}
+                            </span>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              {selectedMale && (
                 <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-full justify-between md:w-[250px]"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedMale(null)}
+                  className="h-8 w-8"
                 >
-                  {selectedMale ? selectedMale.name : "Select user..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  <XCircle className="h-4 w-4" />
+                  <span className="sr-only">Remove selected user</span>
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0 md:w-[250px]">
-                <Command>
-                  <CommandInput placeholder="Search user..." />
-                  <CommandEmpty>No user found.</CommandEmpty>
-                  <CommandGroup>
-                    {maleUsers.map((user) => (
-                      <CommandItem
-                        key={user.id}
-                        value={`${user.prefix} ${user.name}`}
-                        onSelect={() => {
-                          setSelectedMale(user)
-                          setOpen(false)
-                        }}
-                        className="flex cursor-pointer items-center gap-3"
-                      >
-                        <Check
-                          className={cn(
-                            "h-4 w-4",
-                            selectedMale?.id === user.id
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        <Avatar className="h-9 w-9">
-                          <AvatarImage src={user.imageUrl} alt={user.name} />
-                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                          <span className="font-medium">
-                            {user.prefix} {user.name}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {user.age} years old, {user.nationality} from{" "}
-                            {user.currentLocation}
-                          </span>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
+              )}
+            </div>
             {selectedMale && (
               <Card
                 className="flex flex-col items-center p-4 text-center ring-0 md:w-full"
@@ -357,7 +376,7 @@ export default function MatchingPage() {
                     {selectedMale.prefix} {selectedMale.name}
                   </p>
                   <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
-                    <Mars className="h-5 w-5 text-gold" />
+                    <Mars className="text-gold h-5 w-5" />
                     <span>Age: {selectedMale.age}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">

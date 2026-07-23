@@ -14,6 +14,8 @@ import {
   Users,
   Form,
   GalleryHorizontal,
+  DollarSign,
+  HeartHandshake,
 } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
@@ -72,8 +74,14 @@ const staffItems = [
   {
     title: "Payment",
     url: "/dashboard/staff/payment",
-    icon: Form,
+    icon: DollarSign,
   },
+  {
+    title: "Matching",
+    url: "/dashboard/staff/matching",
+    icon: HeartHandshake,
+  },
+
 ]
 
 const adminItems = [

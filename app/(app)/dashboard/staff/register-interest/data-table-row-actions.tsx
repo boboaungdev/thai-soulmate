@@ -58,9 +58,9 @@ export function DataTableRowActions<TData>({
     }
   }
 
- const handlePrint = () => {
-  window.open(`/dashboard/staff/register-interest/${task.id}/print`, "_blank")
-}
+  const handlePrint = () => {
+    window.open(`/dashboard/staff/register-interest/${task.id}/print`)
+  }
 
   return (
     <DropdownMenu>
@@ -78,10 +78,10 @@ export function DataTableRowActions<TData>({
         className="w-[160px]"
         onClick={(e) => e.stopPropagation()}
       >
-       <DropdownMenuItem onClick={handlePrint}>
-  <Printer className="mr-2 h-4 w-4" />
-  Print
-</DropdownMenuItem>
+        <DropdownMenuItem onClick={handlePrint}>
+          <Printer className="mr-2 h-4 w-4" />
+          Print
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <Mail className="mr-2 h-4 w-4" />
           Sent mail to user

@@ -213,13 +213,54 @@
   }
 }
 
+/* General styles for printable-area to mimic A4 paper in web view */
+#printable-area {
+  width: 210mm; /* A4 width */
+  min-height: 297mm; /* A4 height */
+  padding: 16mm; /* To match the @page margin for content spacing */
+  margin: 30px auto; /* Center the A4 sheet on the screen with some margin around it */
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow to make it look like a floating page */
+  color: black; /* Ensure text is black for readability */
+}
+
 @media print {
   @page {
     size: A4;
     margin: 16mm;
   }
 
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-area,
+  #printable-area * {
+    visibility: visible;
+  }
+
+  #printable-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    min-height: 0 !important; /* Override screen style */
+    margin: 0;
+    padding: 0; /* @page margin is already providing the spacing */
+    border: none;
+    box-shadow: none;
+    background: white;
+    color: black;
+  }
+
   body {
     background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
   }
 }

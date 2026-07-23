@@ -5,6 +5,7 @@ import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { RegisterInterestDetails } from "./register-interest-details"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
+import { Skeleton } from "@/components/ui/skeleton"
 
 async function getData(): Promise<RegisterInterest[]> {
   const res = await fetch("/api/register-interest")
@@ -48,7 +49,32 @@ export default function TaskPage() {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return (
+      <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
+        <div className="flex items-center justify-between space-y-2">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Register Interest
+            </h2>
+            <p className="text-muted-foreground">
+              Users who submitted matchmaking interest forms
+            </p>
+          </div>
+          <div className="flex items-center space-x-2"></div>
+        </div>
+        <div className="rounded-md border">
+          <div className="w-full space-y-4 p-4">
+            <Skeleton className="h-10 w-full" /> {/* Table header */}
+            <div className="space-y-3">
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full" /> /* Table rows */
+              ))}
+            </div>
+            <Skeleton className="h-8 w-full" /> {/* Pagination */}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -65,11 +91,7 @@ export default function TaskPage() {
           </div>
           <div className="flex items-center space-x-2"></div>
         </div>
-        <DataTable
-          data={data}
-          columns={columns}
-          onRowClick={handleRowClick}
-        />
+        <DataTable data={data} columns={columns} onRowClick={handleRowClick} />
       </div>
       <RegisterInterestDetails
         item={selectedItem}

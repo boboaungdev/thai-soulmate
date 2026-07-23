@@ -1,21 +1,22 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 import { AppName } from "@/components/app-name"
 import { APP_INFO } from "@/constants"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { PrinterIcon, ArrowLeftIcon, ChevronLeft } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { PrinterIcon, ChevronLeft } from "lucide-react"
+import { RegisterInterest } from "@/lib/generated/prisma/client"
 
 export default function PrintPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
-  const [user, setUser] = useState<any>(null)
-  const hasPrinted = useRef(false)
+  const [user, setUser] = useState<RegisterInterest | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -31,32 +32,39 @@ export default function PrintPage({
     load()
   }, [params])
 
-  useEffect(() => {
-    if (!user || hasPrinted.current) return
-
-    hasPrinted.current = true
-
-    setTimeout(() => {
-      window.print()
-    }, 100)
-  }, [user])
-
-  if (!user) return <p>Loading...</p>
+  if (!user)
+    return (
+      <div className="space-y-4 p-4">
+        <Skeleton className="h-8 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6" />
+        <Skeleton className="h-8 w-full" />
+      </div>
+    )
 
   return (
     <>
-      <div className="flex justify-between my-4 no-print">
-        <Button onClick={() => router.back()} variant="link" className="text-bg">
+      <div className="no-print my-4 flex justify-between">
+        <Button
+          onClick={() => router.back()}
+          variant="link"
+          className="text-bg"
+        >
           <ChevronLeft className="mr-2 h-4 w-4" /> Back
         </Button>
-        <Button onClick={() => window.print()} variant="default" className="btn-gradient">
+        <Button
+          onClick={() => window.print()}
+          variant="default"
+          className="btn-gradient"
+        >
           <PrinterIcon className="mr-2 h-4 w-4" /> Print
         </Button>
       </div>
 
       <main
         id="printable-area"
-        className="mx-auto p-10 border border-gray-300 bg-white text-sm text-black"
+        className="mx-auto border border-gray-300 bg-white p-10 text-sm text-black"
       >
         <header className="mb-8 flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-4">
@@ -149,4 +157,3 @@ export default function PrintPage({
     </>
   )
 }
-

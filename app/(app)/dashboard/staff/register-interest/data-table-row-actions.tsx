@@ -59,7 +59,8 @@ export function DataTableRowActions<TData>({
   }
 
   const handlePrint = () => {
-    window.open(`/dashboard/staff/register-interest/${task.id}/print`)
+    // window.open(`/dashboard/staff/register-interest/${task.id}/print`)
+    router.push(`/dashboard/staff/register-interest/${task.id}/print`)
   }
 
   return (
@@ -108,7 +109,7 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+        <DropdownMenuItem variant="destructive" onClick={handleDelete} disabled>
           <Trash className="mr-2 h-4 w-4" />
           Delete
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>

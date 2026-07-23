@@ -2,13 +2,7 @@
 
 import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef } from "@tanstack/react-table"
-import {
-  CircleCheck,
-  CircleX,
-  Clock,
-  Mail,
-  Phone,
-} from "lucide-react"
+import { CircleCheck, CircleX, Clock, Mail, Phone } from "lucide-react"
 import dayjs from "dayjs"
 import localizedFormat from "dayjs/plugin/localizedFormat"
 
@@ -88,7 +82,11 @@ export const columns: ColumnDef<RegisterInterest>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => <div className="w-[150px]">{row.original.prefix} {row.getValue("name")}</div>,
+    cell: ({ row }) => (
+      <div className="w-[150px]">
+        {row.original.prefix} {row.getValue("name")}
+      </div>
+    ),
     enableSorting: false,
   },
   {
@@ -98,9 +96,7 @@ export const columns: ColumnDef<RegisterInterest>[] = [
     ),
     cell: ({ row }) => {
       const gender = row.getValue("gender") as string
-      const genderColorClass =
-        gender === "Male" ? "text-amber-500" : gender === "Female" ? "text-pink-500" : ""
-      return <div className={`w-[80px] ${genderColorClass}`}>{gender}</div>
+      return <div className={`w-[80px]`}>{gender}</div>
     },
   },
   {
@@ -172,14 +168,14 @@ export const columns: ColumnDef<RegisterInterest>[] = [
       <DataTableColumnHeader column={column} title="Registered On" />
     ),
     cell: ({ row }) => {
-      const createdAt = dayjs(row.getValue("createdAt") as string);
+      const createdAt = dayjs(row.getValue("createdAt") as string)
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
             {createdAt.format("YYYY-MM-DD HH:mm")}
           </span>
         </div>
-      );
+      )
     },
   },
   {
@@ -198,9 +194,7 @@ export const columns: ColumnDef<RegisterInterest>[] = [
 
       return (
         <div className={`flex w-[100px] items-center ${status.color}`}>
-          {status.icon && (
-            <status.icon className="mr-2 h-4 w-4" />
-          )}
+          {status.icon && <status.icon className="mr-2 h-4 w-4" />}
           <span>{status.label}</span>
         </div>
       )

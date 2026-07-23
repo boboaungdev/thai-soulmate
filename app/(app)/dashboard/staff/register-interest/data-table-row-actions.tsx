@@ -59,7 +59,6 @@ export function DataTableRowActions<TData>({
   }
 
   const handlePrint = () => {
-    // window.open(`/dashboard/staff/register-interest/${task.id}/print`)
     router.push(`/dashboard/staff/register-interest/${task.id}/print`)
   }
 

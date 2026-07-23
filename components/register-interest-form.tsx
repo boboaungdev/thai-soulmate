@@ -638,33 +638,44 @@ export function RegisterInterestForm() {
                             align="start"
                           >
                             <Command>
-                              <CommandInput placeholder="Search country..." />
+                              <CommandInput
+                                placeholder="Search country..."
+                                className="h-9"
+                              />
                               <CommandEmpty>No country found.</CommandEmpty>
                               <CommandGroup className="max-h-60 overflow-y-auto">
                                 {loadingCountries ? (
                                   <CommandItem disabled>Loading...</CommandItem>
                                 ) : (
-                                  countries.map((country) => (
-                                    <CommandItem
-                                      value={`${country.name} ${country.code} ${country.callCode}`}
-                                      key={country.code}
-                                      onSelect={() => {
-                                        field.onChange(country.code)
-                                        setOpenPhoneCountry(false)
-                                      }}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          country.code === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                      {country.flag} {country.name} (+
-                                      {country.callCode})
-                                    </CommandItem>
-                                  ))
+                                  [...countries]
+                                    .sort((a, b) =>
+                                      a.callCode.localeCompare(
+                                        b.callCode,
+                                        "en",
+                                        { numeric: true }
+                                      )
+                                    )
+                                    .map((country) => (
+                                      <CommandItem
+                                        value={`${country.name} ${country.code} ${country.callCode}`}
+                                        key={country.code}
+                                        onSelect={() => {
+                                          field.onChange(country.code)
+                                          setOpenPhoneCountry(false)
+                                        }}
+                                      >
+                                        <Check
+                                          className={cn(
+                                            "mr-2 h-4 w-4",
+                                            country.code === field.value
+                                              ? "opacity-100"
+                                              : "opacity-0"
+                                          )}
+                                        />
+                                        {country.flag} (+
+                                        {country.callCode})
+                                      </CommandItem>
+                                    ))
                                 )}
                               </CommandGroup>
                             </Command>

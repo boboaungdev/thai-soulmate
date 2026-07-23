@@ -1744,9 +1744,13 @@ function AuthPageContents() {
                             </SelectTrigger>
                             <SelectContent className="max-h-80">
                               {countries
-                                .sort((a, b) =>
-                                  a.callCode.localeCompare(b.callCode)
-                                )
+                                .sort((a, b) => {
+                                  return a.callCode.localeCompare(
+                                    b.callCode,
+                                    "en",
+                                    { numeric: true }
+                                  )
+                                })
                                 .map((country) => (
                                   <SelectItem
                                     key={country.code}

@@ -4,9 +4,17 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect, useState, useTransition } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
-import { User, Mail, Phone, Cake } from "lucide-react"
+import { Check, ChevronsUpDown, User, Mail, Phone, Cake } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
 import {
   Form,
   FormControl,
@@ -15,6 +23,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   InputGroup,
   InputGroupAddon,
@@ -98,6 +111,9 @@ export function RegisterInterestForm() {
 
   const [isPending, startTransition] = useTransition()
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [openNationality, setOpenNationality] = useState(false)
+  const [openCurrentLocation, setOpenCurrentLocation] = useState(false)
+  const [openPhoneCountry, setOpenPhoneCountry] = useState(false)
   const { setValue } = form
 
   const prefix = useWatch({
@@ -214,9 +230,11 @@ export function RegisterInterestForm() {
       <div className="mx-auto w-full max-w-2xl p-4 text-center">
         <h2 className="mb-2 text-3xl font-bold">Thank You!</h2>
         <p className="text-muted-foreground">
-          Your interest has been successfully registered. Our team will contact you shortly.<br/>Please check your
-          email and <strong>spam/junk/promotion</strong> folder for the next step and complete the
-          application form.
+          Your interest has been successfully registered. Our team will contact
+          you shortly.
+          <br />
+          Please check your email and <strong>spam/junk/promotion</strong>{" "}
+          folder for the next step and complete the application form.
         </p>
       </div>
     )
@@ -404,47 +422,87 @@ export function RegisterInterestForm() {
                   control={form.control}
                   name="nationality"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel>Nationality</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
+                      <Popover
+                        open={openNationality}
+                        onOpenChange={setOpenNationality}
+                      >
+                        <PopoverTrigger asChild>
                           <FormControl>
-                            <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                              <SelectValue placeholder="Select nationality" />
-                            </SelectTrigger>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "h-8 w-full justify-between rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                <>
+                                  {
+                                    countries.find(
+                                      (country) =>
+                                        country.nationality === field.value
+                                    )?.flag
+                                  }{" "}
+                                  {field.value}
+                                </>
+                              ) : (
+                                "Select nationality"
+                              )}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
                           </FormControl>
-
-                          <SelectContent className="max-h-80 w-[var(--radix-select-trigger-width)]">
-                            {loadingCountries ? (
-                              <SelectItem value="loading" disabled>
-                                Loading countries...
-                              </SelectItem>
-                            ) : (
-                              [...countries]
-                                .sort((a, b) =>
-                                  a.nationality.localeCompare(
-                                    b.nationality,
-                                    "en",
-                                    {
-                                      sensitivity: "base",
-                                    }
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-[--radix-popover-trigger-width] p-0"
+                          align="start"
+                        >
+                          <Command>
+                            <CommandInput placeholder="Search nationality..." />
+                            <CommandEmpty>No nationality found.</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {loadingCountries ? (
+                                <CommandItem disabled>
+                                  Loading countries...
+                                </CommandItem>
+                              ) : (
+                                [...countries]
+                                  .sort((a, b) =>
+                                    a.nationality.localeCompare(
+                                      b.nationality,
+                                      "en",
+                                      {
+                                        sensitivity: "base",
+                                      }
+                                    )
                                   )
-                                )
-                                .map((country) => (
-                                  <SelectItem
-                                    key={country.code}
-                                    value={country.nationality}
-                                  >
-                                    {country.flag} {country.nationality}
-                                  </SelectItem>
-                                ))
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
+                                  .map((country) => (
+                                    <CommandItem
+                                      value={country.nationality}
+                                      key={country.code}
+                                      onSelect={() => {
+                                        field.onChange(country.nationality)
+                                        setOpenNationality(false)
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          country.nationality === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {country.flag} {country.nationality}
+                                    </CommandItem>
+                                  ))
+                              )}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -453,43 +511,82 @@ export function RegisterInterestForm() {
                   control={form.control}
                   name="currentLocation"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel>Current Location</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
+                      <Popover
+                        open={openCurrentLocation}
+                        onOpenChange={setOpenCurrentLocation}
+                      >
+                        <PopoverTrigger asChild>
                           <FormControl>
-                            <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                              <SelectValue placeholder="Select current location" />
-                            </SelectTrigger>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "h-8 w-full justify-between rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                <>
+                                  {
+                                    countries.find(
+                                      (country) => country.name === field.value
+                                    )?.flag
+                                  }{" "}
+                                  {field.value}
+                                </>
+                              ) : (
+                                "Select current location"
+                              )}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
                           </FormControl>
-
-                          <SelectContent className="max-h-80 w-[var(--radix-select-trigger-width)]">
-                            {loadingCountries ? (
-                              <SelectItem value="loading" disabled>
-                                Loading countries...
-                              </SelectItem>
-                            ) : (
-                              [...countries]
-                                .sort((a, b) =>
-                                  a.name.localeCompare(b.name, "en", {
-                                    sensitivity: "base",
-                                  })
-                                )
-                                .map((country) => (
-                                  <SelectItem
-                                    key={country.code}
-                                    value={country.name}
-                                  >
-                                    {country.flag} {country.name}
-                                  </SelectItem>
-                                ))
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-[--radix-popover-trigger-width] p-0"
+                          align="start"
+                        >
+                          <Command>
+                            <CommandInput placeholder="Search location..." />
+                            <CommandEmpty>No location found.</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {loadingCountries ? (
+                                <CommandItem disabled>
+                                  Loading countries...
+                                </CommandItem>
+                              ) : (
+                                [...countries]
+                                  .sort((a, b) =>
+                                    a.name.localeCompare(b.name, "en", {
+                                      sensitivity: "base",
+                                    })
+                                  )
+                                  .map((country) => (
+                                    <CommandItem
+                                      value={country.name}
+                                      key={country.code}
+                                      onSelect={() => {
+                                        field.onChange(country.name)
+                                        setOpenCurrentLocation(false)
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          country.name === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {country.flag} {country.name}
+                                    </CommandItem>
+                                  ))
+                              )}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -511,48 +608,68 @@ export function RegisterInterestForm() {
                     render={({ field }) => (
                       <FormItem className="w-[100px]">
                         <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
-                              <SelectValue placeholder="+66">
-                                {loadingCountries && field.value === "TH"
-                                  ? "+66"
-                                  : `+${
+                        <Popover
+                          open={openPhoneCountry}
+                          onOpenChange={setOpenPhoneCountry}
+                        >
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "h-8 w-full justify-between rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value
+                                  ? `+${
                                       countries.find(
-                                        (country) =>
+                                        (c) => c.code === field.value
+                                      )?.callCode ?? ""
+                                    }`
+                                  : "+66"}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-[250px] p-0"
+                            align="start"
+                          >
+                            <Command>
+                              <CommandInput placeholder="Search country..." />
+                              <CommandEmpty>No country found.</CommandEmpty>
+                              <CommandGroup className="max-h-60 overflow-y-auto">
+                                {loadingCountries ? (
+                                  <CommandItem disabled>Loading...</CommandItem>
+                                ) : (
+                                  countries.map((country) => (
+                                    <CommandItem
+                                      value={`${country.name} ${country.code} ${country.callCode}`}
+                                      key={country.code}
+                                      onSelect={() => {
+                                        field.onChange(country.code)
+                                        setOpenPhoneCountry(false)
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
                                           country.code === field.value
-                                      )?.callCode
-                                    }`}
-                              </SelectValue>
-                            </SelectTrigger>
-
-                            <SelectContent className="max-h-80">
-                              {[...countries]
-                                .sort((a, b) => {
-                                  const codeA =
-                                    parseInt(a.callCode, 10) ||
-                                    Number.MAX_SAFE_INTEGER
-                                  const codeB =
-                                    parseInt(b.callCode, 10) ||
-                                    Number.MAX_SAFE_INTEGER
-
-                                  return codeA - codeB
-                                })
-                                .map((country) => (
-                                  <SelectItem
-                                    key={country.code}
-                                    value={country.code}
-                                  >
-                                    (+{country.callCode}) {country.flag}{" "}
-                                    {country.code}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {country.flag} {country.name} (+
+                                      {country.callCode})
+                                    </CommandItem>
+                                  ))
+                                )}
+                              </CommandGroup>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
                       </FormItem>
                     )}
                   />

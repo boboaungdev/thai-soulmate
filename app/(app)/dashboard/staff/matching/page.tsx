@@ -285,7 +285,7 @@ export default function MatchingPage() {
               Choose a male user to find potential matches for.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-6 md:grid-cols-3">
+          <CardContent className="grid gap-6 md:grid-cols-1">
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -341,7 +341,10 @@ export default function MatchingPage() {
               </PopoverContent>
             </Popover>
             {selectedMale && (
-              <div className="flex flex-col items-center rounded-lg border p-4 text-center md:col-span-2">
+              <Card
+                className="flex flex-col items-center p-4 text-center ring-0 md:w-full"
+                size="default"
+              >
                 <Avatar className="h-24 w-24">
                   <AvatarImage
                     src={selectedMale.imageUrl}
@@ -349,13 +352,13 @@ export default function MatchingPage() {
                   />
                   <AvatarFallback>{selectedMale.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <div className="mt-4 grid gap-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-lg font-semibold">
-                      {selectedMale.prefix} {selectedMale.name},{" "}
-                      {selectedMale.age}
-                    </p>
-                    <Mars className="h-5 w-5 text-blue-500" />
+                <div className="mt-3 grid gap-1">
+                  <p className="text-lg font-semibold">
+                    {selectedMale.prefix} {selectedMale.name}
+                  </p>
+                  <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
+                    <Mars className="h-5 w-5 text-gold" />
+                    <span>Age: {selectedMale.age}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {selectedMale.bio}
@@ -377,7 +380,7 @@ export default function MatchingPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Card>
             )}
           </CardContent>
         </Card>

@@ -214,9 +214,9 @@ export function RegisterInterestForm() {
       <div className="mx-auto w-full max-w-2xl p-4 text-center">
         <h2 className="mb-2 text-3xl font-bold">Thank You!</h2>
         <p className="text-muted-foreground">
-          Your interest has been successfully registered. Please check your
-          email and spam/junk folder for the next step and complete the
-          application form. Our team will contact you shortly.
+          Your interest has been successfully registered. Our team will contact you shortly.<br/>Please check your
+          email and <strong>spam/junk/promotion</strong> folder for the next step and complete the
+          application form.
         </p>
       </div>
     )
@@ -611,11 +611,8 @@ export function RegisterInterestForm() {
                           </SelectItem>
                           <SelectItem value="Facebook">Facebook</SelectItem>
                           <SelectItem value="Instagram">Instagram</SelectItem>
-                          <SelectItem value="Friend or Family">
-                            Friend or Family
-                          </SelectItem>
-                          <SelectItem value="Advertisement">
-                            Advertisement
+                          <SelectItem value="Recommandation">
+                            Recommandation
                           </SelectItem>
                           <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>

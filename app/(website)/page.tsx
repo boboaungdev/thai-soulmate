@@ -60,7 +60,7 @@ export default function HomePage() {
                     <span className="text-gradient">{APP_INFO.tagline}</span>
                   </p>
 
-                  <p className="text-lg font-bold md:text-xl">
+                  <p className="text-lg font-bold md:text-xl pt-4">
                     <span className="text-gradient whitespace-pre-line">
                       {APP_INFO.secondaryTagline}
                     </span>

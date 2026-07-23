@@ -56,7 +56,6 @@ Dear ${userDetails.prefix} ${userDetails.name},
 
 <p>
 Thank you for registering your interest with us.
-We're excited to have you on board!
 </p>
 
 

@@ -2296,7 +2296,7 @@ function AuthPageContents() {
                         <div className="flex justify-between text-xs text-muted-foreground">
                           <span>Beginner</span>
                           <span>Intermediate</span>
-                          <span>Fluent</span>
+                          <span>Native</span>
                         </div>
                       </div>
                     </CardContent>
@@ -2321,7 +2321,7 @@ function AuthPageContents() {
                       <div className="flex justify-between text-xs text-muted-foreground">
                         <span>Beginner</span>
                         <span>Intermediate</span>
-                        <span>Fluent</span>
+                        <span>Native</span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">

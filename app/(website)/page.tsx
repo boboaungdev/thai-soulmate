@@ -9,8 +9,30 @@ import { UserGallery } from "@/components/user-gallery"
 import { Faq } from "@/components/faq"
 import { RegisterInterestForm } from "@/components/register-interest-form"
 import { MotionDiv } from "@/components/motion"
+import { useRouter } from "next/navigation"
+import { useEffect, useRef } from "react"
 
 export default function HomePage() {
+  const router = useRouter()
+  const registerInterestRef = useRef<HTMLDivElement>(null)
+
+  const handleClickRegisterInterest = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault()
+    if (window.location.hash === "#register-interest") {
+      registerInterestRef.current?.scrollIntoView({ behavior: "smooth" })
+    } else {
+      router.push("/#register-interest")
+    }
+  }
+
+  useEffect(() => {
+    if (window.location.hash === "#register-interest") {
+      registerInterestRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [router]) // Re-run effect when the route (including hash) changes
+
   return (
     <main>
       <section className="relative flex h-[80vh] min-h-[500px] flex-col justify-center overflow-hidden text-white">
@@ -69,8 +91,12 @@ export default function HomePage() {
               </div>
 
               <div className="flex flex-wrap justify-center gap-4">
-                <Button asChild size="lg" className="btn-gradient">
-                  <Link href="#register-interest">Register Interest</Link>
+                <Button
+                  size="lg"
+                  className="btn-gradient"
+                  onClick={handleClickRegisterInterest}
+                >
+                  Register Interest
                 </Button>
 
                 <Button
@@ -140,7 +166,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="register-interest" className="py-16 sm:py-20">
+      <section id="register-interest" ref={registerInterestRef} className="py-16 sm:py-20">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <RegisterInterestForm />
         </div>

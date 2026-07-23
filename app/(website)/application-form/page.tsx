@@ -53,7 +53,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useState, forwardRef, useEffect, Suspense } from "react"
 import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { motion, AnimatePresence } from "framer-motion"
-import { DatePickerInput } from "@/components/ui/date-picker-input"
+import { DateOfBirthInput } from "@/components/ui/date-of-birth-input"
 import { toast } from "sonner"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
@@ -1719,17 +1719,14 @@ function AuthPageContents() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="dob">Date of Birth</Label>
-                        <InputGroup>
-                          <InputGroupAddon>
-                            <Cake className="size-4" />
-                          </InputGroupAddon>
-                          <DatePickerInput
-                            value={dob}
-                            onSelect={setBirthday}
-                            disabled={isInitializing || loadingCountries}
-                          />
-                        </InputGroup>
+                        <Label htmlFor="dob" className="flex items-center">
+                          <Cake className="mr-2 size-4" /> Date of Birth
+                        </Label>
+                        <DateOfBirthInput
+                          value={dob}
+                          onSelect={setBirthday}
+                          disabled={isInitializing || loadingCountries}
+                        />
                         {formErrors.dob && (
                           <p className="text-sm text-destructive">
                             {formErrors.dob}

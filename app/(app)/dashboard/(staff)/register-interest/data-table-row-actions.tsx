@@ -55,7 +55,7 @@ export function DataTableRowActions<TData>({
   const handleStatusChange = async (status: string) => {
     try {
       await fetch(`/api/register-interest/${task.id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -99,7 +99,7 @@ export function DataTableRowActions<TData>({
           <FileText className="mr-2 h-4 w-4" />
           Add Note
         </DropdownMenuItem>
-                <DropdownMenuSeparator />
+        <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Contact</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
@@ -128,7 +128,6 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
 
-
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
@@ -150,7 +149,7 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={handleDelete} disabled>
+        <DropdownMenuItem variant="destructive" onClick={handleDelete}>
           <Trash className="mr-2 h-4 w-4" />
           Delete
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>

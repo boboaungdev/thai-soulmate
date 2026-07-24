@@ -44,8 +44,8 @@ export const statuses: {
     color: "text-green-500",
   },
   {
-    value: "REJECTED",
-    label: "Rejected",
+    value: "NOT_INTERESTED",
+    label: "Not interested",
     icon: CircleX,
     color: "text-red-500",
   },

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
     const existingAppForm = await prisma.applicationForm.findFirst({
       where: {
-        contact: {
+        personalDetails: {
           path: ["email"],
           equals: validatedData.email,
         },

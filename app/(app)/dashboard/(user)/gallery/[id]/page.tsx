@@ -61,7 +61,6 @@ export default function UserDetailPage() {
 
   const {
     personalDetails,
-    contact,
     appearance,
     personality,
     lifestyle,
@@ -97,7 +96,7 @@ export default function UserDetailPage() {
               {age}
             </h1>
             <p className="text-muted-foreground">
-              {contact?.currentLocation || "N/A"}
+              {personalDetails?.currentLocation || "N/A"}
             </p>
           </div>
 
@@ -142,7 +141,7 @@ export default function UserDetailPage() {
               <div>
                 <p className="font-semibold">Nationality</p>
                 <p className="text-muted-foreground">
-                  {contact?.nationality || "N/A"}
+                  {personalDetails?.nationality || "N/A"}
                 </p>
               </div>
               <div>

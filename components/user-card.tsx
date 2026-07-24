@@ -5,35 +5,13 @@ import Image from "next/image"
 import { MapPin } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { ApplicationForm } from "@/lib/generated/prisma/client"
+import { PersonalDetails, Photos } from "@/types/application-form"
 
-// Assuming the JSON fields have these structures
-interface PersonalDetails {
-  name: string
-  dob: string
-}
-interface Contact {
-  currentLocation: string
-}
-interface Photos {
-  headshot: string
-  fullLength: string
-  casualLifestyle: string
-  recent: string
-}
-
-interface UserCardProps {
-  user: ApplicationForm
-}
-
-export function UserCard({ user }: UserCardProps) {
+export function UserCard({ user }: { user: ApplicationForm }) {
   const personalDetails: PersonalDetails =
     user.personalDetails && typeof user.personalDetails === "string"
       ? JSON.parse(user.personalDetails)
       : user.personalDetails || {}
-  const contact: Contact =
-    user.contact && typeof user.contact === "string"
-      ? JSON.parse(user.contact)
-      : user.contact || {}
   const photos: Photos =
     user.photos && typeof user.photos === "string"
       ? JSON.parse(user.photos)
@@ -72,7 +50,7 @@ export function UserCard({ user }: UserCardProps) {
           </p>
           <p className="flex items-center gap-1 text-sm">
             <MapPin className="size-3" />
-            {contact?.currentLocation || "N/A"}
+            {personalDetails?.currentLocation || "N/A"}
           </p>
         </div>
       </Card>

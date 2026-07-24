@@ -14,6 +14,7 @@ export interface ApplicationForm {
 }
 
 export interface PersonalDetails {
+  nickname?: string
   prefix: string
   name: string
   gender: string

@@ -46,7 +46,6 @@ export async function GET(
     const parsedApplication = {
       ...application,
       personalDetails: parseJSONField(application.personalDetails),
-      contact: parseJSONField(application.contact),
       career: parseJSONField(application.career),
       appearance: parseJSONField(application.appearance),
       personality: parseJSONField(application.personality),

@@ -29,7 +29,6 @@ export async function GET() {
   }
 }
 
-// POST application
 export async function POST(req: Request) {
   try {
     const body = await req.json()
@@ -37,6 +36,7 @@ export async function POST(req: Request) {
     const application = await prisma.applicationForm.create({
       data: {
         personalDetails: {
+          nickname: body.profile.nickname,
           prefix: body.details.prefix,
           name: body.details.name,
           gender: body.details.gender,
@@ -116,8 +116,6 @@ export async function POST(req: Request) {
         },
       },
     })
-
-    console.log(application)
 
     return NextResponse.json({
       success: true,

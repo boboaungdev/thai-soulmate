@@ -130,6 +130,9 @@ export default function ApplicationDetailPage() {
           <CardContent className="space-y-4">
             <DetailField label="Prefix" value={personalDetails?.prefix} />
             <DetailField label="Name" value={personalDetails?.name} />
+            {personalDetails?.nickname && (
+              <DetailField label="Nickname" value={personalDetails.nickname} />
+            )}
             <DetailField label="Gender" value={personalDetails?.gender} />
             <DetailField
               label="Date of Birth"

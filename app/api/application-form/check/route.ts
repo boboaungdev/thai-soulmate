@@ -19,7 +19,7 @@ export async function GET(req: Request) {
 
   const application = await prisma.applicationForm.findFirst({
     where: {
-      contact: {
+      personalDetails: {
         path: ["email"],
         equals: email,
       },

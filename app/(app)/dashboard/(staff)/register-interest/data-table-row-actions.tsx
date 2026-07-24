@@ -1,6 +1,14 @@
 "use client"
 
-import { Mail, MoreHorizontal, Printer, Trash } from "lucide-react"
+import {
+  History,
+  Mail,
+  MoreHorizontal,
+  Printer,
+  Trash,
+  FileText,
+} from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa"
 import { Row } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -20,6 +28,7 @@ import {
 
 import { statuses } from "./columns"
 import { useRouter } from "next/navigation"
+import { APP_INFO } from "@/constants"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
 
 interface DataTableRowActionsProps<TData> {
@@ -45,7 +54,7 @@ export function DataTableRowActions<TData>({
 
   const handleStatusChange = async (status: string) => {
     try {
-      await fetch(`/api/application-form/${task.id}`, {
+      await fetch(`/api/register-interest/${task.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -83,10 +92,43 @@ export function DataTableRowActions<TData>({
           Print
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Mail className="mr-2 h-4 w-4" />
-          Sent mail to user
+          <History className="mr-2 h-4 w-4" />
+          Activity Log
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <FileText className="mr-2 h-4 w-4" />
+          Add Note
+        </DropdownMenuItem>
+                <DropdownMenuSeparator />
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Contact</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem asChild>
+              <a
+                href={`mailto:${task.email}?subject=[${APP_INFO.name}] Regarding your interest`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Send mail
+              </a>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <a
+                href={`https://wa.me/${task.phoneCountry.replace("+", "")}${
+                  task.phone
+                }`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FaWhatsapp className="mr-2 h-4 w-4" />
+                WhatsApp
+              </a>
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>

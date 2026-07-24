@@ -63,6 +63,8 @@ export async function GET(
           select: {
             name: true,
             avatar: true,
+            email: true,
+            role: true,
           },
         },
       },
@@ -157,6 +159,8 @@ export async function POST(
           select: {
             name: true,
             avatar: true,
+            email: true,
+            role: true,
           },
         },
       },

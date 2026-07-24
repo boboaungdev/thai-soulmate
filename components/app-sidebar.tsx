@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   ClipboardPen,
   ChevronUp,
@@ -81,7 +81,6 @@ const staffItems = [
     url: "/dashboard/staff/matching",
     icon: HeartHandshake,
   },
-
 ]
 
 const adminItems = [
@@ -95,6 +94,7 @@ const adminItems = [
 export function AppSidebar() {
   const { user, logout } = useAuthStore()
   const router = useRouter()
+  const pathname = usePathname()
 
   return (
     <Sidebar collapsible="icon">
@@ -125,7 +125,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Home">
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Home"
+                  isActive={pathname === "/"}
+                >
                   <Link href="/">
                     <Home />
                     <span>Go to Website</span>
@@ -144,7 +148,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {userItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    isActive={pathname === item.url}
+                  >
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -167,7 +175,11 @@ export function AppSidebar() {
                 <SidebarMenu>
                   {staffItems.map((item) => (
                     <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild tooltip={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        tooltip={item.title}
+                        isActive={pathname === item.url}
+                      >
                         <Link href={item.url}>
                           <item.icon />
                           <span>{item.title}</span>
@@ -190,7 +202,11 @@ export function AppSidebar() {
               <SidebarMenu>
                 {adminItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pathname === item.url}
+                    >
                       <Link href={item.url}>
                         <item.icon />
                         <span>{item.title}</span>

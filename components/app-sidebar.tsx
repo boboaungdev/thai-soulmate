@@ -63,22 +63,22 @@ const userItems = [
 const staffItems = [
   {
     title: "Register Interest",
-    url: "/dashboard/staff/register-interest",
+    url: "/dashboard/register-interest",
     icon: ClipboardPen,
   },
   {
     title: "Application Form",
-    url: "/dashboard/staff/application-form",
+    url: "/dashboard/application-form",
     icon: Form,
   },
   {
     title: "Payment",
-    url: "/dashboard/staff/payment",
+    url: "/dashboard/payment",
     icon: DollarSign,
   },
   {
     title: "Matching",
-    url: "/dashboard/staff/matching",
+    url: "/dashboard/matching",
     icon: HeartHandshake,
   },
 ]
@@ -86,7 +86,7 @@ const staffItems = [
 const adminItems = [
   {
     title: "Login User",
-    url: "/dashboard/admin/login-user",
+    url: "/dashboard/login-user",
     icon: Users,
   },
 ]

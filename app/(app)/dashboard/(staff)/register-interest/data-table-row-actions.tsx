@@ -59,7 +59,7 @@ export function DataTableRowActions<TData>({
   }
 
   const handlePrint = () => {
-    router.push(`/dashboard/staff/register-interest/${task.id}/print`)
+    router.push(`/dashboard/register-interest/${task.id}/print`)
   }
 
   return (

@@ -32,6 +32,14 @@ export default function PrintPage({
     load()
   }, [params])
 
+  useEffect(() => {
+    if (user) {
+      // Delay printing slightly to ensure the page has rendered with the data
+      const timer = setTimeout(() => window.print(), 500)
+      return () => clearTimeout(timer)
+    }
+  }, [user])
+
   if (!user)
     return (
       <div className="space-y-4 p-4">

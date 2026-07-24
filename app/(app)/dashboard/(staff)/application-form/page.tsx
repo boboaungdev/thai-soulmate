@@ -136,9 +136,7 @@ export default function ApplicationsPage() {
                       className="cursor-pointer hover:bg-muted/50"
 
                       onClick={() =>
-                        router.push(
-                          `/dashboard/admin/application-form/${app.id}`
-                        )
+                        router.push(`/dashboard/application-form/${app.id}`)
                       }
                     >
                       <TableCell>
@@ -194,7 +192,7 @@ export default function ApplicationsPage() {
                 className="cursor-pointer"
 
                 onClick={() =>
-                  router.push(`/dashboard/admin/application-form/${app.id}`)
+                  router.push(`/dashboard/application-form/${app.id}`)
                 }
               >
                 <CardContent className="space-y-4 p-4">

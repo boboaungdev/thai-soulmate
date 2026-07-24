@@ -36,10 +36,16 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
 import { useAuthStore } from "@/stores/auth-store"
 import { toast } from "sonner"
 
-import { Note, RegisterInterest, Role, User } from "@/lib/generated/prisma/client"
+import {
+  Note,
+  RegisterInterest,
+  Role,
+  User,
+} from "@/lib/generated/prisma/client"
 
 import dayjs from "dayjs"
 import localizedFormat from "dayjs/plugin/localizedFormat"
@@ -175,9 +181,7 @@ export function RegisterInterestDetails({
 
       if (result.success) {
         setNotes(
-          notes.map((note) =>
-            note.id === editingNote.id ? result.note : note
-          )
+          notes.map((note) => (note.id === editingNote.id ? result.note : note))
         )
         toast.success("Note updated successfully.")
       } else {
@@ -268,9 +272,16 @@ export function RegisterInterestDetails({
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="font-semibold">{note.user.name}</p>
+                              <div className="flex items-center gap-2">
+                                <p className="font-semibold">
+                                  {note.user.name}
+                                </p>
+                                <Badge variant="secondary">
+                                  {note.user.role}
+                                </Badge>
+                              </div>
                               <p className="text-xs text-muted-foreground">
-                                {note.user.email} | {note.user.role}
+                                {note.user.email}
                               </p>
                             </div>
                             <div className="flex items-center space-x-2">
@@ -306,16 +317,18 @@ export function RegisterInterestDetails({
                             </div>
                           </div>
                           <p className="mt-1 text-sm">{note.message}</p>
-                          {dayjs(note.updatedAt).isAfter(
-                            dayjs(note.createdAt)
-                          ) && (
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              Updated:{" "}
-                              {dayjs(note.updatedAt).format(
-                                "MMM D, YYYY h:mm A"
-                              )}
-                            </p>
-                          )}
+                          <div className="mt-1 text-xs text-muted-foreground">
+                            {dayjs(note.updatedAt).isAfter(
+                              dayjs(note.createdAt)
+                            ) && (
+                              <span className="mr-2">
+                                Updated:{" "}
+                                {dayjs(note.updatedAt).format(
+                                  "MMM D, YYYY h:mm A"
+                                )}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))

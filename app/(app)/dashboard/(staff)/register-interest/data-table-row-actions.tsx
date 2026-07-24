@@ -10,8 +10,18 @@ import {
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { Row } from "@tanstack/react-table"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,11 +35,14 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 
 import { statuses } from "./columns"
 import { useRouter } from "next/navigation"
 import { APP_INFO } from "@/constants"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
+import { toast } from "sonner"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -40,6 +53,8 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter()
   const task = row.original as RegisterInterest
+  const [note, setNote] = useState("")
+  const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
 
   const handleDelete = async () => {
     try {
@@ -71,6 +86,28 @@ export function DataTableRowActions<TData>({
     router.push(`/dashboard/register-interest/${task.id}/print`)
   }
 
+  const handleAddNote = async () => {
+    try {
+      const res = await fetch(`/api/notes/${task.id}/register-interest`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ note }),
+      })
+
+      if (res.ok) {
+        toast.success("Note added successfully.")
+        setNote("")
+        setIsNoteDialogOpen(false)
+        router.refresh()
+      } else {
+        const { message } = await res.json()
+        toast.error(message || "Failed to add note.")
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred.")
+    }
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -95,10 +132,45 @@ export function DataTableRowActions<TData>({
           <History className="mr-2 h-4 w-4" />
           Activity Log
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <FileText className="mr-2 h-4 w-4" />
-          Add Note
-        </DropdownMenuItem>
+        <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
+          <DialogTrigger asChild>
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <FileText className="mr-2 h-4 w-4" />
+              Add Note
+            </DropdownMenuItem>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Note</DialogTitle>
+              <DialogDescription>
+                Add a note to this record. Click save when you&apos;re done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="note" className="text-right">
+                  Note
+                </Label>
+                <Textarea
+                  id="note"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  className="col-span-3"
+                  placeholder="Type your note here."
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={() => setIsNoteDialogOpen(false)}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleAddNote}>Save Note</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Contact</DropdownMenuSubTrigger>

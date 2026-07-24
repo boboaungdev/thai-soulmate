@@ -7,6 +7,7 @@ import {
   Printer,
   Trash,
   FileText,
+  Loader2, // Added Loader2
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { Row } from "@tanstack/react-table"
@@ -44,6 +45,7 @@ import { APP_INFO } from "@/constants"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
 import { toast } from "sonner"
 import { useAuthStore } from "@/stores/auth-store"
+// import { Spinner } from "@/components/ui/spinner" // Spinner is no longer needed if Loader2 is used
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -56,31 +58,49 @@ export function DataTableRowActions<TData>({
   const task = row.original as RegisterInterest
   const [message, setMessage] = useState("")
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false) // Added isLoading state
   const { user } = useAuthStore()
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const handleDelete = async () => {
     try {
-      await fetch(`/api/register-interest/${task.id}`, {
+      const response = await fetch(`/api/register-interest/${task.id}`, {
         method: "DELETE",
       })
-      router.refresh()
+      if (response.ok) {
+        toast.success("Interest record deleted successfully.")
+        setIsDeleteDialogOpen(false)
+        router.refresh()
+      } else {
+        const result = await response.json()
+        toast.error(result.error || "Failed to delete interest record.")
+      }
     } catch (error) {
-      console.error(error)
+      toast.error(
+        "An unexpected error occurred while deleting the interest record."
+      )
     }
   }
 
   const handleStatusChange = async (status: string) => {
     try {
-      await fetch(`/api/register-interest/${task.id}`, {
+      const response = await fetch(`/api/register-interest/${task.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ status }),
       })
-      router.refresh()
+
+      if (response.ok) {
+        toast.success("Status updated successfully.")
+        router.refresh()
+      } else {
+        const result = await response.json()
+        toast.error(result.error || "Failed to update status.")
+      }
     } catch (error) {
-      console.error(error)
+      toast.error("An unexpected error occurred while updating status.")
     }
   }
 
@@ -94,6 +114,7 @@ export function DataTableRowActions<TData>({
       return
     }
 
+    setIsLoading(true) // Set loading to true
     try {
       const res = await fetch(`/api/notes/${task.id}/register-interest`, {
         method: "POST",
@@ -112,6 +133,8 @@ export function DataTableRowActions<TData>({
       }
     } catch (error: any) {
       toast.error(error.message || "An error occurred.")
+    } finally {
+      setIsLoading(false) // Set loading to false in finally block
     }
   }
 
@@ -153,28 +176,37 @@ export function DataTableRowActions<TData>({
                 Add a note to this record. Click save when you&apos;re done.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="note" className="text-right">
-                  Note
-                </Label>
-                <Textarea
-                  id="note"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="col-span-3"
-                  placeholder="Type your note here."
-                />
-              </div>
+            <div className="grid gap-2 py-4">
+              <Label htmlFor="note">Note</Label>
+              <Textarea
+                id="note"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={4}
+                placeholder="Type your note here."
+                disabled={isLoading} // Disabled textarea
+              />
             </div>
             <DialogFooter>
               <Button
                 onClick={() => setIsNoteDialogOpen(false)}
                 variant="outline"
+                disabled={isLoading} // Disabled cancel button
               >
                 Cancel
               </Button>
-              <Button onClick={handleAddNote}>Save Note</Button>
+              <Button
+                onClick={handleAddNote}
+                disabled={isLoading}
+                className="btn-gradient"
+              >
+                {" "}
+                {/* Disabled save button */}
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> // Used Loader2
+                ) : null}
+                Add Note
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -228,11 +260,38 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={handleDelete} disabled>
-          <Trash className="mr-2 h-4 w-4" />
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogTrigger asChild>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={(e) => e.preventDefault() } disabled
+            >
+              <Trash className="mr-2 h-4 w-4" />
+              Delete
+              <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete this
+                record.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                onClick={() => setIsDeleteDialogOpen(false)}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleDelete} variant="destructive">
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </DropdownMenuContent>
     </DropdownMenu>
   )

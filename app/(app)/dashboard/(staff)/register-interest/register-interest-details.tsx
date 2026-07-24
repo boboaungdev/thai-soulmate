@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -36,16 +37,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
-import { useAuthStore } from "@/stores/auth-store"
 import { toast } from "sonner"
 
-import {
-  Note,
-  RegisterInterest,
-  Role,
-  User,
-} from "@/lib/generated/prisma/client"
+import { Note, RegisterInterest, User } from "@/lib/generated/prisma/client"
 
 import dayjs from "dayjs"
 import localizedFormat from "dayjs/plugin/localizedFormat"
@@ -65,8 +61,6 @@ export function RegisterInterestDetails({
   item,
   onClose,
 }: RegisterInterestDetailsProps) {
-  const { user } = useAuthStore()
-  const [noteMessage, setNoteMessage] = useState("")
   const [notes, setNotes] = useState<NoteWithUser[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoadingNotes, setIsLoadingNotes] = useState(false)
@@ -109,39 +103,6 @@ export function RegisterInterestDetails({
 
   if (!item) {
     return null
-  }
-
-  const handleSaveNote = async () => {
-    if (!noteMessage.trim() || !user) return
-
-    setIsSubmitting(true)
-    try {
-      const response = await fetch(`/api/notes/${item.id}/register-interest`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: noteMessage,
-          userId: user.id,
-        }),
-      })
-
-      const result = await response.json()
-
-      if (response.ok && result.success) {
-        setNotes([result.note, ...notes])
-        setNoteMessage("")
-        toast.success("Note added successfully.")
-      } else {
-        toast.error(result.error || "Failed to add note.")
-      }
-    } catch (error) {
-      toast.error("An unexpected error occurred.")
-      console.error(error)
-    } finally {
-      setIsSubmitting(false)
-    }
   }
 
   const handleDeleteNote = async () => {
@@ -242,98 +203,95 @@ export function RegisterInterestDetails({
 
             <div className="mt-6 space-y-6">
               <h3 className="text-lg font-medium">Notes</h3>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Textarea
-                    placeholder="Add a new note..."
-                    value={noteMessage}
-                    onChange={(e) => setNoteMessage(e.target.value)}
-                    disabled={isSubmitting}
-                  />
-                  <Button
-                    onClick={handleSaveNote}
-                    disabled={!noteMessage.trim() || isSubmitting}
-                  >
-                    {isSubmitting ? "Adding..." : "Add Note"}
-                  </Button>
-                </div>
-                <div className="space-y-4">
-                  {isLoadingNotes ? (
-                    <p>Loading notes...</p>
-                  ) : (
-                    notes.map((note) => (
-                      <div key={note.id} className="flex items-start space-x-3">
-                        <Avatar>
-                          <AvatarImage src={note.user.avatar || undefined} />
-                          <AvatarFallback>
-                            {note.user.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
+              <div className="space-y-4 pr-4">
+                {isLoadingNotes ? (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="flex items-start space-x-3">
+                        <Skeleton className="h-10 w-10 rounded-full" />
+                        <div className="flex-1 space-y-2">
                           <div className="flex items-center justify-between">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <p className="font-semibold">
-                                  {note.user.name}
-                                </p>
-                                <Badge variant="secondary">
-                                  {note.user.role}
-                                </Badge>
-                              </div>
-                              <p className="text-xs text-muted-foreground">
-                                {note.user.email}
-                              </p>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <p className="text-xs text-muted-foreground">
-                                {dayjs(note.createdAt).format(
-                                  "MMM D, YYYY h:mm A"
-                                )}
-                              </p>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-6 w-6"
-                                  >
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                  <DropdownMenuItem
-                                    onClick={() => setEditingNote(note)}
-                                  >
-                                    Edit
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => setNoteToDelete(note)}
-                                    className="text-red-500"
-                                  >
-                                    Delete
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                            <div className="space-y-1">
+                              <Skeleton className="h-4 w-[150px]" />
+                              <Skeleton className="h-3 w-[100px]" />
                             </div>
                           </div>
-                          <p className="mt-1 text-sm">{note.message}</p>
-                          <div className="mt-1 text-xs text-muted-foreground">
-                            {dayjs(note.updatedAt).isAfter(
-                              dayjs(note.createdAt)
-                            ) && (
-                              <span className="mr-2">
-                                Updated:{" "}
-                                {dayjs(note.updatedAt).format(
-                                  "MMM D, YYYY h:mm A"
-                                )}
-                              </span>
-                            )}
-                          </div>
+                          <Skeleton className="h-3 w-[200px]" />
+                          <Skeleton className="h-8 w-full" />
                         </div>
                       </div>
-                    ))
-                  )}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  notes.map((note) => (
+                    <div key={note.id} className="flex items-start space-x-3">
+                      <Avatar>
+                        <AvatarImage src={note.user.avatar || undefined} />
+                        <AvatarFallback>
+                          {note.user.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold">{note.user.name}</p>
+                              <Badge variant="secondary">
+                                {note.user.role}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {note.user.email}
+                            </p>
+                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                onClick={() => setEditingNote(note)}
+                              >
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => setNoteToDelete(note)}
+                                className="text-red-500"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground">
+                          <p>
+                            Created:{" "}
+                            {dayjs(note.createdAt).format("MMM D, YYYY h:mm A")}
+                          </p>
+                          {dayjs(note.updatedAt).isAfter(
+                            dayjs(note.createdAt)
+                          ) && (
+                            <p>
+                              Updated:{" "}
+                              {dayjs(note.updatedAt).format(
+                                "MMM D, YYYY h:mm A"
+                              )}
+                            </p>
+                          )}
+                        </div>
+                        <p className="mt-1 text-sm">{note.message}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </ScrollArea>
@@ -353,7 +311,7 @@ export function RegisterInterestDetails({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteNote}>
+            <AlertDialogAction onClick={handleDeleteNote} variant="destructive">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -366,6 +324,9 @@ export function RegisterInterestDetails({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Note</DialogTitle>
+            <DialogDescription>
+              Update the content of this note.
+            </DialogDescription>
           </DialogHeader>
           <Textarea
             value={editedMessage}
@@ -384,8 +345,9 @@ export function RegisterInterestDetails({
             <Button
               onClick={handleUpdateNote}
               disabled={!editedMessage.trim() || isSubmitting}
+              className="btn-gradient"
             >
-              {isSubmitting ? "Updating..." : "Update Note"}
+              {isSubmitting ? "Updating..." : "Update"}
             </Button>
           </DialogFooter>
         </DialogContent>

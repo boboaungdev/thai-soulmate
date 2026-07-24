@@ -2,7 +2,14 @@
 
 import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef } from "@tanstack/react-table"
-import { CircleCheck, CircleX, Clock, Mail, Phone } from "lucide-react"
+import {
+  CircleCheck,
+  CircleX,
+  Clock,
+  MailCheck,
+  PhoneOutgoing,
+} from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa"
 import dayjs from "dayjs"
 import localizedFormat from "dayjs/plugin/localizedFormat"
 
@@ -28,14 +35,20 @@ export const statuses: {
   {
     value: "CONTACTED_EMAIL",
     label: "Contacted by email",
-    icon: Mail,
+    icon: MailCheck,
     color: "text-blue-500",
   },
   {
     value: "CONTACTED_PHONE",
     label: "Contacted by phone",
-    icon: Phone,
+    icon: PhoneOutgoing,
     color: "text-indigo-500",
+  },
+  {
+    value: "CONTACTED_WHATSAPP",
+    label: "Contacted by WhatsApp",
+    icon: FaWhatsapp,
+    color: "text-green-600",
   },
   {
     value: "COMPLETED",
@@ -193,14 +206,10 @@ export const columns: ColumnDef<RegisterInterest>[] = [
       }
 
       return (
-        <div className={`flex w-[100px] items-center ${status.color}`}>
-          {status.icon && <status.icon className="mr-2 h-4 w-4" />}
-          <span>{status.label}</span>
+        <div className={`flex w-fit items-center ${status.color}`}>
+          {status.icon && <status.icon className="h-5 w-5" />}
         </div>
       )
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
 

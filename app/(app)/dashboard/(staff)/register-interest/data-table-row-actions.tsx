@@ -110,7 +110,7 @@ export function DataTableRowActions<TData>({
                 rel="noreferrer"
               >
                 <Mail className="mr-2 h-4 w-4" />
-                Send mail
+                Send email
               </a>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
@@ -149,7 +149,7 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+        <DropdownMenuItem variant="destructive" onClick={handleDelete} disabled>
           <Trash className="mr-2 h-4 w-4" />
           Delete
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>

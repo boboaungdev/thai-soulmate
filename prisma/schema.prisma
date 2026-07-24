@@ -19,6 +19,7 @@ model User {
   role     Role    @default(USER)
 
   registerInterest RegisterInterest?
+  notes            Note[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -44,6 +45,26 @@ model RegisterInterest {
 
   userId String? @unique
   user   User?   @relation(fields: [userId], references: [id])
+
+  notes Note[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Note {
+  id       String @id @default(cuid())
+  message  String
+  type     NoteType
+
+  registerInterestId String?
+  registerInterest   RegisterInterest? @relation(fields: [registerInterestId], references: [id])
+
+  applicationFormId String?
+  applicationForm   ApplicationForm? @relation(fields: [applicationFormId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -82,6 +103,8 @@ model ApplicationForm {
   // Photos
   photos Json
 
+  notes Note[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -90,6 +113,11 @@ enum Role {
   ADMIN
   STAFF
   USER
+}
+
+enum NoteType {
+  REGISTER_INTEREST
+  APPLICATION_FORM
 }
 
 enum RegisterInterestStatus {

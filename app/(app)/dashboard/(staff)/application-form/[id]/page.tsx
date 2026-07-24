@@ -5,8 +5,8 @@ import { useParams } from "next/navigation"
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { ApplicationForm } from "@/types/application-form"
 
-// Helper component for displaying a field
 function DetailField({
   label,
   value,
@@ -24,7 +24,6 @@ function DetailField({
   )
 }
 
-// Helper component for displaying a list of items as badges
 function DetailList({
   label,
   items,
@@ -52,7 +51,7 @@ function DetailList({
 
 export default function ApplicationDetailPage() {
   const params = useParams()
-  const [application, setApplication] = useState<any>(null)
+  const [application, setApplication] = useState<ApplicationForm | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -87,7 +86,6 @@ export default function ApplicationDetailPage() {
 
   const {
     personalDetails,
-    contact,
     career,
     appearance,
     personality,
@@ -141,12 +139,15 @@ export default function ApplicationDetailPage() {
                   : "-"
               }
             />
-            <DetailField label="Email" value={contact?.email} />
-            <DetailField label="Phone" value={contact?.phone} />
-            <DetailField label="Nationality" value={contact?.nationality} />
+            <DetailField label="Email" value={personalDetails?.email} />
+            <DetailField label="Phone" value={personalDetails?.phone} />
+            <DetailField
+              label="Nationality"
+              value={personalDetails?.nationality}
+            />
             <DetailField
               label="Current Location"
-              value={contact?.currentLocation}
+              value={personalDetails?.currentLocation}
             />
           </CardContent>
         </Card>

@@ -41,9 +41,6 @@ export async function POST(req: Request) {
           name: body.details.name,
           gender: body.details.gender,
           dob: body.details.dob,
-        },
-
-        contact: {
           email: body.details.email,
           phone: body.details.phone,
           nationality: body.details.nationality,
@@ -88,7 +85,11 @@ export async function POST(req: Request) {
           values: body.profile.values,
         },
 
-        relationshipGoals: body.relationshipGoals,
+        relationshipGoals: {
+          relocate: body.relationshipGoals.relocate,
+          lookingFor: body.relationshipGoals.lookingFor,
+          settleDown: body.relationshipGoals.settleDown,
+        },
 
         idealPartner: {
           ageRange: body.profile.idealPartnerAgeRange,
@@ -101,11 +102,22 @@ export async function POST(req: Request) {
           dealBreakers: body.profile.dealBreakers,
         },
 
-        financial: body.financial,
+        financial: {
+          income: body.financial.income,
+          ownBusiness: body.financial.ownBusiness,
+          ownProperty: body.financial.ownProperty,
+        },
 
-        photos: body.photos,
+        photos: {
+          recent: body.photos.recent,
+          headshot: body.photos.headshot,
+          fullLength: body.photos.fullLength,
+          casualLifestyle: body.photos.casualLifestyle,
+        },
       },
     })
+
+    console.log(application)
 
     return NextResponse.json({
       success: true,

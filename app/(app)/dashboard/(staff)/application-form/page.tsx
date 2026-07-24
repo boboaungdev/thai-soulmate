@@ -20,60 +20,31 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-type Application = {
-  id: string
-
-  personalDetails?: {
-    name?: string
-    gender?: string
-  }
-
-  contact?: {
-    email?: string
-    phone?: string
-    nationality: string
-    currentLocation?: string
-  }
-
-  career?: {
-    occupation?: string
-    education?: string
-  }
-
-  personality?: {
-    about?: string
-  }
-
-  photos?: {
-    headshot?: string
-    fullLength?: string
-  }
-}
+import { ApplicationForm } from "@/types/application-form"
 
 export default function ApplicationsPage() {
   const router = useRouter()
 
-  const [applications, setApplications] = useState<Application[]>([])
+  const [applications, setApplications] = useState<ApplicationForm[]>([])
   const [loading, setLoading] = useState(true)
 
-  async function fetchApplications() {
-    setLoading(true)
-
-    try {
-      const res = await fetch("/api/application-form")
-
-      const data = await res.json()
-
-      setApplications(data.applications || [])
-    } catch (error) {
-      console.error("Fetch applications error:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
+    async function fetchApplications() {
+      setLoading(true)
+
+      try {
+        const res = await fetch("/api/application-form")
+
+        const data = await res.json()
+
+        setApplications(data.applications || [])
+      } catch (error) {
+        console.error("Fetch applications error:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchApplications()
   }, [])
 
@@ -164,15 +135,17 @@ export default function ApplicationsPage() {
                         </Badge>
                       </TableCell>
 
-                      <TableCell>{app.contact?.nationality || "-"}</TableCell>
-
                       <TableCell>
-                        {app.contact?.currentLocation || "-"}
+                        {app.personalDetails?.nationality || "-"}
                       </TableCell>
 
-                      <TableCell>{app.contact?.email || "-"}</TableCell>
+                      <TableCell>
+                        {app.personalDetails?.currentLocation || "-"}
+                      </TableCell>
 
-                      <TableCell>{app.contact?.phone || "-"}</TableCell>
+                      <TableCell>{app.personalDetails?.email || "-"}</TableCell>
+
+                      <TableCell>{app.personalDetails?.phone || "-"}</TableCell>
 
                       <TableCell>{app.career?.occupation || "-"}</TableCell>
                     </TableRow>
@@ -221,9 +194,9 @@ export default function ApplicationsPage() {
                   </div>
 
                   <div className="space-y-1 text-sm">
-                    <p>🌍 {app.contact?.nationality}</p>
-                    <p>📍 {app.contact?.currentLocation}</p>
-                    <p>✉️ {app.contact?.email}</p>
+                    <p>🌍 {app.personalDetails?.nationality}</p>
+                    <p>📍 {app.personalDetails?.currentLocation}</p>
+                    <p>✉️ {app.personalDetails?.email}</p>
                   </div>
                 </CardContent>
               </Card>

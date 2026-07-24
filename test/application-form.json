@@ -1,0 +1,125 @@
+{
+  "id": "cmrzclchx0000538zcsny591n",
+  "personalDetails": {
+    "dob": "2000-01-31T17:00:00.000Z",
+    "name": "BO BO AUNG",
+    "gender": "Male",
+    "prefix": "Mr.",
+    "email": "boboaungdev@gmail.com",
+    "phone": "+660620604940",
+    "nationality": "Ålandish",
+    "currentLocation": "Andorra"
+  },
+  "career": {
+    "company": "Hospital",
+    "education": "High School",
+    "occupation": "Doctor"
+  },
+  "appearance": {
+    "height": "180",
+    "weight": "55",
+    "religion": "Buddhism",
+    "thaiFluency": [
+      90
+    ],
+    "englishFluency": [
+      90
+    ]
+  },
+  "personality": {
+    "about": "lorem ipsum",
+    "hasChildren": "No",
+    "personality": [
+      "Kind"
+    ],
+    "bestQualities": [
+      "Honest",
+      "Kind",
+      "Funny"
+    ],
+    "childrenCount": 0,
+    "maritalStatus": "Never Married",
+    "lookingForQualities": [
+      "Loyal",
+      "Supportive",
+      "King"
+    ]
+  },
+  "lifestyle": {
+    "values": [
+      "Honesty",
+      "Financial Stability",
+      "Kindness",
+      "Adventure",
+      "Communication"
+    ],
+    "smoking": "Never",
+    "drinking": "Never",
+    "exercise": "Daily",
+    "interests": [
+      "Travel",
+      "Cooking",
+      "Movies",
+      "Golf",
+      "Yoga"
+    ],
+    "lifestyle": [
+      "Relaxed"
+    ],
+    "otherInterest": "",
+    "futureChildren": "Yes",
+    "weekendActivity": "Gaming, Fishing",
+    "familyImportance": "Very Important",
+    "travelDestinations": [
+      "Paris",
+      "Tokyo",
+      "US"
+    ]
+  },
+  "relationshipGoals": {
+    "relocate": "Yes",
+    "lookingFor": [
+      "Long-Term Relationship"
+    ],
+    "settleDown": "Within 1 Year"
+  },
+  "idealPartner": {
+    "height": "under 5'",
+    "ageRange": "29-35",
+    "location": "ASIAN",
+    "education": "High School",
+    "qualities": [
+      "Honest",
+      "Family-Oriented",
+      "Romantic",
+      "Easy Going",
+      "Financially Stable"
+    ],
+    "nationality": "ASIAN",
+    "personality": [
+      "Kind",
+      "Ambitious",
+      "Confident",
+      "Spiritual",
+      "Easy Going"
+    ],
+    "dealBreakers": [
+      "Smoker",
+      "Poor",
+      "Rich"
+    ]
+  },
+  "financial": {
+    "income": "Under $25,000",
+    "ownBusiness": "No",
+    "ownProperty": "No"
+  },
+  "photos": {
+    "recent": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/applications/photos/boboaungdev@gmail.com/boboaungdev@gmail.com-1784922195674.png",
+    "headshot": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/applications/photos/boboaungdev@gmail.com/boboaungdev@gmail.com-1784922195651.png",
+    "fullLength": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/applications/photos/boboaungdev@gmail.com/boboaungdev@gmail.com-1784922195666.png",
+    "casualLifestyle": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/applications/photos/boboaungdev@gmail.com/boboaungdev@gmail.com-1784922195678.jpg"
+  },
+  "createdAt": "2026-07-24T19:43:20.709Z",
+  "updatedAt": "2026-07-24T19:43:20.709Z"
+}

@@ -53,9 +53,9 @@ model RegisterInterest {
 }
 
 model Note {
-  id       String @id @default(cuid())
-  message  String
-  type     NoteType
+  id      String   @id @default(cuid())
+  message String
+  type    NoteType
 
   registerInterestId String?
   registerInterest   RegisterInterest? @relation(fields: [registerInterestId], references: [id])
@@ -73,34 +73,22 @@ model Note {
 model ApplicationForm {
   id String @id @default(cuid())
 
-  // Step 1: Personal Details
   personalDetails Json
 
-  // Contact information
-  contact Json
-
-  // Step 2: Occupation / Education
   career Json
 
-  // Step 3: Height / Weight / Religion
   appearance Json
 
-  // Step 4-5: Personality / About
   personality Json
 
-  // Step 6-7: Lifestyle / Interests
   lifestyle Json
 
-  // Relationship goals
   relationshipGoals Json
 
-  // Preferred partner
   idealPartner Json
 
-  // Financial information
   financial Json
 
-  // Photos
   photos Json
 
   notes Note[]

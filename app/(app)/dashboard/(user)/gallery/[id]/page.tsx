@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
-import { ApplicationForm } from "@/types/application-form-types"
+import { ApplicationForm } from "@/types/application-form"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 
@@ -78,7 +78,6 @@ export default function UserDetailPage() {
   const mainPhoto =
     photos?.headshot || Object.values(photos || {}).find((p) => p)
   const galleryPhotos = Object.entries(photos || {})
-  
 
   return (
     <div className="container mx-auto py-8">

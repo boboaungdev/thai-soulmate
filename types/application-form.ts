@@ -1,17 +1,27 @@
-import { ApplicationForm as PrismaApplicationForm } from "@/lib/generated/prisma/client"
-
-export interface PersonalDetails {
-  name: string
-  dob: string
-  gender: string
-  prefix: string
+export interface ApplicationForm {
+  id: string
+  personalDetails: PersonalDetails
+  career: Career
+  appearance: Appearance
+  personality: Personality
+  lifestyle: Lifestyle
+  relationshipGoals: RelationshipGoals
+  idealPartner: IdealPartner
+  financial: Financial
+  photos: Photos
+  createdAt: Date
+  updatedAt: Date
 }
 
-export interface Contact {
-  email: string;
-  phone: string;
-  nationality: string;
-  currentLocation: string;
+export interface PersonalDetails {
+  prefix: string
+  name: string
+  gender: string
+  dob: string | Date
+  email: string
+  phone: string
+  nationality: string
+  currentLocation: string
 }
 
 export interface Career {
@@ -24,6 +34,8 @@ export interface Appearance {
   height: string
   weight: string
   religion: string
+  thaiFluency: number[]
+  englishFluency: number[]
 }
 
 export interface Personality {
@@ -31,6 +43,9 @@ export interface Personality {
   about: string
   bestQualities: string[]
   lookingForQualities: string[]
+  maritalStatus: string
+  hasChildren: string
+  childrenCount: number
 }
 
 export interface Lifestyle {
@@ -39,12 +54,18 @@ export interface Lifestyle {
   drinking: string
   exercise: string
   interests: string[]
+  otherInterest: string
+  travelDestinations: string[]
+  weekendActivity: string
+  familyImportance: string
+  futureChildren: string
+  values: string[]
 }
 
 export interface RelationshipGoals {
-    lookingFor: string[]
-    relocate: string
-    settleDown: string
+  relocate: string
+  lookingFor: string[]
+  settleDown: string
 }
 
 export interface IdealPartner {
@@ -60,27 +81,13 @@ export interface IdealPartner {
 
 export interface Financial {
   income: string
-  ownProperty: string
   ownBusiness: string
+  ownProperty: string
 }
 
 export interface Photos {
+  recent: string
   headshot: string
   fullLength: string
   casualLifestyle: string
-  recent: string
-}
-
-// Extend the Prisma ApplicationForm to use the typed JSON fields
-export interface ApplicationForm extends Omit<PrismaApplicationForm, "personalDetails" | "contact" | "career" | "appearance" | "personality" | "lifestyle" | "relationshipGoals" | "idealPartner" | "financial" | "photos"> {
-    personalDetails: PersonalDetails;
-    contact: Contact;
-    career: Career;
-    appearance: Appearance;
-    personality: Personality;
-    lifestyle: Lifestyle;
-    relationshipGoals: RelationshipGoals;
-    idealPartner: IdealPartner;
-    financial: Financial;
-    photos: Photos;
 }

@@ -48,7 +48,7 @@ export function RegisterInterestDetails({
         setIsLoadingNotes(true)
         try {
           const response = await fetch(
-            `/api/notes/register-interest/${item.id}`
+            `/api/notes/${item.id}/register-interest`
           )
           const result = await response.json()
           if (result.success) {
@@ -78,7 +78,7 @@ export function RegisterInterestDetails({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch(`/api/notes/register-interest/${item.id}`, {
+      const response = await fetch(`/api/notes/${item.id}/register-interest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

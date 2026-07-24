@@ -43,6 +43,7 @@ import { useRouter } from "next/navigation"
 import { APP_INFO } from "@/constants"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
 import { toast } from "sonner"
+import { useAuthStore } from "@/stores/auth-store"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -53,8 +54,9 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter()
   const task = row.original as RegisterInterest
-  const [note, setNote] = useState("")
+  const [message, setMessage] = useState("")
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
+  const { user } = useAuthStore()
 
   const handleDelete = async () => {
     try {
@@ -87,21 +89,26 @@ export function DataTableRowActions<TData>({
   }
 
   const handleAddNote = async () => {
+    if (!user?.id) {
+      toast.error("You must be logged in to add a note.")
+      return
+    }
+
     try {
       const res = await fetch(`/api/notes/${task.id}/register-interest`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ note }),
+        body: JSON.stringify({ message, userId: user.id }),
       })
 
       if (res.ok) {
         toast.success("Note added successfully.")
-        setNote("")
+        setMessage("")
         setIsNoteDialogOpen(false)
         router.refresh()
       } else {
-        const { message } = await res.json()
-        toast.error(message || "Failed to add note.")
+        const { message: errorMessage } = await res.json()
+        toast.error(errorMessage || "Failed to add note.")
       }
     } catch (error: any) {
       toast.error(error.message || "An error occurred.")
@@ -153,8 +160,8 @@ export function DataTableRowActions<TData>({
                 </Label>
                 <Textarea
                   id="note"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   className="col-span-3"
                   placeholder="Type your note here."
                 />

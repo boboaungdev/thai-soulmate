@@ -12,21 +12,6 @@ export async function GET(
 
     const interest = await prisma.registerInterest.findUnique({
       where: { id },
-      include: {
-        notes: {
-          include: {
-            user: {
-              select: {
-                name: true,
-                avatar: true,
-              },
-            },
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        },
-      },
     })
 
     if (!interest) {

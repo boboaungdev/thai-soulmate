@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -28,11 +28,7 @@ type NoteWithUser = Note & {
 }
 
 interface RegisterInterestDetailsProps {
-  item:
-    | (RegisterInterest & {
-        notes: NoteWithUser[]
-      })
-    | null
+  item: RegisterInterest | null
   onClose: () => void
 }
 
@@ -42,8 +38,36 @@ export function RegisterInterestDetails({
 }: RegisterInterestDetailsProps) {
   const { user } = useAuthStore()
   const [noteMessage, setNoteMessage] = useState("")
-  const [notes, setNotes] = useState(item?.notes || [])
+  const [notes, setNotes] = useState<NoteWithUser[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoadingNotes, setIsLoadingNotes] = useState(false)
+
+  useEffect(() => {
+    if (item) {
+      const fetchNotes = async () => {
+        setIsLoadingNotes(true)
+        try {
+          const response = await fetch(
+            `/api/notes/register-interest/${item.id}`
+          )
+          const result = await response.json()
+          if (result.success) {
+            setNotes(result.notes)
+          } else {
+            toast.error(result.error || "Failed to fetch notes.")
+          }
+        } catch (error) {
+          toast.error("An unexpected error occurred while fetching notes.")
+          console.error(error)
+        } finally {
+          setIsLoadingNotes(false)
+        }
+      }
+      fetchNotes()
+    } else {
+      setNotes([])
+    }
+  }, [item])
 
   if (!item) {
     return null
@@ -54,19 +78,16 @@ export function RegisterInterestDetails({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch(
-        `/api/register-interest/${item.id}/notes`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: noteMessage,
-            userId: user.id,
-          }),
-        }
-      )
+      const response = await fetch(`/api/notes/register-interest/${item.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: noteMessage,
+          userId: user.id,
+        }),
+      })
 
       const result = await response.json()
 
@@ -148,25 +169,31 @@ export function RegisterInterestDetails({
                   </Button>
                 </div>
                 <div className="space-y-4">
-                  {notes.map((note) => (
-                    <div key={note.id} className="flex items-start space-x-3">
-                      <Avatar>
-                        <AvatarImage src={note.user.avatar || undefined} />
-                        <AvatarFallback>
-                          {note.user.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <p className="font-semibold">{note.user.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {dayjs(note.createdAt).format("MMM D, YYYY h:mm A")}
-                          </p>
+                  {isLoadingNotes ? (
+                    <p>Loading notes...</p>
+                  ) : (
+                    notes.map((note) => (
+                      <div key={note.id} className="flex items-start space-x-3">
+                        <Avatar>
+                          <AvatarImage src={note.user.avatar || undefined} />
+                          <AvatarFallback>
+                            {note.user.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <p className="font-semibold">{note.user.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {dayjs(note.createdAt).format(
+                                "MMM D, YYYY h:mm A"
+                              )}
+                            </p>
+                          </div>
+                          <p className="text-sm">{note.message}</p>
                         </div>
-                        <p className="text-sm">{note.message}</p>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </CardContent>

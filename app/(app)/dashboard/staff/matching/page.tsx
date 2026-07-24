@@ -38,7 +38,7 @@ import {
   ChevronsUpDown,
   Mars,
   Venus,
-  Globe,
+  Home,
   MapPin,
   XCircle,
 } from "lucide-react"
@@ -54,7 +54,7 @@ const maleUsers = [
     imageUrl: "/placeholder-user.jpg",
     nationality: "American",
     currentLocation: "USA",
-    bio: "Loves hiking and reading.",
+    about: "Loves hiking and reading.",
     createdAt: new Date("2024-01-15T09:30:00Z"),
   },
   {
@@ -66,7 +66,7 @@ const maleUsers = [
     imageUrl: "/placeholder-user.jpg",
     nationality: "British",
     currentLocation: "UK",
-    bio: "Enjoys cooking and traveling.",
+    about: "Enjoys cooking and traveling.",
     createdAt: new Date("2024-02-20T14:00:00Z"),
   },
 ]
@@ -78,9 +78,11 @@ const femaleMatches = [
     age: 29,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 92,
-    bio: "Passionate about art and music.",
+    about: "Passionate about art and music.",
     isVip: true,
     createdAt: new Date("2024-03-10T08:45:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f2",
@@ -88,9 +90,11 @@ const femaleMatches = [
     age: 31,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 80,
-    bio: "Adores animals and outdoor activities.",
+    about: "Adores animals and outdoor activities.",
     isVip: false,
     createdAt: new Date("2024-03-12T11:20:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f3",
@@ -98,9 +102,11 @@ const femaleMatches = [
     age: 27,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 79,
-    bio: "Tech enthusiast and movie lover.",
+    about: "Tech enthusiast and movie lover.",
     isVip: true,
     createdAt: new Date("2024-03-18T16:10:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f4",
@@ -108,9 +114,11 @@ const femaleMatches = [
     age: 33,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 75,
-    bio: "Fitness and wellness advocate.",
+    about: "Fitness and wellness advocate.",
     isVip: false,
     createdAt: new Date("2024-04-01T10:00:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f5",
@@ -118,9 +126,11 @@ const femaleMatches = [
     age: 30,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 45,
-    bio: "Loves to read sci-fi.",
+    about: "Loves to read sci-fi.",
     isVip: false,
     createdAt: new Date("2024-04-05T15:30:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f6",
@@ -128,9 +138,11 @@ const femaleMatches = [
     age: 28,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 88,
-    bio: "Loves to dance salsa and travel.",
+    about: "Loves to dance salsa and travel.",
     isVip: true,
     createdAt: new Date("2024-04-08T11:00:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f7",
@@ -138,9 +150,11 @@ const femaleMatches = [
     age: 35,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 65,
-    bio: "Enjoys photography and long walks on the beach.",
+    about: "Enjoys photography and long walks on the beach.",
     isVip: false,
     createdAt: new Date("2024-04-10T14:20:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f8",
@@ -148,9 +162,11 @@ const femaleMatches = [
     age: 26,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 95,
-    bio: "A foodie who loves trying new restaurants.",
+    about: "A foodie who loves trying new restaurants.",
     isVip: true,
     createdAt: new Date("2024-04-11T18:00:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f9",
@@ -158,9 +174,11 @@ const femaleMatches = [
     age: 30,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 72,
-    bio: "Yoga instructor and mindfulness practitioner.",
+    about: "Yoga instructor and mindfulness practitioner.",
     isVip: false,
     createdAt: new Date("2024-04-15T09:00:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f10",
@@ -168,9 +186,11 @@ const femaleMatches = [
     age: 34,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 85,
-    bio: "Entrepreneur and avid reader.",
+    about: "Entrepreneur and avid reader.",
     isVip: true,
     createdAt: new Date("2024-04-18T13:45:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f11",
@@ -178,9 +198,11 @@ const femaleMatches = [
     age: 25,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 68,
-    bio: "Student and part-time musician.",
+    about: "Student and part-time musician.",
     isVip: false,
     createdAt: new Date("2024-04-20T10:15:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
   {
     id: "f12",
@@ -188,9 +210,11 @@ const femaleMatches = [
     age: 32,
     imageUrl: "/placeholder-user.jpg",
     matchScore: 90,
-    bio: "Loves painting and visiting art galleries.",
+    about: "Loves painting and visiting art galleries.",
     isVip: true,
     createdAt: new Date("2024-04-22T12:00:00Z"),
+    nationality: "Thai",
+    currentLocation: "Thailand",
   },
 ]
 
@@ -299,7 +323,9 @@ export default function MatchingPage() {
                     aria-expanded={open}
                     className="w-full justify-between md:w-[250px]"
                   >
-                    {selectedMale ? selectedMale.name : "Select user..."}
+                    {selectedMale
+                      ? `${selectedMale.prefix} ${selectedMale.name}`
+                      : "Select user..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
@@ -379,12 +405,9 @@ export default function MatchingPage() {
                     <Mars className="text-gold h-5 w-5" />
                     <span>Age: {selectedMale.age}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    {selectedMale.bio}
-                  </p>
                   <div className="flex items-center justify-center gap-4 pt-1 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1.5">
-                      <Globe className="h-3.5 w-3.5" />
+                      <Home className="h-3.5 w-3.5" />
                       <span>{selectedMale.nationality}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -488,14 +511,16 @@ export default function MatchingPage() {
               key={match.id}
               className="relative flex flex-col items-center text-center"
             >
-              <Badge
-                className={cn(
-                  "absolute top-2 right-2 hover:bg-primary/80",
-                  getMatchScoreBadgeClass(match.matchScore)
-                )}
-              >
-                {match.matchScore}%
-              </Badge>
+              {selectedMale && (
+                <Badge
+                  className={cn(
+                    "absolute top-2 right-2 hover:bg-primary/80",
+                    getMatchScoreBadgeClass(match.matchScore)
+                  )}
+                >
+                  {match.matchScore}%
+                </Badge>
+              )}
               <CardHeader className="flex items-center justify-center p-2">
                 <Avatar className="h-24 w-24">
                   <AvatarImage src={match.imageUrl} alt={match.name} />
@@ -520,9 +545,23 @@ export default function MatchingPage() {
                   <Calendar className="h-3.5 w-3.5" />
                   <span>Joined: {match.createdAt.toLocaleDateString()}</span>
                 </div>
+                <div className="flex items-center justify-center gap-4 pt-1 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <Home className="h-3.5 w-3.5" />
+                    <span>{match.nationality}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5" />
+                    <span>{match.currentLocation}</span>
+                  </div>
+                </div>
               </CardContent>
               <CardFooter className="flex w-full flex-col gap-2 p-2 pt-4">
-                <Button variant="outline" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  disabled={!selectedMale}
+                >
                   Matching
                 </Button>
               </CardFooter>

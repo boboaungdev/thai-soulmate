@@ -6,7 +6,7 @@ import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ApplicationForm } from "@/types/application-form"
-import { calculateAge, formatDOB } from "@/lib/utils"
+import { formatDOB } from "@/lib/utils"
 
 function DetailField({
   label,

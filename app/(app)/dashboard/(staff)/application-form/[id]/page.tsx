@@ -6,6 +6,7 @@ import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ApplicationForm } from "@/types/application-form"
+import { calculateAge, formatDOB } from "@/lib/utils"
 
 function DetailField({
   label,
@@ -85,6 +86,7 @@ export default function ApplicationDetailPage() {
   }
 
   const {
+    customId,
     personalDetails,
     career,
     appearance,
@@ -130,7 +132,13 @@ export default function ApplicationDetailPage() {
           <CardContent className="space-y-4">
             <DetailField label="Prefix" value={personalDetails?.prefix} />
             <DetailField label="Name" value={personalDetails?.name} />
-            {personalDetails?.nickname && (
+            {personalDetails?.gender === "Female" && (
+              <DetailField
+                label="ID Number"
+                value={String(customId).padStart(4, "0")}
+              />
+            )}
+            {personalDetails?.gender === "Female" && (
               <DetailField label="Nickname" value={personalDetails.nickname} />
             )}
             <DetailField label="Gender" value={personalDetails?.gender} />
@@ -138,7 +146,7 @@ export default function ApplicationDetailPage() {
               label="Date of Birth"
               value={
                 personalDetails?.dob
-                  ? new Date(personalDetails.dob).toLocaleDateString()
+                  ? formatDOB(personalDetails.dob, { showAge: true })
                   : "-"
               }
             />

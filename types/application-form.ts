@@ -1,5 +1,6 @@
 export interface ApplicationForm {
   id: string
+  customId: number
   personalDetails: PersonalDetails
   career: Career
   appearance: Appearance

@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -33,3 +34,20 @@ export const formatDate = (date: string) =>
     minute: "2-digit",
     hour12: false,
   })
+
+// utils/date.ts
+
+
+export function formatDOB(
+  date: string | Date,
+  options?: {
+    showAge?: boolean
+  }
+): string {
+  const dob = new Date(date)
+  const formatted = dayjs(dob).format("D MMM YYYY")
+
+  if (!options?.showAge) return formatted
+
+  return `${formatted} (Age: ${calculateAge(dob)})`
+}

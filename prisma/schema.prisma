@@ -71,7 +71,8 @@ model Note {
 }
 
 model ApplicationForm {
-  id String @id @default(cuid())
+  id       String @id @default(cuid())
+  customId Int    @unique @default(autoincrement())
 
   personalDetails Json
 

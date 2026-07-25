@@ -18,16 +18,16 @@ export const CONTACT = {
   secondaryPhone: "+66 69 999 9999",
 } as const
 
+export const EMAIL = {
+  noreply: "noreply@kkhay.com",
+  contact: "boboaungdev@gmail.com",
+} as const
+
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export const DATABASE = {
   DATABASE_URL: process.env.DATABASE_URL,
 } as const
-
-export const EMAIL = {
-  noreply: "bobo@kkhay.com",
-  contact: "boboaungdev@gmail.com",
-}
 
 export const RESEND = {
   RESEND_API_KEY: process.env.RESEND_API_KEY,

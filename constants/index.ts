@@ -29,10 +29,9 @@ export const EMAIL = {
   contact: "boboaungdev@gmail.com",
 }
 
-export const NODEMAILER = {
-  user: process.env.SMTP_USER,
-  pass: process.env.SMTP_PASS,
-} as const
+export const RESEND = {
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+}
 
 export const R2 = {
   R2_BUCKET: process.env.R2_BUCKET,

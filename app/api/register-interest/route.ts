@@ -3,11 +3,8 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
 import { APP_INFO, EMAIL } from "@/constants"
-import { transporter } from "@/lib/nodemailer"
-import {
-  getAdminNotificationHtml,
-  getUserConfirmationHtml,
-} from "@/lib/email-templates"
+import { resend } from "@/lib/resend"
+import { AdminNotificationEmail, UserConfirmationEmail } from "@/emails"
 import { calculateAge } from "@/lib/utils"
 
 const formSchema = z.object({
@@ -90,28 +87,24 @@ export async function POST(req: Request) {
       )
     }
 
-    const adminMailOptions = {
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
-      to: EMAIL.contact,
-      subject: `New Interest Registration: ${validatedData.name}`,
-      html: getAdminNotificationHtml({
-        ...validatedData,
-        age,
-        location: validatedData.currentLocation,
-      }),
-    }
-
-    const userMailOptions = {
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
-      to: validatedData.email,
-      subject: `Thank you for your interest in ${APP_INFO.name}!`,
-      html: getUserConfirmationHtml(validatedData),
-    }
-
     try {
       await Promise.all([
-        transporter.sendMail(adminMailOptions),
-        transporter.sendMail(userMailOptions),
+        resend.emails.send({
+          from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+          to: EMAIL.contact,
+          subject: `New Interest Registration: ${validatedData.name}`,
+          react: AdminNotificationEmail({
+            ...validatedData,
+            age,
+            location: validatedData.currentLocation,
+          }),
+        }),
+        resend.emails.send({
+          from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+          to: validatedData.email,
+          subject: `Thank you for your interest in ${APP_INFO.name}!`,
+          react: UserConfirmationEmail(validatedData),
+        }),
       ])
     } catch (emailError) {
       console.error("Email error:", emailError)

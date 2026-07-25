@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
-import Image from "next/image"
 
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -130,9 +129,7 @@ export default function ApplicationsPage() {
                       </TableCell>
 
                       <TableCell>
-                        <Badge variant="outline">
                           {app.personalDetails?.gender || "-"}
-                        </Badge>
                       </TableCell>
 
                       <TableCell>

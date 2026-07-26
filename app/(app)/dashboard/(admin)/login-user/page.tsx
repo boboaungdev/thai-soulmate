@@ -1,5 +1,6 @@
 "use client"
 
+import { UserPlus } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -48,12 +49,23 @@ export default function UsersPage() {
             <p className="text-sm text-muted-foreground">Manage login users</p>
           </div>
           <Button variant="outline" onClick={() => setIsSheetOpen(true)}>
+            <UserPlus className="mr-2 h-4 w-4" />
             Add User
           </Button>
         </div>
 
         {loading ? (
-          <Skeleton className="h-96 w-full rounded-lg" />
+          <div className="rounded-md border">
+            <div className="w-full space-y-4 p-4">
+              <Skeleton className="h-10 w-full" />
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Skeleton key={index} className="h-12 w-full" />
+                ))}
+              </div>
+              <Skeleton className="h-8 w-full" />
+            </div>
+          </div>
         ) : (
           <DataTable columns={columns} data={users} />
         )}

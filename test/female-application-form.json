@@ -1,0 +1,1522 @@
+[
+  {
+    "id": "cmrzclchx0000538zcsny6001",
+    "customId": "1001",
+    "personalDetails": {
+      "dob": "1998-04-18T00:00:00.000Z",
+      "name": "Khay Khay",
+      "nickname": "Angela",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "angela@example.com",
+      "phone": "+66901234567",
+      "nationality": "Thai",
+      "currentLocation": "Bangkok, Thailand"
+    },
+    "career": {
+      "company": "Bangkok Hospital",
+      "education": "Bachelor's Degree",
+      "occupation": "Doctor"
+    },
+    "appearance": {
+      "height": "170",
+      "weight": "54",
+      "religion": "Buddhism",
+      "englishFluency": [
+        90
+      ]
+    },
+    "personality": {
+      "about": "I enjoy helping people, traveling, and spending time with family.",
+      "hasChildren": "No",
+      "personality": [
+        "Kind",
+        "Confident",
+        "Family-Oriented"
+      ],
+      "bestQualities": [
+        "Honest",
+        "Kind",
+        "Funny"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Loyal",
+        "Supportive",
+        "Kind"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Honesty",
+        "Financial Stability",
+        "Kindness",
+        "Adventure",
+        "Communication"
+      ],
+      "smoking": "Never",
+      "drinking": "Never",
+      "exercise": "Daily",
+      "interests": [
+        "Travel",
+        "Cooking",
+        "Movies",
+        "Golf",
+        "Yoga"
+      ],
+      "lifestyle": [
+        "Relaxed"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Yes",
+      "weekendActivity": "Cafe hopping and golfing",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Paris",
+        "Tokyo",
+        "New York"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Yes",
+      "lookingFor": [
+        "Long-Term Relationship"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'8\"+",
+      "ageRange": "30-38",
+      "location": "Asia",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Family-Oriented",
+        "Romantic",
+        "Easy Going",
+        "Financially Stable"
+      ],
+      "nationality": "Asian",
+      "personality": [
+        "Kind",
+        "Ambitious",
+        "Confident",
+        "Spiritual",
+        "Easy Going"
+      ],
+      "dealBreakers": [
+        "Smoker",
+        "Dishonest",
+        "Disrespectful"
+      ]
+    },
+    "financial": {
+      "income": "$25,000-$50,000",
+      "ownBusiness": "No",
+      "ownProperty": "No"
+    },
+    "photos": {
+      "recent": "/photos/female1/recent.jpg",
+      "headshot": "/photos/female1/headshot.jpg",
+      "fullLength": "/photos/female1/full.jpg",
+      "casualLifestyle": "/photos/female1/casual.jpg"
+    },
+    "createdAt": "2026-07-24T19:43:20.709Z",
+    "updatedAt": "2026-07-24T19:43:20.709Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6002",
+    "customId": "1002",
+    "personalDetails": {
+      "dob": "1995-10-08T00:00:00.000Z",
+      "name": "Nicha Wong",
+      "nickname": "Nicha",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "nicha@example.com",
+      "phone": "+66811234567",
+      "nationality": "Thai",
+      "currentLocation": "Chiang Mai, Thailand"
+    },
+    "career": {
+      "company": "CP Group",
+      "education": "Master's Degree",
+      "occupation": "Marketing Manager"
+    },
+    "appearance": {
+      "height": "165",
+      "weight": "51",
+      "religion": "Buddhism",
+      "englishFluency": [
+        95
+      ]
+    },
+    "personality": {
+      "about": "I love discovering new places and meeting positive people.",
+      "hasChildren": "No",
+      "personality": [
+        "Adventurous",
+        "Kind",
+        "Creative"
+      ],
+      "bestQualities": [
+        "Positive",
+        "Loyal",
+        "Funny"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Honest",
+        "Romantic",
+        "Supportive"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Trust",
+        "Respect",
+        "Adventure",
+        "Communication",
+        "Family"
+      ],
+      "smoking": "Never",
+      "drinking": "Socially",
+      "exercise": "Weekly",
+      "interests": [
+        "Travel",
+        "Photography",
+        "Yoga",
+        "Music",
+        "Fine Dining"
+      ],
+      "lifestyle": [
+        "Active"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Maybe",
+      "weekendActivity": "Mountain trips",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Switzerland",
+        "Japan",
+        "Italy"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Maybe",
+      "lookingFor": [
+        "Marriage"
+      ],
+      "settleDown": "1-3 Years"
+    },
+    "idealPartner": {
+      "height": "5'10\"+",
+      "ageRange": "32-40",
+      "location": "Europe",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Loyal",
+        "Financially Stable",
+        "Family-Oriented",
+        "Kind"
+      ],
+      "nationality": "European",
+      "personality": [
+        "Confident",
+        "Easy Going",
+        "Romantic",
+        "Kind",
+        "Intelligent"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Lying",
+        "Aggressive"
+      ]
+    },
+    "financial": {
+      "income": "$50,000-$100,000",
+      "ownBusiness": "No",
+      "ownProperty": "Yes"
+    },
+    "photos": {
+      "recent": "/photos/female2/recent.jpg",
+      "headshot": "/photos/female2/headshot.jpg",
+      "fullLength": "/photos/female2/full.jpg",
+      "casualLifestyle": "/photos/female2/casual.jpg"
+    },
+    "createdAt": "2026-07-24T19:43:20.709Z",
+    "updatedAt": "2026-07-24T19:43:20.709Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6003",
+    "customId": "1003",
+    "personalDetails": {
+      "dob": "1996-02-14T00:00:00.000Z",
+      "name": "Maria Santos",
+      "nickname": "Maria",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "maria@example.com",
+      "phone": "+639171234567",
+      "nationality": "Filipino",
+      "currentLocation": "Manila, Philippines"
+    },
+    "career": {
+      "company": "Vista Architects",
+      "education": "Bachelor's Degree",
+      "occupation": "Architect"
+    },
+    "appearance": {
+      "height": "168",
+      "weight": "55",
+      "religion": "Christian",
+      "englishFluency": [
+        100
+      ]
+    },
+    "personality": {
+      "about": "Family means everything to me and I enjoy quiet weekends.",
+      "hasChildren": "No",
+      "personality": [
+        "Family-Oriented",
+        "Kind",
+        "Creative"
+      ],
+      "bestQualities": [
+        "Patient",
+        "Honest",
+        "Supportive"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Faithful",
+        "Responsible",
+        "Kind"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Family",
+        "Faith",
+        "Honesty",
+        "Respect",
+        "Communication"
+      ],
+      "smoking": "Never",
+      "drinking": "Occasionally",
+      "exercise": "Weekly",
+      "interests": [
+        "Reading",
+        "Art",
+        "Cooking",
+        "Travel",
+        "Photography"
+      ],
+      "lifestyle": [
+        "Family-Focused"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Yes",
+      "weekendActivity": "Cooking with family",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "London",
+        "Bali",
+        "Paris"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Yes",
+      "lookingFor": [
+        "Marriage"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'9\"+",
+      "ageRange": "32-42",
+      "location": "Any",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Loyal",
+        "Family-Oriented",
+        "Financially Stable",
+        "Romantic"
+      ],
+      "nationality": "Any",
+      "personality": [
+        "Kind",
+        "Confident",
+        "Intelligent",
+        "Easy Going",
+        "Romantic"
+      ],
+      "dealBreakers": [
+        "Cheating",
+        "Smoking",
+        "Dishonesty"
+      ]
+    },
+    "financial": {
+      "income": "$25,000-$50,000",
+      "ownBusiness": "No",
+      "ownProperty": "No"
+    },
+    "photos": {
+      "recent": "/photos/female3/recent.jpg",
+      "headshot": "/photos/female3/headshot.jpg",
+      "fullLength": "/photos/female3/full.jpg",
+      "casualLifestyle": "/photos/female3/casual.jpg"
+    },
+    "createdAt": "2026-07-24T19:43:20.709Z",
+    "updatedAt": "2026-07-24T19:43:20.709Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6004",
+    "customId": "1004",
+    "personalDetails": {
+      "dob": "1999-12-02T00:00:00.000Z",
+      "name": "Yuki Tanaka",
+      "nickname": "Yuki",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "yuki@example.com",
+      "phone": "+819012345678",
+      "nationality": "Japanese",
+      "currentLocation": "Tokyo, Japan"
+    },
+    "career": {
+      "company": "Rakuten",
+      "education": "Bachelor's Degree",
+      "occupation": "Software Engineer"
+    },
+    "appearance": {
+      "height": "164",
+      "weight": "50",
+      "religion": "None",
+      "englishFluency": [
+        85
+      ]
+    },
+    "personality": {
+      "about": "I love technology, movies, and traveling around Asia.",
+      "hasChildren": "No",
+      "personality": [
+        "Easy Going",
+        "Ambitious",
+        "Kind"
+      ],
+      "bestQualities": [
+        "Intelligent",
+        "Loyal",
+        "Calm"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Honest",
+        "Funny",
+        "Kind"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Trust",
+        "Communication",
+        "Adventure",
+        "Kindness",
+        "Independence"
+      ],
+      "smoking": "Never",
+      "drinking": "Socially",
+      "exercise": "Daily",
+      "interests": [
+        "Movies",
+        "Gaming",
+        "Travel",
+        "Fitness",
+        "Photography"
+      ],
+      "lifestyle": [
+        "Relaxed"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Maybe",
+      "weekendActivity": "Hiking and movies",
+      "familyImportance": "Important",
+      "travelDestinations": [
+        "Seoul",
+        "Singapore",
+        "New Zealand"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Maybe",
+      "lookingFor": [
+        "Long-Term Relationship"
+      ],
+      "settleDown": "1-3 Years"
+    },
+    "idealPartner": {
+      "height": "5'9\"+",
+      "ageRange": "30-38",
+      "location": "Asia",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Kind",
+        "Financially Stable",
+        "Family-Oriented",
+        "Easy Going"
+      ],
+      "nationality": "Asian",
+      "personality": [
+        "Kind",
+        "Confident",
+        "Romantic",
+        "Easy Going",
+        "Adventurous"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Rude",
+        "Dishonest"
+      ]
+    },
+    "financial": {
+      "income": "$50,000-$100,000",
+      "ownBusiness": "No",
+      "ownProperty": "Yes"
+    },
+    "photos": {
+      "recent": "/photos/female4/recent.jpg",
+      "headshot": "/photos/female4/headshot.jpg",
+      "fullLength": "/photos/female4/full.jpg",
+      "casualLifestyle": "/photos/female4/casual.jpg"
+    },
+    "createdAt": "2026-07-24T19:43:20.709Z",
+    "updatedAt": "2026-07-24T19:43:20.709Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6005",
+    "customId": "1005",
+    "personalDetails": {
+      "dob": "1997-06-11T00:00:00.000Z",
+      "name": "Mai Nguyen",
+      "nickname": "Mai",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "mai.nguyen@example.com",
+      "phone": "+84901234567",
+      "nationality": "Vietnamese",
+      "currentLocation": "Ho Chi Minh City, Vietnam"
+    },
+    "career": {
+      "company": "Vietcombank",
+      "education": "Bachelor's Degree",
+      "occupation": "Financial Analyst"
+    },
+    "appearance": {
+      "height": "167",
+      "weight": "52",
+      "religion": "Buddhism",
+      "englishFluency": [
+        92
+      ]
+    },
+    "personality": {
+      "about": "I enjoy traveling, learning about different cultures, and building a happy family in the future.",
+      "hasChildren": "No",
+      "personality": [
+        "Kind",
+        "Ambitious",
+        "Easy Going",
+        "Family-Oriented"
+      ],
+      "bestQualities": [
+        "Honest",
+        "Patient",
+        "Supportive"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Loyal",
+        "Kind",
+        "Financially Stable"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Honesty",
+        "Family",
+        "Communication",
+        "Respect",
+        "Adventure"
+      ],
+      "smoking": "Never",
+      "drinking": "Occasionally",
+      "exercise": "Weekly",
+      "interests": [
+        "Travel",
+        "Cooking",
+        "Yoga",
+        "Reading",
+        "Photography"
+      ],
+      "lifestyle": [
+        "Family-Focused"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Yes",
+      "weekendActivity": "Exploring cafés and cooking",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Japan",
+        "Switzerland",
+        "Thailand"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Yes",
+      "lookingFor": [
+        "Marriage"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'9\"+",
+      "ageRange": "31-40",
+      "location": "Asia",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Romantic",
+        "Family-Oriented",
+        "Financially Stable",
+        "Easy Going"
+      ],
+      "nationality": "Asian",
+      "personality": [
+        "Kind",
+        "Confident",
+        "Ambitious",
+        "Easy Going",
+        "Spiritual"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Dishonest",
+        "Lazy"
+      ]
+    },
+    "financial": {
+      "income": "$25,000-$50,000",
+      "ownBusiness": "No",
+      "ownProperty": "No"
+    },
+    "photos": {
+      "recent": "/photos/female5/recent.jpg",
+      "headshot": "/photos/female5/headshot.jpg",
+      "fullLength": "/photos/female5/full.jpg",
+      "casualLifestyle": "/photos/female5/casual.jpg"
+    },
+    "createdAt": "2026-07-25T10:00:00.000Z",
+    "updatedAt": "2026-07-25T10:00:00.000Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6006",
+    "customId": "1006",
+    "personalDetails": {
+      "dob": "1994-03-20T00:00:00.000Z",
+      "name": "Ji-eun Park",
+      "nickname": "Jisoo",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "jieun@example.com",
+      "phone": "+821012345678",
+      "nationality": "South Korean",
+      "currentLocation": "Seoul, South Korea"
+    },
+    "career": {
+      "company": "Samsung Electronics",
+      "education": "Master's Degree",
+      "occupation": "UX Designer"
+    },
+    "appearance": {
+      "height": "165",
+      "weight": "50",
+      "religion": "Christian",
+      "englishFluency": [
+        95
+      ]
+    },
+    "personality": {
+      "about": "Creative, optimistic, and passionate about design and meaningful relationships.",
+      "hasChildren": "No",
+      "personality": [
+        "Creative",
+        "Kind",
+        "Confident",
+        "Humorous"
+      ],
+      "bestQualities": [
+        "Creative",
+        "Loyal",
+        "Positive"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Honest",
+        "Funny",
+        "Supportive"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Communication",
+        "Trust",
+        "Kindness",
+        "Adventure",
+        "Respect"
+      ],
+      "smoking": "Never",
+      "drinking": "Socially",
+      "exercise": "Daily",
+      "interests": [
+        "Art",
+        "Travel",
+        "Fitness",
+        "Movies",
+        "Music"
+      ],
+      "lifestyle": [
+        "Active"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Maybe",
+      "weekendActivity": "Museums and hiking",
+      "familyImportance": "Important",
+      "travelDestinations": [
+        "France",
+        "Singapore",
+        "Canada"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Maybe",
+      "lookingFor": [
+        "Long-Term Relationship"
+      ],
+      "settleDown": "1-3 Years"
+    },
+    "idealPartner": {
+      "height": "5'10\"+",
+      "ageRange": "32-42",
+      "location": "Worldwide",
+      "education": "Master's Degree",
+      "qualities": [
+        "Honest",
+        "Intelligent",
+        "Romantic",
+        "Kind",
+        "Financially Stable"
+      ],
+      "nationality": "Any",
+      "personality": [
+        "Confident",
+        "Easy Going",
+        "Ambitious",
+        "Kind",
+        "Family-Oriented"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Cheating",
+        "Disrespect"
+      ]
+    },
+    "financial": {
+      "income": "$50,000-$100,000",
+      "ownBusiness": "No",
+      "ownProperty": "Yes"
+    },
+    "photos": {
+      "recent": "/photos/female6/recent.jpg",
+      "headshot": "/photos/female6/headshot.jpg",
+      "fullLength": "/photos/female6/full.jpg",
+      "casualLifestyle": "/photos/female6/casual.jpg"
+    },
+    "createdAt": "2026-07-25T11:30:00.000Z",
+    "updatedAt": "2026-07-25T11:30:00.000Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6007",
+    "customId": "1007",
+    "personalDetails": {
+      "dob": "1993-09-09T00:00:00.000Z",
+      "name": "Ananya Sharma",
+      "nickname": "Anya",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "ananya@example.com",
+      "phone": "+919876543210",
+      "nationality": "Indian",
+      "currentLocation": "Mumbai, India"
+    },
+    "career": {
+      "company": "Apollo Hospitals",
+      "education": "Doctorate",
+      "occupation": "Pediatrician"
+    },
+    "appearance": {
+      "height": "162",
+      "weight": "53",
+      "religion": "Hinduism",
+      "englishFluency": [
+        100
+      ]
+    },
+    "personality": {
+      "about": "I value compassion, family, and creating meaningful memories together.",
+      "hasChildren": "No",
+      "personality": [
+        "Kind",
+        "Family-Oriented",
+        "Intelligent",
+        "Romantic"
+      ],
+      "bestQualities": [
+        "Compassionate",
+        "Honest",
+        "Responsible"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Respectful",
+        "Loyal",
+        "Kind"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Family",
+        "Honesty",
+        "Faith",
+        "Respect",
+        "Communication"
+      ],
+      "smoking": "Never",
+      "drinking": "Never",
+      "exercise": "Weekly",
+      "interests": [
+        "Cooking",
+        "Reading",
+        "Travel",
+        "Yoga",
+        "Volunteering"
+      ],
+      "lifestyle": [
+        "Family-Focused"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Yes",
+      "weekendActivity": "Family dinners and nature walks",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Maldives",
+        "Italy",
+        "Thailand"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Yes",
+      "lookingFor": [
+        "Marriage"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'8\"+",
+      "ageRange": "33-45",
+      "location": "Worldwide",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Family-Oriented",
+        "Supportive",
+        "Financially Stable",
+        "Romantic"
+      ],
+      "nationality": "Any",
+      "personality": [
+        "Kind",
+        "Ambitious",
+        "Easy Going",
+        "Confident",
+        "Spiritual"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Dishonesty",
+        "Irresponsible"
+      ]
+    },
+    "financial": {
+      "income": "$50,000-$100,000",
+      "ownBusiness": "No",
+      "ownProperty": "Yes"
+    },
+    "photos": {
+      "recent": "/photos/female7/recent.jpg",
+      "headshot": "/photos/female7/headshot.jpg",
+      "fullLength": "/photos/female7/full.jpg",
+      "casualLifestyle": "/photos/female7/casual.jpg"
+    },
+    "createdAt": "2026-07-25T12:00:00.000Z",
+    "updatedAt": "2026-07-25T12:00:00.000Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6008",
+    "customId": "1008",
+    "personalDetails": {
+      "dob": "1996-01-30T00:00:00.000Z",
+      "name": "Aisyah Rahman",
+      "nickname": "Aisyah",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "aisyah@example.com",
+      "phone": "+60123456789",
+      "nationality": "Malaysian",
+      "currentLocation": "Kuala Lumpur, Malaysia"
+    },
+    "career": {
+      "company": "Petronas",
+      "education": "Bachelor's Degree",
+      "occupation": "Project Engineer"
+    },
+    "appearance": {
+      "height": "169",
+      "weight": "56",
+      "religion": "Islam",
+      "englishFluency": [
+        90
+      ]
+    },
+    "personality": {
+      "about": "I'm cheerful, hardworking, and believe the best relationships are built on trust and friendship.",
+      "hasChildren": "No",
+      "personality": [
+        "Easy Going",
+        "Kind",
+        "Ambitious",
+        "Humorous"
+      ],
+      "bestQualities": [
+        "Reliable",
+        "Honest",
+        "Friendly"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Loyal",
+        "Honest",
+        "Family-Oriented"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Trust",
+        "Communication",
+        "Family",
+        "Financial Stability",
+        "Respect"
+      ],
+      "smoking": "Never",
+      "drinking": "Never",
+      "exercise": "Daily",
+      "interests": [
+        "Travel",
+        "Golf",
+        "Fitness",
+        "Movies",
+        "Cooking"
+      ],
+      "lifestyle": [
+        "Active"
+      ],
+      "otherInterest": "Cycling",
+      "futureChildren": "Yes",
+      "weekendActivity": "Morning cycling and brunch",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "New Zealand",
+        "Japan",
+        "Switzerland"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Maybe",
+      "lookingFor": [
+        "Long-Term Relationship"
+      ],
+      "settleDown": "1-3 Years"
+    },
+    "idealPartner": {
+      "height": "5'9\"+",
+      "ageRange": "30-40",
+      "location": "Asia",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Kind",
+        "Financially Stable",
+        "Easy Going",
+        "Family-Oriented"
+      ],
+      "nationality": "Any",
+      "personality": [
+        "Confident",
+        "Kind",
+        "Easy Going",
+        "Adventurous",
+        "Ambitious"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Poor Communication",
+        "Dishonesty"
+      ]
+    },
+    "financial": {
+      "income": "$50,000-$100,000",
+      "ownBusiness": "No",
+      "ownProperty": "Yes"
+    },
+    "photos": {
+      "recent": "/photos/female8/recent.jpg",
+      "headshot": "/photos/female8/headshot.jpg",
+      "fullLength": "/photos/female8/full.jpg",
+      "casualLifestyle": "/photos/female8/casual.jpg"
+    },
+    "createdAt": "2026-07-25T13:00:00.000Z",
+    "updatedAt": "2026-07-25T13:00:00.000Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6009",
+    "customId": "1009",
+    "personalDetails": {
+      "dob": "1992-05-16T00:00:00.000Z",
+      "name": "Sakura Ito",
+      "nickname": "Saku",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "sakura.ito@example.com",
+      "phone": "+818012345678",
+      "nationality": "Japanese",
+      "currentLocation": "Osaka, Japan"
+    },
+    "career": {
+      "company": "Panasonic",
+      "education": "Bachelor's Degree",
+      "occupation": "Human Resources Manager"
+    },
+    "appearance": {
+      "height": "163",
+      "weight": "51",
+      "religion": "Shinto",
+      "englishFluency": [
+        88
+      ]
+    },
+    "personality": {
+      "about": "I appreciate simple moments, meaningful conversations, and building a happy future together.",
+      "hasChildren": "No",
+      "personality": [
+        "Kind",
+        "Easy Going",
+        "Romantic",
+        "Family-Oriented"
+      ],
+      "bestQualities": [
+        "Patient",
+        "Honest",
+        "Loyal"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Kind",
+        "Honest",
+        "Supportive"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Honesty",
+        "Trust",
+        "Family",
+        "Respect",
+        "Communication"
+      ],
+      "smoking": "Never",
+      "drinking": "Occasionally",
+      "exercise": "Weekly",
+      "interests": [
+        "Travel",
+        "Cooking",
+        "Reading",
+        "Yoga",
+        "Music"
+      ],
+      "lifestyle": [
+        "Relaxed"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Yes",
+      "weekendActivity": "Cooking and visiting gardens",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Kyoto",
+        "Paris",
+        "Bali"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Maybe",
+      "lookingFor": [
+        "Marriage"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'9\"+",
+      "ageRange": "33-42",
+      "location": "Asia",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Kind",
+        "Family-Oriented",
+        "Financially Stable",
+        "Romantic"
+      ],
+      "nationality": "Any",
+      "personality": [
+        "Kind",
+        "Confident",
+        "Easy Going",
+        "Ambitious",
+        "Romantic"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Dishonesty",
+        "Rudeness"
+      ]
+    },
+    "financial": {
+      "income": "$50,000-$100,000",
+      "ownBusiness": "No",
+      "ownProperty": "Yes"
+    },
+    "photos": {
+      "recent": "/photos/female9/recent.jpg",
+      "headshot": "/photos/female9/headshot.jpg",
+      "fullLength": "/photos/female9/full.jpg",
+      "casualLifestyle": "/photos/female9/casual.jpg"
+    },
+    "createdAt": "2026-07-26T09:00:00.000Z",
+    "updatedAt": "2026-07-26T09:00:00.000Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6010",
+    "customId": "1010",
+    "personalDetails": {
+      "dob": "1991-11-27T00:00:00.000Z",
+      "name": "Linh Tran",
+      "nickname": "Linh",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "linh.tran@example.com",
+      "phone": "+849876543210",
+      "nationality": "Vietnamese",
+      "currentLocation": "Da Nang, Vietnam"
+    },
+    "career": {
+      "company": "InterContinental Danang",
+      "education": "Bachelor's Degree",
+      "occupation": "Hotel Operations Manager"
+    },
+    "appearance": {
+      "height": "166",
+      "weight": "53",
+      "religion": "Buddhism",
+      "englishFluency": [
+        94
+      ]
+    },
+    "personality": {
+      "about": "Warm-hearted, independent, and always looking for new adventures around the world.",
+      "hasChildren": "No",
+      "personality": [
+        "Adventurous",
+        "Kind",
+        "Confident",
+        "Humorous"
+      ],
+      "bestQualities": [
+        "Reliable",
+        "Positive",
+        "Caring"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Honest",
+        "Loyal",
+        "Family-Oriented"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Adventure",
+        "Communication",
+        "Kindness",
+        "Family",
+        "Respect"
+      ],
+      "smoking": "Never",
+      "drinking": "Socially",
+      "exercise": "Daily",
+      "interests": [
+        "Travel",
+        "Photography",
+        "Fitness",
+        "Golf",
+        "Movies"
+      ],
+      "lifestyle": [
+        "Active"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Yes",
+      "weekendActivity": "Beach walks and photography",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Santorini",
+        "Switzerland",
+        "Tokyo"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Yes",
+      "lookingFor": [
+        "Long-Term Relationship"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'10\"+",
+      "ageRange": "34-45",
+      "location": "Worldwide",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Financially Stable",
+        "Kind",
+        "Romantic",
+        "Easy Going"
+      ],
+      "nationality": "Any",
+      "personality": [
+        "Confident",
+        "Kind",
+        "Adventurous",
+        "Easy Going",
+        "Family-Oriented"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Negative Attitude",
+        "Dishonesty"
+      ]
+    },
+    "financial": {
+      "income": "$50,000-$100,000",
+      "ownBusiness": "No",
+      "ownProperty": "Yes"
+    },
+    "photos": {
+      "recent": "/photos/female10/recent.jpg",
+      "headshot": "/photos/female10/headshot.jpg",
+      "fullLength": "/photos/female10/full.jpg",
+      "casualLifestyle": "/photos/female10/casual.jpg"
+    },
+    "createdAt": "2026-07-26T10:15:00.000Z",
+    "updatedAt": "2026-07-26T10:15:00.000Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6011",
+    "customId": "1011",
+    "personalDetails": {
+      "dob": "1990-08-03T00:00:00.000Z",
+      "name": "Grace Lim",
+      "nickname": "Grace",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "grace.lim@example.com",
+      "phone": "+6581234567",
+      "nationality": "Singaporean",
+      "currentLocation": "Singapore"
+    },
+    "career": {
+      "company": "DBS Bank",
+      "education": "Master's Degree",
+      "occupation": "Investment Consultant"
+    },
+    "appearance": {
+      "height": "168",
+      "weight": "54",
+      "religion": "Christian",
+      "englishFluency": [
+        100
+      ]
+    },
+    "personality": {
+      "about": "Career-driven but family always comes first. I enjoy meaningful conversations and traveling.",
+      "hasChildren": "No",
+      "personality": [
+        "Ambitious",
+        "Kind",
+        "Confident",
+        "Intelligent"
+      ],
+      "bestQualities": [
+        "Honest",
+        "Responsible",
+        "Optimistic"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Loyal",
+        "Supportive",
+        "Intelligent"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Financial Stability",
+        "Trust",
+        "Communication",
+        "Respect",
+        "Family"
+      ],
+      "smoking": "Never",
+      "drinking": "Occasionally",
+      "exercise": "Daily",
+      "interests": [
+        "Business",
+        "Investing",
+        "Travel",
+        "Fine Dining",
+        "Golf"
+      ],
+      "lifestyle": [
+        "Career-Focused"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Maybe",
+      "weekendActivity": "Golf and brunch with friends",
+      "familyImportance": "Important",
+      "travelDestinations": [
+        "London",
+        "New York",
+        "Dubai"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Maybe",
+      "lookingFor": [
+        "Marriage"
+      ],
+      "settleDown": "1-3 Years"
+    },
+    "idealPartner": {
+      "height": "6'0\"+",
+      "ageRange": "35-46",
+      "location": "Worldwide",
+      "education": "Master's Degree",
+      "qualities": [
+        "Honest",
+        "Financially Stable",
+        "Ambitious",
+        "Romantic",
+        "Kind"
+      ],
+      "nationality": "Any",
+      "personality": [
+        "Confident",
+        "Easy Going",
+        "Intelligent",
+        "Kind",
+        "Family-Oriented"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Financial Irresponsibility",
+        "Dishonesty"
+      ]
+    },
+    "financial": {
+      "income": "$100,000-$250,000",
+      "ownBusiness": "No",
+      "ownProperty": "Yes"
+    },
+    "photos": {
+      "recent": "/photos/female11/recent.jpg",
+      "headshot": "/photos/female11/headshot.jpg",
+      "fullLength": "/photos/female11/full.jpg",
+      "casualLifestyle": "/photos/female11/casual.jpg"
+    },
+    "createdAt": "2026-07-26T11:30:00.000Z",
+    "updatedAt": "2026-07-26T11:30:00.000Z"
+  },
+  {
+    "id": "cmrzclchx0000538zcsny6012",
+    "customId": "1012",
+    "personalDetails": {
+      "dob": "1999-01-14T00:00:00.000Z",
+      "name": "Camila Reyes",
+      "nickname": "Cami",
+      "gender": "Female",
+      "prefix": "Ms.",
+      "email": "camila.reyes@example.com",
+      "phone": "+639201234567",
+      "nationality": "Filipino",
+      "currentLocation": "Cebu, Philippines"
+    },
+    "career": {
+      "company": "Cebu Pacific",
+      "education": "Bachelor's Degree",
+      "occupation": "Cabin Crew"
+    },
+    "appearance": {
+      "height": "171",
+      "weight": "55",
+      "religion": "Christian",
+      "englishFluency": [
+        98
+      ]
+    },
+    "personality": {
+      "about": "Outgoing, cheerful, and passionate about discovering new places and meeting wonderful people.",
+      "hasChildren": "No",
+      "personality": [
+        "Adventurous",
+        "Romantic",
+        "Humorous",
+        "Kind"
+      ],
+      "bestQualities": [
+        "Friendly",
+        "Honest",
+        "Positive"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Kind",
+        "Honest",
+        "Funny"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Adventure",
+        "Honesty",
+        "Communication",
+        "Kindness",
+        "Family"
+      ],
+      "smoking": "Never",
+      "drinking": "Socially",
+      "exercise": "Daily",
+      "interests": [
+        "Travel",
+        "Fitness",
+        "Photography",
+        "Movies",
+        "Pets"
+      ],
+      "lifestyle": [
+        "Adventurous"
+      ],
+      "otherInterest": "Scuba Diving",
+      "futureChildren": "Yes",
+      "weekendActivity": "Island hopping and beach sunsets",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Maldives",
+        "Paris",
+        "Seoul"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Yes",
+      "lookingFor": [
+        "Marriage"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'10\"+",
+      "ageRange": "30-40",
+      "location": "Worldwide",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Kind",
+        "Romantic",
+        "Financially Stable",
+        "Family-Oriented"
+      ],
+      "nationality": "Any",
+      "personality": [
+        "Easy Going",
+        "Confident",
+        "Adventurous",
+        "Kind",
+        "Funny"
+      ],
+      "dealBreakers": [
+        "Smoking",
+        "Laziness",
+        "Dishonesty"
+      ]
+    },
+    "financial": {
+      "income": "$25,000-$50,000",
+      "ownBusiness": "No",
+      "ownProperty": "No"
+    },
+    "photos": {
+      "recent": "/photos/female12/recent.jpg",
+      "headshot": "/photos/female12/headshot.jpg",
+      "fullLength": "/photos/female12/full.jpg",
+      "casualLifestyle": "/photos/female12/casual.jpg"
+    },
+    "createdAt": "2026-07-26T12:45:00.000Z",
+    "updatedAt": "2026-07-26T12:45:00.000Z"
+  }
+]

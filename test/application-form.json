@@ -3,14 +3,14 @@
   "customId": "1001",
   "personalDetails": {
     "dob": "2000-01-31T17:00:00.000Z",
-    "name": "BO BO AUNG",
+    "name": "Khay Khay",
     "nickname": "Angela",
     "gender": "Female",
     "prefix": "Ms.",
     "email": "boboaungdev@gmail.com",
-    "phone": "+660620604940",
-    "nationality": "Ålandish",
-    "currentLocation": "Andorra"
+    "phone": "+6606123456789",
+    "nationality": "Thai",
+    "currentLocation": "Thailand"
   },
   "career": {
     "company": "Hospital",
@@ -21,15 +21,12 @@
     "height": "180",
     "weight": "55",
     "religion": "Buddhism",
-    "thaiFluency": [
-      90
-    ],
     "englishFluency": [
       90
     ]
   },
   "personality": {
-    "about": "lorem ipsum",
+    "about": "I am Khay Khay, 26 years old.",
     "hasChildren": "No",
     "personality": [
       "Kind"

@@ -128,7 +128,10 @@ function ApplicantColumn({
   comparison,
 }: {
   applicant: ApplicationForm
-  comparison?: { idealPartner: ApplicationForm["idealPartner"]; female: ApplicationForm }
+  comparison?: {
+    idealPartner: ApplicationForm["idealPartner"]
+    female: ApplicationForm
+  }
 }) {
   const age = calculateAge(applicant.personalDetails?.dob)
 
@@ -222,7 +225,9 @@ function ApplicantColumn({
           label="Age"
           value={age}
           isMatch={checkMatch(() => {
-            const femaleAge = calculateAge(comparison!.female.personalDetails.dob)
+            const femaleAge = calculateAge(
+              comparison!.female.personalDetails.dob
+            )
             const [min, max] =
               comparison!.idealPartner.ageRange?.split("-").map(Number) ?? []
             return femaleAge >= min && femaleAge <= max
@@ -423,7 +428,9 @@ function ApplicantColumn({
           label="Age Range"
           value={applicant.idealPartner?.ageRange}
           isMatch={checkMatch(() => {
-            const femaleAge = calculateAge(comparison!.female.personalDetails.dob)
+            const femaleAge = calculateAge(
+              comparison!.female.personalDetails.dob
+            )
             const [min, max] =
               applicant.idealPartner.ageRange?.split("-").map(Number) ?? []
             return femaleAge >= min && femaleAge <= max
@@ -544,15 +551,9 @@ export default async function MatchComparisonPage({
 }: MatchComparisonPageProps) {
   const { maleId, femaleId } = await params
 
-  // Ensure process.env.NEXT_PUBLIC_BASE_URL is defined in your environment variables
-  // For development, you might set it to http://localhost:3000 or your dev URL
-  // For production, it should be your deployed frontend URL
-  const baseUrl = BASE_URL 
-
-  const res = await fetch(
-    `${baseUrl}/api/matching/${maleId}/${femaleId}`,
-    { cache: "no-store" }
-  )
+  const res = await fetch(`${BASE_URL}/api/matching/${maleId}/${femaleId}`, {
+    cache: "no-store",
+  })
 
   if (!res.ok) {
     const errorText = await res.text()
@@ -561,7 +562,9 @@ export default async function MatchComparisonPage({
         Error: Failed to fetch match details.
         <br />
         API responded with: {res.status} {res.statusText}
-        {errorText && <pre className="mt-4 whitespace-pre-wrap">{errorText}</pre>}
+        {errorText && (
+          <pre className="mt-4 whitespace-pre-wrap">{errorText}</pre>
+        )}
       </div>
     )
   }

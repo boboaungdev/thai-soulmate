@@ -1,5 +1,6 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef } from "@tanstack/react-table"
 import {
@@ -31,45 +32,68 @@ export const statuses: {
   value: RegisterInterestStatus
   label: string
   icon: React.ComponentType<{ className?: string }>
-  color: string
+  color?: string
+  badgeClassName: string
 }[] = [
   {
     value: "PENDING",
     label: "Pending",
     icon: Clock,
     color: "text-yellow-500",
+    badgeClassName:
+      "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-300",
   },
   {
     value: "CONTACTED_EMAIL",
-    label: "Contacted by email",
+    label: "Contacted Email",
     icon: MailCheck,
     color: "text-blue-500",
+    badgeClassName:
+      "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300",
   },
   {
     value: "CONTACTED_PHONE",
-    label: "Contacted by phone",
+    label: "Contacted Phone",
     icon: PhoneOutgoing,
     color: "text-indigo-500",
+    badgeClassName:
+      "border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950 dark:text-indigo-300",
   },
   {
     value: "CONTACTED_WHATSAPP",
-    label: "Contacted by WhatsApp",
+    label: "Contacted WhatsApp",
     icon: FaWhatsapp,
     color: "text-green-600",
+    badgeClassName:
+      "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300",
   },
   {
     value: "COMPLETED",
     label: "Completed",
     icon: CircleCheck,
     color: "text-green-500",
+    badgeClassName:
+      "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300",
   },
   {
     value: "NOT_INTERESTED",
     label: "Not interested",
     icon: CircleX,
     color: "text-red-500",
+    badgeClassName:
+      "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300",
   },
 ]
+
+export function getRegisterInterestStatusMeta(status?: string) {
+  const foundStatus = statuses.find((item) => item.value === status)
+  if (foundStatus) return foundStatus
+  return {
+    label: "Unknown",
+    icon: StickyNote,
+    badgeClassName: "",
+  }
+}
 
 export const genders: {
   value: string
@@ -130,7 +154,7 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
     ),
     cell: ({ row }) => {
       const gender = row.getValue("gender") as string
-      return <div className={`w-[80px]`}>{gender}</div>
+      return <div className={`min-[80px]`}>{gender}</div>
     },
   },
   {
@@ -174,7 +198,7 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
+          <span className="min-w-[100px] truncate font-medium">
             (+66) {row.getValue("phone")}
           </span>
         </div>
@@ -217,6 +241,24 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
     enableSorting: true,
     enableHiding: true,
   },
+
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status = getRegisterInterestStatusMeta(row.getValue("status"))
+
+      return (
+        <Badge variant="outline" className={status.badgeClassName}>
+          <status.icon className="mr-1.5 h-3.5 w-3.5" />
+          {status.label}
+        </Badge>
+      )
+    },
+  },
+
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
@@ -229,27 +271,6 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
           <span className="max-w-[500px] truncate font-medium">
             {createdAt.format("YYYY-MM-DD HH:mm")}
           </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-    cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue("status")
-      )
-
-      if (!status) {
-        return null
-      }
-
-      return (
-        <div className={`flex w-fit items-center ${status.color}`}>
-          {status.icon && <status.icon className="h-5 w-5" />}
         </div>
       )
     },

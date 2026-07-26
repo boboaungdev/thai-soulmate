@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,6 +41,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 
+import { useAuthStore } from "@/stores/auth-store"
 import { Note, RegisterInterest, User } from "@/lib/generated/prisma/client"
 
 import dayjs from "dayjs"
@@ -62,11 +63,14 @@ export function RegisterInterestDetails({
   onClose,
 }: RegisterInterestDetailsProps) {
   const [notes, setNotes] = useState<NoteWithUser[]>([])
+  const [newMessage, setNewMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoadingNotes, setIsLoadingNotes] = useState(false)
   const [noteToDelete, setNoteToDelete] = useState<NoteWithUser | null>(null)
   const [editingNote, setEditingNote] = useState<NoteWithUser | null>(null)
   const [editedMessage, setEditedMessage] = useState("")
+
+  const { user } = useAuthStore()
 
   useEffect(() => {
     if (item) {
@@ -103,6 +107,41 @@ export function RegisterInterestDetails({
 
   if (!item) {
     return null
+  }
+
+  const handleAddNote = async () => {
+    if (!user?.id) {
+      toast.error("You must be logged in to add a note.")
+      return
+    }
+
+    if (!newMessage.trim()) {
+      toast.error("Please enter a note.")
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      const response = await fetch(`/api/notes/${item.id}/register-interest`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: newMessage, userId: user.id }),
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setNotes([result.note, ...notes])
+        setNewMessage("")
+        toast.success("Note added successfully.")
+      } else {
+        toast.error(result.error || "Failed to add note.")
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred while adding the note.")
+      console.error(error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleDeleteNote = async () => {
@@ -203,6 +242,28 @@ export function RegisterInterestDetails({
 
             <div className="mt-6 space-y-6">
               <h3 className="text-lg font-medium">Notes</h3>
+              <div className="space-y-2 pr-4">
+                <Textarea
+                  placeholder="Type your note here."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  rows={3}
+                  disabled={isSubmitting}
+                />
+                <div className="flex justify-end">
+                  <Button
+                    onClick={handleAddNote}
+                    disabled={isSubmitting || !newMessage.trim()}
+                    className="btn-gradient"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : null}
+                    {isSubmitting ? "Adding..." : "Add Note"}
+                  </Button>
+                </div>
+              </div>
+
               <div className="space-y-4 pr-4">
                 {isLoadingNotes ? (
                   <div className="space-y-4">
@@ -221,6 +282,10 @@ export function RegisterInterestDetails({
                         </div>
                       </div>
                     ))}
+                  </div>
+                ) : notes.length === 0 ? (
+                  <div className="text-center text-muted-foreground">
+                    No notes yet.
                   </div>
                 ) : (
                   notes.map((note) => (

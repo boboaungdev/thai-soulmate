@@ -196,18 +196,6 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       )
     },
   },
-  {
-    id: "createdAt",
-    accessorFn: (row) => new Date(row.createdAt).getTime(),
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Submitted" />
-    ),
-    cell: ({ row }) => (
-      <div className="min-w-[140px]">
-        {dayjs(row.original.createdAt).format("YYYY-MM-DD HH:mm")}
-      </div>
-    ),
-  },
 
   {
     id: "status",
@@ -227,6 +215,19 @@ export const columns: ColumnDef<ApplicationRow>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
+  },
+
+  {
+    id: "createdAt",
+    accessorFn: (row) => new Date(row.createdAt).getTime(),
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Submitted" />
+    ),
+    cell: ({ row }) => (
+      <div className="min-w-[140px]">
+        {dayjs(row.original.createdAt).format("YYYY-MM-DD HH:mm")}
+      </div>
+    ),
   },
 
   {

@@ -8,6 +8,7 @@ import {
   Clock,
   MailCheck,
   PhoneOutgoing,
+  StickyNote,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import dayjs from "dayjs"
@@ -19,6 +20,12 @@ import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { RegisterInterestStatus } from "@/lib/generated/prisma/enums"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
+
+type RegisterInterestWithNotesCount = RegisterInterest & {
+  _count: {
+    notes: number
+  }
+}
 
 export const statuses: {
   value: RegisterInterestStatus
@@ -41,6 +48,7 @@ export const statuses: {
   {
     value: "CONTACTED_PHONE",
     label: "Contacted by phone",
+    icon: PhoneOutgoing,
     color: "text-indigo-500",
   },
   {
@@ -77,7 +85,7 @@ export const genders: {
   },
 ]
 
-export const columns: ColumnDef<RegisterInterest>[] = [
+export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -224,6 +232,27 @@ export const columns: ColumnDef<RegisterInterest>[] = [
         </div>
       )
     },
+  },
+  {
+    accessorKey: "_count.notes",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Notes" />
+    ),
+    cell: ({ row }) => {
+      const notesCount = row.original._count.notes
+      return (
+        <div
+          className={`flex items-center space-x-1 ${
+            notesCount === 0 ? "text-muted-foreground" : ""
+          }`}
+        >
+          <StickyNote className="h-4 w-4" />
+          <span className="font-medium">{notesCount}</span>
+        </div>
+      )
+    },
+    enableSorting: true,
+    enableHiding: true,
   },
 
   {

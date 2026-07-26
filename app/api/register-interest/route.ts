@@ -146,7 +146,15 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    const registerInterests = await prisma.registerInterest.findMany()
+    const registerInterests = await prisma.registerInterest.findMany({
+      include: {
+        _count: {
+          select: {
+            notes: true,
+          },
+        },
+      },
+    })
     return NextResponse.json(registerInterests)
   } catch (error) {
     console.error(error)

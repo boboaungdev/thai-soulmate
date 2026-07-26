@@ -48,6 +48,7 @@ export function DataTable<TData, TValue>({
       currentLocation: false,
       dob: false,
       createdAt: true,
+      "_count.notes": true,
     })
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

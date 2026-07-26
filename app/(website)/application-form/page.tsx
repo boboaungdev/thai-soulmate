@@ -440,6 +440,9 @@ function AuthPageContents() {
         )
         const registerInterestData = await registerInterestResponse.json()
 
+        console.log(registerInterestData);
+        
+
         if (registerInterestData.exists) {
           // Data exists, PRE-FILL the form state
           const interestData = registerInterestData.interest

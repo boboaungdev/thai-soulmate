@@ -21,16 +21,22 @@ export function DateOfBirthInput({
   onSelect,
   disabled,
 }: DateOfBirthInputProps) {
-  const [day, setDay] = React.useState<string | undefined>(
-    value ? String(value.getDate()) : undefined
-  )
-  const [month, setMonth] = React.useState<string | undefined>(
-    value ? String(value.getMonth()) : undefined
-  )
-  const [year, setYear] = React.useState<string | undefined>(
-    value ? String(value.getFullYear()) : undefined
-  )
+  const [day, setDay] = React.useState<string | undefined>()
+  const [month, setMonth] = React.useState<string | undefined>()
+  const [year, setYear] = React.useState<string | undefined>()
   const isMounted = React.useRef(false)
+
+  React.useEffect(() => {
+    const initialize = async () => {
+      if (value) {
+        setDay(String(value.getDate()))
+        setMonth(String(value.getMonth()))
+        setYear(String(value.getFullYear()))
+      }
+    }
+
+    initialize()
+  }, [value])
 
   React.useEffect(() => {
     if (isMounted.current) {
@@ -115,14 +121,10 @@ export function DateOfBirthInput({
 
   return (
     <div className="grid grid-cols-3 gap-2">
-      <Select
-        value={day}
-        onValueChange={setDay}
-        disabled={disabled}
-      >
+      <Select value={day} onValueChange={setDay} disabled={disabled}>
         <SelectTrigger
           className={cn(
-            "h-8 rounded-lg border py-1 pr-2.5 pl-3 w-full justify-start border-input bg-background shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+            "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
             !day && "text-muted-foreground"
           )}
         >
@@ -136,14 +138,10 @@ export function DateOfBirthInput({
           ))}
         </SelectContent>
       </Select>
-      <Select
-        value={month}
-        onValueChange={setMonth}
-        disabled={disabled}
-      >
+      <Select value={month} onValueChange={setMonth} disabled={disabled}>
         <SelectTrigger
           className={cn(
-            "h-8 rounded-lg border py-1 pr-2.5 pl-3 w-full justify-start border-input bg-background shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+            "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
             !month && "text-muted-foreground"
           )}
         >
@@ -157,14 +155,10 @@ export function DateOfBirthInput({
           ))}
         </SelectContent>
       </Select>
-      <Select
-        value={year}
-        onValueChange={setYear}
-        disabled={disabled}
-      >
+      <Select value={year} onValueChange={setYear} disabled={disabled}>
         <SelectTrigger
           className={cn(
-            "h-8 rounded-lg border py-1 pr-2.5 pl-3 w-full justify-start border-input bg-background shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+            "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
             !year && "text-muted-foreground"
           )}
         >

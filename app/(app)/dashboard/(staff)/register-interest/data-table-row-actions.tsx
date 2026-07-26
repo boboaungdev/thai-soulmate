@@ -113,6 +113,11 @@ export function DataTableRowActions<TData>({
       return
     }
 
+    if (!message.trim()) {
+      toast.error("Please enter a note.")
+      return
+    }
+
     setIsLoading(true) // Set loading to true
     try {
       const res = await fetch(`/api/notes/${task.id}/register-interest`, {
@@ -192,7 +197,7 @@ export function DataTableRowActions<TData>({
               </Button>
               <Button
                 onClick={handleAddNote}
-                disabled={isLoading}
+                disabled={isLoading || !message.trim()}
                 className="btn-gradient"
               >
                 {" "}

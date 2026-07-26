@@ -182,12 +182,19 @@ export const columns: ColumnDef<ApplicationRow>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Notes" />
     ),
-    cell: ({ row }) => (
-      <div className="flex w-[70px] items-center gap-1.5 text-muted-foreground">
-        <StickyNote className="h-4 w-4" />
-        {row.original.notes?.length ?? 0}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const notesCount = row.original.notes?.length ?? 0
+      return (
+        <div
+          className={`flex w-[70px] items-center gap-1.5 ${
+            notesCount === 0 ? "text-muted-foreground" : ""
+          }`}
+        >
+          <StickyNote className="h-4 w-4" />
+          <span className="font-medium">{notesCount}</span>
+        </div>
+      )
+    },
   },
   {
     id: "createdAt",

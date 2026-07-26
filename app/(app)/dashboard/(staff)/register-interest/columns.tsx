@@ -197,6 +197,27 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
     },
   },
   {
+    accessorKey: "_count.notes",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Notes" />
+    ),
+    cell: ({ row }) => {
+      const notesCount = row.original._count.notes
+      return (
+        <div
+          className={`flex items-center space-x-1 ${
+            notesCount === 0 ? "text-muted-foreground" : ""
+          }`}
+        >
+          <StickyNote className="h-4 w-4" />
+          <span className="font-medium">{notesCount}</span>
+        </div>
+      )
+    },
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
     accessorKey: "createdAt",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Registered On" />
@@ -232,27 +253,6 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
         </div>
       )
     },
-  },
-  {
-    accessorKey: "_count.notes",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Notes" />
-    ),
-    cell: ({ row }) => {
-      const notesCount = row.original._count.notes
-      return (
-        <div
-          className={`flex items-center space-x-1 ${
-            notesCount === 0 ? "text-muted-foreground" : ""
-          }`}
-        >
-          <StickyNote className="h-4 w-4" />
-          <span className="font-medium">{notesCount}</span>
-        </div>
-      )
-    },
-    enableSorting: true,
-    enableHiding: true,
   },
 
   {

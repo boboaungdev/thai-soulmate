@@ -53,11 +53,6 @@ const userItems = [
     url: "/dashboard/gallery",
     icon: GalleryHorizontal,
   },
-  {
-    title: "Profile",
-    url: "/dashboard/profile",
-    icon: User,
-  },
 ]
 
 const staffItems = [

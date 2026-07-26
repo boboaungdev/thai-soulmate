@@ -53,6 +53,7 @@ import {
   MapPin,
   Settings,
   XCircle,
+  Loader2,
 } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -178,6 +179,7 @@ export default function MatchingPage() {
   const [matches, setMatches] = useState<Match[]>([])
   const [selectedMale, setSelectedMale] = useState<any | null>(null)
 
+  const [isMatching, setIsMatching] = useState<string | null>(null)
   const [isLoadingMales, setIsLoadingMales] = useState(true)
   const [isLoadingMatches, setIsLoadingMatches] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -610,16 +612,26 @@ export default function MatchingPage() {
                   <Button
                     variant="outline"
                     className="w-full"
-                    disabled={!selectedMale}
+                    disabled={!selectedMale || !!isMatching}
                     onClick={() => {
                       if (selectedMale) {
+                        setIsMatching(applicant.id)
                         router.push(
                           `/dashboard/matching/${selectedMale.id}/${applicant.id}`
                         )
                       }
                     }}
                   >
-                    Matching
+                    {isMatching === applicant.id ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Matching...
+                      </>
+                    ) : selectedMale ? (
+                      "Match"
+                    ) : (
+                      "Choose Male User"
+                    )}
                   </Button>
                 </CardFooter>
               </Card>

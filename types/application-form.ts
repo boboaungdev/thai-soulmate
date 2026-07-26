@@ -1,6 +1,7 @@
 export interface ApplicationForm {
   id: string
   customId: number
+  status: "OPEN" | "IN_MATCHING" | "MATCHED" | "CLOSED"
   personalDetails: PersonalDetails
   career: Career
   appearance: Appearance
@@ -10,6 +11,21 @@ export interface ApplicationForm {
   idealPartner: IdealPartner
   financial: Financial
   photos: Photos
+  membership?: {
+    type: string
+  } | null
+  notes?: {
+    id: string
+    message?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: {
+      name: string
+      avatar?: string | null
+      email: string
+      role: string
+    }
+  }[]
   createdAt: Date
   updatedAt: Date
 }

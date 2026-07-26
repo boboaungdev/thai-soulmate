@@ -5,6 +5,14 @@ import { prisma } from "@/lib/prisma"
 export async function GET() {
   try {
     const applications = await prisma.applicationForm.findMany({
+      include: {
+        membership: true,
+        notes: {
+          select: {
+            id: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -35,6 +43,7 @@ export async function POST(req: Request) {
 
     const application = await prisma.applicationForm.create({
       data: {
+        status: "OPEN",
         personalDetails: {
           nickname: body.profile.nickname,
           prefix: body.details.prefix,

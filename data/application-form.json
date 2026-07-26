@@ -9,7 +9,7 @@
       "email": "angela@example.com",
       "phone": "+66901234567",
       "nationality": "Thai",
-      "currentLocation": "Bangkok, Thailand"
+      "currentLocation": "Thailand"
     },
     "career": {
       "company": "Bangkok Hospital",
@@ -131,7 +131,7 @@
       "email": "nicha@example.com",
       "phone": "+66811234567",
       "nationality": "Thai",
-      "currentLocation": "Chiang Mai, Thailand"
+      "currentLocation": "Thailand"
     },
     "career": {
       "company": "CP Group",
@@ -253,7 +253,7 @@
       "email": "maria@example.com",
       "phone": "+639171234567",
       "nationality": "Filipino",
-      "currentLocation": "Manila, Philippines"
+      "currentLocation": "Thailand"
     },
     "career": {
       "company": "Vista Architects",
@@ -363,6 +363,11 @@
       "headshot": "https://randomuser.me/api/portraits/women/4.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/4.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/4.jpg"
+    },
+    "membership": {
+      "type": "VIP",
+      "startsAt": "2026-07-26T00:00:00.000Z",
+      "expiresAt": "2027-07-26T00:00:00.000Z"
     }
   },
   {
@@ -375,7 +380,7 @@
       "email": "yuki@example.com",
       "phone": "+819012345678",
       "nationality": "Japanese",
-      "currentLocation": "Tokyo, Japan"
+      "currentLocation": "Japan"
     },
     "career": {
       "company": "Rakuten",
@@ -497,7 +502,7 @@
       "email": "mai.nguyen@example.com",
       "phone": "+84901234567",
       "nationality": "Vietnamese",
-      "currentLocation": "Ho Chi Minh City, Vietnam"
+      "currentLocation": "Thailand"
     },
     "career": {
       "company": "Vietcombank",
@@ -620,7 +625,7 @@
       "email": "jieun@example.com",
       "phone": "+821012345678",
       "nationality": "South Korean",
-      "currentLocation": "Seoul, South Korea"
+      "currentLocation": "Thailand"
     },
     "career": {
       "company": "Samsung Electronics",
@@ -743,7 +748,7 @@
       "email": "ananya@example.com",
       "phone": "+919876543210",
       "nationality": "Indian",
-      "currentLocation": "Mumbai, India"
+      "currentLocation": "Thailand"
     },
     "career": {
       "company": "Apollo Hospitals",
@@ -866,7 +871,7 @@
       "email": "aisyah@example.com",
       "phone": "+60123456789",
       "nationality": "Malaysian",
-      "currentLocation": "Kuala Lumpur, Malaysia"
+      "currentLocation": "Thailand"
     },
     "career": {
       "company": "Petronas",
@@ -989,7 +994,7 @@
       "email": "sakura.ito@example.com",
       "phone": "+818012345678",
       "nationality": "Japanese",
-      "currentLocation": "Osaka, Japan"
+      "currentLocation": "Thailand"
     },
     "career": {
       "company": "Panasonic",
@@ -1100,6 +1105,11 @@
       "headshot": "https://randomuser.me/api/portraits/women/10.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/10.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/10.jpg"
+    },
+    "membership": {
+      "type": "VIP",
+      "startsAt": "2026-07-26T00:00:00.000Z",
+      "expiresAt": "2027-07-26T00:00:00.000Z"
     }
   },
   {
@@ -1112,7 +1122,7 @@
       "email": "linh.tran@example.com",
       "phone": "+849876543210",
       "nationality": "Vietnamese",
-      "currentLocation": "Da Nang, Vietnam"
+      "currentLocation": "Vietnam"
     },
     "career": {
       "company": "InterContinental Danang",
@@ -1346,6 +1356,11 @@
       "headshot": "https://randomuser.me/api/portraits/women/12.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/12.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/12.jpg"
+    },
+    "membership": {
+      "type": "VIP",
+      "startsAt": "2026-07-26T00:00:00.000Z",
+      "expiresAt": "2027-07-26T00:00:00.000Z"
     }
   },
   {
@@ -1358,7 +1373,7 @@
       "email": "camila.reyes@example.com",
       "phone": "+639201234567",
       "nationality": "Filipino",
-      "currentLocation": "Cebu, Philippines"
+      "currentLocation": "Philippines"
     },
     "career": {
       "company": "Cebu Pacific",
@@ -1469,6 +1484,11 @@
       "headshot": "https://randomuser.me/api/portraits/women/13.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/13.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/13.jpg"
+    },
+    "membership": {
+      "type": "VIP",
+      "startsAt": "2026-07-26T00:00:00.000Z",
+      "expiresAt": "2027-07-26T00:00:00.000Z"
     }
   }
 ]

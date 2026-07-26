@@ -30,8 +30,13 @@ export default function GalleryPage() {
   }, [])
 
   return (
-    <div className="container mx-auto py-4 lg:py-6">
-      <h1 className="mb-8 text-lg font-semibold md:text-2xl">User Gallery</h1>
+    <div className="container mx-auto py-4 lg:py-6 px-6">
+      <div className="mb-6">
+        <h1 className="text-lg font-semibold md:text-2xl">User Gallery</h1>
+        <p className="text-muted-foreground text-sm">
+          Browse through a curated selection of profiles.
+        </p>
+      </div>
       <div className="flex flex-wrap justify-center gap-6">
         {isLoading
           ? Array.from({ length: 12 }).map((_, index) => (

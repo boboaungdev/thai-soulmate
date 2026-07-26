@@ -1,61 +1,258 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { ApplicationForm } from "@/lib/generated/prisma/client"
+import { Prisma } from "@/lib/generated/prisma/client"
 
 type MatchResult = {
   score: number
-  applicant: ApplicationForm
+  applicant: any
 }
 
 // Helper to calculate age from DOB
-const calculateAge = (dob: Date): number => {
-  const diff = Date.now() - dob.getTime()
-  const ageDate = new Date(diff)
-  return Math.abs(ageDate.getUTCFullYear() - 1970)
+const calculateAge = (dob: string | Date | null | undefined): number => {
+  if (!dob) return 0
+  const birthDate = new Date(dob)
+  if (Number.isNaN(birthDate.getTime())) return 0
+
+  const today = new Date()
+  let age = today.getFullYear() - birthDate.getFullYear()
+  const monthDiff = today.getMonth() - birthDate.getMonth()
+  if (
+    monthDiff < 0 ||
+    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--
+  }
+  return age
 }
 
 // Helper to safely parse JSON properties which might be strings or objects
-const safeParse = (json: string | object | null): any => {
-  if (!json) return null
+const safeParse = (json: unknown): any => {
+  if (!json) return {}
   if (typeof json === "object") return json // It's already an object
   try {
-    return JSON.parse(json)
+    return JSON.parse(String(json))
   } catch {
-    return null
+    return {}
   }
+}
+
+const defaultCriteria: Record<string, boolean> = {
+  "Ideal Partner Age Range": true,
+  "Ideal Partner Height": true,
+  "Ideal Partner Nationality": true,
+  "Ideal Partner Location": true,
+  "Ideal Partner Education": true,
+  "Ideal Partner Qualities": true,
+  "Ideal Partner Personality": true,
+  "Deal Breakers": true,
+  "Income Preference": true,
+  "Relocation Preference": true,
+  "Smoking Preference": true,
+  "Drinking Preference": true,
+  "Children Preference": true,
+  Hobbies: true,
+  "Languages Spoken %": true,
+}
+
+const toArray = (value: unknown): string[] => {
+  if (!Array.isArray(value)) return []
+  return value.filter((item): item is string => typeof item === "string")
+}
+
+const normalize = (value: unknown) =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase()
+
+const hasValue = (value: unknown) => normalize(value).length > 0
+
+const matchExact = (preferred: unknown, actual: unknown) => {
+  const normalizedPreferred = normalize(preferred)
+  if (
+    !normalizedPreferred ||
+    normalizedPreferred === "not important" ||
+    normalizedPreferred === "any"
+  ) {
+    return true
+  }
+  return normalizedPreferred === normalize(actual)
+}
+
+const parseAgeRange = (range: unknown): [number, number] | null => {
+  const value = String(range ?? "").trim()
+  if (!value) return null
+
+  if (value.endsWith("+")) {
+    const min = Number.parseInt(value, 10)
+    return Number.isFinite(min) ? [min, 120] : null
+  }
+
+  const [min, max] = value.split("-").map((part) => Number.parseInt(part, 10))
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return null
+  return [min, max]
+}
+
+const heightToCm = (value: unknown) => {
+  const numeric = Number.parseFloat(String(value ?? "").replace(/[^\d.]/g, ""))
+  return Number.isFinite(numeric) ? numeric : 0
+}
+
+const matchesHeightRange = (preferredRange: unknown, actualHeight: unknown) => {
+  const height = heightToCm(actualHeight)
+  const range = normalize(preferredRange)
+  if (!height || !range) return false
+
+  if (range.includes("under")) return height < 152
+  if (range.includes("5.6") || range.includes("5.9")) {
+    return height >= 168 && height <= 180
+  }
+  if (range.includes("5") && range.includes("5.5")) {
+    return height >= 152 && height <= 167
+  }
+  if (range.includes("6")) return height >= 183
+  return false
+}
+
+const intersects = (preferred: unknown, actual: unknown) =>
+  toArray(preferred).some((item) =>
+    toArray(actual).map(normalize).includes(normalize(item))
+  )
+
+const addCriterionScore = ({
+  enabled,
+  weight,
+  matched,
+  score,
+  possibleScore,
+}: {
+  enabled: boolean
+  weight: number
+  matched: boolean
+  score: number
+  possibleScore: number
+}) => ({
+  score: score + (enabled && matched ? weight : 0),
+  possibleScore: possibleScore + (enabled ? weight : 0),
+})
+
+const parseCriteria = (criteriaParam: string | null) => {
+  if (!criteriaParam) return defaultCriteria
+
+  try {
+    return {
+      ...defaultCriteria,
+      ...JSON.parse(criteriaParam),
+    }
+  } catch {
+    return defaultCriteria
+  }
+}
+
+const parseApplicant = (applicant: any) => ({
+  ...applicant,
+  personalDetails: safeParse(applicant.personalDetails),
+  career: safeParse(applicant.career),
+  appearance: safeParse(applicant.appearance),
+  personality: safeParse(applicant.personality),
+  lifestyle: safeParse(applicant.lifestyle),
+  relationshipGoals: safeParse(applicant.relationshipGoals),
+  idealPartner: safeParse(applicant.idealPartner),
+  financial: safeParse(applicant.financial),
+  photos: safeParse(applicant.photos),
+  isVip: applicant.membership?.type === "VIP",
+})
+
+const buildFemaleWhere = (filter: string): Prisma.ApplicationFormWhereInput => {
+  const where: Prisma.ApplicationFormWhereInput = {
+    personalDetails: {
+      path: ["gender"],
+      equals: "Female",
+    },
+  }
+
+  if (filter === "vip") {
+    where.membership = { is: { type: "VIP" } }
+  }
+
+  if (filter === "free") {
+    where.OR = [{ membership: null }, { membership: { is: { type: "FREE" } } }]
+  }
+
+  return where
+}
+
+const compareValues = (a: unknown, b: unknown, order: string) => {
+  const direction = order === "asc" ? 1 : -1
+  if (typeof a === "number" && typeof b === "number") {
+    return (a - b) * direction
+  }
+
+  return String(a ?? "").localeCompare(String(b ?? "")) * direction
+}
+
+const sortResults = (
+  matches: MatchResult[],
+  sortKey: string,
+  sortOrder: string
+) => {
+  matches.sort((a, b) => {
+    switch (sortKey) {
+      case "age":
+        return compareValues(
+          calculateAge(a.applicant.personalDetails?.dob),
+          calculateAge(b.applicant.personalDetails?.dob),
+          sortOrder
+        )
+      case "createdAt":
+        return compareValues(
+          new Date(a.applicant.createdAt).getTime(),
+          new Date(b.applicant.createdAt).getTime(),
+          sortOrder
+        )
+      case "customId":
+        return compareValues(
+          a.applicant.customId,
+          b.applicant.customId,
+          sortOrder
+        )
+      case "score":
+      default:
+        return compareValues(a.score, b.score, sortOrder)
+    }
+  })
 }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get("userId")
-  const criteriaParam = searchParams.get("criteria")
-
-  let activeCriteria: Record<string, boolean> | null = null
-  if (criteriaParam) {
-    try {
-      activeCriteria = JSON.parse(criteriaParam)
-    } catch {
-      // Ignore invalid criteria
-    }
-  }
+  const activeCriteria = parseCriteria(searchParams.get("criteria"))
+  const filter = searchParams.get("filter") ?? "all"
+  const sortKey = searchParams.get("sortKey") ?? "score"
+  const sortOrder = searchParams.get("sortOrder") ?? "desc"
 
   try {
+    const femaleWhere = buildFemaleWhere(filter)
+
     if (!userId) {
-      // If no userId is provided, return all female applicants
+      // Initial state: no male selected, so show every female application.
       const femaleApplicants = await prisma.applicationForm.findMany({
-        where: {
-          personalDetails: {
-            path: ["gender"],
-            equals: "Female",
-          },
-        },
+        where: femaleWhere,
+        include: { membership: true },
       })
-      return NextResponse.json(femaleApplicants)
+
+      const matches = femaleApplicants.map((applicant) => ({
+        score: 0,
+        applicant: parseApplicant(applicant),
+      }))
+      sortResults(matches, sortKey, sortOrder)
+
+      return NextResponse.json(matches)
     }
 
     // If a userId is provided, perform matching logic
     const maleApplicant = await prisma.applicationForm.findUnique({
       where: { id: userId },
+      include: { membership: true },
     })
 
     if (!maleApplicant) {
@@ -65,7 +262,8 @@ export async function GET(request: Request) {
       )
     }
 
-    const malePersonalDetails = safeParse(maleApplicant.personalDetails)
+    const parsedMale = parseApplicant(maleApplicant)
+    const malePersonalDetails = parsedMale.personalDetails
     if (malePersonalDetails?.gender !== "Male") {
       return NextResponse.json(
         { error: "Selected user is not male" },
@@ -75,19 +273,17 @@ export async function GET(request: Request) {
 
     const femaleApplicants = await prisma.applicationForm.findMany({
       where: {
+        ...femaleWhere,
         NOT: {
           id: userId,
         },
-        personalDetails: {
-          path: ["gender"],
-          equals: "Female",
-        },
       },
+      include: { membership: true },
     })
 
-    const maleIdealPartner = safeParse(maleApplicant.idealPartner)
+    const maleIdealPartner = parsedMale.idealPartner
 
-    if (!maleIdealPartner) {
+    if (!Object.keys(maleIdealPartner).length) {
       return NextResponse.json(
         { error: "Ideal partner details not found for male applicant" },
         { status: 400 }
@@ -98,75 +294,161 @@ export async function GET(request: Request) {
       let score = 0
       let totalPossibleScore = 0
 
-      const femalePersonalDetails = safeParse(femaleApplicant.personalDetails)
-      const femaleAppearance = safeParse(femaleApplicant.appearance)
-      const femaleCareer = safeParse(femaleApplicant.career)
-      const femalePersonality = safeParse(femaleApplicant.personality)
-      const femaleLifestyle = safeParse(femaleApplicant.lifestyle)
-
-      if (
-        !femalePersonalDetails ||
-        !femaleAppearance ||
-        !femaleCareer ||
-        !femalePersonality ||
-        !femaleLifestyle
-      ) {
-        return { score: 0, applicant: femaleApplicant }
-      }
+      const parsedFemale = parseApplicant(femaleApplicant)
+      const femalePersonalDetails = parsedFemale.personalDetails
+      const femaleAppearance = parsedFemale.appearance
+      const femaleCareer = parsedFemale.career
+      const femalePersonality = parsedFemale.personality
+      const femaleLifestyle = parsedFemale.lifestyle
+      const femaleFinancial = parsedFemale.financial
+      const femaleRelationshipGoals = parsedFemale.relationshipGoals
 
       // Age range match
-      if (activeCriteria?.["Ideal Partner Age Range"]) {
-        totalPossibleScore += 20
-        const femaleAge = calculateAge(new Date(femalePersonalDetails.dob))
-        const [minAge, maxAge] = maleIdealPartner.ageRange
-          .split("-")
-          .map(Number)
-        if (femaleAge >= minAge && femaleAge <= maxAge) {
-          score += 20
-        }
-      }
+      const ageRange = parseAgeRange(maleIdealPartner.ageRange)
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Ideal Partner Age Range"],
+        weight: 16,
+        matched: Boolean(
+          ageRange &&
+          calculateAge(femalePersonalDetails.dob) >= ageRange[0] &&
+          calculateAge(femalePersonalDetails.dob) <= ageRange[1]
+        ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Ideal Partner Height"],
+        weight: 8,
+        matched: matchesHeightRange(
+          maleIdealPartner.height,
+          femaleAppearance.height
+        ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Ideal Partner Nationality"],
+        weight: 10,
+        matched:
+          normalize(maleIdealPartner.nationality) === "asian"
+            ? hasValue(femalePersonalDetails.nationality)
+            : matchExact(
+                maleIdealPartner.nationality,
+                femalePersonalDetails.nationality
+              ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Ideal Partner Location"],
+        weight: 8,
+        matched: matchExact(
+          maleIdealPartner.location,
+          femalePersonalDetails.currentLocation
+        ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
 
       // Education match
-      if (activeCriteria?.["Ideal Partner Education"]) {
-        totalPossibleScore += 10
-        if (femaleCareer.education === maleIdealPartner.education) {
-          score += 10
-        }
-      }
-
-      // Nationality match
-      if (activeCriteria?.["Ideal Partner Nationality"]) {
-        totalPossibleScore += 15
-        if (
-          maleIdealPartner.nationality === "ASIAN" &&
-          femalePersonalDetails.nationality
-        ) {
-          // This is a simplification. A more robust solution would involve a list of Asian countries.
-          score += 15
-        } else if (
-          femalePersonalDetails.nationality === maleIdealPartner.nationality
-        ) {
-          score += 15
-        }
-      }
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Ideal Partner Education"],
+        weight: 8,
+        matched: matchExact(maleIdealPartner.education, femaleCareer.education),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
 
       // Personality match
-      if (activeCriteria?.["Ideal Partner Personality"]) {
-        totalPossibleScore += 20
-        const personalityMatchCount = maleIdealPartner.personality.filter(
-          (p: string) => femalePersonality.personality?.includes(p)
-        ).length
-        score += Math.min(personalityMatchCount * 5, 20)
-      }
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Ideal Partner Personality"],
+        weight: 10,
+        matched: intersects(
+          maleIdealPartner.personality,
+          femalePersonality.personality
+        ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
 
       // Qualities match
-      if (activeCriteria?.["Ideal Partner Qualities"]) {
-        totalPossibleScore += 20
-        const qualitiesMatchCount = maleIdealPartner.qualities.filter(
-          (q: string) => femalePersonality.bestQualities?.includes(q)
-        ).length
-        score += Math.min(qualitiesMatchCount * 5, 20)
-      }
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Ideal Partner Qualities"],
+        weight: 10,
+        matched: intersects(
+          maleIdealPartner.qualities,
+          femalePersonality.bestQualities
+        ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Income Preference"],
+        weight: 6,
+        matched: hasValue(femaleFinancial.income),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Relocation Preference"],
+        weight: 6,
+        matched: ["yes", "maybe"].includes(
+          normalize(femaleRelationshipGoals.relocate)
+        ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Smoking Preference"],
+        weight: 5,
+        matched: ["never", "occasionally"].includes(
+          normalize(femaleLifestyle.smoking)
+        ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Drinking Preference"],
+        weight: 5,
+        matched: normalize(femaleLifestyle.drinking) !== "frequently",
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Children Preference"],
+        weight: 5,
+        matched:
+          normalize(femalePersonality.hasChildren) === "no" ||
+          normalize(femaleLifestyle.futureChildren) !== "no",
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria.Hobbies,
+        weight: 5,
+        matched: toArray(femaleLifestyle.interests).length > 0,
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Languages Spoken %"],
+        weight: 4,
+        matched:
+          Number(femaleAppearance.englishFluency?.[0] ?? 0) >= 50 ||
+          Number(femaleAppearance.thaiFluency?.[0] ?? 0) >= 50,
+        score,
+        possibleScore: totalPossibleScore,
+      }))
 
       const finalScore =
         totalPossibleScore > 0
@@ -175,12 +457,27 @@ export async function GET(request: Request) {
 
       // Deal breakers
       let dealBreakerPenalty = 0
-      if (activeCriteria?.["Deal Breakers"]) {
+      if (activeCriteria["Deal Breakers"]) {
+        const dealBreakers = toArray(maleIdealPartner.dealBreakers)
+          .map(normalize)
+          .join(" ")
         if (
-          maleIdealPartner.dealBreakers?.includes("Smoker") &&
+          dealBreakers.includes("smok") &&
           femaleLifestyle.smoking !== "Never"
         ) {
-          dealBreakerPenalty = 100
+          dealBreakerPenalty += 40
+        }
+        if (
+          dealBreakers.includes("drink") &&
+          normalize(femaleLifestyle.drinking) === "frequently"
+        ) {
+          dealBreakerPenalty += 30
+        }
+        if (
+          dealBreakers.includes("children") &&
+          normalize(femalePersonality.hasChildren) === "yes"
+        ) {
+          dealBreakerPenalty += 30
         }
       }
 
@@ -188,12 +485,11 @@ export async function GET(request: Request) {
 
       return {
         score: Math.max(0, finalScoreWithPenalty),
-        applicant: femaleApplicant,
+        applicant: parsedFemale,
       }
     })
 
-    // Sort by score in descending order
-    matches.sort((a, b) => b.score - a.score)
+    sortResults(matches, sortKey, sortOrder)
 
     return NextResponse.json(matches)
   } catch (error) {

@@ -1,6 +1,5 @@
 "use client"
-import Link from "next/link"
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation"
 import { useMemo, useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -26,10 +25,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import {
   Sheet,
@@ -151,6 +148,7 @@ const sortOrderLabels: Record<string, string> = {
 // Safely parse JSON properties
 const parseApplicantData = (applicant: any) => {
   const safeParse = (json: string | object) => {
+    if (!json) return {}
     if (typeof json === "object") return json
     try {
       return JSON.parse(json)
@@ -166,13 +164,16 @@ const parseApplicantData = (applicant: any) => {
     appearance: safeParse(applicant.appearance),
     personality: safeParse(applicant.personality),
     lifestyle: safeParse(applicant.lifestyle),
+    relationshipGoals: safeParse(applicant.relationshipGoals),
+    financial: safeParse(applicant.financial),
     photos: safeParse(applicant.photos),
     idealPartner: safeParse(applicant.idealPartner),
+    isVip: applicant.isVip ?? applicant.membership?.type === "VIP",
   }
 }
 
 export default function MatchingPage() {
-  const router = useRouter();
+  const router = useRouter()
   const [maleUsers, setMaleUsers] = useState<any[]>([])
   const [matches, setMatches] = useState<Match[]>([])
   const [selectedMale, setSelectedMale] = useState<any | null>(null)
@@ -221,10 +222,13 @@ export default function MatchingPage() {
       setError(null)
       try {
         const url = new URL(`/api/matching`, window.location.origin)
+        url.searchParams.set("criteria", JSON.stringify(criteriaState))
+        url.searchParams.set("filter", filterOption)
+        url.searchParams.set("sortKey", sortKey)
+        url.searchParams.set("sortOrder", sortOrder)
+
         if (selectedMale) {
-          url.searchParams.append("userId", selectedMale.id)
-          const criteriaString = JSON.stringify(criteriaState)
-          url.searchParams.append("criteria", criteriaString)
+          url.searchParams.set("userId", selectedMale.id)
         }
 
         const response = await fetch(url.toString())
@@ -236,21 +240,10 @@ export default function MatchingPage() {
         const data = await response.json()
 
         if (Array.isArray(data)) {
-          let finalMatches: Match[]
-
-          if (selectedMale) {
-            // Data is already in { applicant, score } format
-            finalMatches = data.map((match: Match) => ({
-              ...match,
-              applicant: parseApplicantData(match.applicant),
-            }))
-          } else {
-            // Data is just an array of applicants, map to { applicant, score: 0 }
-            finalMatches = data.map((applicant: any) => ({
-              applicant: parseApplicantData(applicant),
-              score: 0,
-            }))
-          }
+          const finalMatches = data.map((match: Match) => ({
+            ...match,
+            applicant: parseApplicantData(match.applicant),
+          }))
           setMatches(finalMatches)
         } else {
           throw new Error("API did not return an array of matches.")
@@ -262,69 +255,27 @@ export default function MatchingPage() {
       }
     }
     fetchMatches()
-  }, [selectedMale, criteriaState])
+  }, [selectedMale, criteriaState, filterOption, sortKey, sortOrder])
 
-  const sortedAndFilteredMatches = useMemo(() => {
-    let processedMatches = matches.map((match) => ({
-      ...match,
-      applicant: {
-        ...match.applicant,
-        age: calculateAge(match.applicant.personalDetails?.dob),
-      },
-    }))
-
-    // Filtering
-    if (filterOption === "vip") {
-      processedMatches = processedMatches.filter(
-        (match) => match.applicant.isVip
-      )
-    } else if (filterOption === "free") {
-      processedMatches = processedMatches.filter(
-        (match) => !match.applicant.isVip
-      )
-    }
-
-    // Sorting
-    processedMatches.sort((a, b) => {
-      let valA: any
-      let valB: any
-
-      switch (sortKey) {
-        case "customId":
-          valA = a.applicant.customId
-          valB = b.applicant.customId
-          break
-        case "age":
-          valA = a.applicant.age
-          valB = b.applicant.age
-          break
-        case "createdAt":
-          valA = new Date(a.applicant.createdAt).getTime()
-          valB = new Date(b.applicant.createdAt).getTime()
-          break
-        case "score":
-        default:
-          valA = a.score
-          valB = b.score
-          break
-      }
-
-      if (sortOrder === "asc") {
-        return valA < valB ? -1 : 1
-      } else {
-        return valA > valB ? -1 : 1
-      }
-    })
-
-    return processedMatches
-  }, [matches, filterOption, sortKey, sortOrder])
+  const displayedMatches = useMemo(
+    () =>
+      matches.map((match) => ({
+        ...match,
+        applicant: {
+          ...match.applicant,
+          age: calculateAge(match.applicant.personalDetails?.dob),
+        },
+      })),
+    [matches]
+  )
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-lg font-semibold md:text-2xl">Matching</h1>
         <p className="text-sm text-muted-foreground">
-          Select a male user to view and compare potential female matches.
+          Start with all female applications, then select a male user to
+          calculate matches.
         </p>
       </div>
       <div className="flex flex-1 flex-col gap-6">
@@ -332,7 +283,8 @@ export default function MatchingPage() {
           <CardHeader>
             <CardTitle>Select Male User</CardTitle>
             <CardDescription>
-              Choose a male user to find potential matches for.
+              Male is the main profile for matching. Leave this empty to browse
+              all female applications.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-6">
@@ -343,12 +295,13 @@ export default function MatchingPage() {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
+                    aria-label="Select male user"
                     className="w-full justify-between md:w-[250px]"
                     disabled={isLoadingMales}
                   >
                     {selectedMale
                       ? `${selectedMale.personalDetails.prefix} ${selectedMale.personalDetails.name}`
-                      : "Select user..."}
+                      : "Select male..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
@@ -410,6 +363,7 @@ export default function MatchingPage() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setSelectedMale(null)}
+                  aria-label="Clear selected male"
                   className="h-8 w-8"
                 >
                   <XCircle className="h-4 w-4" />
@@ -470,7 +424,9 @@ export default function MatchingPage() {
           <div>
             <h2 className="text-lg font-semibold">Potential Matches</h2>
             <p className="text-sm text-muted-foreground">
-              Female users who are potential matches for the selected male user.
+              {selectedMale
+                ? "Female applications scored against the selected male profile."
+                : "All female applications. Select a male to start match calculation."}
             </p>
           </div>
           <div className="flex items-center justify-between">
@@ -557,8 +513,8 @@ export default function MatchingPage() {
                   <SheetHeader>
                     <SheetTitle>Matching Settings</SheetTitle>
                     <SheetDescription>
-                      Enable or disable criteria for matching. This will be
-                      implemented later.
+                      Enable or disable criteria for matching. This will be sent
+                      to the matching API.
                     </SheetDescription>
                   </SheetHeader>
                   <MatchingCriteriaFormV2
@@ -594,7 +550,7 @@ export default function MatchingPage() {
           <div className="text-red-500">Error: {error}</div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {sortedAndFilteredMatches.map(({ applicant, score }) => (
+            {displayedMatches.map(({ applicant, score }) => (
               <Card
                 key={applicant.id}
                 className="relative flex flex-col items-center text-center"
@@ -659,7 +615,7 @@ export default function MatchingPage() {
                       if (selectedMale) {
                         router.push(
                           `/dashboard/matching/${selectedMale.id}/${applicant.id}`
-                        );
+                        )
                       }
                     }}
                   >

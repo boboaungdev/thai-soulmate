@@ -1,6 +1,15 @@
+import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   CheckCircle,
   XCircle,
@@ -13,10 +22,8 @@ import {
   Languages,
   Smile,
   Users,
-  Home,
   MapPin,
   Sparkles,
-  Palette,
   Handshake,
   HeartHandshake,
   Target,
@@ -30,23 +37,39 @@ import {
   Phone,
   Mail,
   LocateFixed,
-  Flag,
   CalendarDays,
   Utensils,
   Sun,
   Dumbbell,
   Plane,
   GlassWater,
-  ShieldQuestion,
   PersonStanding,
   Palette as LifestyleIcon,
   Accessibility,
   HeartCrack,
+  ChevronLeft,
+  Home,
 } from "lucide-react"
 import { ApplicationForm } from "@/types/application-form"
 import React from "react"
 import { FaSmoking } from "react-icons/fa"
 import { BASE_URL } from "@/constants"
+
+type MatchBreakdownItem = {
+  key: string
+  category: string
+  label: string
+  malePreference: string
+  femaleValue: string
+  matched: boolean
+  weight: number
+}
+
+type DealBreakerPenalty = {
+  key: string
+  label: string
+  penalty: number
+}
 
 const calculateAge = (dob: string | Date) => {
   if (!dob) return 0
@@ -58,6 +81,16 @@ const calculateAge = (dob: string | Date) => {
     age--
   }
   return age
+}
+
+const getMatchScoreClass = (score: number) => {
+  if (score > 80) {
+    return "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300"
+  }
+  if (score >= 50) {
+    return "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-300"
+  }
+  return "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
 }
 
 function DetailRow({
@@ -121,6 +154,83 @@ function ProfileSection({
   )
 }
 
+function MatchBreakdown({
+  items,
+  penalties,
+}: {
+  items: MatchBreakdownItem[]
+  penalties: DealBreakerPenalty[]
+}) {
+  if (!items.length) return null
+
+  return (
+    <Card className="mb-6">
+      <CardHeader>
+        <CardTitle>Male Preference Match</CardTitle>
+        <CardDescription>
+          The male application is the main profile. Each row compares his
+          preference or matching signal against the female application.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {items.map((item) => (
+            <div key={item.key} className="rounded-md border bg-background p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase">
+                    {item.category}
+                  </p>
+                  <h3 className="font-semibold">{item.label}</h3>
+                </div>
+                <Badge
+                  variant={item.matched ? "default" : "destructive"}
+                  className="shrink-0"
+                >
+                  {item.matched ? "Match" : "No Match"}
+                </Badge>
+              </div>
+              <div className="mt-4 space-y-2 text-sm">
+                <div>
+                  <p className="text-xs text-muted-foreground">
+                    Male preference
+                  </p>
+                  <p>{item.malePreference}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Female value</p>
+                  <p>{item.femaleValue}</p>
+                </div>
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Weight: {item.weight}
+              </p>
+            </div>
+          ))}
+        </div>
+        {penalties.length > 0 && (
+          <div className="rounded-md border border-destructive/30 bg-destructive/5 p-4">
+            <h3 className="font-semibold text-destructive">
+              Deal Breaker Penalties
+            </h3>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {penalties.map((penalty) => (
+                <div
+                  key={penalty.key}
+                  className="flex items-center justify-between gap-3 rounded-md bg-background px-3 py-2 text-sm"
+                >
+                  <span>{penalty.label}</span>
+                  <Badge variant="destructive">-{penalty.penalty}</Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
 // Explicitly define ApplicantColumn as a server component if it doesn't need client features
 // (which it shouldn't, as it just displays props)
 function ApplicantColumn({
@@ -129,20 +239,14 @@ function ApplicantColumn({
 }: {
   applicant: ApplicationForm
   comparison?: {
-    idealPartner: ApplicationForm["idealPartner"]
-    female: ApplicationForm
+    matchByKey: Record<string, boolean>
   }
 }) {
   const age = calculateAge(applicant.personalDetails?.dob)
 
-  const checkMatch = (checker: () => boolean) => {
+  const getMatch = (key: string) => {
     if (!comparison) return undefined
-    try {
-      return checker()
-    } catch (e) {
-      console.error("Error in checkMatch:", e)
-      return false
-    }
+    return comparison.matchByKey[key] ?? false
   }
 
   return (
@@ -172,7 +276,7 @@ function ApplicantColumn({
               <span>{applicant.personalDetails?.currentLocation}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Flag className="h-4 w-4" />
+              <Home className="h-4 w-4" />
               <span>From {applicant.personalDetails?.nationality}</span>
             </div>
           </div>
@@ -204,34 +308,19 @@ function ApplicantColumn({
           icon={<LocateFixed />}
           label="Location"
           value={applicant.personalDetails?.currentLocation}
-          isMatch={checkMatch(
-            () =>
-              comparison!.idealPartner?.location ===
-              comparison!.female.personalDetails?.currentLocation
-          )}
+          isMatch={getMatch("location")}
         />
         <DetailRow
-          icon={<Flag />}
+          icon={<Home />}
           label="Nationality"
           value={applicant.personalDetails?.nationality}
-          isMatch={checkMatch(
-            () =>
-              comparison!.idealPartner?.nationality ===
-              comparison!.female.personalDetails?.nationality
-          )}
+          isMatch={getMatch("nationality")}
         />
         <DetailRow
           icon={<Cake />}
           label="Age"
           value={age}
-          isMatch={checkMatch(() => {
-            const femaleAge = calculateAge(
-              comparison!.female.personalDetails.dob
-            )
-            const [min, max] =
-              comparison!.idealPartner.ageRange?.split("-").map(Number) ?? []
-            return femaleAge >= min && femaleAge <= max
-          })}
+          isMatch={getMatch("ageRange")}
         />
         <DetailRow
           icon={<Users />}
@@ -257,11 +346,7 @@ function ApplicantColumn({
           icon={<GraduationCap />}
           label="Education"
           value={applicant.career?.education}
-          isMatch={checkMatch(
-            () =>
-              comparison!.idealPartner?.education ===
-              comparison!.female.career?.education
-          )}
+          isMatch={getMatch("education")}
         />
         <DetailRow
           icon={<Briefcase />}
@@ -280,11 +365,7 @@ function ApplicantColumn({
           icon={<Ruler />}
           label="Height"
           value={`${applicant.appearance?.height} cm`}
-          isMatch={checkMatch(
-            () =>
-              comparison!.idealPartner?.height ===
-              comparison!.female.appearance?.height
-          )}
+          isMatch={getMatch("height")}
         />
         <DetailRow
           icon={<Scale />}
@@ -300,11 +381,13 @@ function ApplicantColumn({
           icon={<Languages />}
           label="English Fluency"
           value={`${applicant.appearance?.englishFluency?.[0] || 0}%`}
+          isMatch={getMatch("languages")}
         />
         <DetailRow
           icon={<Languages />}
           label="Thai Fluency"
           value={`${applicant.appearance?.thaiFluency?.[0] || 0}%`}
+          isMatch={getMatch("languages")}
         />
       </ProfileSection>
 
@@ -318,21 +401,13 @@ function ApplicantColumn({
           icon={<Smile />}
           label="Personality Traits"
           value={applicant.personality?.personality?.join(", ")}
-          isMatch={checkMatch(() =>
-            comparison!.idealPartner?.personality?.some((p: string) =>
-              applicant.personality?.personality?.includes(p)
-            )
-          )}
+          isMatch={getMatch("personality")}
         />
         <DetailRow
           icon={<Sparkles />}
           label="Best Qualities"
           value={applicant.personality?.bestQualities?.join(", ")}
-          isMatch={checkMatch(() =>
-            comparison!.idealPartner?.qualities?.some((q: string) =>
-              applicant.personality?.bestQualities?.includes(q)
-            )
-          )}
+          isMatch={getMatch("qualities")}
         />
         <DetailRow
           icon={<Heart />}
@@ -351,11 +426,13 @@ function ApplicantColumn({
           icon={<FaSmoking />}
           label="Smoking"
           value={applicant.lifestyle?.smoking}
+          isMatch={getMatch("smoking")}
         />
         <DetailRow
           icon={<GlassWater />}
           label="Drinking"
           value={applicant.lifestyle?.drinking}
+          isMatch={getMatch("drinking")}
         />
         <DetailRow
           icon={<Dumbbell />}
@@ -366,11 +443,13 @@ function ApplicantColumn({
           icon={<Target />}
           label="Interests"
           value={applicant.lifestyle?.interests?.join(", ")}
+          isMatch={getMatch("hobbies")}
         />
         <DetailRow
           icon={<HomeIcon />}
           label="Future Children"
           value={applicant.lifestyle?.futureChildren}
+          isMatch={getMatch("children")}
         />
         <DetailRow
           icon={<Sun />}
@@ -399,6 +478,7 @@ function ApplicantColumn({
           icon={<Waypoints />}
           label="Relocate"
           value={applicant.relationshipGoals?.relocate}
+          isMatch={getMatch("relocation")}
         />
         <DetailRow
           icon={<Heart />}
@@ -417,74 +497,36 @@ function ApplicantColumn({
           icon={<Ruler />}
           label="Height"
           value={applicant.idealPartner?.height}
-          isMatch={checkMatch(
-            () =>
-              applicant.idealPartner?.height ===
-              comparison!.female.appearance?.height
-          )}
         />
         <DetailRow
           icon={<Cake />}
           label="Age Range"
           value={applicant.idealPartner?.ageRange}
-          isMatch={checkMatch(() => {
-            const femaleAge = calculateAge(
-              comparison!.female.personalDetails.dob
-            )
-            const [min, max] =
-              applicant.idealPartner.ageRange?.split("-").map(Number) ?? []
-            return femaleAge >= min && femaleAge <= max
-          })}
         />
         <DetailRow
           icon={<MapPin />}
           label="Location"
           value={applicant.idealPartner?.location}
-          isMatch={checkMatch(
-            () =>
-              applicant.idealPartner?.location ===
-              comparison!.female.personalDetails?.currentLocation
-          )}
         />
         <DetailRow
           icon={<GraduationCap />}
           label="Education"
           value={applicant.idealPartner?.education}
-          isMatch={checkMatch(
-            () =>
-              applicant.idealPartner?.education ===
-              comparison!.female.career?.education
-          )}
         />
         <DetailRow
           icon={<Sparkles />}
           label="Qualities"
           value={applicant.idealPartner?.qualities?.join(", ")}
-          isMatch={checkMatch(() =>
-            applicant.idealPartner?.qualities?.some((q: string) =>
-              comparison!.female.personality?.bestQualities?.includes(q)
-            )
-          )}
         />
         <DetailRow
-          icon={<Flag />}
+          icon={<Home />}
           label="Nationality"
           value={applicant.idealPartner?.nationality}
-          isMatch={checkMatch(
-            () =>
-              applicant.idealPartner?.nationality ===
-              comparison!.female.personalDetails?.nationality
-          )}
         />
         <DetailRow
           icon={<Smile />}
           label="Personality"
           value={applicant.idealPartner?.personality?.join(", ")}
-          isMatch={checkMatch(() =>
-            applicant.idealPartner?.personality?.some((p: string) =>
-              comparison!.female.personality?.personality?.includes(p)
-            )
-          )}
         />
         <DetailRow
           icon={<HeartCrack />}
@@ -498,6 +540,7 @@ function ApplicantColumn({
           icon={<DollarSign />}
           label="Income"
           value={applicant.financial?.income}
+          isMatch={getMatch("income")}
         />
         <DetailRow
           icon={<Building />}
@@ -583,38 +626,47 @@ export default async function MatchComparisonPage({
     return notFound()
   }
 
-  const { male, female, matchPercentage } = data
+  const {
+    male,
+    female,
+    matchPercentage,
+    matchBreakdown = [],
+    dealBreakerPenalties = [],
+  } = data
+  const matchByKey = Object.fromEntries(
+    matchBreakdown.map((item: MatchBreakdownItem) => [item.key, item.matched])
+  )
 
   return (
     <main className="p-4 md:p-6">
-      <div className="mb-6 rounded-lg bg-card p-4 shadow">
+      <Button asChild variant="outline" className="mb-4">
+        <Link href="/dashboard/matching">
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Back to Matching
+        </Link>
+      </Button>
+
+      <div className="mb-6 rounded-lg border bg-card p-4">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="text-center sm:text-left">
             <h1 className="text-2xl font-bold">Match Comparison</h1>
             <p className="text-muted-foreground">
-              {male.personalDetails.name} &amp; {female.personalDetails.name}
+              Male profile: {male.personalDetails.name} compared with female
+              profile: {female.personalDetails.name}
             </p>
           </div>
-          <div className="flex flex-col items-center gap-2">
-            {/* Added a basic radial progress indicator. You might need to import or define `radial-progress` style from your CSS framework (e.g., DaisyUI if used, or custom). */}
-            <div
-              className="radial-progress text-primary"
-              style={
-                {
-                  "--value": matchPercentage,
-                  "--size": "6rem",
-                  "--thickness": "8px",
-                } as React.CSSProperties
-              }
-            >
-              <span className="text-xl font-bold">{matchPercentage}%</span>
-            </div>
-            <span className="text-sm font-medium text-muted-foreground">
-              Match Score
-            </span>
+          <div
+            className={`rounded-md border px-5 py-3 text-center ${getMatchScoreClass(
+              matchPercentage
+            )}`}
+          >
+            <div className="text-3xl font-bold">{matchPercentage}%</div>
+            <div className="text-sm font-medium opacity-80">Match Score</div>
           </div>
         </div>
       </div>
+
+      <MatchBreakdown items={matchBreakdown} penalties={dealBreakerPenalties} />
 
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
         {/* Male Column */}
@@ -624,8 +676,7 @@ export default async function MatchComparisonPage({
         <ApplicantColumn
           applicant={female}
           comparison={{
-            idealPartner: male.idealPartner,
-            female: female,
+            matchByKey,
           }}
         />
       </div>

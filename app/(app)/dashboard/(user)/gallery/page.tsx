@@ -95,8 +95,8 @@ export default function GalleryPage() {
         <p className="text-sm text-muted-foreground">
           Browse through a curated selection of profiles.
         </p>
-        <div className="mt-4 flex flex-wrap items-center gap-4">
-          <div className="relative w-full max-w-md">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+          <div className="relative w-full max-w-md flex-1">
             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="text"
@@ -123,8 +123,9 @@ export default function GalleryPage() {
           </div>
           <div className="flex gap-2">
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-8 w-[120px] bg-card">
-                <SelectValue placeholder="Sort by" />
+              <SelectTrigger className="h-8 w-auto gap-1 bg-card sm:w-[130px]">
+                <span className="text-muted-foreground">Sort:</span>
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="customId">ID</SelectItem>
@@ -132,8 +133,9 @@ export default function GalleryPage() {
               </SelectContent>
             </Select>
             <Select value={sortOrder} onValueChange={setSortOrder}>
-              <SelectTrigger className="h-8 w-[120px] bg-card">
-                <SelectValue placeholder="Order" />
+              <SelectTrigger className="h-8 w-auto gap-1 bg-card sm:w-[120px]">
+                <span className="text-muted-foreground">Order:</span>
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="asc">Asc</SelectItem>

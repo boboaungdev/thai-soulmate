@@ -44,7 +44,7 @@ export function UserCard({ user }: { user: ApplicationForm }) {
         <div className="absolute inset-x-0 bottom-0 p-4 text-white">
           <p className="text-lg font-semibold">
             <span className="text-gold">
-              ID-{user.id.slice(0, 4).toUpperCase()}
+              ID-{String(user.customId).padStart(4, "0")}
             </span>
             , <span className="text-pink">{age}</span>
           </p>

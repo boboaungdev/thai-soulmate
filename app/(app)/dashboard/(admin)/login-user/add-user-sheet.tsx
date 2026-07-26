@@ -40,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { AvatarUploadInput } from "@/components/avatar-upload-input"
+import { r2 } from "@/lib/r2"
 
 const Role = {
   ADMIN: "ADMIN",
@@ -61,15 +62,6 @@ interface AddUserSheetProps {
   onOpenChange: (open: boolean) => void
   onUserAdded: (newUser: any) => void
 }
-
-const r2 = new S3Client({
-  region: "auto",
-  endpoint: R2.R2_ENDPOINT,
-  credentials: {
-    accessKeyId: R2.R2_ACCESS_KEY_ID!,
-    secretAccessKey: R2.R2_SECRET_ACCESS_KEY!,
-  },
-})
 
 export function AddUserSheet({
   open,

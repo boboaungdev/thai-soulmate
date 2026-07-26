@@ -3,7 +3,18 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import {
+  User,
+  Mail,
+  Lock,
+  Shield,
+  Eye,
+  EyeOff,
+  Users, // Icon for STAFF
+} from "lucide-react"
 
+import { R2 } from "@/constants"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -27,9 +38,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+}
+ from "@/components/ui/select"
+import { AvatarUploadInput } from "@/components/avatar-upload-input"
 
-// Define Role enum directly in the component
 const Role = {
   ADMIN: "ADMIN",
   STAFF: "STAFF",
@@ -38,11 +50,27 @@ const Role = {
 
 type Role = (typeof Role)[keyof typeof Role]
 
+// Map roles to icons
+const roleIcons: Record<Role, React.ElementType> = {
+  [Role.ADMIN]: Shield,
+  [Role.STAFF]: Users,
+  [Role.USER]: User,
+}
+
 interface AddUserSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onUserAdded: (newUser: any) => void
 }
+
+const r2 = new S3Client({
+  region: "auto",
+  endpoint: R2.R2_ENDPOINT,
+  credentials: {
+    accessKeyId: R2.R2_ACCESS_KEY_ID!,
+    secretAccessKey: R2.R2_SECRET_ACCESS_KEY!,
+  },
+})
 
 export function AddUserSheet({
   open,
@@ -50,6 +78,8 @@ export function AddUserSheet({
   onUserAdded,
 }: AddUserSheetProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
   const form = useForm({
     defaultValues: {
@@ -57,17 +87,36 @@ export function AddUserSheet({
       email: "",
       password: "",
       role: Role.USER,
-      avatar: "",
+      avatar: "", // This will temporarily hold the URL, but the file is in avatarFile state
     },
   })
 
+  const uploadFileToR2 = async (file: File) => {
+    const fileName = `avatars/${Date.now()}-${file.name}`
+    const command = new PutObjectCommand({
+      Bucket: R2.R2_BUCKET,
+      Key: fileName,
+      Body: file,
+      ContentType: file.type,
+    })
+
+    await r2.send(command)
+    return `${R2.R2_PUBLIC_URL}/${fileName}`
+  }
+
   const onSubmit = async (values: any) => {
     setIsSubmitting(true)
+    let avatarUrl = values.avatar
+
     try {
+      if (avatarFile) {
+        avatarUrl = await uploadFileToR2(avatarFile)
+      }
+
       const response = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, avatar: avatarUrl }),
       })
 
       const result = await response.json()
@@ -77,11 +126,12 @@ export function AddUserSheet({
         onUserAdded(result.data)
         onOpenChange(false)
         form.reset()
+        setAvatarFile(null) // Clear avatar file state
       } else {
         toast.error(result.error || "Failed to add user.")
       }
     } catch (error) {
-      toast.error("An error occurred while adding the user.")
+      toast.error("An error occurred while adding the user, or uploading avatar.")
       console.error(error)
     } finally {
       setIsSubmitting(false)
@@ -90,131 +140,182 @@ export function AddUserSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
+      <SheetContent className="sm:max-w-[525px]">
         <SheetHeader>
           <SheetTitle>Add New User</SheetTitle>
           <SheetDescription>
             Fill in the details to add a new login user.
           </SheetDescription>
         </SheetHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-4">
-            <FormField
-              control={form.control}
-              name="name"
-              rules={{ required: "Name is required" }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter user's name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              rules={{
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter user's email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              rules={{
-                required: "Password is required",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters",
-                },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter a password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+        <div className="p-6">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={form.control}
+                name="avatar"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-center w-full">Avatar (Optional)</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
+                      <div className="flex justify-center mb-4">
+                        <AvatarUploadInput
+                          value={field.value}
+                          onChange={(file) => {
+                            setAvatarFile(file)
+                            field.onChange(file ? URL.createObjectURL(file) : "") // For preview
+                          }}
+                          defaultFallback={form.watch("name") ? form.watch("name").substring(0, 2).toUpperCase() : "CN"}
+                          disabled={isSubmitting}
+                        />
+                      </div>
                     </FormControl>
-                    <SelectContent>
-                      {Object.values(Role).map((role) => (
-                        <SelectItem key={role} value={role}>
-                          {role}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="avatar"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Avatar URL (Optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com/avatar.png" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Adding..." : "Add User"}
-              </Button>
-            </div>
-          </form>
-        </Form>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="name"
+                rules={{ required: "Name is required" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          placeholder="Enter user's name"
+                          {...field}
+                          className="pl-10"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          type="email"
+                          placeholder="Enter user's email"
+                          {...field}
+                          className="pl-10"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                rules={{
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter a password"
+                          {...field}
+                          className="pl-10"
+                        />
+                        {form.watch("password") && ( // Conditionally render the eye icon
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-5 w-5 text-muted-foreground" />
+                            ) : (
+                              <Eye className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <div className="relative dark:bg-input/30 rounded-md">
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="pl-10 h-8 bg-transparent px-2.5 py-1 text-base">
+                            <SelectValue placeholder="Select a role" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.values(Role).map((role) => {
+                            const Icon = roleIcons[role]
+                            return (
+                              <SelectItem key={role} value={role}>
+                                <div className="flex items-center gap-2">
+                                  <Icon className="h-4 w-4 text-muted-foreground" />
+                                  {role}
+                                </div>
+                              </SelectItem>
+                            )
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end space-x-2 pt-8">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Adding..." : "Add User"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
       </SheetContent>
     </Sheet>
   )

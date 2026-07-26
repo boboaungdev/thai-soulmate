@@ -30,7 +30,7 @@ export async function POST(req: Request) {
         email,
         password, // Storing plain text password as requested
         role: role || Role.USER,
-        avatar,
+        avatar: avatar || null,
       },
       select: {
         id: true,

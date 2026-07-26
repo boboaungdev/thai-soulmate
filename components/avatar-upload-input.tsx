@@ -17,7 +17,7 @@ interface AvatarUploadInputProps {
 export function AvatarUploadInput({
   value,
   onChange,
-  defaultFallback = "CN",
+  defaultFallback = "TS",
   className,
   disabled,
 }: AvatarUploadInputProps) {

@@ -38,8 +38,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-}
- from "@/components/ui/select"
+} from "@/components/ui/select"
 import { AvatarUploadInput } from "@/components/avatar-upload-input"
 
 const Role = {
@@ -91,8 +90,15 @@ export function AddUserSheet({
     },
   })
 
-  const uploadFileToR2 = async (file: File) => {
-    const fileName = `avatars/${Date.now()}-${file.name}`
+  const uploadFileToR2 = async ({
+    file,
+    email,
+  }: {
+    file: File
+    email: string
+  }) => {
+    const extension = file.name.split(".").pop() || "png"
+    const fileName = `users/avatars/${email}/${email}-${Date.now()}.${extension}`
     const command = new PutObjectCommand({
       Bucket: R2.R2_BUCKET,
       Key: fileName,
@@ -110,7 +116,13 @@ export function AddUserSheet({
 
     try {
       if (avatarFile) {
-        avatarUrl = await uploadFileToR2(avatarFile)
+        avatarUrl = await uploadFileToR2({
+          file: avatarFile,
+          email: values.email,
+        })
+      }
+      else{
+        avatarUrl = null
       }
 
       const response = await fetch("/api/users", {
@@ -131,7 +143,9 @@ export function AddUserSheet({
         toast.error(result.error || "Failed to add user.")
       }
     } catch (error) {
-      toast.error("An error occurred while adding the user, or uploading avatar.")
+      toast.error(
+        "An error occurred while adding the user, or uploading avatar."
+      )
       console.error(error)
     } finally {
       setIsSubmitting(false)
@@ -149,25 +163,30 @@ export function AddUserSheet({
         </SheetHeader>
         <div className="p-6">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="avatar"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-center w-full">Avatar (Optional)</FormLabel>
+                    <FormLabel className="w-full text-center">
+                      Avatar (Optional)
+                    </FormLabel>
                     <FormControl>
-                      <div className="flex justify-center mb-4">
+                      <div className="mb-4 flex justify-center">
                         <AvatarUploadInput
                           value={field.value}
                           onChange={(file) => {
                             setAvatarFile(file)
-                            field.onChange(file ? URL.createObjectURL(file) : "") // For preview
+                            field.onChange(
+                              file ? URL.createObjectURL(file) : ""
+                            ) // For preview
                           }}
-                          defaultFallback={form.watch("name") ? form.watch("name").substring(0, 2).toUpperCase() : "CN"}
+                          defaultFallback={
+                            form.watch("name")
+                              ? form.watch("name").substring(0, 2).toUpperCase()
+                              : "TS"
+                          }
                           disabled={isSubmitting}
                         />
                       </div>
@@ -185,7 +204,7 @@ export function AddUserSheet({
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <User className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                         <Input
                           placeholder="Enter user's name"
                           {...field}
@@ -212,7 +231,7 @@ export function AddUserSheet({
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                         <Input
                           type="email"
                           placeholder="Enter user's email"
@@ -240,7 +259,7 @@ export function AddUserSheet({
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <Lock className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder="Enter a password"
@@ -251,7 +270,7 @@ export function AddUserSheet({
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                            className="absolute top-1/2 right-3 -translate-y-1/2"
                           >
                             {showPassword ? (
                               <EyeOff className="h-5 w-5 text-muted-foreground" />
@@ -272,13 +291,13 @@ export function AddUserSheet({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Role</FormLabel>
-                    <div className="relative dark:bg-input/30 rounded-md">
+                    <div className="relative rounded-md dark:bg-input/30">
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="pl-10 h-8 bg-transparent px-2.5 py-1 text-base">
+                          <SelectTrigger className="h-8 bg-transparent px-2.5 py-1 pl-10 text-base">
                             <SelectValue placeholder="Select a role" />
                           </SelectTrigger>
                         </FormControl>
@@ -306,10 +325,15 @@ export function AddUserSheet({
                   type="button"
                   variant="outline"
                   onClick={() => onOpenChange(false)}
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button
+                  className="btn-gradient"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? "Adding..." : "Add User"}
                 </Button>
               </div>

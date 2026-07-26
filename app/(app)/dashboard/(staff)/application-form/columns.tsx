@@ -95,33 +95,15 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       <DataTableColumnHeader column={column} title="Gender" />
     ),
     cell: ({ row }) => (
-      <Badge variant="outline">
+      <div className="min-w-[100px]">
         {row.original.personalDetails?.gender || "-"}
-      </Badge>
+      </div>
     ),
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
   },
-  {
-    id: "status",
-    accessorFn: (row) => row.status,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-    cell: ({ row }) => {
-      const status = getApplicationStatusMeta(row.original.status)
-      return (
-        <Badge variant="outline" className={status.badgeClassName}>
-          <status.icon className="mr-1.5 h-3.5 w-3.5" />
-          {status.label}
-        </Badge>
-      )
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
-  },
+
   {
     id: "nationality",
     accessorFn: (row) => row.personalDetails?.nationality ?? "",
@@ -219,6 +201,27 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       </div>
     ),
   },
+
+  {
+    id: "status",
+    accessorFn: (row) => row.status,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status = getApplicationStatusMeta(row.original.status)
+      return (
+        <Badge variant="outline" className={status.badgeClassName}>
+          <status.icon className="mr-1.5 h-3.5 w-3.5" />
+          {status.label}
+        </Badge>
+      )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

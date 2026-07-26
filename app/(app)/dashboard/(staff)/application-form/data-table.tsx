@@ -45,8 +45,8 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({
       email: false,
       phone: false,
-      nationality: true,
-      currentLocation: true,
+      nationality: false,
+      currentLocation: false,
       occupation: true,
       notes: true,
     })

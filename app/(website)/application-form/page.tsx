@@ -49,7 +49,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useState, forwardRef, useEffect, Suspense } from "react"
 import * as PasswordToggleField from "@radix-ui/react-password-toggle-field"
 import { motion, AnimatePresence } from "framer-motion"
@@ -69,6 +69,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import Link from "next/link"
 
 const educationLevels = [
   "High School",
@@ -302,6 +303,11 @@ function AuthPageContents() {
   const [openNationality, setOpenNationality] = useState(false)
   const [openCurrentLocation, setOpenCurrentLocation] = useState(false)
   const [openPhoneCountry, setOpenPhoneCountry] = useState(false)
+  const [agreements, setAgreements] = useState({
+    realData: false,
+    privacyPolicy: false,
+    termsOfService: false,
+  })
   const [femaleProfileForm, setFemaleProfileForm] = useState({
     nickname: "",
     occupation: "",
@@ -371,6 +377,10 @@ function AuthPageContents() {
       return next
     })
   }
+
+  const allAgreed =
+    agreements.realData && agreements.privacyPolicy && agreements.termsOfService
+  const someAgreed = Object.values(agreements).some(Boolean)
 
   const [countries, setCountries] = useState<
     {
@@ -3241,7 +3251,7 @@ function AuthPageContents() {
                       />
                     </div>
                     <CardDescription>
-                      Share what's important to you.
+                      Share what&apos;s important to you.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -3389,7 +3399,7 @@ function AuthPageContents() {
                       />
                     </div>
                     <CardDescription>
-                      Describe the qualities you're looking for in a partner.
+                      Describe the qualities you&apos;re looking for in a partner.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -3944,11 +3954,110 @@ function AuthPageContents() {
                       error={formErrors.recent}
                       disabled={isSubmittingApplication}
                     />
+                    <div className="space-y-4 rounded-md">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="select-all-agreements" //
+                          checked={
+                            allAgreed
+                              ? true
+                              : someAgreed
+                                ? "indeterminate"
+                                : false
+                          }
+                          onCheckedChange={(checked) => {
+                            setAgreements({
+                              realData: !!checked,
+                              privacyPolicy: !!checked,
+                              termsOfService: !!checked,
+                            })
+                          }}
+                          disabled={isSubmittingApplication}
+                        />
+                        <Label
+                          htmlFor="select-all-agreements"
+                          className="font-semibold"
+                        >
+                          Select All
+                        </Label>
+                      </div>
+                      <div className="space-y-2 pl-6">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="agree-real-data"
+                            checked={agreements.realData}
+                            onCheckedChange={(checked) =>
+                              setAgreements((prev) => ({
+                                ...prev,
+                                realData: !!checked,
+                              }))
+                            }
+                            disabled={isSubmittingApplication}
+                          />
+                          <Label htmlFor="agree-real-data" className="text-sm">
+                            I agree that all information and photos provided are
+                            genuine and belong to me.
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="agree-privacy-policy"
+                            checked={agreements.privacyPolicy}
+                            onCheckedChange={(checked) =>
+                              setAgreements((prev) => ({
+                                ...prev,
+                                privacyPolicy: !!checked,
+                              }))
+                            }
+                            disabled={isSubmittingApplication}
+                          />
+                          <Label
+                            htmlFor="agree-privacy-policy"
+                            className="text-sm"
+                          >
+                            I accept the{" "}
+                            <Link
+                              href="/privacy-policy"
+                              target="_blank"
+                              className="text-gradient underline hover:text-primary/80"
+                            >
+                              Privacy Policy
+                            </Link>
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="agree-terms-of-service"
+                            checked={agreements.termsOfService}
+                            onCheckedChange={(checked) =>
+                              setAgreements((prev) => ({
+                                ...prev,
+                                termsOfService: !!checked,
+                              }))
+                            }
+                            disabled={isSubmittingApplication}
+                          />
+                          <Label
+                            htmlFor="agree-terms-of-service"
+                            className="text-sm"
+                          >
+                            I accept the{" "}
+                            <Link
+                              href="/terms-of-service"
+                              target="_blank"
+                              className="text-gradient underline hover:text-primary/80"
+                            >
+                              Terms of Service
+                            </Link>
+                          </Label>
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                   <CardFooter className="flex-col items-start gap-4">
                     <Button
                       className="btn-gradient w-full"
-                      disabled={isSubmittingApplication}
+                      disabled={isSubmittingApplication || !allAgreed}
                       onClick={submitApplicationForm}
                     >
                       {isSubmittingApplication ? (

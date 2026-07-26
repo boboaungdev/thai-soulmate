@@ -176,7 +176,7 @@ function MatchBreakdown({
       <CardContent className="space-y-6">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {items.map((item) => (
-            <div key={item.key} className="rounded-md border bg-background p-4">
+            <div key={item.key} className="rounded-md border p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase">

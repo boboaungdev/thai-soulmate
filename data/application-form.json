@@ -22,6 +22,9 @@
       "religion": "Buddhism",
       "englishFluency": [
         90
+      ],
+      "thaiFluency": [
+        100
       ]
     },
     "personality": {
@@ -143,7 +146,10 @@
       "weight": "51",
       "religion": "Buddhism",
       "englishFluency": [
-        95
+        90
+      ],
+      "thaiFluency": [
+        100
       ]
     },
     "personality": {
@@ -265,7 +271,10 @@
       "weight": "55",
       "religion": "Christian",
       "englishFluency": [
-        100
+        90
+      ],
+      "thaiFluency": [
+        90
       ]
     },
     "personality": {
@@ -392,7 +401,10 @@
       "weight": "50",
       "religion": "None",
       "englishFluency": [
-        85
+        50
+      ],
+      "thaiFluency": [
+        50
       ]
     },
     "personality": {
@@ -514,7 +526,10 @@
       "weight": "52",
       "religion": "Buddhism",
       "englishFluency": [
-        92
+        90
+      ],
+      "thaiFluency": [
+        70
       ]
     },
     "personality": {
@@ -637,7 +652,10 @@
       "weight": "50",
       "religion": "Christian",
       "englishFluency": [
-        95
+        90
+      ],
+      "thaiFluency": [
+        30
       ]
     },
     "personality": {
@@ -760,7 +778,10 @@
       "weight": "53",
       "religion": "Hinduism",
       "englishFluency": [
-        100
+        90
+      ],
+      "thaiFluency": [
+        40
       ]
     },
     "personality": {
@@ -884,6 +905,9 @@
       "religion": "Islam",
       "englishFluency": [
         90
+      ],
+      "thaiFluency": [
+        60
       ]
     },
     "personality": {
@@ -993,7 +1017,7 @@
       "prefix": "Ms.",
       "email": "sakura.ito@example.com",
       "phone": "+818012345678",
-      "nationality": "Japanese",
+      "nationality": "Thai",
       "currentLocation": "Thailand"
     },
     "career": {
@@ -1006,7 +1030,10 @@
       "weight": "51",
       "religion": "Shinto",
       "englishFluency": [
-        88
+        80
+      ],
+      "thaiFluency": [
+        100
       ]
     },
     "personality": {
@@ -1121,7 +1148,7 @@
       "prefix": "Ms.",
       "email": "linh.tran@example.com",
       "phone": "+849876543210",
-      "nationality": "Vietnamese",
+      "nationality": "Thai",
       "currentLocation": "Vietnam"
     },
     "career": {
@@ -1134,7 +1161,10 @@
       "weight": "53",
       "religion": "Buddhism",
       "englishFluency": [
-        94
+        90
+      ],
+      "thaiFluency": [
+        100
       ]
     },
     "personality": {
@@ -1257,7 +1287,10 @@
       "weight": "54",
       "religion": "Christian",
       "englishFluency": [
-        100
+        90
+      ],
+      "thaiFluency": [
+        10
       ]
     },
     "personality": {
@@ -1385,7 +1418,10 @@
       "weight": "55",
       "religion": "Christian",
       "englishFluency": [
-        98
+        90
+      ],
+      "thaiFluency": [
+        10
       ]
     },
     "personality": {

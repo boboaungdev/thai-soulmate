@@ -440,8 +440,7 @@ function AuthPageContents() {
         )
         const registerInterestData = await registerInterestResponse.json()
 
-        console.log(registerInterestData);
-        
+        console.log(registerInterestData)
 
         if (registerInterestData.exists) {
           // Data exists, PRE-FILL the form state
@@ -2286,31 +2285,6 @@ function AuthPageContents() {
                       matchmaking.
                     </CardDescription>
                   </CardHeader>
-                  {gender === "Male" && (
-                    <CardContent>
-                      <div className="space-y-2">
-                        <Label>
-                          Thai Fluency ({femaleProfileForm.thaiFluency}%)
-                        </Label>
-                        <Slider
-                          value={femaleProfileForm.thaiFluency}
-                          onValueChange={(value) =>
-                            setFemaleProfileForm((prev) => ({
-                              ...prev,
-                              thaiFluency: value,
-                            }))
-                          }
-                          max={100}
-                          step={10}
-                        />
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>Beginner</span>
-                          <span>Intermediate</span>
-                          <span>Native</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  )}
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label>
@@ -2334,6 +2308,28 @@ function AuthPageContents() {
                         <span>Native</span>
                       </div>
                     </div>
+                    <div className="space-y-2">
+                      <Label>
+                        Thai Fluency ({femaleProfileForm.thaiFluency}%)
+                      </Label>
+                      <Slider
+                        value={femaleProfileForm.thaiFluency}
+                        onValueChange={(value) =>
+                          setFemaleProfileForm((prev) => ({
+                            ...prev,
+                            thaiFluency: value,
+                          }))
+                        }
+                        max={100}
+                        step={10}
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Beginner</span>
+                        <span>Intermediate</span>
+                        <span>Native</span>
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="height">Height (cm)</Label>
@@ -3402,7 +3398,8 @@ function AuthPageContents() {
                       />
                     </div>
                     <CardDescription>
-                      Describe the qualities you&apos;re looking for in a partner.
+                      Describe the qualities you&apos;re looking for in a
+                      partner.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">

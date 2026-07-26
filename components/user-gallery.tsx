@@ -126,7 +126,7 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
                         </p>
                         <p className="flex items-center gap-1 text-sm">
                           <MapPin className="size-3" />
-                          {user.location.city}, {user.location.country}
+                           {user.location.country}
                         </p>
                       </div>
                     </Card>
@@ -186,7 +186,7 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
                   </p>
                   <p className="flex items-center gap-1 text-sm">
                     <MapPin className="size-3" />
-                    {user.location.city}, {user.location.country}
+                    {user.location.country}
                   </p>
                 </div>
               </Card>

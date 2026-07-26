@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { RegisterInterestDetails } from "./register-interest-details"
@@ -26,20 +26,29 @@ export default function TaskPage() {
     null
   )
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getData()
-        setData(data)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setLoading(false)
-      }
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    try {
+      const data = await getData()
+      setData(data)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
     }
-    fetchData()
   }, [])
 
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  useEffect(() => {
+    const handleUpdated = () => fetchData()
+    window.addEventListener("register-interest-updated", handleUpdated)
+    return () => {
+      window.removeEventListener("register-interest-updated", handleUpdated)
+    }
+  }, [fetchData])
   const handleRowClick = (item: RegisterInterest) => {
     setSelectedItem(item)
   }
@@ -56,7 +65,7 @@ export default function TaskPage() {
             <h1 className="text-2xl font-bold tracking-tight">
               Register Interest
             </h1>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-sm text-muted-foreground">
               Users who submitted matchmaking interest forms
             </p>
           </div>
@@ -85,7 +94,7 @@ export default function TaskPage() {
             <h1 className="text-2xl font-bold tracking-tight">
               Register Interest
             </h1>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-sm text-muted-foreground">
               Users who submitted matchmaking interest forms
             </p>
           </div>

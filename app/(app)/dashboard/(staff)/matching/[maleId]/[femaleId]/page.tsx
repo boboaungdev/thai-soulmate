@@ -641,7 +641,7 @@ export default async function MatchComparisonPage({
 
   return (
     <main className="p-4 md:p-6">
-      <Button asChild variant="outline" className="mb-4">
+      <Button asChild variant="link" className="mb-4 text-foreground">
         <Link href="/dashboard/matching">
           <ChevronLeft className="mr-2 h-4 w-4" />
           Back to Matching

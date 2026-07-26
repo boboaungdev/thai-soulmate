@@ -69,7 +69,7 @@ export function DataTableRowActions<TData>({
       if (response.ok) {
         toast.success("Interest record deleted successfully.")
         setIsDeleteDialogOpen(false)
-        router.refresh()
+        window.dispatchEvent(new Event("register-interest-updated"))
       } else {
         const result = await response.json()
         toast.error(result.error || "Failed to delete interest record.")
@@ -93,7 +93,7 @@ export function DataTableRowActions<TData>({
 
       if (response.ok) {
         toast.success("Status updated successfully.")
-        router.refresh()
+        window.dispatchEvent(new Event("register-interest-updated"))
       } else {
         const result = await response.json()
         toast.error(result.error || "Failed to update status.")
@@ -130,7 +130,7 @@ export function DataTableRowActions<TData>({
         toast.success("Note added successfully.")
         setMessage("")
         setIsNoteDialogOpen(false)
-        router.refresh()
+        window.dispatchEvent(new Event("register-interest-updated"))
       } else {
         const { message: errorMessage } = await res.json()
         toast.error(errorMessage || "Failed to add note.")

@@ -6,13 +6,13 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import {
   Accessibility,
-  ArrowLeft,
   Baby,
   Briefcase,
   Building,
   Cake,
   CalendarDays,
   Camera,
+  ChevronLeft,
   DollarSign,
   Dumbbell,
   Flag,
@@ -192,6 +192,7 @@ function NotesSection({
   const [editingNote, setEditingNote] = useState<NoteWithUser | null>(null)
   const [editedMessage, setEditedMessage] = useState("")
 
+  const router = useRouter()
   const handleAddNote = async () => {
     if (!user?.id) {
       toast.error("You must be logged in to add a note.")
@@ -219,6 +220,7 @@ function NotesSection({
         setNotes([result.note, ...notes])
         setMessage("")
         toast.success("Note added successfully.")
+        router.refresh()
       } else {
         toast.error(result.error || "Failed to add note.")
       }
@@ -241,6 +243,7 @@ function NotesSection({
       if (result.success) {
         setNotes(notes.filter((note) => note.id !== noteToDelete.id))
         toast.success("Note deleted successfully.")
+        router.refresh()
       } else {
         toast.error(result.error || "Failed to delete note.")
       }
@@ -268,6 +271,7 @@ function NotesSection({
           notes.map((note) => (note.id === editingNote.id ? result.note : note))
         )
         toast.success("Note updated successfully.")
+        router.refresh()
       } else {
         toast.error(result.error || "Failed to update note.")
       }
@@ -576,9 +580,9 @@ export default function ApplicationDetailPage() {
 
   return (
     <main className="space-y-6 p-4 md:p-6">
-      <Button asChild variant="outline">
+      <Button asChild variant="link" className="text-foreground">
         <Link href="/dashboard/application-form">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 h-4 w-4" />
           Back to Applications
         </Link>
       </Button>

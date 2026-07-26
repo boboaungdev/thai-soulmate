@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import {
   AlertDialog,
@@ -70,6 +71,7 @@ export function RegisterInterestDetails({
   const [editingNote, setEditingNote] = useState<NoteWithUser | null>(null)
   const [editedMessage, setEditedMessage] = useState("")
 
+  const router = useRouter()
   const { user } = useAuthStore()
 
   useEffect(() => {
@@ -133,6 +135,7 @@ export function RegisterInterestDetails({
         setNotes([result.note, ...notes])
         setNewMessage("")
         toast.success("Note added successfully.")
+        window.dispatchEvent(new Event("register-interest-updated"))
       } else {
         toast.error(result.error || "Failed to add note.")
       }
@@ -156,6 +159,7 @@ export function RegisterInterestDetails({
       if (result.success) {
         setNotes(notes.filter((note) => note.id !== noteToDelete.id))
         toast.success("Note deleted successfully.")
+        window.dispatchEvent(new Event("register-interest-updated"))
       } else {
         toast.error(result.error || "Failed to delete note.")
       }
@@ -184,6 +188,7 @@ export function RegisterInterestDetails({
           notes.map((note) => (note.id === editingNote.id ? result.note : note))
         )
         toast.success("Note updated successfully.")
+        window.dispatchEvent(new Event("register-interest-updated"))
       } else {
         toast.error(result.error || "Failed to update note.")
       }

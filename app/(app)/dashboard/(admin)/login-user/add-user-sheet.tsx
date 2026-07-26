@@ -85,8 +85,8 @@ export function AddUserSheet({
       name: "",
       email: "",
       password: "",
-      role: Role.USER,
-      avatar: "", // This will temporarily hold the URL, but the file is in avatarFile state
+      role: Role.USER as Role,
+      avatar: null as string | null, // This will temporarily hold the URL, but the file is in avatarFile state
     },
   })
 
@@ -120,8 +120,7 @@ export function AddUserSheet({
           file: avatarFile,
           email: values.email,
         })
-      }
-      else{
+      } else {
         avatarUrl = null
       }
 
@@ -180,7 +179,7 @@ export function AddUserSheet({
                             setAvatarFile(file)
                             field.onChange(
                               file ? URL.createObjectURL(file) : ""
-                            ) // For preview
+                            )
                           }}
                           defaultFallback={
                             form.watch("name")

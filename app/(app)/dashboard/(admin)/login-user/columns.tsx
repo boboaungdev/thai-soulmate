@@ -62,7 +62,7 @@ export const columns: ColumnDef<User>[] = [
       return (
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src={user.avatar ?? ""} />
+            <AvatarImage src={user.avatar ?? undefined} />
             <AvatarFallback>
               {user.name.slice(0, 2).toUpperCase()}
             </AvatarFallback>

@@ -60,17 +60,14 @@ export function AvatarUploadInput({
 
   return (
     <div className="flex items-center space-x-2">
-      <div
-        className={`relative group ${className}`}
-        onClick={handleClick}
-      >
-        <div className="relative cursor-pointer rounded-full overflow-visible">
+      <div className={`group relative ${className}`} onClick={handleClick}>
+        <div className="relative cursor-pointer overflow-visible rounded-full">
           <Avatar className="size-24">
-            <AvatarImage src={previewUrl === null ? undefined : previewUrl} alt="Avatar" />
+            <AvatarImage src={previewUrl ?? undefined} alt="Avatar" />
             <AvatarFallback>{defaultFallback}</AvatarFallback>
           </Avatar>
           {!disabled && (
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded-full bg-black opacity-0 transition-opacity group-hover:opacity-100">
               <Camera className="h-8 w-8 text-white" />
             </div>
           )}
@@ -79,7 +76,7 @@ export function AvatarUploadInput({
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 z-10"
+            className="text-destructive-foreground absolute -top-2 -right-2 z-10 rounded-full bg-destructive p-1"
           >
             <X className="h-4 w-4" />
           </button>

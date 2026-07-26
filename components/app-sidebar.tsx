@@ -228,7 +228,10 @@ export function AppSidebar() {
               tooltip="Account"
             >
               <Avatar className="size-8">
-                <AvatarImage src={user?.avatar} alt={user?.name} />
+                <AvatarImage
+                  src={user?.avatar ?? undefined}
+                  alt={user?.name ?? ""}
+                />
                 <AvatarFallback>{user?.fallback}</AvatarFallback>
               </Avatar>
 

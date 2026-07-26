@@ -79,7 +79,10 @@ export function AppNavBar() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative size-8 rounded-full">
                 <Avatar className="size-8">
-                  <AvatarImage src={user.avatar} alt={user.name ?? ""} />
+                  <AvatarImage
+                    src={user.avatar ?? undefined}
+                    alt={user.name ?? ""}
+                  />
                   <AvatarFallback>{user.fallback}</AvatarFallback>
                 </Avatar>
               </Button>
@@ -88,7 +91,10 @@ export function AppNavBar() {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex items-center space-x-2">
                   <Avatar className="size-8">
-                    <AvatarImage src={user.avatar} alt={user.name ?? ""} />
+                    <AvatarImage
+                      src={user.avatar ?? undefined}
+                      alt={user.name ?? ""}
+                    />
                     <AvatarFallback>{user.fallback}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col space-y-1">

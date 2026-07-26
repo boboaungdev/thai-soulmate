@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  History,
   Mail,
   MoreHorizontal,
   Printer,
@@ -158,10 +157,6 @@ export function DataTableRowActions<TData>({
           <Printer className="mr-2 h-4 w-4" />
           Print
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <History className="mr-2 h-4 w-4" />
-          Activity Log
-        </DropdownMenuItem>
         <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
           <DialogTrigger asChild>
             <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
@@ -264,7 +259,8 @@ export function DataTableRowActions<TData>({
           <DialogTrigger asChild>
             <DropdownMenuItem
               variant="destructive"
-              onSelect={(e) => e.preventDefault() } disabled
+              onSelect={(e) => e.preventDefault()}
+              disabled
             >
               <Trash className="mr-2 h-4 w-4" />
               Delete

@@ -49,6 +49,7 @@ import {
   HeartCrack,
   ChevronLeft,
   Home,
+  User,
 } from "lucide-react"
 import { ApplicationForm } from "@/types/application-form"
 import React from "react"
@@ -261,6 +262,7 @@ function ApplicantColumn({
           </Avatar>
           <div>
             <h2 className="text-2xl font-bold">
+              {applicant.personalDetails?.prefix}{" "}
               {applicant.personalDetails?.name}{" "}
               {applicant.personalDetails?.nickname &&
                 `(${applicant.personalDetails?.nickname})`}
@@ -285,14 +287,14 @@ function ApplicantColumn({
 
       <ProfileSection title="Personal Details" icon={<PersonStanding />}>
         <DetailRow
-          icon={<PersonStanding />}
-          label="Gender"
-          value={applicant.personalDetails?.gender}
+          icon={<User />}
+          label="name"
+          value={applicant.personalDetails?.name}
         />
         <DetailRow
           icon={<PersonStanding />}
-          label="Prefix"
-          value={applicant.personalDetails?.prefix}
+          label="Gender"
+          value={applicant.personalDetails?.gender}
         />
         <DetailRow
           icon={<Mail />}

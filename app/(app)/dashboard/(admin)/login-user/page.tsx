@@ -40,26 +40,26 @@ export default function UsersPage() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
-  async function loadUsers() {
-    setLoading(true)
-
-    try {
-      const res = await fetch(`/api/users?page=${page}&limit=10`)
-
-      const json = await res.json()
-
-      if (json.success) {
-        setUsers(json.data)
-        setTotalPages(json.pagination.totalPages)
-      }
-    } catch (error) {
-      console.error("Failed to load users:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
+    async function loadUsers() {
+      setLoading(true)
+
+      try {
+        const res = await fetch(`/api/users?page=${page}&limit=10`)
+
+        const json = await res.json()
+
+        if (json.success) {
+          setUsers(json.data)
+          setTotalPages(json.pagination.totalPages)
+        }
+      } catch (error) {
+        console.error("Failed to load users:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     loadUsers()
   }, [page])
 
@@ -68,7 +68,9 @@ export default function UsersPage() {
       <div>
         <h1 className="text-2xl font-semibold">Login User</h1>
 
-        <p className="text-sm text-muted-foreground">Manage registered login users</p>
+        <p className="text-sm text-muted-foreground">
+          Manage registered login users
+        </p>
       </div>
 
       {loading ? (

@@ -4,10 +4,16 @@ import { useCallback, useEffect, useState } from "react"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { RegisterInterestDetails } from "./register-interest-details"
-import { RegisterInterest } from "@/lib/generated/prisma/client"
 import { Skeleton } from "@/components/ui/skeleton"
+import { RegisterInterest } from "@/lib/generated/prisma/client"
 
-async function getData(): Promise<RegisterInterest[]> {
+type RegisterInterestWithNotesCount = RegisterInterest & {
+  _count: {
+    notes: number
+  }
+}
+
+async function getData(): Promise<RegisterInterestWithNotesCount[]> {
   const res = await fetch("/api/register-interest")
 
   if (!res.ok) {
@@ -20,11 +26,10 @@ async function getData(): Promise<RegisterInterest[]> {
 }
 
 export default function TaskPage() {
-  const [data, setData] = useState<RegisterInterest[]>([])
+  const [data, setData] = useState<RegisterInterestWithNotesCount[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedItem, setSelectedItem] = useState<RegisterInterest | null>(
-    null
-  )
+  const [selectedItem, setSelectedItem] =
+    useState<RegisterInterestWithNotesCount | null>(null)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -49,7 +54,7 @@ export default function TaskPage() {
       window.removeEventListener("register-interest-updated", handleUpdated)
     }
   }, [fetchData])
-  const handleRowClick = (item: RegisterInterest) => {
+  const handleRowClick = (item: RegisterInterestWithNotesCount) => {
     setSelectedItem(item)
   }
 

@@ -24,7 +24,7 @@ import {
   Mars,
   Venus,
   Home,
-  } from "lucide-react"
+} from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
@@ -270,6 +270,8 @@ export default function UserDetailPage() {
   const mainPhoto =
     photos?.headshot || Object.values(photos || {}).find((p) => p)
   const galleryPhotos = Object.entries(photos || {})
+    .filter(([, url]) => url) // Filter out entries with null/undefined URLs
+    .map(([key, url]) => ({ key, url: url as string })) // Map to an array of objects
 
   return (
     <div className="container mx-auto max-w-4xl py-8">
@@ -318,7 +320,7 @@ export default function UserDetailPage() {
             </div>
           </div>
 
-          <Tabs defaultValue="about" className="w-full mt-10">
+          <Tabs defaultValue="about" className="mt-10 w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="about">
                 <BookUser className="mr-2 h-4 w-4" /> About
@@ -353,13 +355,13 @@ export default function UserDetailPage() {
         <h2 className="mb-4 text-2xl font-bold">Gallery</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {galleryPhotos.length > 0 ? (
-            galleryPhotos.map(([key, url]) => (
+            galleryPhotos.map(({ key, url }) => (
               <div
                 key={key}
                 className="relative aspect-square w-full overflow-hidden rounded-lg"
               >
                 <Image
-                  src={url as string}
+                  src={url}
                   alt={`Gallery photo ${key}`}
                   fill
                   className="object-cover transition-transform hover:scale-105"

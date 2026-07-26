@@ -56,7 +56,7 @@ export const columns: ColumnDef<User>[] = [
     ),
     cell: ({ row }) => {
       const user = row.original
-      const { user: currentUser } = useAuthStore()
+      const { user: currentUser } = useAuthStore.getState()
       const isCurrentUser = currentUser?.id === user.id
 
       return (

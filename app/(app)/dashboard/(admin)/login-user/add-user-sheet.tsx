@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import {
   User,
   Mail,
@@ -13,8 +12,6 @@ import {
   EyeOff,
   Users, // Icon for STAFF
 } from "lucide-react"
-
-import { R2 } from "@/constants"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -40,7 +37,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { AvatarUploadInput } from "@/components/avatar-upload-input"
-import { r2 } from "@/lib/r2"
 
 const Role = {
   ADMIN: "ADMIN",
@@ -82,24 +78,31 @@ export function AddUserSheet({
     },
   })
 
-  const uploadFileToR2 = async ({
+  const uploadAvatar = async ({
     file,
     email,
   }: {
     file: File
     email: string
   }) => {
-    const extension = file.name.split(".").pop() || "png"
-    const fileName = `users/avatars/${email}/${email}-${Date.now()}.${extension}`
-    const command = new PutObjectCommand({
-      Bucket: R2.R2_BUCKET,
-      Key: fileName,
-      Body: file,
-      ContentType: file.type,
-    })
+    const formData = new FormData()
+    formData.append("file", file)
 
-    await r2.send(command)
-    return `${R2.R2_PUBLIC_URL}/${fileName}`
+    const response = await fetch(
+      `/api/upload?email=${encodeURIComponent(email)}&path=users/avatars`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    )
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      throw new Error(result.error || "Avatar upload failed")
+    }
+
+    return result.url
   }
 
   const onSubmit = async (values: any) => {
@@ -108,7 +111,7 @@ export function AddUserSheet({
 
     try {
       if (avatarFile) {
-        avatarUrl = await uploadFileToR2({
+        avatarUrl = await uploadAvatar({
           file: avatarFile,
           email: values.email,
         })

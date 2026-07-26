@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     const formData = await req.formData()
     const { searchParams } = new URL(req.url)
     const email = searchParams.get("email")
+    const path = searchParams.get("path") || "applications/photos"
 
     if (!email) {
       return NextResponse.json(
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
 
     const extension = file.name.split(".").pop()
 
-    const fileName = `applications/photos/${email}/${email}-${Date.now()}.${extension}`
+    const fileName = `${path}/${email}/${email}-${Date.now()}.${extension}`
 
     await r2.send(
       new PutObjectCommand({

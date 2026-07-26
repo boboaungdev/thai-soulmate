@@ -57,18 +57,21 @@ interface AddUserSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onUserAdded: (newUser: any) => void
+  viewOnly?: boolean
 }
 
 export function AddUserSheet({
   open,
   onOpenChange,
   onUserAdded,
+  viewOnly = false,
 }: AddUserSheetProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
   const form = useForm({
+    mode: "onChange",
     defaultValues: {
       name: "",
       email: "",
@@ -106,6 +109,7 @@ export function AddUserSheet({
   }
 
   const onSubmit = async (values: any) => {
+    if (viewOnly) return
     setIsSubmitting(true)
     let avatarUrl = values.avatar
 
@@ -147,7 +151,16 @@ export function AddUserSheet({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet
+      open={open}
+      onOpenChange={(open) => {
+        if (!open) {
+          form.reset()
+          setAvatarFile(null)
+        }
+        onOpenChange(open)
+      }}
+    >
       <SheetContent className="sm:max-w-[525px]">
         <SheetHeader>
           <SheetTitle>Add New User</SheetTitle>
@@ -171,6 +184,7 @@ export function AddUserSheet({
                         <AvatarUploadInput
                           value={field.value}
                           onChange={(file) => {
+                            if (viewOnly) return
                             setAvatarFile(file)
                             field.onChange(
                               file ? URL.createObjectURL(file) : ""
@@ -181,7 +195,7 @@ export function AddUserSheet({
                               ? form.watch("name").substring(0, 2).toUpperCase()
                               : "TS"
                           }
-                          disabled={isSubmitting}
+                          disabled={viewOnly || isSubmitting}
                         />
                       </div>
                     </FormControl>
@@ -203,6 +217,7 @@ export function AddUserSheet({
                           placeholder="Enter user's name"
                           {...field}
                           className="pl-10"
+                          disabled={viewOnly || isSubmitting}
                         />
                       </div>
                     </FormControl>
@@ -231,6 +246,7 @@ export function AddUserSheet({
                           placeholder="Enter user's email"
                           {...field}
                           className="pl-10"
+                          disabled={viewOnly || isSubmitting}
                         />
                       </div>
                     </FormControl>
@@ -244,8 +260,8 @@ export function AddUserSheet({
                 rules={{
                   required: "Password is required",
                   minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters",
+                    value: 8,
+                    message: "Password must be at least 8 characters",
                   },
                 }}
                 render={({ field }) => (
@@ -259,12 +275,14 @@ export function AddUserSheet({
                           placeholder="Enter a password"
                           {...field}
                           className="pl-10"
+                          disabled={viewOnly || isSubmitting}
                         />
                         {form.watch("password") && ( // Conditionally render the eye icon
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute top-1/2 right-3 -translate-y-1/2"
+                            disabled={viewOnly || isSubmitting}
                           >
                             {showPassword ? (
                               <EyeOff className="h-5 w-5 text-muted-foreground" />
@@ -289,6 +307,7 @@ export function AddUserSheet({
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={viewOnly || isSubmitting}
                       >
                         <FormControl>
                           <SelectTrigger className="h-8 bg-transparent px-2.5 py-1 pl-10 text-base">
@@ -319,14 +338,14 @@ export function AddUserSheet({
                   type="button"
                   variant="outline"
                   onClick={() => onOpenChange(false)}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || viewOnly}
                 >
                   Cancel
                 </Button>
                 <Button
                   className="btn-gradient"
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || viewOnly}
                 >
                   {isSubmitting ? "Adding..." : "Add User"}
                 </Button>

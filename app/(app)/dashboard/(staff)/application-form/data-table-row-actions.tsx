@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { useRouter } from "next/navigation"
+import { FaWhatsapp } from "react-icons/fa"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -204,6 +205,16 @@ export function DataTableRowActions<TData>({
               <a href={`tel:${application.personalDetails?.phone}`}>
                 <Phone className="mr-2 h-4 w-4" />
                 Phone
+              </a>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <a
+                href={`https://wa.me/${application.personalDetails?.phone?.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FaWhatsapp className="mr-2 h-4 w-4" />
+                WhatsApp
               </a>
             </DropdownMenuItem>
           </DropdownMenuSubContent>

@@ -6,10 +6,10 @@ import { UserCard } from "@/components/user-card"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
-import { ApplicationForm } from "@/lib/generated/prisma/client"
+import { ApplicationForm } from "@/types/application-form"
 
 export default function GalleryPage() {
-  const [users, setUsers] = useState<ApplicationForm[] >([])
+  const [users, setUsers] = useState<ApplicationForm[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("") // State for search term
 

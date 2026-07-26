@@ -4,8 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { MapPin } from "lucide-react"
 import { Card } from "@/components/ui/card"
-import { ApplicationForm } from "@/lib/generated/prisma/client"
-import { PersonalDetails, Photos } from "@/types/application-form"
+import { ApplicationForm, PersonalDetails, Photos } from "@/types/application-form"
 
 export function UserCard({ user }: { user: ApplicationForm }) {
   const personalDetails: PersonalDetails =

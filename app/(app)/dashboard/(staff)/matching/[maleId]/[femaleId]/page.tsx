@@ -285,7 +285,7 @@ function ApplicantColumn({
         </div>
       </Card>
 
-      <ProfileSection title="Personal Details" icon={<PersonStanding />}>
+      <ProfileSection title="Personal Details" icon={<User />}>
         <DetailRow
           icon={<User />}
           label="name"

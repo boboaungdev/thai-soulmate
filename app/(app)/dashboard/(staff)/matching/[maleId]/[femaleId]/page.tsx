@@ -289,7 +289,7 @@ function ApplicantColumn({
         <DetailRow
           icon={<User />}
           label="name"
-          value={applicant.personalDetails?.name}
+          value={`${applicant.personalDetails?.prefix} ${applicant.personalDetails?.name}`}
         />
         <DetailRow
           icon={<PersonStanding />}

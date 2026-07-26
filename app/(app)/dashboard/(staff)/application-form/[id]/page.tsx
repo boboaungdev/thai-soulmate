@@ -29,6 +29,7 @@ import {
   MapPin,
   MoreHorizontal,
   Pencil,
+  PersonStanding,
   Phone,
   Plane,
   Ruler,
@@ -658,21 +659,18 @@ export default function ApplicationDetailPage() {
         <ProfileSection title="Personal Details" icon={<User />}>
           <DetailRow
             icon={<User />}
-            label="Prefix"
-            value={personalDetails?.prefix}
-          />
-          <DetailRow
-            icon={<User />}
             label="Name"
-            value={personalDetails?.name}
+            value={`${personalDetails?.prefix} ${personalDetails?.name}`}
           />
+          {personalDetails.gender === "Female" && (
+            <DetailRow
+              icon={<Smile />}
+              label="Nickname"
+              value={personalDetails?.nickname}
+            />
+          )}
           <DetailRow
-            icon={<Smile />}
-            label="Nickname"
-            value={personalDetails?.nickname}
-          />
-          <DetailRow
-            icon={<User />}
+            icon={<PersonStanding />}
             label="Gender"
             value={personalDetails?.gender}
           />

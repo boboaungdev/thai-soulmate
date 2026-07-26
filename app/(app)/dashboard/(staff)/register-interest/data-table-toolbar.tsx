@@ -6,7 +6,7 @@ import { Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { InputGroup, InputGroupInput, InputGroupText } from "@/components/ui/input-group"
 
-import { statuses } from "./columns"
+import { statuses, genders } from "./columns"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { DataTableViewOptions } from "./data-table-view-options"
 
@@ -39,6 +39,13 @@ export function DataTableToolbar<TData>({
             options={statuses}
           />
         )}
+        {table.getColumn("gender") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("gender")}
+            title="Gender"
+            options={genders}
+          />
+        )}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -57,3 +64,4 @@ export function DataTableToolbar<TData>({
     </div>
   )
 }
+

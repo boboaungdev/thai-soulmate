@@ -41,7 +41,6 @@ export const statuses: {
   {
     value: "CONTACTED_PHONE",
     label: "Contacted by phone",
-    icon: PhoneOutgoing,
     color: "text-indigo-500",
   },
   {
@@ -61,6 +60,20 @@ export const statuses: {
     label: "Not interested",
     icon: CircleX,
     color: "text-red-500",
+  },
+]
+
+export const genders: {
+  value: string
+  label: string
+}[] = [
+  {
+    value: "Male",
+    label: "Male",
+  },
+  {
+    value: "Female",
+    label: "Female",
   },
 ]
 

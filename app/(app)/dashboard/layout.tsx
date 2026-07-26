@@ -15,6 +15,7 @@ const staffPaths = [
   "/dashboard/matching",
   "/dashboard/payment",
   "/dashboard/register-interest",
+  "/dashboard/tracking",
 ]
 
 export default function DashboardLayout({

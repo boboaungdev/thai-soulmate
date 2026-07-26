@@ -299,13 +299,17 @@ const calculateMatchDetails = (male: any, female: any) => {
       key: "languages",
       category: "Languages",
       label: "Languages Spoken",
-      malePreference: "English or Thai fluency 50%+",
-      femaleValue: `English ${female.appearance?.englishFluency?.[0] ?? 0}%, Thai ${
-        female.appearance?.thaiFluency?.[0] ?? 0
+      malePreference: `English ${male.appearance?.englishFluency?.[0] ?? 0}%, Thai ${
+        male.appearance?.thaiFluency?.[0] ?? 0
+      }%`,
+      femaleValue: `English ${female.appearance?.englishFluency?.[0] ?? 90}%, Thai ${
+        female.appearance?.thaiFluency?.[0] ?? 60
       }%`,
       matched:
-        Number(female.appearance?.englishFluency?.[0] ?? 0) >= 50 ||
-        Number(female.appearance?.thaiFluency?.[0] ?? 0) >= 50,
+        (Number(male.appearance?.englishFluency?.[0] ?? 0) >= 50 &&
+          Number(female.appearance?.englishFluency?.[0] ?? 90) >= 50) ||
+        (Number(male.appearance?.thaiFluency?.[0] ?? 0) >= 50 &&
+          Number(female.appearance?.thaiFluency?.[0] ?? 60) >= 50),
       weight: 4,
     }),
   ]

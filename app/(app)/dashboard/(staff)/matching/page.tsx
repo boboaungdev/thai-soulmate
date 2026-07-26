@@ -456,7 +456,8 @@ export default function MatchingPage() {
                     variant="outline"
                     className="w-[180px] justify-between"
                   >
-                    Sort: {sortLabels[sortKey]}
+                    <span className="text-muted-foreground">Sort:</span>
+                    {sortLabels[sortKey]}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -483,7 +484,8 @@ export default function MatchingPage() {
                     variant="outline"
                     className="w-[180px] justify-between"
                   >
-                    Order: {sortOrderLabels[sortOrder]}
+                    <span className="text-muted-foreground">Order:</span>
+                    {sortOrderLabels[sortOrder]}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>

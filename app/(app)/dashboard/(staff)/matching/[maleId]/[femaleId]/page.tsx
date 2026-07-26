@@ -185,22 +185,26 @@ function MatchBreakdown({
                   <h3 className="font-semibold">{item.label}</h3>
                 </div>
                 <Badge
-                  variant={item.matched ? "default" : "destructive"}
-                  className="shrink-0"
+                  variant={item.matched ? "outline" : "destructive"}
+                  className={`shrink-0 ${
+                    item.matched
+                      ? "border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400"
+                      : "border-red"
+                  }`}
                 >
                   {item.matched ? "Match" : "No Match"}
                 </Badge>
               </div>
-              <div className="mt-4 space-y-2 text-sm">
-                <div>
+              <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+                <div className="break-words">
                   <p className="text-xs text-muted-foreground">
                     Male preference
                   </p>
                   <p>{item.malePreference}</p>
                 </div>
-                <div>
+                <div className="break-words">
                   <p className="text-xs text-muted-foreground">Female value</p>
-                  <p>{item.femaleValue}</p>
+                  <p className="font-medium">{item.femaleValue}</p>
                 </div>
               </div>
               <p className="mt-3 text-xs text-muted-foreground">

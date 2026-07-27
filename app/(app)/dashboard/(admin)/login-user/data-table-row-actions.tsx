@@ -1,6 +1,6 @@
 "use client"
 
-import { MoreHorizontal } from "lucide-react"
+import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -36,10 +36,19 @@ export function DataTableRowActions<TData>({
         className="w-[180px]"
         onClick={(event) => event.stopPropagation()}
       >
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>View details</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Pencil className="mr-2 h-4 w-4" />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Eye className="mr-2 h-4 w-4" />
+          View details
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem variant="destructive">
+          <Trash2 className="mr-2 h-4 w-4" />
+          Delete
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

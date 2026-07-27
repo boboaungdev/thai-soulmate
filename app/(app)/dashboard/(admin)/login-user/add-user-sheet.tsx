@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { AvatarUploadInput } from "@/components/avatar-upload-input"
+import { FaUserShield } from "react-icons/fa"
 
 const Role = {
   ADMIN: "ADMIN",
@@ -311,6 +312,7 @@ export function AddUserSheet({
                       >
                         <FormControl>
                           <SelectTrigger className="h-8 bg-transparent px-2.5 py-1 pl-10 text-base">
+                            <FaUserShield className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                             <SelectValue placeholder="Select a role" />
                           </SelectTrigger>
                         </FormControl>

@@ -215,7 +215,7 @@ export function AddUserSheet({
                       <div className="relative">
                         <User className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                         <Input
-                          placeholder="Enter user's name"
+                          placeholder="John Doe"
                           {...field}
                           className="pl-10"
                           disabled={viewOnly || isSubmitting}
@@ -244,7 +244,7 @@ export function AddUserSheet({
                         <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                         <Input
                           type="email"
-                          placeholder="Enter user's email"
+                          placeholder="name@example.com"
                           {...field}
                           className="pl-10"
                           disabled={viewOnly || isSubmitting}

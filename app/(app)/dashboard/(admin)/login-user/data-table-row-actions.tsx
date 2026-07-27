@@ -40,10 +40,6 @@ export function DataTableRowActions<TData>({
           <Pencil className="mr-2 h-4 w-4" />
           Edit
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Eye className="mr-2 h-4 w-4" />
-          View details
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive">
           <Trash2 className="mr-2 h-4 w-4" />

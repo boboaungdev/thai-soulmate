@@ -40,6 +40,14 @@ export default function UsersPage() {
     setUsers((prevUsers) => [newUser, ...prevUsers])
   }
 
+  const roleCounts = users.reduce(
+    (acc, user) => {
+      acc[user.role] = (acc[user.role] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
   return (
     <>
       <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
@@ -67,7 +75,7 @@ export default function UsersPage() {
             </div>
           </div>
         ) : (
-          <DataTable columns={columns} data={users} />
+          <DataTable columns={columns} data={users} roleCounts={roleCounts} />
         )}
       </main>
       <AddUserSheet

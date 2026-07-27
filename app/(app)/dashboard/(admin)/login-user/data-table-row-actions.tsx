@@ -127,7 +127,11 @@ export function DataTableRowActions<TData extends User>({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="btn-gradient"
+            >
               {isDeleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

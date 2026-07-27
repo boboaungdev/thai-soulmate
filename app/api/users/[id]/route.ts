@@ -5,7 +5,7 @@ import { Role } from "@/lib/generated/prisma/client"
 
 export async function DELETE(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = req.headers.get("x-user-id")

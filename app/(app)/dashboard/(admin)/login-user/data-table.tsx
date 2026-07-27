@@ -33,12 +33,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   onRowClick?: (row: TData) => void
+  roleCounts: Record<string, number>
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onRowClick,
+  roleCounts,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -75,7 +77,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} roleCounts={roleCounts} />
       <ScrollArea className="rounded-md border">
         <Table>
           <TableHeader>

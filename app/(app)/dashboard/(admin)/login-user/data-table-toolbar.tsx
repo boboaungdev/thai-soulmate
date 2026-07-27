@@ -16,12 +16,19 @@ import { DataTableViewOptions } from "./data-table-view-options"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
+  roleCounts: Record<string, number>
 }
 
 export function DataTableToolbar<TData>({
   table,
+  roleCounts,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
+
+  const roleOptions = roles.map((role) => ({
+    ...role,
+    count: roleCounts[role.value] || 0,
+  }))
 
   return (
     <div className="flex items-center justify-between">
@@ -42,7 +49,7 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("role")}
             title="Role"
-            options={roles}
+            options={roleOptions}
           />
         )}
         {isFiltered && (

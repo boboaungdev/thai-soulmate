@@ -1,5 +1,3 @@
-"use client"
-
 import { Check, PlusCircle } from "lucide-react"
 import { Column } from "@tanstack/react-table"
 
@@ -29,6 +27,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
     label: string
     value: string
     icon?: React.ComponentType<{ className?: string }>
+    count?: number
   }[]
 }
 
@@ -117,6 +116,11 @@ export function DataTableFacetedFilter<TData, TValue>({
                       <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                     )}
                     <span>{option.label}</span>
+                    {option.count !== undefined && (
+                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                        {option.count}
+                      </span>
+                    )}
                   </CommandItem>
                 )
               })}

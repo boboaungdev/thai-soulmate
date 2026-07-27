@@ -506,7 +506,8 @@ export default function MatchingPage() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Sheet>
+              {/* commanded setting for now */}
+              {/* <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline">
                     <Settings className="mr-2 h-4 w-4" />
@@ -528,7 +529,7 @@ export default function MatchingPage() {
                     }
                   />
                 </SheetContent>
-              </Sheet>
+              </Sheet> */}
             </div>
           </div>
         </div>

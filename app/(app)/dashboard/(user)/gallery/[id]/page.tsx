@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   MapPin,
   Cake,
+  Copy,
   Ruler,
   Weight,
   BookUser,
@@ -24,6 +25,7 @@ import {
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { toast } from "sonner"
 import { Separator } from "@/components/ui/separator"
 
 const ProfileInfo = ({
@@ -308,6 +310,18 @@ export default function UserDetailPage() {
     .filter(([, url]) => url) // Filter out entries with null/undefined URLs
     .map(([key, url]) => ({ key, url: url as string })) // Map to an array of objects
 
+  const handleCopyId = () => {
+    const idToCopy = String(user.customId).padStart(4, "0")
+    navigator.clipboard
+      .writeText(idToCopy)
+      .then(() => {
+        toast.success("ID copied to clipboard!")
+      })
+      .catch(() => {
+        toast.error("Failed to copy ID.")
+      })
+  }
+
   return (
     <div className="container mx-auto max-w-4xl py-8">
       <Button
@@ -334,8 +348,12 @@ export default function UserDetailPage() {
               ` (${personalDetails.nickname})`}
           </h1>
           <div className="mt-2 flex items-center justify-center gap-4 text-muted-foreground">
-            <div className="flex items-center gap-1">
+            <div
+              className="flex cursor-pointer items-center gap-1 hover:text-foreground"
+              onClick={handleCopyId}
+            >
               <p>ID: {String(user.customId).padStart(4, "0")}</p>
+              <Copy className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-1">
               {personalDetails?.gender === "Male" ? (

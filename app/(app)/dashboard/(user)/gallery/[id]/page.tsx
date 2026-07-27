@@ -14,9 +14,6 @@ import {
   Ruler,
   Weight,
   BookUser,
-  Star,
-  Sparkles,
-  Heart,
   Briefcase,
   GraduationCap,
   Languages,
@@ -26,7 +23,6 @@ import {
   Home,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 
@@ -50,13 +46,31 @@ const ProfileInfo = ({
   </div>
 )
 
-const AboutSection = ({ content }: { content: string }) => (
+const AboutSection = ({
+  content,
+  personalityTraits,
+}: {
+  content: string
+  personalityTraits: string[] | undefined
+}) => (
   <Card>
     <CardHeader>
-      <CardTitle>About Me</CardTitle>
+      <CardTitle className="text-gradient">About Me</CardTitle>
     </CardHeader>
-    <CardContent>
+    <CardContent className="space-y-4">
       <p className="text-muted-foreground">{content || "N/A"}</p>
+      {personalityTraits && personalityTraits.length > 0 && (
+        <div>
+          <h3 className="font-semibold">Personality</h3>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {personalityTraits.map((trait) => (
+              <Badge key={trait} variant="secondary">
+                {trait}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
     </CardContent>
   </Card>
 )
@@ -68,10 +82,21 @@ const DetailsSection = ({ user }: { user: ApplicationForm }) => {
       ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
       : "N/A"
 
-  const languages = [
-    ...(appearance?.thaiFluency || []),
-    ...(appearance?.englishFluency || []),
-  ]
+  const languageParts = []
+  if (appearance?.thaiFluency?.[0] !== undefined) {
+    languageParts.push(
+      appearance.thaiFluency[0] === 100
+        ? "Thai (Native Speaker)"
+        : `Thai ${appearance.thaiFluency[0]}%`
+    )
+  }
+  if (appearance?.englishFluency?.[0] !== undefined) {
+    languageParts.push(
+      appearance.englishFluency[0] === 100
+        ? "English (Native Speaker)"
+        : `English ${appearance.englishFluency[0]}%`
+    )
+  }
 
   const details = [
     {
@@ -112,14 +137,14 @@ const DetailsSection = ({ user }: { user: ApplicationForm }) => {
     {
       icon: <Languages className="h-5 w-5 text-muted-foreground" />,
       label: "Languages",
-      value: languages.join(", ") || "N/A",
+      value: languageParts.join(", ") || "N/A",
     },
   ]
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Details</CardTitle>
+        <CardTitle className="text-gradient">Details</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6">
         {details.map((item) => (
@@ -146,7 +171,7 @@ const LifestyleSection = ({ user }: { user: ApplicationForm }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Lifestyle</CardTitle>
+        <CardTitle className="text-gradient">Lifestyle</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {lifestyleItems.map((item) => (
@@ -176,7 +201,7 @@ const LookingForSection = ({ user }: { user: ApplicationForm }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Looking For</CardTitle>
+        <CardTitle className="text-gradient">Looking For</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
@@ -205,6 +230,16 @@ const LookingForSection = ({ user }: { user: ApplicationForm }) => {
     </Card>
   )
 }
+
+const OverviewSection = ({ user }: { user: ApplicationForm }) => (
+  <div className="space-y-6">
+    <AboutSection
+      content={user.personality?.about || ""}
+      personalityTraits={user.personality?.personality}
+    />
+    <DetailsSection user={user} />
+  </div>
+)
 
 export default function UserDetailPage() {
   const params = useParams()
@@ -292,9 +327,11 @@ export default function UserDetailPage() {
               {personalDetails?.name?.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
-          <h1 className="text-3xl font-bold">
-            {personalDetails?.prefix || ""}{" "}
-            {personalDetails?.nickname || personalDetails?.name || "User"}
+          <h1 className="text-gradient text-3xl font-bold">
+            {personalDetails?.prefix || ""} {personalDetails?.name || "User"}
+            {personalDetails?.nickname &&
+              personalDetails.name &&
+              ` (${personalDetails.nickname})`}
           </h1>
           <div className="mt-2 flex items-center justify-center gap-4 text-muted-foreground">
             <div className="flex items-center gap-1">
@@ -320,39 +357,16 @@ export default function UserDetailPage() {
             </div>
           </div>
 
-          <Tabs defaultValue="about" className="mt-10 w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="about">
-                <BookUser className="mr-2 h-4 w-4" /> About
-              </TabsTrigger>
-              <TabsTrigger value="details">
-                <Heart className="mr-2 h-4 w-4" /> Details
-              </TabsTrigger>
-              <TabsTrigger value="lifestyle">
-                <Sparkles className="mr-2 h-4 w-4" /> Lifestyle
-              </TabsTrigger>
-              <TabsTrigger value="lookingFor">
-                <Star className="mr-2 h-4 w-4" /> Looking For
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="about" className="mt-6">
-              <AboutSection content={personality?.about || ""} />
-            </TabsContent>
-            <TabsContent value="details" className="mt-6">
-              <DetailsSection user={user} />
-            </TabsContent>
-            <TabsContent value="lifestyle" className="mt-6">
-              <LifestyleSection user={user} />
-            </TabsContent>
-            <TabsContent value="lookingFor" className="mt-6">
-              <LookingForSection user={user} />
-            </TabsContent>
-          </Tabs>
+          <div className="mt-10 w-full space-y-6">
+            <OverviewSection user={user} />
+            <LifestyleSection user={user} />
+            <LookingForSection user={user} />
+          </div>
         </CardContent>
       </Card>
 
       <div className="mt-8">
-        <h2 className="mb-4 text-2xl font-bold">Gallery</h2>
+        <h2 className="text-gradient mb-4 text-2xl font-bold">Gallery</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {galleryPhotos.length > 0 ? (
             galleryPhotos.map(({ key, url }) => (

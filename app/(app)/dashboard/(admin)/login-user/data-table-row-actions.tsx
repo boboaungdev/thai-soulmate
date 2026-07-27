@@ -20,6 +20,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -98,10 +99,11 @@ export function DataTableRowActions<TData extends User>({
           className="w-[180px]"
           onClick={(event) => event.stopPropagation()}
         >
-          <DropdownMenuItem>
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          {/* <DropdownMenuItem>
             <Pencil className="mr-2 h-4 w-4" />
             Edit
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem
             variant="destructive"

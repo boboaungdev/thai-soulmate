@@ -277,6 +277,7 @@ function SimpleStepper({
 
 function AuthPageContents() {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [initialUserData, setInitialUserData] = useState<any | null>(null)
@@ -2077,6 +2078,10 @@ function AuthPageContents() {
                           dob,
                           ...locationForm,
                         })
+                        // Update URL query parameter with the new email
+                        const currentSearchParams = new URLSearchParams(searchParams.toString())
+                        currentSearchParams.set("email", detailsForm.email)
+                        router.replace(`${pathname}?${currentSearchParams.toString()}`)
                       }}
                       disabled={isInitializing || loadingCountries}
                     >

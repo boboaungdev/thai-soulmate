@@ -16,7 +16,7 @@ import {
   KeyRound,
   X,
   Clock,
-  CheckCircle,
+  CheckCircle2,
   ChevronsUpDown,
   Check,
 } from "lucide-react"
@@ -4160,7 +4160,7 @@ function AuthPageContents() {
                         delay: 0.2,
                       }}
                     >
-                      <CheckCircle className="size-16 text-green-500" />
+                      <CheckCircle2 className="size-16 text-green-500" />
                     </motion.div>
                     <div className="flex items-center justify-center gap-2 pt-2">
                       <Badge className="flex items-center gap-2 border-yellow-500/50 bg-yellow-400/20 text-yellow-700 dark:text-yellow-400">

@@ -24,9 +24,9 @@ import {
   Heart,
   HeartPulse,
   Star,
-  CheckCircle,
   XCircle,
   Clock,
+  CheckCircle2,
 } from "lucide-react"
 import {
   Bar,
@@ -106,7 +106,6 @@ const compatibilityBreakdown = [
   { name: "Lifestyle", value: 20, color: "#FF8042" },
   { name: "Communication", value: 25, color: "#8884d8" },
 ]
-const RADIAN = Math.PI / 180
 const StatusIcon = ({
   status,
 }: {
@@ -114,7 +113,7 @@ const StatusIcon = ({
 }) => {
   switch (status) {
     case "Completed":
-      return <CheckCircle className="h-5 w-5 text-green-500" />
+      return <CheckCircle2 className="h-5 w-5 text-green-500" />
     case "Pending":
       return <Clock className="h-5 w-5 text-orange-500" />
     case "Locked":
@@ -160,7 +159,7 @@ const UserDashboardPage = () => {
                   }
                 >
                   {membershipData.status === "Active" && (
-                    <CheckCircle className="h-3 w-3" />
+                    <CheckCircle2 className="h-3 w-3" />
                   )}
                   {membershipData.status}
                 </Badge>

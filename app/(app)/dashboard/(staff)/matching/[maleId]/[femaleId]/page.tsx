@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  CheckCircle,
+  CheckCircle2,
   XCircle,
   Heart,
   Briefcase,
@@ -132,7 +132,7 @@ function DetailRow({
         {isMatch !== undefined && (
           <div className="w-5">
             {isMatch ? (
-              <CheckCircle className="h-5 w-5 text-green-500" />
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
             ) : (
               <XCircle className="h-5 w-5 text-red-500" />
             )}
@@ -207,7 +207,7 @@ function MatchBreakdown({
                 >
                   {item.matched ? (
                     <>
-                      <CheckCircle className="h-3.5 w-3.5" />
+                      <CheckCircle2 className="h-3.5 w-3.5" />
                       <span>Match</span>
                     </>
                   ) : (

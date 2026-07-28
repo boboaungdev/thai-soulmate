@@ -47,8 +47,8 @@ import { useAuthStore } from "@/stores/auth-store"
 
 const userItems = [
   {
-    title: "Dashboard",
-    url: "/dashboard",
+    title: "User Dashboard",
+    url: "/dashboard/user-dashboard",
     icon: LayoutDashboard,
   },
   {
@@ -74,6 +74,11 @@ const userItems = [
 ]
 
 const staffItems = [
+  {
+    title: "Staff Dashboard",
+    url: "/dashboard/staff-dashboard",
+    icon: LayoutDashboard,
+  },
   {
     title: "Register Interest",
     url: "/dashboard/register-interest",

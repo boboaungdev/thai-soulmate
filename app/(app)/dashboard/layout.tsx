@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { usePathname, useRouter, notFound } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 import { AppNavBar } from "@/components/app-nav-bar"
 import { AppSidebar } from "@/components/app-sidebar"
@@ -9,16 +9,40 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { useMounted } from "@/hooks/use-mounted"
 import { useAuthStore } from "@/stores/auth-store"
 
-const adminPaths = ["/dashboard/admin-dashboard", "/dashboard/login-user"]
-const staffPaths = [
-  "/dashboard/staff-dashboard",
-  "/dashboard/application-form",
-  "/dashboard/matching",
-  "/dashboard/payment",
-  "/dashboard/register-interest",
-  "/dashboard/tracking",
-]
-const userPaths = ["/dashboard/billing", "/dashboard/gallery"]
+const allowedRoutes = {
+  ADMIN: ["/dashboard"], // Admin can access all dashboard routes
+  STAFF: [
+    "/dashboard/staff-dashboard",
+    "/dashboard/application-form",
+    "/dashboard/matching",
+    "/dashboard/payment",
+    "/dashboard/register-interest",
+    "/dashboard/tracking",
+    "/dashboard/profile",
+  ],
+  USER: [
+    "/dashboard/user-dashboard",
+    "/dashboard/billing",
+    "/dashboard/gallery",
+    "/dashboard/my-soulmate",
+    "/dashboard/my-tracking",
+    "/dashboard/profile",
+  ],
+} as const
+
+const dashboardHome = {
+  ADMIN: "/dashboard/admin-dashboard",
+  STAFF: "/dashboard/staff-dashboard",
+  USER: "/dashboard/user-dashboard",
+} as const
+
+function isAllowedRoute(role: keyof typeof allowedRoutes, pathname: string) {
+  if (role === "ADMIN") {
+    return true
+  }
+
+  return allowedRoutes[role].some((route) => pathname.startsWith(route))
+}
 
 export default function DashboardLayout({
   children,
@@ -27,42 +51,29 @@ export default function DashboardLayout({
 }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { user } = useAuthStore()
   const mounted = useMounted()
+  const { user } = useAuthStore()
 
   useEffect(() => {
-    if (mounted && !user) {
+    if (!mounted) return
+
+    // Not authenticated
+    if (!user) {
       router.replace("/auth")
       return
     }
 
-    if (mounted && user) {
-      const { role } = user
-
-      if (role === "ADMIN") {
-        const isAccessingAllowedPath = adminPaths.some((path) =>
-          pathname.startsWith(path)
-        )
-        if (!isAccessingAllowedPath) {
-          return notFound()
-        }
-      } else if (role === "STAFF") {
-        const isAccessingAllowedPath = staffPaths.some((path) =>
-          pathname.startsWith(path)
-        )
-        if (!isAccessingAllowedPath) {
-          return notFound()
-        }
-      } else if (role === "USER") {
-        const isAccessingAllowedPath = userPaths.some((path) =>
-          pathname.startsWith(path)
-        )
-        if (!isAccessingAllowedPath) {
-          return notFound()
-        }
-      }
+    // Redirect /dashboard to the correct dashboard
+    if (pathname === "/dashboard") {
+      router.replace(dashboardHome[user.role])
+      return
     }
-  }, [router, user, mounted, pathname])
+
+    // Redirect unauthorized users
+    if (!isAllowedRoute(user.role, pathname)) {
+      router.replace(dashboardHome[user.role])
+    }
+  }, [mounted, pathname, router, user])
 
   if (!mounted || !user) {
     return null

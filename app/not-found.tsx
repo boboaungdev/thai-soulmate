@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { AppName } from "@/components/app-name"
@@ -22,7 +22,7 @@ export default function NotFound() {
               alt={`${APP_INFO.name} logo`}
               width={128}
               height={128}
-              className="mx-auto mb-4 rounded-3xl object-cover shadow-sm"
+              className="mx-auto mb-4 rounded-3xl object-cover"
               priority
             />
             <p className="text-4xl font-bold tracking-tight sm:text-5xl">
@@ -32,12 +32,12 @@ export default function NotFound() {
               404 - Page Not Found
             </h1>
             <p className="mt-2 text-base text-muted-foreground">
-              Sorry, we couldn’t find the page you’re looking for.
+              Sorry, we couldn&apos;t find the page you&apos;re looking for.
             </p>
             <div className="mt-6">
               <Button asChild className="btn-gradient">
                 <Link href="/">
-                  <ArrowLeft className="mr-2 size-4" />
+                  <ChevronLeft className="mr-2 size-4" />
                   Go back home
                 </Link>
               </Button>

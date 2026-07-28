@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function calculateAge(birthDate: Date): number {
+export function calculateAge(birthDate: Date ): number {
   const today = new Date()
   const birthYear = birthDate.getFullYear()
   const birthMonth = birthDate.getMonth()

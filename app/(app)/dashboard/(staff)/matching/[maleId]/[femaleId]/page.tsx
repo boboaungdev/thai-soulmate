@@ -49,6 +49,7 @@ import {
   HeartCrack,
   ChevronLeft,
   Home,
+  Image as ImageIcon, // Renamed to avoid conflict with next/image
   User,
 } from "lucide-react"
 import { ApplicationForm } from "@/types/application-form"
@@ -56,6 +57,7 @@ import React from "react"
 import { FaSmoking } from "react-icons/fa"
 import { BASE_URL } from "@/constants"
 
+import Image from "next/image" // Import next/image
 type MatchBreakdownItem = {
   key: string
   category: string
@@ -159,7 +161,7 @@ function ProfileSection({
     <Card>
       <CardHeader className="flex flex-row items-center gap-3">
         {icon}
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-gradient">{title}</CardTitle>
       </CardHeader>
       <CardContent className="divide-y">{children}</CardContent>
     </Card>
@@ -197,13 +199,23 @@ function MatchBreakdown({
                 </div>
                 <Badge
                   variant={item.matched ? "outline" : "destructive"}
-                  className={`shrink-0 ${
+                  className={`flex shrink-0 items-center gap-1 ${
                     item.matched
                       ? "border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400"
                       : "border-red"
                   }`}
                 >
-                  {item.matched ? "Match" : "No Match"}
+                  {item.matched ? (
+                    <>
+                      <CheckCircle className="h-3.5 w-3.5" />
+                      <span>Match</span>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-3.5 w-3.5" />
+                      <span>No Match</span>
+                    </>
+                  )}
                 </Badge>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
@@ -276,7 +288,7 @@ function ApplicantColumn({
             </AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-gradient text-2xl font-bold">
               {applicant.personalDetails?.prefix}{" "}
               {applicant.personalDetails?.name}{" "}
               {applicant.personalDetails?.nickname &&
@@ -585,13 +597,17 @@ function ApplicantColumn({
             )
             .map(([key, value]) => (
               <div key={key} className="flex flex-col gap-2">
-                <Avatar className="h-40 w-full rounded-md sm:h-56 md:h-64">
-                  <AvatarImage
-                    src={value as string}
-                    className="rounded-md object-cover"
-                  />
-                  <AvatarFallback className="rounded-md">Img</AvatarFallback>
-                </Avatar>
+                <div className="relative flex h-40 w-full items-center justify-center overflow-hidden rounded-md bg-secondary sm:h-56 md:h-64">
+                  {value ? (
+                    <Image
+                      src={value as string}
+                      alt={key.replace(/([A-Z])/g, " $1")}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : null}
+                </div>
                 <span className="text-center text-sm text-muted-foreground capitalize">
                   {key.replace(/([A-Z])/g, " $1")}
                 </span>
@@ -672,8 +688,14 @@ export default async function MatchComparisonPage({
           <div className="text-center sm:text-left">
             <h1 className="text-2xl font-bold">Match Comparison</h1>
             <p className="text-muted-foreground">
-              Male profile: {male.personalDetails.name} compared with female
-              profile: {female.personalDetails.name}
+              Male profile:{" "}
+              <span className="text-gold font-semibold">
+                {male.personalDetails.name}
+              </span>{" "}
+              compared with female profile:{" "}
+              <span className="text-pink font-semibold">
+                {female.personalDetails.name}
+              </span>
             </p>
           </div>
           <div

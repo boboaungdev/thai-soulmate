@@ -17,6 +17,7 @@ import {
   DollarSign,
   HeartHandshake,
   HeartPulse,
+  Heart,
 } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
@@ -53,6 +54,11 @@ const userItems = [
     title: "Gallery",
     url: "/dashboard/gallery",
     icon: GalleryHorizontal,
+  },
+  {
+    title: "My Soulmate",
+    url: "/dashboard/my-soulmate",
+    icon: Heart,
   },
 ]
 

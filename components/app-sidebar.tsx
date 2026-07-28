@@ -60,6 +60,11 @@ const userItems = [
     url: "/dashboard/my-soulmate",
     icon: Heart,
   },
+  {
+    title: "My Tracking",
+    url: "/dashboard/my-tracking",
+    icon: HeartPulse,
+  },
 ]
 
 const staffItems = [
@@ -91,6 +96,11 @@ const staffItems = [
 ]
 
 const adminItems = [
+  {
+    title: "Admin Dashboard",
+    url: "/dashboard/admin-dashboard",
+    icon: LayoutDashboard,
+  },
   {
     title: "Login User",
     url: "/dashboard/login-user",

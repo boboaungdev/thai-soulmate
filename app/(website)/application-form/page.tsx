@@ -427,101 +427,111 @@ function AuthPageContents() {
 
   useEffect(() => {
     const initializeApplication = async () => {
-      setIsInitializing(true) // Set loading state to true
+      setIsInitializing(true)
+
       const userEmail = searchParams.get("email")
+
       if (!userEmail || initialRedirectDone) {
-        setIsInitializing(false) // Reset if conditions are not met
+        setIsInitializing(false)
         return
       }
 
+      const prefillEmail = () => {
+        setInitialUserData({ email: userEmail })
+        setDetailsForm((prev) => ({
+          ...prev,
+          email: userEmail,
+        }))
+      }
+
+      const prefillInterestData = (interestData: any) => {
+        setInitialUserData(interestData)
+
+        if (interestData.prefix) setPrefix(interestData.prefix)
+        if (interestData.gender) setGender(interestData.gender)
+        if (interestData.dob) setBirthday(new Date(interestData.dob))
+
+        setDetailsForm((prev) => ({
+          ...prev,
+          name: interestData.name ?? prev.name,
+          email: interestData.email ?? prev.email,
+          phone: interestData.phone ?? prev.phone,
+        }))
+
+        setLocationForm((prev) => ({
+          ...prev,
+          nationality: interestData.nationality ?? prev.nationality,
+          currentLocation: interestData.currentLocation ?? prev.currentLocation,
+        }))
+
+        if (interestData.phoneCountry) {
+          const country = countries.find(
+            (c) =>
+              c.callCode === interestData.phoneCountry ||
+              `+${c.callCode}` === interestData.phoneCountry
+          )
+
+          if (country) {
+            setPhoneCountry(country.code)
+          }
+        }
+      }
+
       try {
-        // 1. Check for registered interest AND get data
-        const registerInterestResponse = await fetch(
-          `/api/register-interest/check?email=${encodeURIComponent(userEmail)}`
-        )
-        const registerInterestData = await registerInterestResponse.json()
-
-        console.log(registerInterestData)
-
-        if (registerInterestData.exists) {
-          // Data exists, PRE-FILL the form state
-          const interestData = registerInterestData.interest
-          setInitialUserData(interestData) // Store all of it
-
-          // Prefill all form fields from the fetched data
-          if (interestData.prefix) setPrefix(interestData.prefix)
-          if (interestData.gender) setGender(interestData.gender)
-          if (interestData.dob) setBirthday(new Date(interestData.dob))
-
-          setDetailsForm((prev) => ({
-            ...prev,
-            name: interestData.name ?? prev.name,
-            email: interestData.email ?? prev.email,
-            phone: interestData.phone ?? prev.phone,
-          }))
-
-          setLocationForm((prev) => ({
-            ...prev,
-            nationality: interestData.nationality ?? prev.nationality,
-            currentLocation:
-              interestData.currentLocation ?? prev.currentLocation,
-          }))
-
-          if (interestData.phoneCountry) {
-            const country = countries.find(
-              (c) =>
-                c.callCode === interestData.phoneCountry ||
-                `+${c.callCode}` === interestData.phoneCountry
-            )
-            if (country) setPhoneCountry(country.code)
-          }
-
-          // 2. Check if they have a full application
-          const applicationFormResponse = await fetch(
+        const [interestResponse, applicationResponse] = await Promise.all([
+          fetch(
+            `/api/register-interest/check?email=${encodeURIComponent(userEmail)}`
+          ),
+          fetch(
             `/api/application-form/check?email=${encodeURIComponent(userEmail)}`
-          )
-          const applicationFormData = await applicationFormResponse.json()
+          ),
+        ])
 
-          if (applicationFormData.exists) {
-            // They have registered interest AND completed application.
-            setRegistrationStep("thank-you")
-          } else {
-            // They have registered interest but NOT completed application.
-            // Auto move to step 2 as requested.
-            setRegistrationStep("basic-info")
-          }
-        } else if (!registerInterestData.exists) {
-          const applicationFormResponse = await fetch(
-            `/api/application-form/check?email=${encodeURIComponent(userEmail)}`
-          )
-          const applicationFormData = await applicationFormResponse.json()
+        if (!interestResponse.ok || !applicationResponse.ok) {
+          throw new Error("Failed to initialize application.")
+        }
 
-          if (applicationFormData.exists) {
-            // They have registered interest AND completed application.
-            setRegistrationStep("thank-you")
+        const [interestResult, applicationResult] = await Promise.all([
+          interestResponse.json(),
+          applicationResponse.json(),
+        ])
+
+        console.log({
+          interestResult,
+          applicationResult,
+        })
+
+        // User has already completed the application
+        if (applicationResult.exists) {
+          if (interestResult.exists) {
+            prefillInterestData(interestResult.interest)
           } else {
-            // Email does NOT exist in RegisterInterest.
-            // Stay on step 1, with only email pre-filled.
-            setInitialUserData({ email: userEmail })
-            setDetailsForm((prev) => ({ ...prev, email: userEmail }))
-            // We don't auto-move. The user is on the 'details' step by default.
+            prefillEmail()
           }
-        } else {
-          // Email does NOT exist in RegisterInterest.
-          // Stay on step 1, with only email pre-filled.
-          setInitialUserData({ email: userEmail })
-          setDetailsForm((prev) => ({ ...prev, email: userEmail }))
-          // We don't auto-move. The user is on the 'details' step by default.
+
+          setRegistrationStep("thank-you")
+        }
+
+        // User registered interest but hasn't completed application
+        else if (interestResult.exists) {
+          prefillInterestData(interestResult.interest)
+          setRegistrationStep("basic-info")
+        }
+
+        // New user
+        else {
+          prefillEmail()
         }
 
         setInitialRedirectDone(true)
       } catch (error) {
         console.error("Error during application initialization:", error)
+
         toast.error("Could not initialize registration.", {
           description: "Please try again later.",
         })
       } finally {
-        setIsInitializing(false) // Always reset loading state
+        setIsInitializing(false)
       }
     }
 

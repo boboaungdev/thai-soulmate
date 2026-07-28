@@ -6,10 +6,10 @@ export default function PaymentPage() {
         <div className="flex items-center justify-between space-y-2">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
-              Register Interest
+              My Soulmates
             </h1>
             <p className="text-sm text-muted-foreground">
-              Users who submitted matchmaking interest forms
+              My current partner matching
             </p>
           </div>
           <div className="flex items-center space-x-2"></div>

@@ -160,7 +160,7 @@ function ProfileSection({
     <Card>
       <CardHeader className="flex flex-row items-center gap-3">
         <div className="text-muted-foreground">{icon}</div>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-gradient">{title}</CardTitle>
       </CardHeader>
       <CardContent className="divide-y">{children}</CardContent>
     </Card>
@@ -293,7 +293,7 @@ function NotesSection({
             <StickyNote />
           </div>
           <div>
-            <CardTitle>Staff Notes</CardTitle>
+            <CardTitle className="text-gradient">Staff Notes</CardTitle>
             <CardDescription>
               Internal notes for this application.
             </CardDescription>
@@ -598,7 +598,7 @@ export default function ApplicationDetailPage() {
               </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold">
+              <h1 className="text-2xl font-bold text-gradient">
                 {personalDetails?.prefix} {personalDetails?.name}
                 {personalDetails?.nickname
                   ? ` (${personalDetails.nickname})`

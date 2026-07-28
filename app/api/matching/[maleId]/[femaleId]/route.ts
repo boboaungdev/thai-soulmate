@@ -301,9 +301,12 @@ const calculateMatchDetails = (male: any, female: any) => {
       key: "hobbies",
       category: "Lifestyle",
       label: "Hobbies",
-      malePreference: "Interests provided",
+      malePreference: male.lifestyle?.interests,
       femaleValue: female.lifestyle?.interests,
-      matched: toArray(female.lifestyle?.interests).length > 0,
+      matched: hasIntersection(
+        male.lifestyle?.interests,
+        female.lifestyle?.interests
+      ),
       weight: 5,
     }),
     createBreakdownItem({

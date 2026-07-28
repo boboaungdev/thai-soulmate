@@ -2,8 +2,17 @@
 
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
-import { Globe, LogOut, Search, Settings, User } from "lucide-react"
+import {
+  Globe2,
+  LogOut,
+  Search,
+  Settings2,
+  Shield,
+  User,
+  Users,
+} from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -27,6 +36,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
+
+const roleIcons: Record<string, React.ElementType> = {
+  ADMIN: Shield,
+  STAFF: Users,
+  USER: User,
+}
 
 export function AppNavBar() {
   const { user, logout } = useAuthStore()
@@ -97,10 +112,21 @@ export function AppNavBar() {
                     />
                     <AvatarFallback>{user.fallback}</AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm leading-none font-medium">
-                      {user.name}
-                    </p>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <p className="truncate text-sm leading-none font-medium">
+                        {user.name}
+                      </p>
+                      <Badge
+                        variant="outline"
+                        className="flex items-center gap-1 capitalize"
+                      >
+                        {React.createElement(roleIcons[user.role], {
+                          className: "size-3",
+                        })}
+                        <span>{user.role.toLowerCase()}</span>
+                      </Badge>
+                    </div>
                     <p className="text-xs leading-none text-muted-foreground">
                       {user.email}
                     </p>
@@ -111,7 +137,7 @@ export function AppNavBar() {
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
                   <Link href="/">
-                    <Globe className="mr-2 size-4" />
+                    <Globe2 className="mr-2 size-4" />
                     <span>Go to Website</span>
                   </Link>
                 </DropdownMenuItem>
@@ -124,7 +150,7 @@ export function AppNavBar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="#">
-                    <Settings className="mr-2 size-4" />
+                    <Settings2 className="mr-2 size-4" />
                     <span>Settings</span>
                   </Link>
                 </DropdownMenuItem>

@@ -6,11 +6,10 @@ import { usePathname, useRouter } from "next/navigation"
 import {
   ClipboardPen,
   ChevronUp,
-  Home,
   LayoutDashboard,
   LogOut,
-  Settings,
   User,
+  Shield,
   Users,
   Form,
   GalleryHorizontal,
@@ -19,11 +18,14 @@ import {
   HeartPulse,
   Heart,
   CreditCard,
+  Globe2,
+  Settings2,
 } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,6 +47,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
+import React from "react"
+
+const roleIcons: Record<string, React.ElementType> = {
+  ADMIN: Shield,
+  STAFF: Users,
+  USER: User,
+}
 
 const userItems = [
   {
@@ -164,7 +173,7 @@ export function AppSidebar() {
                   isActive={pathname === "/"}
                 >
                   <Link href="/">
-                    <Home />
+                    <Globe2 />
                     <span>Go to Website</span>
                   </Link>
                 </SidebarMenuButton>
@@ -291,11 +300,22 @@ export function AppSidebar() {
                   />
                   <AvatarFallback>{user.fallback}</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm leading-none font-medium">
-                    {user.name}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <p className="truncate text-sm leading-none font-medium">
+                      {user.name}
+                    </p>
+                    <Badge
+                      variant="outline"
+                      className="flex items-center gap-1 capitalize"
+                    >
+                      {React.createElement(roleIcons[user.role], {
+                        className: "size-3",
+                      })}
+                      <span>{user.role.toLowerCase()}</span>
+                    </Badge>
+                  </div>
+                  <p className="truncate text-xs leading-none text-muted-foreground">
                     {user.email}
                   </p>
                 </div>
@@ -304,7 +324,7 @@ export function AppSidebar() {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href="/">
-                <Home className="mr-2 size-4" />
+                <Globe2 className="mr-2 size-4" />
                 <span>Go to Website</span>
               </Link>
             </DropdownMenuItem>
@@ -320,7 +340,7 @@ export function AppSidebar() {
 
             <DropdownMenuItem asChild>
               <Link href="/dashboard/settings">
-                <Settings className="mr-2 size-4" />
+                <Settings2 className="mr-2 size-4" />
                 <span>Settings</span>
               </Link>
             </DropdownMenuItem>

@@ -1,13 +1,18 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { useAuthStore } from "@/stores/auth-store"
 import { AppName } from "@/components/app-name"
 import { APP_INFO } from "@/constants"
 import { MotionDiv } from "@/components/motion"
 
 export default function NotFound() {
+  const { user } = useAuthStore()
+
   return (
     <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8">
       <div className="mx-auto max-w-max">
@@ -36,9 +41,9 @@ export default function NotFound() {
             </p>
             <div className="mt-6">
               <Button asChild className="btn-gradient">
-                <Link href="/">
+                <Link href={user ? "/dashboard" : "/"}>
                   <ChevronLeft className="mr-2 size-4" />
-                  Go back home
+                  {user ? "Go Dashboard" : "Go Home"}
                 </Link>
               </Button>
             </div>

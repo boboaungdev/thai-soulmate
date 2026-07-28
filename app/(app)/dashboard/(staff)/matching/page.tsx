@@ -179,7 +179,6 @@ export default function MatchingPage() {
   const { selectedMaleId, setSelectedMaleId } = useMatchingStore()
   const [maleUsers, setMaleUsers] = useState<any[]>([])
   const [matches, setMatches] = useState<Match[]>([])
-  const [selectedMale, setSelectedMale] = useState<any | null>(null)
 
   const [isMatching, setIsMatching] = useState<string | null>(null)
   const [isLoadingMales, setIsLoadingMales] = useState(true)
@@ -193,6 +192,11 @@ export default function MatchingPage() {
 
   const [criteriaState, setCriteriaState] =
     useState<Record<string, boolean>>(matchingCriteria)
+
+  const selectedMale = useMemo(() => {
+    if (!selectedMaleId) return null
+    return maleUsers.find((u) => u.id === selectedMaleId) ?? null
+  }, [selectedMaleId, maleUsers])
 
   useEffect(() => {
     const fetchMaleUsers = async () => {
@@ -219,15 +223,6 @@ export default function MatchingPage() {
     }
     fetchMaleUsers()
   }, [])
-
-  useEffect(() => {
-    if (selectedMaleId && maleUsers.length > 0) {
-      const male = maleUsers.find((u) => u.id === selectedMaleId)
-      setSelectedMale(male || null)
-    } else {
-      setSelectedMale(null)
-    }
-  }, [selectedMaleId, maleUsers])
 
   useEffect(() => {
     const fetchMatches = async () => {

@@ -100,6 +100,17 @@ const matchesHeightRange = (preferredRange: unknown, actualHeight: unknown) => {
   return false
 }
 
+const cmToFeetAndInches = (cm: number | string | null | undefined): string => {
+  const cmValue = Number(cm)
+  if (!cmValue || Number.isNaN(cmValue)) {
+    return ""
+  }
+  const totalInches = cmValue / 2.54
+  const feet = Math.floor(totalInches / 12)
+  const inches = Math.round(totalInches % 12)
+  return `(${feet}'${inches}")`
+}
+
 type MatchBreakdownItem = {
   key: string
   category: string
@@ -160,8 +171,8 @@ const calculateMatchDetails = (male: any, female: any) => {
       category: "Ideal Partner",
       label: "Height",
       malePreference: male.idealPartner?.height,
-      femaleValue: female.appearance?.height
-        ? `${female.appearance.height} cm`
+      femaleValue: female.appearance?.height //
+        ? `${female.appearance.height} cm ${cmToFeetAndInches(female.appearance.height)}`
         : undefined,
       matched: matchesHeightRange(
         male.idealPartner?.height,

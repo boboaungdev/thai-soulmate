@@ -84,6 +84,17 @@ const calculateAge = (dob: string | Date) => {
   return age
 }
 
+const cmToFeetAndInches = (cm: number | string | null | undefined): string => {
+  const cmValue = Number(cm)
+  if (!cmValue || Number.isNaN(cmValue)) {
+    return ""
+  }
+  const totalInches = cmValue / 2.54
+  const feet = Math.floor(totalInches / 12)
+  const inches = Math.round(totalInches % 12)
+  return `(${feet}'${inches}")`
+}
+
 const getMatchScoreClass = (score: number) => {
   if (score > 80) {
     return "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300"
@@ -370,7 +381,11 @@ function ApplicantColumn({
         <DetailRow
           icon={<Ruler />}
           label="Height"
-          value={`${applicant.appearance?.height} cm`}
+          value={
+            applicant.appearance?.height
+              ? `${applicant.appearance.height} cm ${cmToFeetAndInches(applicant.appearance.height)}`
+              : ""
+          }
           isMatch={getMatch("height")}
         />
         <DetailRow

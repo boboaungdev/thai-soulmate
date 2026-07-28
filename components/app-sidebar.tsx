@@ -18,6 +18,7 @@ import {
   HeartHandshake,
   HeartPulse,
   Heart,
+  CreditCard,
 } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
@@ -64,6 +65,11 @@ const userItems = [
     title: "My Tracking",
     url: "/dashboard/my-tracking",
     icon: HeartPulse,
+  },
+  {
+    title: "Billing",
+    url: "/dashboard/billing",
+    icon: CreditCard,
   },
 ]
 
@@ -113,6 +119,10 @@ export function AppSidebar() {
   const router = useRouter()
   const pathname = usePathname()
 
+  if (!user) {
+    return null
+  }
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="p-4">
@@ -156,32 +166,33 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
-            User Menu
-          </SidebarGroupLabel>
+        {(user.role === "USER" || user.role === "ADMIN") && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+              User Menu
+            </SidebarGroupLabel>
 
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {userItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    tooltip={item.title}
-                    isActive={pathname === item.url}
-                  >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {(user?.role === "STAFF" || user?.role === "ADMIN") && (
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {userItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pathname === item.url}
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+        {(user.role === "STAFF" || user.role === "ADMIN") && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
               Staff

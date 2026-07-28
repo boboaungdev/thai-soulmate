@@ -9,12 +9,12 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { useMounted } from "@/hooks/use-mounted"
 import { useAuthStore } from "@/stores/auth-store"
 
-const adminPaths = ["/dashboard/login-user"]
+const adminPaths = ["/dashboard/login-user", "/dashboard/admin-dashboard"]
 const staffPaths = [
-  "/dashboard/application-form",
-  "/dashboard/matching",
-  "/dashboard/payment",
   "/dashboard/register-interest",
+  "/dashboard/application-form",
+  "/dashboard/payment",
+  "/dashboard/matching",
   "/dashboard/tracking",
 ]
 

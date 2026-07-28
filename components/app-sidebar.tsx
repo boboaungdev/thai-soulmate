@@ -147,21 +147,25 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/logo.png"
-            alt={`${APP_INFO.name} logo`}
-            width={32}
-            height={32}
-            className="size-8 shrink-0 rounded-lg object-cover"
-            priority
-          />
+        <Link href="/dashboard">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/logo.png"
+              alt={`${APP_INFO.name} logo`}
+              width={32}
+              height={32}
+              className="size-8 shrink-0 rounded-lg object-cover"
+              priority
+            />
 
-          <div className="flex-1 text-center group-data-[collapsible=icon]:hidden">
-            <AppName className="text-base font-semibold" />
-            <p className="text-xs text-muted-foreground">{APP_INFO.tagline}</p>
+            <div className="flex-1 text-center group-data-[collapsible=icon]:hidden">
+              <AppName className="text-base font-semibold" />
+              <p className="text-xs text-muted-foreground">
+                {APP_INFO.tagline}
+              </p>
+            </div>
           </div>
-        </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>

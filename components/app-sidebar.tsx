@@ -28,6 +28,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -281,6 +282,35 @@ export function AppSidebar() {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent side="top" align="end" className="w-56">
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex items-center space-x-2">
+                <Avatar className="size-8">
+                  <AvatarImage
+                    src={user.avatar ?? undefined}
+                    alt={user.name ?? ""}
+                  />
+                  <AvatarFallback>{user.fallback}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm leading-none font-medium">
+                    {user.name}
+                  </p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/">
+                <Home className="mr-2 size-4" />
+                <span>Go to Website</span>
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
             <DropdownMenuItem asChild>
               <Link href="/dashboard/profile">
                 <User className="mr-2 size-4" />
@@ -292,13 +322,6 @@ export function AppSidebar() {
               <Link href="/dashboard/settings">
                 <Settings className="mr-2 size-4" />
                 <span>Settings</span>
-              </Link>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem asChild>
-              <Link href="/">
-                <Home className="mr-2 size-4" />
-                <span>Back to Website</span>
               </Link>
             </DropdownMenuItem>
 

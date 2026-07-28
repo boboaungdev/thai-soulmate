@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { LogOut, Search, User } from "lucide-react"
+import { Globe, LogOut, Search, Settings, User } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -110,9 +110,22 @@ export function AppNavBar() {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/profile">
+                  <Link href="/">
+                    <Globe className="mr-2 size-4" />
+                    <span>Go to Website</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="#">
                     <User className="mr-2 size-4" />
                     <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="#">
+                    <Settings className="mr-2 size-4" />
+                    <span>Settings</span>
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>

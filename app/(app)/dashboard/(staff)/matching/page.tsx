@@ -1,6 +1,7 @@
 "use client"
 import { useRouter } from "next/navigation"
 import { useMemo, useState, useEffect } from "react"
+import { useMatchingStore } from "@/stores/matching-store"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -175,6 +176,7 @@ const parseApplicantData = (applicant: any) => {
 
 export default function MatchingPage() {
   const router = useRouter()
+  const { selectedMaleId, setSelectedMaleId } = useMatchingStore()
   const [maleUsers, setMaleUsers] = useState<any[]>([])
   const [matches, setMatches] = useState<Match[]>([])
   const [selectedMale, setSelectedMale] = useState<any | null>(null)
@@ -217,6 +219,15 @@ export default function MatchingPage() {
     }
     fetchMaleUsers()
   }, [])
+
+  useEffect(() => {
+    if (selectedMaleId && maleUsers.length > 0) {
+      const male = maleUsers.find((u) => u.id === selectedMaleId)
+      setSelectedMale(male || null)
+    } else {
+      setSelectedMale(null)
+    }
+  }, [selectedMaleId, maleUsers])
 
   useEffect(() => {
     const fetchMatches = async () => {
@@ -320,7 +331,7 @@ export default function MatchingPage() {
                             key={user.id}
                             value={`${user.personalDetails.prefix} ${user.personalDetails.name}`}
                             onSelect={() => {
-                              setSelectedMale(user)
+                              setSelectedMaleId(user.id)
                               setOpen(false)
                             }}
                             className="flex cursor-pointer items-center gap-3"
@@ -364,7 +375,7 @@ export default function MatchingPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setSelectedMale(null)}
+                  onClick={() => setSelectedMaleId(null)}
                   aria-label="Clear selected male"
                   className="h-8 w-8"
                 >

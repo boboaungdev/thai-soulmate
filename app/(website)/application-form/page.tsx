@@ -490,6 +490,22 @@ function AuthPageContents() {
             // Auto move to step 2 as requested.
             setRegistrationStep("basic-info")
           }
+        } else if (!registerInterestData.exists) {
+          const applicationFormResponse = await fetch(
+            `/api/application-form/check?email=${encodeURIComponent(userEmail)}`
+          )
+          const applicationFormData = await applicationFormResponse.json()
+
+          if (applicationFormData.exists) {
+            // They have registered interest AND completed application.
+            setRegistrationStep("thank-you")
+          } else {
+            // Email does NOT exist in RegisterInterest.
+            // Stay on step 1, with only email pre-filled.
+            setInitialUserData({ email: userEmail })
+            setDetailsForm((prev) => ({ ...prev, email: userEmail }))
+            // We don't auto-move. The user is on the 'details' step by default.
+          }
         } else {
           // Email does NOT exist in RegisterInterest.
           // Stay on step 1, with only email pre-filled.
@@ -2079,9 +2095,13 @@ function AuthPageContents() {
                           ...locationForm,
                         })
                         // Update URL query parameter with the new email
-                        const currentSearchParams = new URLSearchParams(searchParams.toString())
+                        const currentSearchParams = new URLSearchParams(
+                          searchParams.toString()
+                        )
                         currentSearchParams.set("email", detailsForm.email)
-                        router.replace(`${pathname}?${currentSearchParams.toString()}`)
+                        router.replace(
+                          `${pathname}?${currentSearchParams.toString()}`
+                        )
                       }}
                       disabled={isInitializing || loadingCountries}
                     >

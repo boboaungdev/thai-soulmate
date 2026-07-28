@@ -21,7 +21,7 @@ import {
   BookOpen,
   Languages,
   Smile,
-  Users,
+  Users2,
   MapPin,
   Sparkles,
   Handshake,
@@ -352,7 +352,7 @@ function ApplicantColumn({
           isMatch={getMatch("ageRange")}
         />
         <DetailRow
-          icon={<Users />}
+          icon={<Users2 />}
           label="Marital Status"
           value={applicant.personality?.maritalStatus}
         />
@@ -363,7 +363,7 @@ function ApplicantColumn({
         />
         {applicant.personality?.hasChildren === "Yes" && (
           <DetailRow
-            icon={<Users />}
+            icon={<Users2 />}
             label="Children Count"
             value={applicant.personality?.childrenCount}
           />

@@ -8,9 +8,9 @@ import {
   ChevronUp,
   LayoutDashboard,
   LogOut,
-  User,
+  User2,
   Shield,
-  Users,
+  Users2,
   Form,
   GalleryHorizontal,
   DollarSign,
@@ -20,6 +20,7 @@ import {
   CreditCard,
   Globe2,
   Settings2,
+  UserKey,
 } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
@@ -51,8 +52,8 @@ import React from "react"
 
 const roleIcons: Record<string, React.ElementType> = {
   ADMIN: Shield,
-  STAFF: Users,
-  USER: User,
+  STAFF: Users2,
+  USER: User2,
 }
 
 const userItems = [
@@ -110,6 +111,11 @@ const staffItems = [
     icon: HeartHandshake,
   },
   {
+    title: "Profiles",
+    url: "/dashboard/profiles",
+    icon: Users2,
+  },
+  {
     title: "Tracking",
     url: "/dashboard/tracking",
     icon: HeartPulse,
@@ -125,7 +131,7 @@ const adminItems = [
   {
     title: "Login User",
     url: "/dashboard/login-user",
-    icon: Users,
+    icon: UserKey,
   },
 ]
 
@@ -333,7 +339,7 @@ export function AppSidebar() {
 
             <DropdownMenuItem asChild>
               <Link href="/dashboard/profile">
-                <User className="mr-2 size-4" />
+                <User2 className="mr-2 size-4" />
                 <span>Profile</span>
               </Link>
             </DropdownMenuItem>

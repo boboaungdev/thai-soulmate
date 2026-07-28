@@ -41,7 +41,7 @@ import {
   Target,
   Trash2,
   User,
-  Users,
+  Users2,
   Utensils,
   Waypoints,
 } from "lucide-react"
@@ -598,7 +598,7 @@ export default function ApplicationDetailPage() {
               </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold text-gradient">
+              <h1 className="text-gradient text-2xl font-bold">
                 {personalDetails?.prefix} {personalDetails?.name}
                 {personalDetails?.nickname
                   ? ` (${personalDetails.nickname})`
@@ -788,7 +788,7 @@ export default function ApplicationDetailPage() {
             value={personality?.lookingForQualities}
           />
           <DetailRow
-            icon={<Users />}
+            icon={<Users2 />}
             label="Marital Status"
             value={personality?.maritalStatus}
           />
@@ -799,7 +799,7 @@ export default function ApplicationDetailPage() {
           />
           {personality?.hasChildren === "Yes" && (
             <DetailRow
-              icon={<Users />}
+              icon={<Users2 />}
               label="Children Count"
               value={personality?.childrenCount}
             />

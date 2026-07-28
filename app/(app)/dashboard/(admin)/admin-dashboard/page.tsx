@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import {
   DollarSign,
-  Users,
+  Users2,
   Clock,
   UserCog,
   UserCheck,
@@ -79,28 +79,28 @@ const dashboardCategories = {
   ],
   "User Metrics": [
     {
-      title: "Total Users",
+      title: "Total Users2",
       value: "2,350",
       change: "+180 since last month",
-      icon: Users,
+      icon: Users2,
       color: "text-blue-500",
     },
     {
-      title: "Female Users",
+      title: "Female Users2",
       value: "1,850",
       change: "78% of total",
       icon: Venus,
       color: "text-pink-400",
     },
     {
-      title: "Male Users",
+      title: "Male Users2",
       value: "500",
       change: "22% of total",
       icon: Mars, // text-amber-500
       color: "text-amber-500",
     },
     {
-      title: "New Users (This Month)",
+      title: "New Users2 (This Month)",
       value: "+180",
       change: "vs. 150 last month",
       icon: UserPlus,
@@ -130,7 +130,7 @@ const dashboardCategories = {
       color: "text-teal-500",
     },
     {
-      title: "Matched Users",
+      title: "Matched Users2",
       value: "125",
       change: "+12 this month",
       icon: HeartHandshake,
@@ -172,7 +172,7 @@ const monthlyRevenueData = [
 ]
 
 const userRoleDistribution = [
-  { name: "Users", value: 2350, color: "#8884d8" },
+  { name: "Users2", value: 2350, color: "#8884d8" },
   { name: "Staff", value: 45, color: "#82ca9d" },
   { name: "Admins", value: 5, color: "#ffc658" },
 ]
@@ -192,7 +192,7 @@ const userActivityData = [
   { name: "Registered Interests", value: 5430, color: "#6366f1" }, // text-indigo-500
   { name: "Application Forms", value: 3120, color: "#84cc16" }, // text-lime-500
   { name: "In Matching Process", value: 340, color: "#14b8a6" }, // text-teal-500
-  { name: "Matched Users", value: 125, color: "#ec4899" }, // text-pink-500
+  { name: "Matched Users2", value: 125, color: "#ec4899" }, // text-pink-500
 ]
 
 const RADIAN = Math.PI / 180

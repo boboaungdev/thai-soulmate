@@ -1,4 +1,4 @@
-import { Shield, User, Users } from "lucide-react"
+import { Shield, User, Users2 } from "lucide-react"
 
 export const roles = [
   {
@@ -9,7 +9,7 @@ export const roles = [
   {
     value: "STAFF",
     label: "Staff",
-    icon: Users,
+    icon: Users2,
   },
   {
     value: "USER",

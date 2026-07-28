@@ -14,7 +14,7 @@ import {
   HeartPulse,
   Mars,
   Venus,
-  Users,
+  Users2,
   UserPlus,
 } from "lucide-react"
 import {
@@ -60,7 +60,7 @@ const platformActivityStats = [
     color: "text-teal-500",
   },
   {
-    title: "Matched Users",
+    title: "Matched Users2",
     value: "125",
     change: "+12 this month",
     icon: HeartHandshake,
@@ -70,28 +70,28 @@ const platformActivityStats = [
 
 const userMetrics = [
   {
-    title: "Total Users",
+    title: "Total Users2",
     value: "2,350",
     change: "+180 since last month",
-    icon: Users,
+    icon: Users2,
     color: "text-blue-500",
   },
   {
-    title: "New Users (This Month)",
+    title: "New Users2 (This Month)",
     value: "+180",
     change: "vs. 150 last month",
     icon: UserPlus,
     color: "text-green-500",
   },
   {
-    title: "Female Users",
+    title: "Female Users2",
     value: "1,850",
     change: "78% of total",
     icon: Venus,
     color: "text-pink-400",
   },
   {
-    title: "Male Users",
+    title: "Male Users2",
     value: "500",
     change: "22% of total",
     icon: Mars,
@@ -131,7 +131,7 @@ const userActivityData = [
   { name: "Registered Interests", value: 5430, color: "#6366f1" },
   { name: "Application Forms", value: 3120, color: "#84cc16" },
   { name: "In Matching Process", value: 340, color: "#14b8a6" },
-  { name: "Matched Users", value: 125, color: "#ec4899" },
+  { name: "Matched Users2", value: 125, color: "#ec4899" },
 ]
 
 const RADIAN = Math.PI / 180

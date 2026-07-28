@@ -51,7 +51,7 @@ B. Information Collected Automatically:
 
 - By Law or to Protect Rights: If we believe the release of information about you is necessary to respond to legal process, to investigate or remedy potential violations of our policies, or to protect the rights, property, and safety of others, we may share your information as permitted or required by any applicable law, rule, or regulation.
 - Third-Party Service Providers: We may share your information with third parties that perform services for us or on our behalf, including payment processing, data analysis, email delivery, hosting services, customer service, and marketing assistance.
-- With other Users: Your profile information is visible to other registered users of the Service.
+- With other Users2: Your profile information is visible to other registered users of the Service.
 - Business Transfers: We may share or transfer your information in connection with, or during negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion of our business to another company.`,
   },
   {

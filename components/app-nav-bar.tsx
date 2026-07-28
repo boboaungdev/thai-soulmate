@@ -10,8 +10,8 @@ import {
   Search,
   Settings2,
   Shield,
-  User,
-  Users,
+  User2,
+  Users2,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -39,8 +39,8 @@ import { useAuthStore } from "@/stores/auth-store"
 
 const roleIcons: Record<string, React.ElementType> = {
   ADMIN: Shield,
-  STAFF: Users,
-  USER: User,
+  STAFF: Users2,
+  USER: User2,
 }
 
 export function AppNavBar() {
@@ -144,7 +144,7 @@ export function AppNavBar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="#">
-                    <User className="mr-2 size-4" />
+                    <User2 className="mr-2 size-4" />
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
@@ -172,7 +172,7 @@ export function AppNavBar() {
             <CommandGroup heading="Suggestions">
               <CommandItem>
                 <Link href="/dashboard/profile">
-                  <User className="mr-2 size-4" />
+                  <User2 className="mr-2 size-4" />
                   <span>Profile</span>
                 </Link>
               </CommandItem>

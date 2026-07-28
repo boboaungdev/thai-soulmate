@@ -18,7 +18,9 @@ const allowedRoutes = {
     "/dashboard/payment",
     "/dashboard/register-interest",
     "/dashboard/tracking",
+    "/dashboard/profiles",
     "/dashboard/profile",
+    "/dashboard/settings",
   ],
   USER: [
     "/dashboard/user-dashboard",
@@ -27,6 +29,7 @@ const allowedRoutes = {
     "/dashboard/my-soulmate",
     "/dashboard/my-tracking",
     "/dashboard/profile",
+    "/dashboard/settings",
   ],
 } as const
 

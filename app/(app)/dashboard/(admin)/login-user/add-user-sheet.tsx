@@ -10,7 +10,7 @@ import {
   Shield,
   Eye,
   EyeOff,
-  Users, // Icon for STAFF
+  Users2, // Icon for STAFF
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -50,7 +50,7 @@ type Role = (typeof Role)[keyof typeof Role]
 // Map roles to icons
 const roleIcons: Record<Role, React.ElementType> = {
   [Role.ADMIN]: Shield,
-  [Role.STAFF]: Users,
+  [Role.STAFF]: Users2,
   [Role.USER]: User,
 }
 

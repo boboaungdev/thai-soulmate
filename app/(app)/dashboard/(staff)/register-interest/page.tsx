@@ -71,7 +71,7 @@ export default function TaskPage() {
               Register Interest
             </h1>
             <p className="text-sm text-muted-foreground">
-              Users who submitted matchmaking interest forms
+              Users2 who submitted matchmaking interest forms
             </p>
           </div>
           <div className="flex items-center space-x-2"></div>
@@ -100,7 +100,7 @@ export default function TaskPage() {
               Register Interest
             </h1>
             <p className="text-sm text-muted-foreground">
-              Users who submitted matchmaking interest forms
+              Users2 who submitted matchmaking interest forms
             </p>
           </div>
           <div className="flex items-center space-x-2"></div>

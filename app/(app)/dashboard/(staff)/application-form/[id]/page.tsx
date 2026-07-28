@@ -293,7 +293,7 @@ function NotesSection({
             <StickyNote />
           </div>
           <div>
-            <CardTitle className="text-gradient">Staff Notes</CardTitle>
+            <CardTitle className="text-gradient">Notes</CardTitle>
             <CardDescription>
               Internal notes for this application.
             </CardDescription>

@@ -324,6 +324,10 @@ export default function AdminDashboardPage() {
                       outerRadius,
                       percent,
                     }) => {
+                      // midAngle is possibly undefined
+                      if (midAngle === undefined || percent === undefined) {
+                        return null // Don't render label if midAngle or percent is undefined
+                      }
                       const radius =
                         innerRadius + (outerRadius - innerRadius) * 0.5
                       const x = cx + radius * Math.cos(-midAngle * RADIAN)
@@ -376,9 +380,12 @@ export default function AdminDashboardPage() {
                     fill="#8884d8"
                     dataKey="value"
                     labelLine={false}
-                    label={({ name, percent }) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
-                    }
+                    label={({ name, percent }) => {
+                      if (name === undefined || percent === undefined) {
+                        return null
+                      }
+                      return `${name} ${(percent * 100).toFixed(0)}%`
+                    }}
                   >
                     {genderDistributionData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />

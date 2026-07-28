@@ -1,8 +1,10 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { AppName } from "@/components/app-name"
+import { APP_INFO } from "@/constants"
 import { MotionDiv } from "@/components/motion"
 
 export default function NotFound() {
@@ -15,6 +17,14 @@ export default function NotFound() {
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
           <main className="text-center">
+            <Image
+              src="/logo.png"
+              alt={`${APP_INFO.name} logo`}
+              width={128}
+              height={128}
+              className="mx-auto mb-4 rounded-3xl object-cover shadow-sm"
+              priority
+            />
             <p className="text-4xl font-bold tracking-tight sm:text-5xl">
               <AppName />
             </p>

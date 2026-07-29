@@ -1874,7 +1874,14 @@ function AuthPageContents() {
                                                 : "opacity-0"
                                             )}
                                           />
-                                          {country.flag} (+
+                                          <Image
+                                            src={country.flag}
+                                            alt={country.name}
+                                            width={24}
+                                            height={16}
+                                            className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                          />
+                                          (+
                                           {country.callCode})
                                         </CommandItem>
                                       ))
@@ -1961,14 +1968,27 @@ function AuthPageContents() {
                           >
                             {locationForm.nationality ? (
                               <>
-                                {
-                                  countries.find(
-                                    (country) =>
-                                      country.nationality ===
-                                      locationForm.nationality
-                                  )?.flag
-                                }{" "}
-                                {locationForm.nationality}
+                                {(() => {
+                                  const country = countries.find(
+                                    (c) =>
+                                      c.nationality === locationForm.nationality
+                                  )
+
+                                  return country ? (
+                                    <>
+                                      <Image
+                                        src={country.flag}
+                                        alt={country.name}
+                                        width={24}
+                                        height={16}
+                                        className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                      />
+                                      {country.nationality}
+                                    </>
+                                  ) : (
+                                    locationForm.nationality
+                                  )
+                                })()}
                               </>
                             ) : (
                               "Select nationality"
@@ -2001,7 +2021,7 @@ function AuthPageContents() {
                                   )
                                   .map((country) => (
                                     <CommandItem
-                                      value={country.nationality}
+                                      value={`${country.nationality} ${country.name} ${country.code} ${country.callCode}`}
                                       key={country.code}
                                       onSelect={() => {
                                         setLocationForm((prev) => ({
@@ -2020,7 +2040,14 @@ function AuthPageContents() {
                                             : "opacity-0"
                                         )}
                                       />
-                                      {country.flag} {country.nationality}
+                                      <Image
+                                        src={country.flag}
+                                        alt={country.name}
+                                        width={24}
+                                        height={16}
+                                        className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                      />
+                                      {country.nationality}
                                     </CommandItem>
                                   ))
                               )}
@@ -2053,14 +2080,28 @@ function AuthPageContents() {
                           >
                             {locationForm.currentLocation ? (
                               <>
-                                {
-                                  countries.find(
+                                {(() => {
+                                  const country = countries.find(
                                     (country) =>
                                       country.name ===
                                       locationForm.currentLocation
-                                  )?.flag
-                                }{" "}
-                                {locationForm.currentLocation}
+                                  )
+
+                                  return country ? (
+                                    <>
+                                      <Image
+                                        src={country.flag}
+                                        alt={country.name}
+                                        width={24}
+                                        height={16}
+                                        className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                      />
+                                      {country.name}
+                                    </>
+                                  ) : (
+                                    locationForm.currentLocation
+                                  )
+                                })()}
                               </>
                             ) : (
                               "Select current location"
@@ -2089,7 +2130,7 @@ function AuthPageContents() {
                                   )
                                   .map((country) => (
                                     <CommandItem
-                                      value={country.name}
+                                      value={`${country.nationality} ${country.name} ${country.code} ${country.callCode}`}
                                       key={country.code}
                                       onSelect={() => {
                                         setLocationForm((prev) => ({
@@ -2108,7 +2149,14 @@ function AuthPageContents() {
                                             : "opacity-0"
                                         )}
                                       />
-                                      {country.flag} {country.name}
+                                      <Image
+                                        src={country.flag}
+                                        alt={country.name}
+                                        width={24}
+                                        height={16}
+                                        className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                      />
+                                      {country.name}
                                     </CommandItem>
                                   ))
                               )}

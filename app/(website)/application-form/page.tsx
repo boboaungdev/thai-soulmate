@@ -20,6 +20,20 @@ import {
   ChevronsUpDown,
   Check,
 } from "lucide-react"
+import {
+  ShieldCheck,
+  HeartHandshake,
+  TrendingUp,
+  Anchor,
+  Users,
+  SmilePlus,
+  Brain,
+  Star,
+  Heart,
+  Home,
+  MessageSquare,
+  Handshake,
+} from "lucide-react"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 import { Button } from "@/components/ui/button"
@@ -243,9 +257,24 @@ const lookingForQualitiesOptions = [
   "Family-Oriented",
 ]
 
+const qualityIcons: Record<string, React.ElementType> = {
+  Honest: ShieldCheck,
+  Kind: HeartHandshake,
+  Ambitious: TrendingUp,
+  Loyal: Anchor,
+  Supportive: Users,
+  Funny: SmilePlus,
+  Intelligent: Brain,
+  Confident: Star,
+  Romantic: Heart,
+  "Family-Oriented": Home,
+  Communicative: MessageSquare,
+  Respectful: Handshake,
+}
+
 const relationshipGoalsOptions = [
   "Marriage",
-  "Long-Term Relationship",
+  // "Long-Term Relationship",
   "Serious Dating",
   "Companionship",
   "Open to Possibilities",
@@ -2831,17 +2860,53 @@ function AuthPageContents() {
                           }}
                           value={femaleProfileForm.bestQualities[index]}
                         >
-                          <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                          <SelectTrigger className="h-8 bg-background text-sm dark:bg-input/30">
                             <SelectValue
                               placeholder={`Select quality #${index + 1}`}
-                            />
+                            >
+                              {femaleProfileForm.bestQualities[index] && (
+                                <div className="flex items-center gap-2">
+                                  {(() => {
+                                    const Icon =
+                                      qualityIcons[
+                                        femaleProfileForm.bestQualities[index]
+                                      ]
+                                    return Icon ? (
+                                      <Icon className="size-4 text-muted-foreground" />
+                                    ) : null
+                                  })()}
+                                  <span>
+                                    {femaleProfileForm.bestQualities[index]}
+                                  </span>
+                                </div>
+                              )}
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent className="max-h-56 overflow-y-auto">
-                            {bestQualitiesOptions.map((option) => (
-                              <SelectItem key={option} value={option}>
-                                {option}
-                              </SelectItem>
-                            ))}
+                            {bestQualitiesOptions.map((option) => {
+                              const Icon = qualityIcons[option]
+                              const isSelectedElsewhere =
+                                femaleProfileForm.bestQualities.includes(
+                                  option
+                                ) &&
+                                femaleProfileForm.bestQualities[index] !==
+                                  option
+                              return (
+                                <SelectItem
+                                  key={option}
+                                  value={option}
+                                  disabled={isSelectedElsewhere}
+                                  className="text-sm"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    {Icon && (
+                                      <Icon className="size-4 text-muted-foreground" />
+                                    )}
+                                    <span>{option}</span>
+                                  </div>
+                                </SelectItem>
+                              )
+                            })}
                           </SelectContent>
                         </Select>
                       ))}
@@ -2868,17 +2933,59 @@ function AuthPageContents() {
                           }}
                           value={femaleProfileForm.lookingForQualities[index]}
                         >
-                          <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                          <SelectTrigger className="h-8 bg-background text-sm dark:bg-input/30">
                             <SelectValue
                               placeholder={`Select quality #${index + 1}`}
-                            />
+                            >
+                              {femaleProfileForm.lookingForQualities[index] && (
+                                <div className="flex items-center gap-2">
+                                  {(() => {
+                                    const Icon =
+                                      qualityIcons[
+                                        femaleProfileForm.lookingForQualities[
+                                          index
+                                        ]
+                                      ]
+                                    return Icon ? (
+                                      <Icon className="size-4 text-muted-foreground" />
+                                    ) : null
+                                  })()}
+                                  <span>
+                                    {
+                                      femaleProfileForm.lookingForQualities[
+                                        index
+                                      ]
+                                    }
+                                  </span>
+                                </div>
+                              )}
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent className="max-h-56 overflow-y-auto">
-                            {lookingForQualitiesOptions.map((option) => (
-                              <SelectItem key={option} value={option}>
-                                {option}
-                              </SelectItem>
-                            ))}
+                            {lookingForQualitiesOptions.map((option) => {
+                              const Icon = qualityIcons[option]
+                              const isSelectedElsewhere =
+                                femaleProfileForm.lookingForQualities.includes(
+                                  option
+                                ) &&
+                                femaleProfileForm.lookingForQualities[index] !==
+                                  option
+                              return (
+                                <SelectItem
+                                  key={option}
+                                  value={option}
+                                  disabled={isSelectedElsewhere}
+                                  className="text-sm"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    {Icon && (
+                                      <Icon className="size-4 text-muted-foreground" />
+                                    )}
+                                    <span>{option}</span>
+                                  </div>
+                                </SelectItem>
+                              )
+                            })}
                           </SelectContent>
                         </Select>
                       ))}

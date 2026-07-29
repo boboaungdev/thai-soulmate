@@ -243,7 +243,7 @@ const OverviewSection = ({ user }: { user: ApplicationForm }) => (
   </div>
 )
 
-export default function UserDetailPage() {
+export default function ProfilesDetailPage() {
   const params = useParams()
   const { id } = params as { id: string }
   const router = useRouter()

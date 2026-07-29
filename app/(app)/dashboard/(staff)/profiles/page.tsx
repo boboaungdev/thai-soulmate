@@ -74,7 +74,7 @@ function UserCard({ user }: { user: ApplicationForm }) {
   )
 }
 
-export default function GalleryPage() {
+export default function ProfilesPage() {
   const [users, setUsers] = useState<ApplicationForm[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("") // State for search term

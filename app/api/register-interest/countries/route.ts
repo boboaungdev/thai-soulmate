@@ -2,8 +2,8 @@ import { NextResponse } from "next/server"
 
 interface Country {
   name: string
-  demonym: string
-  callingCodes: string[]
+  demonym?: string
+  callingCodes?: string[]
   alpha2Code: string
   flags: {
     png: string
@@ -28,15 +28,18 @@ export async function GET() {
     })
 
     if (!response.ok) {
-      throw new Error("Failed to fetch countries")
+      throw new Error("Failed fetching countries")
     }
 
     const data: Country[] = await response.json()
 
     const countries: CustomCountry[] = data
+      .filter(
+        (country) => country.name && country.alpha2Code && country.flags?.svg
+      )
       .map((country) => ({
         name: country.name,
-        nationality: country.demonym,
+        nationality: country.demonym || country.name,
         flag: country.flags.svg,
         code: country.alpha2Code,
         callCode: country.callingCodes?.[0] ?? "",
@@ -48,8 +51,12 @@ export async function GET() {
     console.error("Countries API error:", error)
 
     return NextResponse.json(
-      { error: "Unable to load countries" },
-      { status: 500 }
+      {
+        error: "Unable to load countries",
+      },
+      {
+        status: 500,
+      }
     )
   }
 }

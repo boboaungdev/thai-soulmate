@@ -9,18 +9,19 @@ export const APP_INFO = {
 } as const
 
 export const CONTACT = {
-  email: "contact@thaisoulmate.com",
+  email: "info@21stcenturygroup.org",
   whatsapp: "447956385061",
   facebook: "https://facebook.com/thaisoulmate",
   line: "https://line.me/R/ti/p/thaisoulmate",
   instagram: "https://instagram.com/thaisoulmate",
-  primaryPhone: "+66 69 999 8888",
-  secondaryPhone: "+66 69 999 9999",
+  tiktok: "https://tiktok.com/@thaisoulmate",
+  primaryPhone: "+44 7956 385061",
+  secondaryPhone: "+44 7956 385061",
 } as const
 
 export const EMAIL = {
   noreply: "noreply@kkhay.com",
-  contact: "boboaungdev@gmail.com",
+  contact: "info@21stcenturygroup.org",
 } as const
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL

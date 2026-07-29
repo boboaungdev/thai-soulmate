@@ -9,6 +9,7 @@ import {
   FaEnvelope,
   FaInstagram,
   FaPhoneAlt,
+  FaTiktok,
 } from "react-icons/fa"
 import { usePathname } from "next/navigation"
 
@@ -24,7 +25,6 @@ export function Footer() {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: "smooth" })
     }
-    // If not on the home page, the Link's default behavior will navigate.
   }
 
   return (
@@ -45,7 +45,7 @@ export function Footer() {
                 <p className="truncate text-sm text-muted-foreground">
                   {APP_INFO.tagline}
                 </p>
-                <p className="text-sm text-muted-foreground whitespace-pre-line">
+                <p className="text-sm whitespace-pre-line text-muted-foreground">
                   {APP_INFO.secondaryTagline}
                 </p>
               </div>
@@ -97,9 +97,9 @@ export function Footer() {
                 size="sm"
                 className="rounded-full"
               >
-                <a href={CONTACT.line} target="_blank" rel="noreferrer">
-                  <FaLine className="size-4" />
-                  <span className="hidden sm:inline">Line</span>
+                <a href={CONTACT.instagram} target="_blank" rel="noreferrer">
+                  <FaInstagram className="size-4" />
+                  <span className="hidden sm:inline">Instagram</span>
                 </a>
               </Button>
               <Button
@@ -108,9 +108,20 @@ export function Footer() {
                 size="sm"
                 className="rounded-full"
               >
-                <a href={CONTACT.instagram} target="_blank" rel="noreferrer">
-                  <FaInstagram className="size-4" />
-                  <span className="hidden sm:inline">Instagram</span>
+                <a href={CONTACT.tiktok} target="_blank" rel="noreferrer">
+                  <FaTiktok className="size-4" />
+                  <span className="hidden sm:inline">TikTok</span>
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+              >
+                <a href={CONTACT.line} target="_blank" rel="noreferrer">
+                  <FaLine className="size-4" />
+                  <span className="hidden sm:inline">Line</span>
                 </a>
               </Button>
               <Button

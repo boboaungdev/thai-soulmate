@@ -14,11 +14,7 @@ import {
 
 import Link from "next/link"
 import Image from "next/image"
-import {
-  ApplicationForm,
-  PersonalDetails,
-  Photos,
-} from "@/types/application-form"
+import { ApplicationForm } from "@/types/application-form"
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"

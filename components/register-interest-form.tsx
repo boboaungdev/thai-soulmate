@@ -45,6 +45,15 @@ import { Textarea } from "@/components/ui/textarea"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
 import { MotionDiv } from "./motion"
+import Image from "next/image"
+
+type Country = {
+  name: string
+  flag: string
+  code: string
+  nationality: string
+  callCode: string
+}
 
 const formSchema = z
   .object({
@@ -53,8 +62,14 @@ const formSchema = z
       .refine((val) => ["Mr.", "Ms.", "Mrs.", "Dr."].includes(val), {
         message: "Please select a prefix.",
       }),
-    name: z.string().min(2, {
-      message: "Name must be at least 2 characters.",
+    name: z.string().optional(),
+
+    firstName: z.string().min(2, {
+      message: "First name must be at least 2 characters.",
+    }),
+
+    lastName: z.string().min(2, {
+      message: "Last name must be at least 2 characters.",
     }),
     dob: z.date({
       message: "A date of birth is required.",
@@ -131,15 +146,7 @@ export function RegisterInterestForm() {
     name: "source",
   })
 
-  const [countries, setCountries] = useState<
-    {
-      name: string
-      flag: string
-      code: string
-      nationality: string
-      callCode: string
-    }[]
-  >([])
+  const [countries, setCountries] = useState<Country[]>([])
   const [loadingCountries, setLoadingCountries] = useState(true)
 
   useEffect(() => {
@@ -151,18 +158,25 @@ export function RegisterInterestForm() {
           throw new Error("Failed loading countries")
         }
 
-        const data = await res.json()
+        const data: Country[] = await res.json()
 
         setCountries(data)
+
+        const thailand = data.find((country) => country.code === "TH")
+
+        if (thailand) {
+          form.setValue("phoneCountry", thailand.code)
+        }
       } catch (error) {
         console.error(error)
+        toast.error("Unable to load countries")
       } finally {
         setLoadingCountries(false)
       }
     }
 
     fetchCountries()
-  }, [])
+  }, [form])
 
   useEffect(() => {
     if (prefix === "Mr." && gender !== "Male") {
@@ -233,8 +247,9 @@ export function RegisterInterestForm() {
           Your interest has been successfully registered. Our team will contact
           you shortly.
           <br />
-          Please check your email and <strong>spam/junk/promotion</strong>{" "}
-          folder for the next step and complete the application form.
+          Please check your email. If email is not received, check in{" "}
+          <strong>spam/junk/promotion</strong> folder for the next step and
+          complete the application form.
         </p>
       </div>
     )
@@ -437,13 +452,26 @@ export function RegisterInterestForm() {
                             >
                               {field.value ? (
                                 <>
-                                  {
-                                    countries.find(
-                                      (country) =>
-                                        country.nationality === field.value
-                                    )?.flag
-                                  }{" "}
-                                  {field.value}
+                                  {(() => {
+                                    const country = countries.find(
+                                      (c) => c.nationality === field.value
+                                    )
+
+                                    return country ? (
+                                      <>
+                                        <Image
+                                          src={country.flag}
+                                          alt={country.name}
+                                          width={24}
+                                          height={16}
+                                          className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                        />
+                                        {country.nationality}
+                                      </>
+                                    ) : (
+                                      field.value
+                                    )
+                                  })()}
                                 </>
                               ) : (
                                 "Select nationality"
@@ -477,7 +505,7 @@ export function RegisterInterestForm() {
                                   )
                                   .map((country) => (
                                     <CommandItem
-                                      value={country.nationality}
+                                      value={`${country.nationality} ${country.name} ${country.code} ${country.callCode}`}
                                       key={country.code}
                                       onSelect={() => {
                                         field.onChange(country.nationality)
@@ -492,7 +520,15 @@ export function RegisterInterestForm() {
                                             : "opacity-0"
                                         )}
                                       />
-                                      {country.flag} {country.nationality}
+                                      <Image
+                                        src={country.flag}
+                                        alt={country.name}
+                                        width={24}
+                                        height={16}
+                                        className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                      />
+
+                                      {country.nationality}
                                     </CommandItem>
                                   ))
                               )}
@@ -524,18 +560,28 @@ export function RegisterInterestForm() {
                                 !field.value && "text-muted-foreground"
                               )}
                             >
-                              {field.value ? (
-                                <>
-                                  {
-                                    countries.find(
+                              {field.value
+                                ? (() => {
+                                    const country = countries.find(
                                       (country) => country.name === field.value
-                                    )?.flag
-                                  }{" "}
-                                  {field.value}
-                                </>
-                              ) : (
-                                "Select current location"
-                              )}
+                                    )
+
+                                    return country ? (
+                                      <>
+                                        <Image
+                                          src={country.flag}
+                                          alt={country.name}
+                                          width={24}
+                                          height={16}
+                                          className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                        />
+                                        {country.name}
+                                      </>
+                                    ) : (
+                                      field.value
+                                    )
+                                  })()
+                                : "Select current location"}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </FormControl>
@@ -561,7 +607,7 @@ export function RegisterInterestForm() {
                                   )
                                   .map((country) => (
                                     <CommandItem
-                                      value={country.name}
+                                      value={`${country.name} ${country.nationality} ${country.code} ${country.callCode}`}
                                       key={country.code}
                                       onSelect={() => {
                                         field.onChange(country.name)
@@ -576,7 +622,15 @@ export function RegisterInterestForm() {
                                             : "opacity-0"
                                         )}
                                       />
-                                      {country.flag} {country.name}
+                                      <Image
+                                        src={country.flag}
+                                        alt={country.name}
+                                        width={24}
+                                        height={16}
+                                        className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                      />
+
+                                      {country.name}
                                     </CommandItem>
                                   ))
                               )}
@@ -625,7 +679,7 @@ export function RegisterInterestForm() {
                                         (c) => c.code === field.value
                                       )?.callCode ?? ""
                                     }`
-                                  : "+66"}
+                                  : "Select"}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </FormControl>
@@ -669,8 +723,15 @@ export function RegisterInterestForm() {
                                               : "opacity-0"
                                           )}
                                         />
-                                        {country.flag} (+
-                                        {country.callCode})
+                                        <Image
+                                          src={country.flag}
+                                          alt={country.name}
+                                          width={24}
+                                          height={16}
+                                          className="mr-2 inline-block h-4 w-6 rounded object-cover"
+                                        />
+                                        {country.name}
+                                        (+{country.callCode})
                                       </CommandItem>
                                     ))
                                 )}

@@ -62,7 +62,6 @@ const formSchema = z
       .refine((val) => ["Mr.", "Ms.", "Mrs.", "Dr."].includes(val), {
         message: "Please select a prefix.",
       }),
-    name: z.string().optional(),
 
     firstName: z.string().min(2, {
       message: "First name must be at least 2 characters.",
@@ -111,7 +110,8 @@ export function RegisterInterestForm() {
     mode: "onChange",
     defaultValues: {
       prefix: "Mr.",
-      name: "",
+      firstName: "",
+      lastName: "",
       dob: undefined,
       gender: "Male",
       nationality: "",
@@ -206,6 +206,7 @@ export function RegisterInterestForm() {
 
         const payload = {
           ...values,
+          name: `${values.firstName} ${values.lastName}`.trim(),
           phoneCountry: `+${selectedCountry?.callCode ?? ""}`,
         }
 
@@ -280,7 +281,8 @@ export function RegisterInterestForm() {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="grid grid-cols-[100px_1fr] gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-[100px_1fr_1fr]">
+                {/* Prefix */}
                 <FormField
                   control={form.control}
                   name="prefix"
@@ -289,14 +291,11 @@ export function RegisterInterestForm() {
                       <FormLabel>Prefix</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger
-                            id="prefix"
-                            className="h-8 flex-1 rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
-                          >
-                            <SelectValue placeholder="Select your prefix" />
+                          <SelectTrigger className="h-8 rounded-lg border border-input bg-background dark:bg-input/30">
+                            <SelectValue placeholder="Prefix" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -310,21 +309,43 @@ export function RegisterInterestForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* First Name */}
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>First Name</FormLabel>
                       <FormControl>
                         <InputGroup>
                           <InputGroupAddon>
                             <User className="size-4" />
                           </InputGroupAddon>
                           <InputGroupInput
-                            placeholder="Enter your name"
+                            placeholder="First name"
                             {...field}
                           />
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Last Name */}
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <InputGroup>
+                          <InputGroupAddon>
+                            <User className="size-4" />
+                          </InputGroupAddon>
+                          <InputGroupInput placeholder="Last name" {...field} />
                         </InputGroup>
                       </FormControl>
                       <FormMessage />

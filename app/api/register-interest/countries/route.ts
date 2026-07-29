@@ -5,10 +5,13 @@ interface Country {
   demonym: string
   callingCodes: string[]
   alpha2Code: string
-  flag: string
+  flags: {
+    png: string
+    svg: string
+  }
 }
 
-interface CountryOption {
+interface CustomCountry {
   name: string
   nationality: string
   flag: string
@@ -30,22 +33,15 @@ export async function GET() {
 
     const data: Country[] = await response.json()
 
-    const countries: CountryOption[] = Array.from(
-      new Map(
-        data
-          .filter((country) => country.demonym)
-          .map((country) => [
-            country.demonym,
-            {
-              name: country.name,
-              nationality: country.demonym,
-              flag: country.flag,
-              code: country.alpha2Code,
-              callCode: country.callingCodes?.[0] ?? "",
-            },
-          ])
-      ).values()
-    ).sort((a, b) => a.nationality.localeCompare(b.nationality))
+    const countries: CustomCountry[] = data
+      .map((country) => ({
+        name: country.name,
+        nationality: country.demonym,
+        flag: country.flags.svg,
+        code: country.alpha2Code,
+        callCode: country.callingCodes?.[0] ?? "",
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name))
 
     return NextResponse.json(countries)
   } catch (error) {

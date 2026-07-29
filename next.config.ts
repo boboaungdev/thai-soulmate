@@ -9,10 +9,15 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/api/portraits/**",
       },
-
       {
         protocol: "https",
         hostname: "pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "flagcdn.com",
         port: "",
         pathname: "/**",
       },

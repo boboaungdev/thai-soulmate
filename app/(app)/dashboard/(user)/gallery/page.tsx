@@ -59,8 +59,8 @@ function UserCard({ user }: { user: ApplicationForm }) {
         <div className="absolute inset-x-0 bottom-0 p-4 text-white">
           <p className="text-lg font-semibold">
             <span className="text-gold">
-              {/* ID-{String(user.customId).padStart(4, "0")} */}
-              {user.personalDetails?.nickname || user.personalDetails.name}
+              ID-{String(user.customId).padStart(4, "0")} (
+              {user.personalDetails?.nickname || user.personalDetails.name})
             </span>
             , <span className="text-pink">{age}</span>
           </p>
@@ -195,13 +195,13 @@ export default function GalleryPage() {
           </div>
           <div className="flex gap-2">
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-8 w-auto gap-1 bg-card sm:w-[130px]">
+              <SelectTrigger className="h-8 min-w-[150px] gap-1 bg-card">
                 <span className="text-muted-foreground">Sort:</span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="customId">ID</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="name">Nickname</SelectItem>
               </SelectContent>
             </Select>
             <Select value={sortOrder} onValueChange={setSortOrder}>

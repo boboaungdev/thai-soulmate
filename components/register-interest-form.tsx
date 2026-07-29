@@ -751,7 +751,7 @@ export function RegisterInterestForm() {
                                           height={16}
                                           className="mr-2 inline-block h-4 w-6 rounded object-cover"
                                         />
-                                        {country.name}
+                                        {/* {country.name} */}
                                         (+{country.callCode})
                                       </CommandItem>
                                     ))

@@ -112,7 +112,6 @@ export async function POST(req: Request) {
         },
 
         financial: {
-          income: body.financial.income,
           ownBusiness: body.financial.ownBusiness,
           ownProperty: body.financial.ownProperty,
         },

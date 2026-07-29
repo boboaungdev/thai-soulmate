@@ -19,6 +19,17 @@ import {
   CheckCircle2,
   ChevronsUpDown,
   Check,
+  Cigarette,
+  ShieldOff,
+  Waves,
+  Baby,
+  Wine,
+  Scale,
+  MapPinOff,
+  CircleDollarSign,
+  TrendingDown,
+  Frown,
+  Landmark,
 } from "lucide-react"
 import {
   ShieldCheck,
@@ -212,13 +223,69 @@ const idealPartnerNationalities = [
   "UK",
   "AUS",
   "EUROPEAN",
+  "FRANCE", // Added France
   "ASIAN",
   "INDIAN",
   "AFRICAN",
   "OTHER",
 ]
 
-const idealPartnerHeights = ["under 5'", '5"-5.5"', '5.6"-5.9"', "6:+"]
+const idealPartnerHeightRanges = [
+  "150-155",
+  "156-160",
+  "161-165",
+  "166-170",
+  "171-175",
+  "176-180",
+  "181-185",
+  "186-190",
+  "191-195",
+  "196-200",
+  "200+",
+]
+
+const idealPartnerMinHeightOptions = [
+  ...new Set(idealPartnerHeightRanges.map((range) => range.split("-")[0])),
+]
+
+const idealPartnerMaxHeightOptions = [
+  ...new Set(
+    idealPartnerHeightRanges
+      .map((range) => {
+        const parts = range.split("-")
+        return parts.length > 1 ? parts[1] : null
+      })
+      .filter((v): v is string => v !== null)
+  ),
+]
+
+const cmToFeetInches = (cm: number | string): string => {
+  if (typeof cm === "string" && cm.includes("+")) {
+    const numValue = parseInt(cm.replace("+", ""), 10)
+    if (isNaN(numValue)) return ""
+    const totalInches = numValue / 2.54
+    const feet = Math.floor(totalInches / 12)
+    const inches = Math.round(totalInches % 12)
+    if (inches === 12) {
+      return `(${feet + 1}'0"+)`
+    }
+    return `(${feet}'${inches}"+)`
+  }
+
+  const numCm = typeof cm === "string" ? parseInt(cm, 10) : cm
+  if (isNaN(numCm)) return ""
+
+  const totalInches = numCm / 2.54
+  const feet = Math.floor(totalInches / 12)
+  const inches = Math.round(totalInches % 12)
+
+  if (feet <= 0 && inches <= 0) return ""
+  if (inches === 12) {
+    return `(${feet + 1}'0")`
+  }
+
+  return `(${feet}'${inches}")`
+}
 
 const idealPartnerPersonalityTraits = [
   "Kind",
@@ -271,6 +338,24 @@ const lookingForQualitiesOptions = [
   "Communicative",
   "Respectful",
   "Family-Oriented",
+]
+
+const dealBreakerOptions = [
+  { value: "Smoker", label: "Smoker", icon: Cigarette },
+  { value: "Dishonesty", label: "Dishonesty", icon: ShieldOff },
+  { value: "Poor hygiene", label: "Poor hygiene", icon: Waves },
+  { value: "Has children", label: "Has children", icon: Baby },
+  { value: "Heavy drinker", label: "Heavy drinker", icon: Wine },
+  { value: "Political differences", label: "Political differences", icon: Scale },
+  { value: "Long distance", label: "Long distance", icon: MapPinOff },
+  {
+    value: "Financial instability",
+    label: "Financial instability",
+    icon: CircleDollarSign,
+  },
+  { value: "Lack of ambition", label: "Lack of ambition", icon: TrendingDown },
+  { value: "Rudeness", label: "Rudeness", icon: Frown },
+  { value: "Not religious", label: "Not religious", icon: Landmark },
 ]
 
 const qualityIcons: Record<string, React.ElementType> = {
@@ -420,8 +505,9 @@ function AuthPageContents() {
   })
   const [idealPartnerMinAge, setIdealPartnerMinAge] = useState("")
   const [idealPartnerMaxAge, setIdealPartnerMaxAge] = useState("")
+  const [idealPartnerMinHeight, setIdealPartnerMinHeight] = useState("")
+  const [idealPartnerMaxHeight, setIdealPartnerMaxHeight] = useState("")
   const [financialForm, setFinancialForm] = useState({
-    income: "",
     ownProperty: "",
     ownBusiness: "",
   })
@@ -717,7 +803,6 @@ function AuthPageContents() {
   }
 
   const femaleProfileSchemaFinancial = z.object({
-    income: z.string().min(1, "Please select an income range."),
     ownProperty: z.string().min(1, "Please specify property ownership."),
     ownBusiness: z.string().min(1, "Please specify business ownership."),
   })
@@ -856,9 +941,9 @@ function AuthPageContents() {
         .length(5, "Please select exactly 5 desired qualities."),
       dealBreakers: z
         .array(z.string())
-        .length(3, "Please list 3 deal breakers.")
+        .length(3, "Please select 3 deal breakers.")
         .refine((items) => items.every((item) => item.trim().length > 0), {
-          message: "Please enter three deal breakers.",
+          message: "Please select three deal breakers.",
         }),
     })
     .refine(
@@ -1444,17 +1529,7 @@ function AuthPageContents() {
     }
   }, [photosForm.recent, registrationStep, formErrors.recent])
 
-  useEffect(() => {
-    if (registrationStep === "financial" && formErrors.income) {
-      if (
-        femaleProfileSchemaFinancial.shape.income.safeParse(
-          financialForm.income
-        ).success
-      ) {
-        clearFormError("income")
-      }
-    }
-  }, [financialForm.income, registrationStep, formErrors.income])
+
 
   useEffect(() => {
     if (registrationStep === "financial" && formErrors.ownProperty) {
@@ -3780,38 +3855,80 @@ function AuthPageContents() {
                         </p>
                       )}
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="ideal-height">Preferred Height</Label>
-                        <Select
-                          onValueChange={(value) =>
-                            setFemaleProfileForm((prev) => ({
-                              ...prev,
-                              idealPartnerHeight: value,
-                            }))
-                          }
-                          value={femaleProfileForm.idealPartnerHeight}
-                        >
-                          <SelectTrigger
-                            id="ideal-height"
-                            className="h-8 bg-background dark:bg-input/30"
+                    <div className="space-y-2">
+                      <Label>Preferred Height (cm)</Label>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1">
+                          <Select
+                            onValueChange={(value) => {
+                              setIdealPartnerMinHeight(value)
+                              setIdealPartnerMaxHeight("") // Reset max height on min height change
+                              if (value === "200+") {
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerHeight: "200+",
+                                }))
+                              } else {
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerHeight: "", // Clear range until max is selected
+                                }))
+                              }
+                            }}
+                            value={idealPartnerMinHeight}
                           >
-                            <SelectValue placeholder="Select height" />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-56 overflow-y-auto">
-                            {idealPartnerHeights.map((height) => (
-                              <SelectItem key={height} value={height}>
-                                {height}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {formErrors.idealPartnerHeight && (
-                          <p className="text-sm text-destructive">
-                            {formErrors.idealPartnerHeight}
-                          </p>
-                        )}
+                            <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                              <SelectValue placeholder="Min" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-56 overflow-y-auto">
+                              {idealPartnerMinHeightOptions.map((height) => (
+                                <SelectItem key={height} value={height}>
+                                  {height} {cmToFeetInches(height)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <span className="text-muted-foreground">-</span>
+                        <div className="flex-1">
+                          <Select
+                            onValueChange={(value) => {
+                              setIdealPartnerMaxHeight(value)
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                idealPartnerHeight: `${idealPartnerMinHeight}-${value}`,
+                              }))
+                            }}
+                            value={idealPartnerMaxHeight}
+                            disabled={
+                              !idealPartnerMinHeight ||
+                              idealPartnerMinHeight === "200+"
+                            }
+                          >
+                            <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                              <SelectValue placeholder="Max" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-56 overflow-y-auto">
+                              {idealPartnerMaxHeightOptions
+                                .filter(
+                                  (height) =>
+                                    parseInt(height) >=
+                                    parseInt(idealPartnerMinHeight)
+                                )
+                                .map((height) => (
+                                  <SelectItem key={height} value={height}>
+                                    {height} {cmToFeetInches(height)}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
+                      {formErrors.idealPartnerHeight && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.idealPartnerHeight}
+                        </p>
+                      )}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -4034,31 +4151,71 @@ function AuthPageContents() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label>Deal Breakers (list 3)</Label>
-                      {[
-                        "e.g. Dishonesty",
-                        "e.g. Smoker",
-                        "e.g. Poor hygiene",
-                      ].map((placeholder, index) => (
-                        <InputGroup key={index}>
-                          <InputGroupAddon className="w-10 justify-center">
-                            {index + 1}
-                          </InputGroupAddon>
-                          <InputGroupInput
-                            placeholder={placeholder}
-                            value={femaleProfileForm.dealBreakers[index]}
-                            onChange={(e) => {
-                              const newDealBreakers = [
-                                ...femaleProfileForm.dealBreakers,
-                              ]
-                              newDealBreakers[index] = e.target.value
-                              setFemaleProfileForm((prev) => ({
-                                ...prev,
-                                dealBreakers: newDealBreakers,
-                              }))
-                            }}
-                          />
-                        </InputGroup>
+                      <Label>Deal Breakers (select 3)</Label>
+                      {[0, 1, 2].map((index) => (
+                        <Select
+                          key={index}
+                          onValueChange={(value) => {
+                            const newDealBreakers = [
+                              ...femaleProfileForm.dealBreakers,
+                            ]
+                            newDealBreakers[index] = value
+                            setFemaleProfileForm((prev) => ({
+                              ...prev,
+                              dealBreakers: newDealBreakers,
+                            }))
+                          }}
+                          value={femaleProfileForm.dealBreakers[index]}
+                        >
+                          <SelectTrigger className="h-8 bg-background text-sm dark:bg-input/30">
+                            <SelectValue
+                              placeholder={`Select deal breaker #${index + 1}`}
+                            >
+                              {femaleProfileForm.dealBreakers[index] && (
+                                <div className="flex items-center gap-2">
+                                  {(() => {
+                                    const option = dealBreakerOptions.find(
+                                      (o) =>
+                                        o.value ===
+                                        femaleProfileForm.dealBreakers[index]
+                                    )
+                                    if (!option) return null
+                                    const Icon = option.icon
+                                    return (
+                                      <Icon className="size-4 text-muted-foreground" />
+                                    )
+                                  })()}
+                                  <span>
+                                    {femaleProfileForm.dealBreakers[index]}
+                                  </span>
+                                </div>
+                              )}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent className="max-h-56 overflow-y-auto">
+                            {dealBreakerOptions.map((option) => {
+                              const isSelectedElsewhere =
+                                femaleProfileForm.dealBreakers.includes(
+                                  option.value
+                                ) &&
+                                femaleProfileForm.dealBreakers[index] !==
+                                  option.value
+                              return (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                  disabled={isSelectedElsewhere}
+                                  className="text-sm"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <option.icon className="size-4 text-muted-foreground" />
+                                    <span>{option.label}</span>
+                                  </div>
+                                </SelectItem>
+                              )
+                            })}
+                          </SelectContent>
+                        </Select>
                       ))}
                       {formErrors.dealBreakers && (
                         <p className="text-sm text-destructive">
@@ -4120,40 +4277,7 @@ function AuthPageContents() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <div className="space-y-3">
-                      <Label>Annual Income Range (USD)</Label>
-                      <RadioGroup
-                        value={financialForm.income}
-                        onValueChange={(value) =>
-                          setFinancialForm((prev) => ({
-                            ...prev,
-                            income: value,
-                          }))
-                        }
-                      >
-                        {[
-                          "Prefer Not To Say",
-                          "Under $25,000",
-                          "$25,000 - $50,000",
-                          "$50,000 - $100,000",
-                          "$100,000 - $250,000",
-                          "$250,000+",
-                        ].map((range) => (
-                          <div
-                            key={range}
-                            className="flex items-center space-x-2"
-                          >
-                            <RadioGroupItem value={range} id={range} />
-                            <Label htmlFor={range}>{range}</Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                      {formErrors.income && (
-                        <p className="text-sm text-destructive">
-                          {formErrors.income}
-                        </p>
-                      )}
-                    </div>
+
                     <div className="space-y-3">
                       <Label>Do you own property?</Label>
                       <RadioGroup

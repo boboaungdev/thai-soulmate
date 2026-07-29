@@ -78,18 +78,31 @@ export default function GalleryPage() {
   const [users, setUsers] = useState<ApplicationForm[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("") // State for search term
+  const [gender, setGender] = useState("Female")
   const [sortBy, setSortBy] = useState("customId")
   const [sortOrder, setSortOrder] = useState("asc")
+  const [nickname, setNickname] = useState("")
+  const [customId, setCustomId] = useState("")
 
   const isIdSearch = /^\d/.test(searchTerm) && searchTerm.length > 0
 
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await fetch("/api/gallery")
+        const params = new URLSearchParams()
+
+        if (gender) params.append("gender", gender)
+        if (sortBy) params.append("sortBy", sortBy)
+        if (sortOrder) params.append("sortOrder", sortOrder)
+        if (nickname) params.append("nickname", nickname)
+        if (customId) params.append("customId", customId)
+
+        const response = await fetch(`/api/gallery?${params.toString()}`)
+
         if (!response.ok) {
           throw new Error("Failed to fetch users")
         }
+
         const data = await response.json()
         setUsers(data.data)
       } catch (error) {
@@ -100,7 +113,7 @@ export default function GalleryPage() {
     }
 
     fetchUsers()
-  }, [])
+  }, [gender, sortBy, sortOrder, name, customId])
 
   const filteredUsers = users?.filter((user) => {
     if (!searchTerm) return true

@@ -2,7 +2,6 @@
 
 import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
 import {
@@ -15,60 +14,106 @@ import {
 
 import Link from "next/link"
 import Image from "next/image"
-import { MapPin } from "lucide-react"
 import {
   ApplicationForm,
   PersonalDetails,
   Photos,
 } from "@/types/application-form"
 
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Calendar, Home, MapPin, Venus, Mars } from "lucide-react"
+
 function UserCard({ user }: { user: ApplicationForm }) {
-  const personalDetails: PersonalDetails =
-    user.personalDetails && typeof user.personalDetails === "string"
+  const isVip = user.membership?.type === "VIP"
+
+  const personalDetails =
+    typeof user.personalDetails === "string"
       ? JSON.parse(user.personalDetails)
       : user.personalDetails || {}
-  const photos: Photos =
-    user.photos && typeof user.photos === "string"
+
+  const photos =
+    typeof user.photos === "string"
       ? JSON.parse(user.photos)
-      : (user.photos as unknown as Photos) || {}
+      : user.photos || {}
 
   const age = personalDetails.dob
     ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
     : "N/A"
 
   return (
-    <Link
-      href={`/dashboard/gallery/${user.id}`}
-      className="bg-gold block w-[280px] rounded-lg p-[2px]"
-    >
-      <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
-        {photos?.headshot ? (
-          <Image
-            src={photos.headshot}
-            alt={personalDetails?.name || "User"}
-            fill
-            sizes="280px"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-secondary">
-            No Image
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-          <p className="text-lg font-semibold">
-            <span className="text-gold">
-              ID-{String(user.customId).padStart(4, "0")} (
-              {user.personalDetails?.nickname || user.personalDetails.name})
-            </span>
-            , <span className="text-pink">{age}</span>
-          </p>
-          <p className="flex items-center gap-1 text-sm">
-            <MapPin className="size-3" />
-            {personalDetails?.currentLocation || "N/A"}
-          </p>
+    <Link href={`/dashboard/gallery/${user.id}`}>
+      <Card className="overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg">
+        {/* Image */}
+        <div className="relative aspect-[3/4] overflow-hidden">
+          {photos?.headshot ? (
+            <Image
+              src={photos.headshot}
+              alt={personalDetails.name}
+              fill
+              className="object-cover transition duration-300 hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center bg-muted">
+              No Image
+            </div>
+          )}
+
+          <Badge className="absolute top-3 left-3">
+            ID-{String(user.customId).padStart(4, "0")}
+          </Badge>
+
+          {isVip && (
+            <Badge className="absolute top-3 right-3 bg-pink-500">VIP</Badge>
+          )}
         </div>
+
+        {/* Info */}
+        <CardContent className="space-y-3 p-4">
+          <div>
+            <h3 className="line-clamp-1 text-lg font-semibold">
+              {personalDetails.name}
+              {personalDetails.nickname && (
+                <span className="text-muted-foreground">
+                  {" "}
+                  ({personalDetails.nickname})
+                </span>
+              )}
+            </h3>
+          </div>
+
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            {personalDetails.gender === "Male" ? (
+              <Mars className="h-4 w-4 text-blue-500" />
+            ) : (
+              <Venus className="h-4 w-4 text-pink-500" />
+            )}
+
+            <span>{age} years old</span>
+          </div>
+
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Home className="h-4 w-4" />
+            {personalDetails.nationality}
+          </div>
+
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <MapPin className="h-4 w-4" />
+            {personalDetails.currentLocation}
+          </div>
+
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Calendar className="h-3.5 w-3.5" />
+            Joined {new Date(user.createdAt).toLocaleDateString()}
+          </div>
+        </CardContent>
+
+        <CardFooter>
+          <Button className="w-full" variant="outline">
+            View Profile
+          </Button>
+        </CardFooter>
       </Card>
     </Link>
   )
@@ -78,7 +123,7 @@ export default function ProfilesPage() {
   const [users, setUsers] = useState<ApplicationForm[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("") // State for search term
-  const [gender, setGender] = useState("Female")
+  const [gender, setGender] = useState("All")
   const [sortBy, setSortBy] = useState("customId")
   const [sortOrder, setSortOrder] = useState("asc")
   const [nickname, setNickname] = useState("")
@@ -194,6 +239,19 @@ export default function ProfilesPage() {
             )}
           </div>
           <div className="flex gap-2">
+            <Select value={gender} onValueChange={setGender}>
+              <SelectTrigger className="h-8 min-w-[130px] gap-1 bg-card">
+                <span className="text-muted-foreground">Gender:</span>
+                <SelectValue />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value="All">All</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="Male">Male</SelectItem>
+              </SelectContent>
+            </Select>
+
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="h-8 min-w-[150px] gap-1 bg-card">
                 <span className="text-muted-foreground">Sort:</span>
@@ -217,14 +275,14 @@ export default function ProfilesPage() {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap justify-center gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {isLoading
           ? Array.from({ length: 12 }).map((_, index) => (
               <Card
                 key={index}
-                className="relative h-[380px] w-[280px] overflow-hidden"
+                className="mx-auto w-full max-w-[280px] overflow-hidden"
               >
-                <Skeleton className="size-full" />
+                <Skeleton className="aspect-[3/4] w-full" />
               </Card>
             ))
           : sortedUsers?.map((user) => <UserCard key={user.id} user={user} />)}

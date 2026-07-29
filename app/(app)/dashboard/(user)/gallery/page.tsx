@@ -39,7 +39,7 @@ function UserCard({ user }: { user: ApplicationForm }) {
   return (
     <Link
       href={`/dashboard/gallery/${user.id}`}
-      className="bg-gold block w-[280px] rounded-lg p-[2px]"
+      className="bg-gold block w-full rounded-lg p-[2px]"
     >
       <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
         {photos?.headshot ? (
@@ -217,14 +217,14 @@ export default function GalleryPage() {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap justify-center gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {isLoading
           ? Array.from({ length: 12 }).map((_, index) => (
               <Card
                 key={index}
-                className="relative h-[380px] w-[280px] overflow-hidden"
+                className="h-[380px] w-full overflow-hidden rounded-md border-0"
               >
-                <Skeleton className="size-full" />
+                <Skeleton className="h-full w-full" />
               </Card>
             ))
           : sortedUsers?.map((user) => <UserCard key={user.id} user={user} />)}

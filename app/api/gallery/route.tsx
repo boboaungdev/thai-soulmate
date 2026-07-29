@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
 
-    const gender = searchParams.get("gender") || "Female"
+    const gender = searchParams.get("gender") || "All"
     const nickname = searchParams.get("nickname") || ""
     const customId = searchParams.get("customId") || ""
     const sortBy = searchParams.get("sortBy") || "createdAt"
@@ -18,16 +18,21 @@ export async function GET(request: NextRequest) {
     })
 
     // Gender filter
-    applicationForms = applicationForms.filter((form) => {
-      const personalDetails = form.personalDetails as any
-      return personalDetails?.gender?.toLowerCase() === gender.toLowerCase()
-    })
+    if (gender !== "All") {
+      applicationForms = applicationForms.filter((form) => {
+        const personalDetails = form.personalDetails as any
+
+        return personalDetails?.gender?.toLowerCase() === gender.toLowerCase()
+      })
+    }
 
     // Name filter
     if (nickname) {
       applicationForms = applicationForms.filter((form) => {
         const personalDetails = form.personalDetails as any
-        return personalDetails?.nickname?.toLowerCase().includes(nickname.toLowerCase())
+        return personalDetails?.nickname
+          ?.toLowerCase()
+          .includes(nickname.toLowerCase())
       })
     }
 

@@ -279,7 +279,6 @@ function AuthPageContents() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [initialUserData, setInitialUserData] = useState<any | null>(null)
   const [registrationStep, setRegistrationStep] =
     useState<ApplicationStep>("details")
@@ -399,7 +398,8 @@ function AuthPageContents() {
   const [isSubmittingApplication, setIsSubmittingApplication] = useState(false)
   const [detailsForm, setDetailsForm] = useState({
     prefix: "Mr.",
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
   })
@@ -451,9 +451,14 @@ function AuthPageContents() {
         if (interestData.gender) setGender(interestData.gender)
         if (interestData.dob) setBirthday(new Date(interestData.dob))
 
+        const [firstName = "", ...lastParts] = (interestData.name ?? "")
+          .trim()
+          .split(" ")
+
         setDetailsForm((prev) => ({
           ...prev,
-          name: interestData.name ?? prev.name,
+          firstName,
+          lastName: lastParts.join(" "),
           email: interestData.email ?? prev.email,
           phone: interestData.phone ?? prev.phone,
         }))
@@ -606,7 +611,8 @@ function AuthPageContents() {
 
   const detailsSchema = z.object({
     prefix: z.string().min(1, "Prefix is required."),
-    name: z.string().min(2, "Name must be at least 2 characters."),
+    firstName: z.string().min(1, "First name is required."),
+    lastName: z.string().min(1, "Last name is required."),
     dob: z.date({
       error: "Date of birth is required.",
     }),
@@ -1435,7 +1441,7 @@ function AuthPageContents() {
       const fullUserData = {
         details: {
           prefix,
-          name: detailsForm.name,
+          name: `${detailsForm.firstName.trim()} ${detailsForm.lastName.trim()}`.trim(),
           gender,
           dob: dob?.toISOString(),
           email: detailsForm.email,
@@ -1537,7 +1543,7 @@ function AuthPageContents() {
       const detailsData = {
         ...initialUserData, // Keep any other properties from the initial step
         prefix: detailsForm.prefix,
-        name: detailsForm.name,
+        name: `${detailsForm.firstName.trim()} ${detailsForm.lastName.trim()}`.trim(),
         gender: gender,
         dob: dob?.toISOString(),
         email: detailsForm.email,
@@ -1704,31 +1710,57 @@ function AuthPageContents() {
                           {formErrors.prefix}
                         </p>
                       )}
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <InputGroup>
-                          <InputGroupAddon>
-                            <User className="size-4" />
-                          </InputGroupAddon>
-                          <InputGroupInput
-                            id="name"
-                            placeholder="Your Name"
-                            value={detailsForm.name}
-                            onChange={(e) =>
-                              setDetailsForm((prev) => ({
-                                ...prev,
-                                name: e.target.value,
-                              }))
-                            }
-                            disabled={isInitializing || loadingCountries}
-                          />
-                        </InputGroup>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="firstName">First Name</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <User className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="firstName"
+                              placeholder="First Name"
+                              value={detailsForm.firstName}
+                              onChange={(e) =>
+                                setDetailsForm((prev) => ({
+                                  ...prev,
+                                  firstName: e.target.value,
+                                }))
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.firstName && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.firstName}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="lastName">Last Name</Label>
+                          <InputGroup>
+                            <InputGroupAddon>
+                              <User className="size-4" />
+                            </InputGroupAddon>
+                            <InputGroupInput
+                              id="lastName"
+                              placeholder="Last Name"
+                              value={detailsForm.lastName}
+                              onChange={(e) =>
+                                setDetailsForm((prev) => ({
+                                  ...prev,
+                                  lastName: e.target.value,
+                                }))
+                              }
+                            />
+                          </InputGroup>
+                          {formErrors.lastName && (
+                            <p className="text-sm text-destructive">
+                              {formErrors.lastName}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      {formErrors.name && (
-                        <p className="col-start-2 text-sm text-destructive">
-                          {formErrors.name}
-                        </p>
-                      )}
                     </div>
                     <div className="grid grid-cols-[100px_1fr] gap-4">
                       <div className="space-y-2">

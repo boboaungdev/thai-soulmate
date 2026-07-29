@@ -191,6 +191,22 @@ const idealPartnerAgeRanges = [
   "70+",
 ]
 
+const idealPartnerMinAgeOptions = [
+  ...new Set(idealPartnerAgeRanges.map((range) => range.split("-")[0])),
+]
+
+const idealPartnerMaxAgeOptions = [
+  ...new Set(
+    idealPartnerAgeRanges
+      .map((range) => {
+        const parts = range.split("-")
+        // Only return the second part if it's a true range (e.g., "56-63")
+        return parts.length > 1 ? parts[1] : null
+      })
+      .filter((v): v is string => v !== null)
+  ),
+]
+
 const idealPartnerNationalities = [
   "USA",
   "UK",
@@ -402,6 +418,8 @@ function AuthPageContents() {
     idealPartnerQualities: [] as string[],
     dealBreakers: ["", "", ""],
   })
+  const [idealPartnerMinAge, setIdealPartnerMinAge] = useState("")
+  const [idealPartnerMaxAge, setIdealPartnerMaxAge] = useState("")
   const [financialForm, setFinancialForm] = useState({
     income: "",
     ownProperty: "",
@@ -3244,8 +3262,11 @@ function AuthPageContents() {
                             key={habit}
                             className="flex items-center space-x-2"
                           >
-                            <RadioGroupItem value={habit} id={habit} />
-                            <Label htmlFor={habit}>{habit}</Label>
+                            <RadioGroupItem
+                              value={habit}
+                              id={`smoke-${habit}`}
+                            />
+                            <Label htmlFor={`smoke-${habit}`}>{habit}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -3272,8 +3293,11 @@ function AuthPageContents() {
                             key={habit}
                             className="flex items-center space-x-2"
                           >
-                            <RadioGroupItem value={habit} id={habit} />
-                            <Label htmlFor={habit}>{habit}</Label>
+                            <RadioGroupItem
+                              value={habit}
+                              id={`drink-${habit}`}
+                            />
+                            <Label htmlFor={`drink-${habit}`}>{habit}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -3681,38 +3705,82 @@ function AuthPageContents() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="ideal-age-range">Age Range</Label>
-                        <Select
-                          onValueChange={(value) =>
-                            setFemaleProfileForm((prev) => ({
-                              ...prev,
-                              idealPartnerAgeRange: value,
-                            }))
-                          }
-                          value={femaleProfileForm.idealPartnerAgeRange}
-                        >
-                          <SelectTrigger
-                            id="ideal-age-range"
-                            className="h-8 bg-background dark:bg-input/30"
+                    <div className="space-y-2">
+                      <Label>Age Range</Label>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1">
+                          <Select
+                            onValueChange={(value) => {
+                              setIdealPartnerMinAge(value)
+                              setIdealPartnerMaxAge("") // Reset max age on min age change
+                              if (value === "70+") {
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerAgeRange: "70+",
+                                }))
+                              } else {
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerAgeRange: "", // Clear range until max is selected
+                                }))
+                              }
+                            }}
+                            value={idealPartnerMinAge}
                           >
-                            <SelectValue placeholder="Select age range" />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-56 overflow-y-auto">
-                            {idealPartnerAgeRanges.map((range) => (
-                              <SelectItem key={range} value={range}>
-                                {range}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {formErrors.idealPartnerAgeRange && (
-                          <p className="text-sm text-destructive">
-                            {formErrors.idealPartnerAgeRange}
-                          </p>
-                        )}
+                            <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                              <SelectValue placeholder="Min" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-56 overflow-y-auto">
+                              {idealPartnerMinAgeOptions.map((age) => (
+                                <SelectItem key={age} value={age}>
+                                  {age}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <span className="text-muted-foreground">-</span>
+                        <div className="flex-1">
+                          <Select
+                            onValueChange={(value) => {
+                              setIdealPartnerMaxAge(value)
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                idealPartnerAgeRange: `${idealPartnerMinAge}-${value}`,
+                              }))
+                            }}
+                            value={idealPartnerMaxAge}
+                            disabled={
+                              !idealPartnerMinAge ||
+                              idealPartnerMinAge === "70+"
+                            }
+                          >
+                            <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                              <SelectValue placeholder="Max" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-56 overflow-y-auto">
+                              {idealPartnerMaxAgeOptions
+                                .filter(
+                                  (age) =>
+                                    parseInt(age) >=
+                                    parseInt(idealPartnerMinAge)
+                                )
+                                .map((age) => (
+                                  <SelectItem key={age} value={age}>
+                                    {age}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
+                      {formErrors.idealPartnerAgeRange && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.idealPartnerAgeRange}
+                        </p>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="ideal-height">Preferred Height</Label>
                         <Select

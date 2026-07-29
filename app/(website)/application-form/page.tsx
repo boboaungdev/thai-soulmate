@@ -678,7 +678,7 @@ function AuthPageContents() {
       childrenCount: z.number().optional(),
       personality: z
         .array(z.string())
-        .min(1, "Please select at least one personality trait."),
+        .length(5, "Please select exactly 5 personality traits."),
     })
     .refine(
       (data) => {
@@ -2586,7 +2586,7 @@ function AuthPageContents() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label>My Personality (select all that apply)</Label>
+                      <Label>My Personality (select exactly 5)</Label>
                       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                         {personalityTraits.map((trait) => (
                           <div
@@ -2598,6 +2598,10 @@ function AuthPageContents() {
                               checked={femaleProfileForm.personality.includes(
                                 trait
                               )}
+                              disabled={
+                                femaleProfileForm.personality.length >= 5 &&
+                                !femaleProfileForm.personality.includes(trait)
+                              }
                               onCheckedChange={(checked) => {
                                 setFemaleProfileForm((prev) => ({
                                   ...prev,

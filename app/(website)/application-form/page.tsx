@@ -216,6 +216,33 @@ const idealPartnerDesiredQualities = [
   "Easy Going",
 ]
 
+const bestQualitiesOptions = [
+  "Honest",
+  "Kind",
+  "Ambitious",
+  "Loyal",
+  "Supportive",
+  "Funny",
+  "Intelligent",
+  "Confident",
+  "Romantic",
+  "Family-Oriented",
+]
+
+const lookingForQualitiesOptions = [
+  "Honest",
+  "Loyal",
+  "Supportive",
+  "Ambitious",
+  "Confident",
+  "Funny",
+  "Kind",
+  "Intelligent",
+  "Communicative",
+  "Respectful",
+  "Family-Oriented",
+]
+
 const relationshipGoalsOptions = [
   "Marriage",
   "Long-Term Relationship",
@@ -1630,7 +1657,7 @@ function AuthPageContents() {
               Your journey to finding a soulmate starts here.
             </p>
             {registrationStep === "details" ||
-              registrationStep === "basic-info" ? (
+            registrationStep === "basic-info" ? (
               <p className="mt-4 text-base text-muted-foreground">
                 Complete this confidential application to begin your
                 personalized matchmaking journey with our experts.
@@ -1662,7 +1689,7 @@ function AuthPageContents() {
               Your journey to finding a soulmate starts here.
             </p>
             {registrationStep === "details" ||
-              registrationStep === "basic-info" ? (
+            registrationStep === "basic-info" ? (
               <p className="mt-4 text-sm text-muted-foreground">
                 Complete this confidential application to begin your
                 personalized matchmaking journey with our experts.
@@ -1703,7 +1730,7 @@ function AuthPageContents() {
                           >
                             <SelectValue placeholder="Mr." />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="max-h-56 overflow-y-auto">
                             <SelectItem value="Mr.">Mr.</SelectItem>
                             <SelectItem value="Ms.">Ms.</SelectItem>
                             <SelectItem value="Mrs.">Mrs.</SelectItem>
@@ -1781,7 +1808,7 @@ function AuthPageContents() {
                           >
                             <SelectValue placeholder="Select gender" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="max-h-56 overflow-y-auto">
                             <SelectItem
                               value="Male"
                               disabled={prefix === "Ms." || prefix === "Mrs."}
@@ -2790,25 +2817,33 @@ function AuthPageContents() {
                     <div className="space-y-2">
                       <Label>What are your three best qualities?</Label>
                       {[0, 1, 2].map((index) => (
-                        <InputGroup key={index}>
-                          <InputGroupAddon className="w-10 justify-center">
-                            {index + 1}
-                          </InputGroupAddon>
-                          <InputGroupInput
-                            placeholder={bestQualitiesPlaceholders[index]}
-                            value={femaleProfileForm.bestQualities[index]}
-                            onChange={(e) => {
-                              const newQualities = [
-                                ...femaleProfileForm.bestQualities,
-                              ]
-                              newQualities[index] = e.target.value
-                              setFemaleProfileForm((prev) => ({
-                                ...prev,
-                                bestQualities: newQualities,
-                              }))
-                            }}
-                          />
-                        </InputGroup>
+                        <Select
+                          key={index}
+                          onValueChange={(value) => {
+                            const newQualities = [
+                              ...femaleProfileForm.bestQualities,
+                            ]
+                            newQualities[index] = value
+                            setFemaleProfileForm((prev) => ({
+                              ...prev,
+                              bestQualities: newQualities,
+                            }))
+                          }}
+                          value={femaleProfileForm.bestQualities[index]}
+                        >
+                          <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                            <SelectValue
+                              placeholder={`Select quality #${index + 1}`}
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-56 overflow-y-auto">
+                            {bestQualitiesOptions.map((option) => (
+                              <SelectItem key={option} value={option}>
+                                {option}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       ))}
                       {formErrors.bestQualities && (
                         <p className="text-sm text-destructive">
@@ -2819,25 +2854,33 @@ function AuthPageContents() {
                     <div className="space-y-2">
                       <Label>What three qualities you look for in a man?</Label>
                       {[0, 1, 2].map((index) => (
-                        <InputGroup key={index}>
-                          <InputGroupAddon className="w-10 justify-center">
-                            {index + 1}
-                          </InputGroupAddon>
-                          <InputGroupInput
-                            placeholder={lookingForQualitiesPlaceholders[index]}
-                            value={femaleProfileForm.lookingForQualities[index]}
-                            onChange={(e) => {
-                              const newQualities = [
-                                ...femaleProfileForm.lookingForQualities,
-                              ]
-                              newQualities[index] = e.target.value
-                              setFemaleProfileForm((prev) => ({
-                                ...prev,
-                                lookingForQualities: newQualities,
-                              }))
-                            }}
-                          />
-                        </InputGroup>
+                        <Select
+                          key={index}
+                          onValueChange={(value) => {
+                            const newQualities = [
+                              ...femaleProfileForm.lookingForQualities,
+                            ]
+                            newQualities[index] = value
+                            setFemaleProfileForm((prev) => ({
+                              ...prev,
+                              lookingForQualities: newQualities,
+                            }))
+                          }}
+                          value={femaleProfileForm.lookingForQualities[index]}
+                        >
+                          <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                            <SelectValue
+                              placeholder={`Select quality #${index + 1}`}
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-56 overflow-y-auto">
+                            {lookingForQualitiesOptions.map((option) => (
+                              <SelectItem key={option} value={option}>
+                                {option}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       ))}
                       {formErrors.lookingForQualities && (
                         <p className="text-sm text-destructive">
@@ -3549,7 +3592,7 @@ function AuthPageContents() {
                           >
                             <SelectValue placeholder="Select age range" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="max-h-56 overflow-y-auto">
                             {idealPartnerAgeRanges.map((range) => (
                               <SelectItem key={range} value={range}>
                                 {range}
@@ -3580,7 +3623,7 @@ function AuthPageContents() {
                           >
                             <SelectValue placeholder="Select height" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="max-h-56 overflow-y-auto">
                             {idealPartnerHeights.map((height) => (
                               <SelectItem key={height} value={height}>
                                 {height}
@@ -3615,7 +3658,7 @@ function AuthPageContents() {
                           >
                             <SelectValue placeholder="Select nationality" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="max-h-56 overflow-y-auto">
                             {idealPartnerNationalities.map((nat) => (
                               <SelectItem key={nat} value={nat}>
                                 {nat}
@@ -3648,7 +3691,7 @@ function AuthPageContents() {
                           >
                             <SelectValue placeholder="Select location" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="max-h-56 overflow-y-auto">
                             {idealPartnerNationalities.map((loc) => (
                               <SelectItem key={loc} value={loc}>
                                 {loc}
@@ -4234,10 +4277,11 @@ function AuthPageContents() {
                       Your registration has been submitted successfully.
                     </CardDescription>
                   </CardHeader>
-                  {detailsForm.name && (
+                  {detailsForm.firstName && detailsForm.lastName && (
                     <div className="px-6 pb-0">
                       <p>
-                        Dear {prefix} {detailsForm.name},
+                        Dear {prefix} {detailsForm.firstName}{" "}
+                        {detailsForm.lastName},
                       </p>
                     </div>
                   )}

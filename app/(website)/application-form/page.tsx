@@ -1727,6 +1727,7 @@ function AuthPageContents() {
                                   firstName: e.target.value,
                                 }))
                               }
+                              disabled={isInitializing || loadingCountries}
                             />
                           </InputGroup>
                           {formErrors.firstName && (
@@ -1752,6 +1753,7 @@ function AuthPageContents() {
                                   lastName: e.target.value,
                                 }))
                               }
+                              disabled={isInitializing || loadingCountries}
                             />
                           </InputGroup>
                           {formErrors.lastName && (
@@ -2229,7 +2231,8 @@ function AuthPageContents() {
                   </CardHeader>
                   <div className="px-6 pb-4">
                     <p className="text-sm text-muted-foreground">
-                      Dear {prefix} {detailsForm.name}, <br />
+                      Dear {prefix} {detailsForm.firstName}{" "}
+                      {detailsForm.lastName}, <br />
                       Your register interest data are auto filled in application
                       form, if you want to edit profile
                       <button

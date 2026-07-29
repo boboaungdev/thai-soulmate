@@ -1629,10 +1629,13 @@ function AuthPageContents() {
             <p className="mt-3 text-lg text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
-            <p className="mt-4 text-base text-muted-foreground">
-              Complete this confidential application to begin your personalized
-              matchmaking journey with our experts.
-            </p>
+            {registrationStep === "details" ||
+              registrationStep === "basic-info" ? (
+              <p className="mt-4 text-base text-muted-foreground">
+                Complete this confidential application to begin your
+                personalized matchmaking journey with our experts.
+              </p>
+            ) : null}
           </div>
         </motion.div>
         <div className="w-full max-w-md justify-self-center lg:justify-self-end">
@@ -1658,10 +1661,13 @@ function AuthPageContents() {
             <p className="mt-2 text-muted-foreground">
               Your journey to finding a soulmate starts here.
             </p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Complete this confidential application to begin your personalized
-              matchmaking journey with our experts.
-            </p>
+            {registrationStep === "details" ||
+              registrationStep === "basic-info" ? (
+              <p className="mt-4 text-sm text-muted-foreground">
+                Complete this confidential application to begin your
+                personalized matchmaking journey with our experts.
+              </p>
+            ) : null}
           </motion.div>
           <AnimatePresence mode="wait">
             {registrationStep === "details" && (

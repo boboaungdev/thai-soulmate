@@ -19,6 +19,10 @@ import {
   GraduationCap,
   Languages,
   Church,
+  Mail,
+  Phone,
+  FileText,
+  MoreVertical,
   Mars,
   Venus,
   Home,
@@ -26,6 +30,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { FaWhatsapp } from "react-icons/fa"
 import { Separator } from "@/components/ui/separator"
 
 const ProfileInfo = ({
@@ -323,15 +334,52 @@ export default function ProfilesDetailPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl py-8">
-      <Button
-        variant="link"
-        onClick={() => router.back()}
-        className="mb-4 flex items-center gap-1 text-foreground hover:text-foreground"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        Back
-      </Button>
+    <div className="container mx-auto max-w-5xl py-8">
+      <div className="mb-4 flex items-center justify-between">
+        <Button
+          variant="link"
+          onClick={() => router.back()}
+          className="flex items-center gap-1 p-0 text-foreground hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Back
+        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() =>
+              router.push(`/dashboard/application-form/${user.id}`)
+            }
+          >
+            <FileText className="mr-2 h-4 w-4" />
+            View Full Application
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <a href={`mailto:${personalDetails?.email}`}>
+                  <Mail className="mr-2 h-4 w-4" /> Email
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a href={`tel:${personalDetails?.phone}`}>
+                  <Phone className="mr-2 h-4 w-4" /> Phone
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a href={`https://wa.me/${personalDetails?.phone}`}>
+                  <FaWhatsapp className="mr-2 h-4 w-4" /> WhatsApp
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
 
       <Card className="overflow-hidden">
         <CardContent className="flex flex-col items-center">

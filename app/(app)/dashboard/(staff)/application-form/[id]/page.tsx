@@ -584,11 +584,13 @@ export default function ApplicationDetailPage() {
 
   return (
     <main className="space-y-6 p-4 md:p-6">
-      <Button asChild variant="link" className="text-foreground">
-        <Link href="/dashboard/application-form">
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Back to Applications
-        </Link>
+      <Button
+        variant="link"
+        className="text-foreground"
+        onClick={() => router.back()}
+      >
+        <ChevronLeft className="mr-2 h-4 w-4" />
+        Back
       </Button>
 
       <Card className="p-6">

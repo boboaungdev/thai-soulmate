@@ -1,6 +1,6 @@
 "use client"
 
-import { Search } from "lucide-react"
+import { Search, MoreVertical, Eye, Send, Printer, Copy } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
@@ -14,12 +14,20 @@ import {
 
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { ApplicationForm } from "@/types/application-form"
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar, Home, MapPin, Venus, Mars } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { toast } from "sonner"
 
 const formatDate = (dateString: string | Date) => {
   if (!dateString) return "N/A"
@@ -31,6 +39,7 @@ const formatDate = (dateString: string | Date) => {
 }
 
 function UserCard({ user }: { user: ApplicationForm }) {
+  const router = useRouter()
   const isVip = user.membership?.type === "VIP"
 
   const personalDetails =
@@ -47,10 +56,31 @@ function UserCard({ user }: { user: ApplicationForm }) {
     ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
     : "N/A"
 
+  const handleCopyId = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const idToCopy = String(user.customId).padStart(4, "0")
+    navigator.clipboard.writeText(idToCopy)
+    toast.success(`Copied ID: ${idToCopy}`)
+  }
+
+  const handlePrint = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    router.push(`/dashboard/profiles/${user.id}/print`)
+  }
+
+  const handleSendProfile = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    // Implement send profile logic, e.g., open a modal or navigate
+    toast.info("Send Profile functionality not implemented yet.")
+  }
+
+  const handleViewProfile = () => {
+    router.push(`/dashboard/profiles/${user.id}`)
+  }
+
   return (
-    <Link href={`/dashboard/gallery/${user.id}`}>
-      <Card className="overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg">
-        {/* Image */}
+    <Card className="flex flex-col overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg">
+      <div onClick={handleViewProfile} className="cursor-pointer">
         <div className="relative aspect-[3/4] overflow-hidden">
           {photos?.headshot ? (
             <Image
@@ -73,9 +103,7 @@ function UserCard({ user }: { user: ApplicationForm }) {
             <Badge className="absolute top-3 right-3 bg-pink-500">VIP</Badge>
           )}
         </div>
-
-        {/* Info */}
-        <CardContent className="space-y-3 p-4">
+        <CardContent className="flex-grow space-y-3 p-4">
           <div>
             <h3 className="line-clamp-1 text-lg font-semibold">
               {personalDetails.name}
@@ -113,14 +141,48 @@ function UserCard({ user }: { user: ApplicationForm }) {
             Joined {formatDate(user.createdAt)}
           </div>
         </CardContent>
+      </div>
 
-        <CardFooter>
-          <Button className="w-full" variant="outline">
+      <CardFooter className="flex items-center gap-2">
+        <Button
+          className="flex-1"
+          variant="outline"
+          onClick={handleViewProfile}
+        >
+          <Eye className="mr-2 h-4 w-4" />
+          View Profile
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              <MoreVertical className="h-4 w-4" />
+              <span className="sr-only">More actions</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleViewProfile}>
+              <Eye className="mr-2 h-4 w-4" />
+              <span>View</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSendProfile}>
+              <Send className="mr-2 h-4 w-4" />
+              <span>Send Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handlePrint}>
+              <Printer className="mr-2 h-4 w-4" />
+              <span>Print</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleCopyId}>
+              <Copy className="mr-2 h-4 w-4" />
+              <span>Copy ID</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        {/* <Button className="w-full" variant="outline">
             View Profile
-          </Button>
-        </CardFooter>
-      </Card>
-    </Link>
+          </Button> */}
+      </CardFooter>
+    </Card>
   )
 }
 

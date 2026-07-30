@@ -65,13 +65,20 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
 
     const page = Number(searchParams.get("page")) || 1
-
     const limit = Number(searchParams.get("limit")) || 10
 
     const skip = (page - 1) * limit
 
+    const where = {
+      role: {
+        not: Role.DEV,
+      },
+    }
+
     const [users, total] = await Promise.all([
       prisma.user.findMany({
+        where,
+
         skip,
 
         take: limit,
@@ -99,21 +106,18 @@ export async function GET(req: Request) {
         },
       }),
 
-      prisma.user.count(),
+      prisma.user.count({
+        where,
+      }),
     ])
 
     return NextResponse.json({
       success: true,
-
       data: users,
-
       pagination: {
         page,
-
         limit,
-
         total,
-
         totalPages: Math.ceil(total / limit),
       },
     })

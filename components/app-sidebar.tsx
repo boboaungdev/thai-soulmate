@@ -21,6 +21,7 @@ import {
   Globe2,
   Settings2,
   UserKey,
+  Code,
 } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
@@ -51,6 +52,7 @@ import { useAuthStore } from "@/stores/auth-store"
 import React from "react"
 
 const roleIcons: Record<string, React.ElementType> = {
+  DEV: Code,
   ADMIN: Shield,
   STAFF: Users2,
   USER: User2,
@@ -129,6 +131,36 @@ const adminItems = [
     icon: LayoutDashboard,
   },
   {
+    title: "Register Interest",
+    url: "/dashboard/register-interest",
+    icon: ClipboardPen,
+  },
+  {
+    title: "Application Form",
+    url: "/dashboard/application-form",
+    icon: Form,
+  },
+  {
+    title: "Payment",
+    url: "/dashboard/payment",
+    icon: DollarSign,
+  },
+  {
+    title: "Matching",
+    url: "/dashboard/matching",
+    icon: HeartHandshake,
+  },
+  {
+    title: "Profiles",
+    url: "/dashboard/profiles",
+    icon: Users2,
+  },
+  {
+    title: "Tracking",
+    url: "/dashboard/tracking",
+    icon: HeartPulse,
+  },
+  {
     title: "Login User",
     url: "/dashboard/login-user",
     icon: UserKey,
@@ -191,7 +223,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {(user.role === "USER" || user.role === "ADMIN") && (
+        {(user.role === "USER" || user.role === "DEV") && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
               User Menu
@@ -217,7 +249,7 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-        {(user.role === "STAFF" || user.role === "ADMIN") && (
+        {(user.role === "STAFF" || user.role === "DEV") && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
               Staff
@@ -244,7 +276,7 @@ export function AppSidebar() {
           </SidebarGroup>
         )}
 
-        {user?.role === "ADMIN" && (
+        {(user?.role === "ADMIN" || user?.role === "DEV") && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
               Admin

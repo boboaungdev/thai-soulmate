@@ -116,6 +116,7 @@ model Membership {
 }
 
 enum Role {
+  DEV
   ADMIN
   STAFF
   USER

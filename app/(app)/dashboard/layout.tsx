@@ -10,7 +10,19 @@ import { useMounted } from "@/hooks/use-mounted"
 import { useAuthStore } from "@/stores/auth-store"
 
 const allowedRoutes = {
-  ADMIN: ["/dashboard"], // Admin can access all dashboard routes
+  DEV: ["/dashboard"],
+  ADMIN: [
+    "/dashboard/admin-dashboard",
+    "/dashboard/application-form",
+    "/dashboard/matching",
+    "/dashboard/payment",
+    "/dashboard/register-interest",
+    "/dashboard/tracking",
+    "/dashboard/profiles",
+    "/dashboard/profile",
+    "/dashboard/settings",
+    '/dashboard/login-user'
+  ],
   STAFF: [
     "/dashboard/staff-dashboard",
     "/dashboard/application-form",
@@ -34,13 +46,14 @@ const allowedRoutes = {
 } as const
 
 const dashboardHome = {
+  DEV: "/dashboard/admin-dashboard",
   ADMIN: "/dashboard/admin-dashboard",
   STAFF: "/dashboard/staff-dashboard",
   USER: "/dashboard/user-dashboard",
 } as const
 
 function isAllowedRoute(role: keyof typeof allowedRoutes, pathname: string) {
-  if (role === "ADMIN") {
+  if (role === "DEV") {
     return true
   }
 

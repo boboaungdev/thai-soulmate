@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import {
+  Code,
   Globe2,
   LogOut,
   Search,
@@ -38,6 +39,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
 
 const roleIcons: Record<string, React.ElementType> = {
+  DEV: Code,
   ADMIN: Shield,
   STAFF: Users2,
   USER: User2,

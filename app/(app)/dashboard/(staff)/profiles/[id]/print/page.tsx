@@ -1,15 +1,31 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-
-import { AppName } from "@/components/app-name"
-import { APP_INFO } from "@/constants"
+import { useReactToPrint } from "react-to-print"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { PrinterIcon, ChevronLeft } from "lucide-react"
+import { ChevronLeft, PrinterIcon } from "lucide-react"
 import { ApplicationForm } from "@/types/application-form"
+
+function calculateAge(dob: string | Date): number {
+  const birthDate = new Date(dob)
+  const today = new Date()
+
+  let age = today.getFullYear() - birthDate.getFullYear()
+
+  const monthDifference = today.getMonth() - birthDate.getMonth()
+
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--
+  }
+
+  return age
+}
 
 export default function ProfilePrintPage({
   params,
@@ -17,143 +33,198 @@ export default function ProfilePrintPage({
   params: Promise<{ id: string }>
 }) {
   const [user, setUser] = useState<ApplicationForm | null>(null)
+
   const router = useRouter()
+
+  const printRef = useRef<HTMLDivElement>(null)
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: `Profile-${user?.customId}`,
+  })
 
   useEffect(() => {
     async function load() {
       const { id } = await params
 
       const res = await fetch(`/api/gallery/${id}`)
+
+      if (!res.ok) return
+
       const data = await res.json()
 
-      setUser(data)
+      if (data.success) {
+        setUser(data.application)
+      }
     }
 
     load()
   }, [params])
 
   useEffect(() => {
-    if (user) {
-      // Delay printing slightly to ensure the page has rendered with the data
-      const timer = setTimeout(() => window.print(), 500)
-      return () => clearTimeout(timer)
-    }
-  }, [user])
+    if (!user) return
 
-  if (!user)
+    const timer = setTimeout(() => {
+      handlePrint()
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [user, handlePrint])
+
+  if (!user) {
     return (
-      <div className="mx-auto max-w-4xl space-y-8 p-10">
-        <div className="flex items-center justify-between border-b pb-4">
-          <div className="flex items-center gap-4">
-            <Skeleton className="h-16 w-16" />
-            <div>
-              <Skeleton className="h-7 w-48" />
-              <Skeleton className="mt-2 h-4 w-64" />
-            </div>
-          </div>
-          <Skeleton className="h-5 w-40" />
-        </div>
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-56" />
-          <div className="grid grid-cols-2 gap-4">
-            {Array.from({ length: 7 }).map((_, i) => (
-              <Skeleton key={i} className="h-5 w-full" />
-            ))}
-          </div>
-        </div>
+      <div className="mx-auto max-w-4xl p-10">
+        <Skeleton className="h-10 w-full" />
       </div>
     )
+  }
+
+  const age = user.personalDetails?.dob
+    ? calculateAge(user.personalDetails.dob)
+    : null
 
   return (
     <>
-      <div className="no-print my-4 flex justify-between">
-        <Button
-          onClick={() => router.back()}
-          variant="link"
-          className="text-bg"
-        >
-          <ChevronLeft className="mr-2 h-4 w-4" /> Back
+      {/* NOT PRINTED */}
+      <div className="no-print my-6 flex justify-between">
+        <Button variant="outline" onClick={() => router.back()}>
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Back
         </Button>
-        <Button
-          onClick={() => window.print()}
-          variant="default"
-          className="btn-gradient"
-        >
-          <PrinterIcon className="mr-2 h-4 w-4" /> Print
+
+        <Button className="btn-gradient" onClick={handlePrint}>
+          <PrinterIcon className="mr-2 h-4 w-4" />
+          Print
         </Button>
       </div>
 
-      <main
-        id="printable-area"
-        className="mx-auto border border-gray-300 bg-white p-10 text-sm text-black"
-      >
-        <header className="mb-8 flex items-center justify-between border-b pb-4">
-          <div className="flex items-center gap-4">
-            <Image src="/logo.png" alt="Logo" width={72} height={72} />
-            <div className="text-center">
-              <div className="text-3xl font-bold print:bg-transparent print:text-black">
-                <AppName className="truncate text-base font-bold sm:text-lg" />
+      {/* PRINT ONLY THIS */}
+      <div ref={printRef}>
+        <main
+          id="printable-area"
+          className="mx-auto max-w-4xl rounded-lg border bg-white p-8 text-black"
+        >
+          <div className="grid grid-cols-3 gap-8">
+            <div className="col-span-2">
+              <h1 className="text-3xl font-bold">
+                {user.personalDetails?.prefix} {user.personalDetails?.name}
+              </h1>
+
+              <p className="mt-1 text-gray-500">
+                #{String(user.customId).padStart(4, "0")}
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-4">
+                <span>{age} years old</span>
+
+                <span>{user.personalDetails?.nationality}</span>
+
+                <span>{user.personalDetails?.currentLocation}</span>
               </div>
-              <p className="text-gray-600">{APP_INFO.tagline}</p>
+            </div>
+
+            <div>
+              {user.photos?.headshot && (
+                <Image
+                  src={user.photos.headshot}
+                  alt=""
+                  width={220}
+                  height={220}
+                  className="rounded-lg object-cover"
+                />
+              )}
             </div>
           </div>
-          <p className="text-gray-500">Register Interest Form</p>
-        </header>
 
-        <section className="mb-8">
-          <h2 className="mb-3 text-lg font-semibold">Applicant Information</h2>
+          <section className="mt-8">
+            <h2 className="text-xl font-bold">About Me</h2>
 
-          <div className="grid grid-cols-2 gap-y-2">
-            <p>
-              <strong>Name</strong>
-            </p>
-            <p>
-              {user.personalDetails.prefix} {user.personalDetails.name}
-            </p>
+            <p className="mt-2">{user.personality?.about}</p>
+          </section>
 
-            <p>
-              <strong>Email</strong>
-            </p>
-            <p>{user.personalDetails.email}</p>
+          <section className="mt-8">
+            <h2 className="text-xl font-bold">Details</h2>
 
-            <p>
-              <strong>Phone</strong>
-            </p>
-            <p>{user.personalDetails.phone}</p>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div>
+                <strong>Height</strong>
+                <p>{user.appearance?.height} cm</p>
+              </div>
 
-            <p>
-              <strong>Gender</strong>
-            </p>
-            <p>{user.personalDetails.gender}</p>
+              <div>
+                <strong>Weight</strong>
+                <p>{user.appearance?.weight} kg</p>
+              </div>
 
-            <p>
-              <strong>Date of Birth</strong>
-            </p>
-            <p>{new Date(user.personalDetails.dob).toLocaleDateString()}</p>
+              <div>
+                <strong>Religion</strong>
+                <p>{user.appearance?.religion}</p>
+              </div>
 
-            <p>
-              <strong>Nationality</strong>
-            </p>
-            <p>{user.personalDetails.nationality}</p>
+              <div>
+                <strong>Occupation</strong>
+                <p>{user.career?.occupation}</p>
+              </div>
 
-            <p>
-              <strong>Current Location</strong>
-            </p>
-            <p>{user.personalDetails.currentLocation}</p>
-          </div>
-        </section>
+              <div>
+                <strong>Education</strong>
+                <p>{user.career?.education}</p>
+              </div>
 
-        <section>
-          <h2 className="mb-3 text-lg font-semibold">Timeline</h2>
+              <div>
+                <strong>Smoking</strong>
+                <p>{user.lifestyle?.smoking}</p>
+              </div>
 
-          <div className="grid grid-cols-2 gap-y-2">
-            <p>
-              <strong>Submitted On</strong>
-            </p>
-            <p>{new Date(user.updatedAt).toLocaleString()}</p>
-          </div>
-        </section>
-      </main>
+              <div>
+                <strong>Drinking</strong>
+                <p>{user.lifestyle?.drinking}</p>
+              </div>
+
+              <div>
+                <strong>Exercise</strong>
+                <p>{user.lifestyle?.exercise}</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <h2 className="text-xl font-bold">Gallery</h2>
+
+            <div className="mt-4 grid grid-cols-3 gap-4">
+              {user.photos?.headshot && (
+                <Image
+                  src={user.photos.headshot}
+                  alt=""
+                  width={250}
+                  height={250}
+                  className="rounded-lg object-cover"
+                />
+              )}
+
+              {user.photos?.fullLength && (
+                <Image
+                  src={user.photos.fullLength}
+                  alt=""
+                  width={250}
+                  height={250}
+                  className="rounded-lg object-cover"
+                />
+              )}
+
+              {user.photos?.casualLifestyle && (
+                <Image
+                  src={user.photos.casualLifestyle}
+                  alt=""
+                  width={250}
+                  height={250}
+                  className="rounded-lg object-cover"
+                />
+              )}
+            </div>
+          </section>
+        </main>
+      </div>
     </>
   )
 }

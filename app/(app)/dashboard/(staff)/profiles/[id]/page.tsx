@@ -347,40 +347,26 @@ export default function ProfilesDetailPage() {
 
   const handleSendProfile = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!selectedUserIdToSend || !profile) {
-      toast.error("Please select a user to send the profile to.")
-      return
-    }
-    setIsSendingProfile(true)
-    try {
-      const recipient = sendToUsers.find((u) => u.id === selectedUserIdToSend)
-      if (!recipient) {
-        throw new Error("Recipient not found.")
-      }
 
+    try {
       const res = await fetch("/api/profiles/send-profile-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          profileId: profile.id,
-          recipientEmail: recipient.personalDetails?.email,
-          recipientName: recipient.personalDetails?.name,
+          id: profile?.id,
+          email: profile?.personalDetails.email,
         }),
       })
 
       const data = await res.json()
 
       if (data.success) {
-        toast.success("Profile sent successfully!")
-        setIsSendDialogOpen(false)
-        setSelectedUserIdToSend(null)
+        toast.success("Profile sent")
       }
     } catch (error) {
-      toast.error("Failed to send profile.")
-    } finally {
-      setIsSendingProfile(false)
+      toast.error("Failed to send")
     }
   }
 
@@ -485,7 +471,7 @@ export default function ProfilesDetailPage() {
                         role="combobox"
                         aria-expanded={isComboboxOpen}
                         className="col-span-3 justify-between"
-                        disabled={isFetchingSendToUsers || isSendingProfile}
+                        disabled={isFetchingSendToUsers}
                       >
                         {selectedUserIdToSend
                           ? sendToUsers.find(
@@ -577,7 +563,6 @@ export default function ProfilesDetailPage() {
                     setIsSendDialogOpen(false)
                     setSelectedUserIdToSend(null)
                   }}
-                  disabled={isSendingProfile}
                 >
                   Cancel
                 </Button>
@@ -588,9 +573,9 @@ export default function ProfilesDetailPage() {
                   className="btn-gradient"
                 >
                   {isSendingProfile && (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  {isSendingProfile ? "Sending..." : "Send"}
+                  Send
                 </Button>
               </DialogFooter>
             </DialogContent>

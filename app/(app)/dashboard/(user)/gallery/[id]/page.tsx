@@ -297,7 +297,7 @@ export default function UserDetailPage() {
     )
   }
 
-  const { personalDetails, photos, personality } = user
+  const { personalDetails, photos } = user
 
   const age =
     personalDetails?.dob && !isNaN(new Date(personalDetails.dob).getTime())

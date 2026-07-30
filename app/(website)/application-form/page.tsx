@@ -4381,7 +4381,7 @@ function AuthPageContents() {
                       />
                     </div>
                     <CardDescription>
-                      Please provide: All within 6 months.
+                      Please provide: All within 3 months.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">

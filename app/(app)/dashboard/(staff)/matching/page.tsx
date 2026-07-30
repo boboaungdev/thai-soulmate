@@ -186,6 +186,14 @@ const parseApplicantData = (applicant: any) => {
   }
 }
 
+const formatDate = (dateString: string | Date) => {
+  if (!dateString) return "N/A"
+  return new Date(dateString).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
+}
 export default function MatchingPage() {
   const router = useRouter()
   const { selectedMaleId, setSelectedMaleId } = useMatchingStore()
@@ -447,10 +455,7 @@ export default function MatchingPage() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar className="h-3.5 w-3.5" />
-                      <span>
-                        Joined:{" "}
-                        {new Date(selectedMale.createdAt).toLocaleDateString()}
-                      </span>
+                      <span>Joined: {formatDate(selectedMale.createdAt)}</span>
                     </div>
                   </div>
                 </div>
@@ -676,10 +681,7 @@ export default function MatchingPage() {
                     </div>
                     <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                       <Calendar className="h-3.5 w-3.5" />
-                      <span>
-                        Joined:{" "}
-                        {new Date(applicant.createdAt).toLocaleDateString()}
-                      </span>
+                      <span>Joined: {formatDate(applicant.createdAt)}</span>
                     </div>
                     <div className="flex items-center justify-center gap-4 pt-1 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1.5">

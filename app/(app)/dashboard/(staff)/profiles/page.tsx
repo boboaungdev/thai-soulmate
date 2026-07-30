@@ -21,6 +21,15 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar, Home, MapPin, Venus, Mars } from "lucide-react"
 
+const formatDate = (dateString: string | Date) => {
+  if (!dateString) return "N/A"
+  return new Date(dateString).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
+}
+
 function UserCard({ user }: { user: ApplicationForm }) {
   const isVip = user.membership?.type === "VIP"
 
@@ -101,7 +110,7 @@ function UserCard({ user }: { user: ApplicationForm }) {
 
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Calendar className="h-3.5 w-3.5" />
-            Joined {new Date(user.createdAt).toLocaleDateString()}
+            Joined {formatDate(user.createdAt)}
           </div>
         </CardContent>
 

@@ -109,8 +109,12 @@ export default function ProfilePrintPage({
     <>
       {/* NOT PRINTED */}
       <div className="no-print my-6 flex justify-between">
-        <Button variant="outline" onClick={() => router.back()}>
-          <ChevronLeft className="mr-2 h-4 w-4" />
+        <Button
+          variant="link"
+          onClick={() => router.back()}
+          className="text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" />
           Back
         </Button>
 

@@ -23,9 +23,11 @@ import {
   Phone,
   FileText,
   MoreVertical,
+  Printer,
   Mars,
   Venus,
   Home,
+  Send,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -34,6 +36,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { FaWhatsapp } from "react-icons/fa"
@@ -345,14 +350,10 @@ export default function ProfilesDetailPage() {
           Back
         </Button>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() =>
-              router.push(`/dashboard/application-form/${user.id}`)
-            }
-          >
-            <FileText className="mr-2 h-4 w-4" />
-            View Full Application
+          <Button variant="outline">
+            <Send className="mr-2 h-4 w-4" />
+            Send Profile to{" "}
+            {personalDetails?.gender === "Male" ? "Female" : "Male"}
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -361,21 +362,43 @@ export default function ProfilesDetailPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <a href={`mailto:${personalDetails?.email}`}>
-                  <Mail className="mr-2 h-4 w-4" /> Email
-                </a>
+              <DropdownMenuItem
+                onClick={() =>
+                  router.push(`/dashboard/application-form/${user.id}`)
+                }
+              >
+                <FileText className="mr-2 h-4 w-4" /> View Application
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <a href={`tel:${personalDetails?.phone}`}>
-                  <Phone className="mr-2 h-4 w-4" /> Phone
-                </a>
+              <DropdownMenuItem
+                onClick={() =>
+                  router.push(`/dashboard/profiles/${user.id}/print`)
+                }
+              >
+                <Printer className="mr-2 h-4 w-4" /> Print
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <a href={`https://wa.me/${personalDetails?.phone}`}>
-                  <FaWhatsapp className="mr-2 h-4 w-4" /> WhatsApp
-                </a>
-              </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <BookUser className="mr-2 h-4 w-4" />
+                  Contact
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem asChild>
+                    <a href={`mailto:${personalDetails?.email}`}>
+                      <Mail className="mr-2 h-4 w-4" /> Email
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href={`tel:${personalDetails?.phone}`}>
+                      <Phone className="mr-2 h-4 w-4" /> Phone
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href={`https://wa.me/${personalDetails?.phone}`}>
+                      <FaWhatsapp className="mr-2 h-4 w-4" /> WhatsApp
+                    </a>
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

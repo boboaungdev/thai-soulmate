@@ -162,7 +162,7 @@ function UserCard({ user }: { user: ApplicationForm }) {
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={handleViewProfile}>
               <Eye className="mr-2 h-4 w-4" />
-              <span>View</span>
+              <span>View Profile</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleSendProfile}>
               <Send className="mr-2 h-4 w-4" />

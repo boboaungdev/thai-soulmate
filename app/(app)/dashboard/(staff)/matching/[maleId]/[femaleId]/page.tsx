@@ -541,12 +541,10 @@ function ApplicantColumn({
       </ProfileSection>
 
       <ProfileSection title="Photos" icon={<Camera />}>
-        <div className="grid grid-cols-2 gap-4 pt-4">
+        <div className="grid grid-cols-3 gap-4 pt-4">
           {Object.entries(applicant.photos || {})
             .filter(([key]) =>
-              ["headshot", "fullLength", "casualLifestyle"].includes(
-                key
-              )
+              ["headshot", "fullLength", "casualLifestyle"].includes(key)
             )
             .map(([key, value]) => (
               <div key={key} className="flex flex-col gap-2">
@@ -662,9 +660,7 @@ export default async function MatchComparisonPage({
         </div>
       </div>
 
-      <MatchBreakdown items={matchBreakdown} penalties={dealBreakerPenalties} />
-
-      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
+      <div className="mb-8 grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
         {/* Male Column */}
         <ApplicantColumn applicant={male} />
 
@@ -676,6 +672,8 @@ export default async function MatchComparisonPage({
           }}
         />
       </div>
+
+      <MatchBreakdown items={matchBreakdown} penalties={dealBreakerPenalties} />
     </main>
   )
 }

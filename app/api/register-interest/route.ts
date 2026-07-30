@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       await Promise.all([
         resend.emails.send({
           from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
-          to: [EMAIL.contact, "boboaungdev@gmail.com"],
+          to: [EMAIL.contact],
           subject: `New Interest Registration: ${validatedData.name}`,
           react: AdminNotificationEmail({
             ...validatedData,

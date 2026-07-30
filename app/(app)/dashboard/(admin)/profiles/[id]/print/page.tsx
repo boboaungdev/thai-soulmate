@@ -69,7 +69,7 @@ export default function ProfilePrintPage({
     async function load() {
       const { id } = await params
 
-      const res = await fetch(`/api/gallery/${id}`)
+      const res = await fetch(`/api/profiles/${id}`)
 
       if (!res.ok) return
 

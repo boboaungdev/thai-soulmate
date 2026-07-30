@@ -304,7 +304,7 @@ export default function ProfilesDetailPage() {
     async function fetchUser() {
       if (!id) return
       try {
-        const response = await fetch(`/api/gallery/${id}`)
+        const response = await fetch(`/api/profiles/${id}`)
         if (!response.ok) {
           throw new Error("Failed to fetch user data")
         }
@@ -328,7 +328,7 @@ export default function ProfilesDetailPage() {
       try {
         const targetGender =
           profile?.personalDetails?.gender === "Male" ? "Female" : "Male"
-        const response = await fetch(`/api/gallery?gender=${targetGender}`)
+        const response = await fetch(`/api/profiles?gender=${targetGender}`)
         if (!response.ok) {
           throw new Error("Failed to fetch users")
         }

@@ -515,12 +515,10 @@ function AuthPageContents() {
     headshot: File | null
     fullLength: File | null
     casualLifestyle: File | null
-    recent: File | null
   }>({
     headshot: null,
     fullLength: null,
     casualLifestyle: null,
-    recent: null,
   })
   const [relationshipGoalsForm, setRelationshipGoalsForm] = useState({
     lookingFor: [] as string[],
@@ -970,7 +968,6 @@ function AuthPageContents() {
     casualLifestyle: z.instanceof(File, {
       message: "Casual Lifestyle Photo is required.",
     }),
-    recent: z.instanceof(File, { message: "A recent photo is required." }),
   })
   const passwordSchema = z
     .object({
@@ -1521,13 +1518,7 @@ function AuthPageContents() {
     }
   }, [photosForm.casualLifestyle, registrationStep, formErrors.casualLifestyle])
 
-  useEffect(() => {
-    if (registrationStep === "photos" && formErrors.recent) {
-      if (photosForm.recent) {
-        clearFormError("recent")
-      }
-    }
-  }, [photosForm.recent, registrationStep, formErrors.recent])
+
 
 
 
@@ -1680,12 +1671,11 @@ function AuthPageContents() {
     setFormErrors({})
     setIsSubmittingApplication(true)
     try {
-      const [headshotUrl, fullLengthUrl, casualLifestyleUrl, recentUrl] =
+      const [headshotUrl, fullLengthUrl, casualLifestyleUrl] =
         await Promise.all([
           uploadImage(photosForm.headshot!),
           uploadImage(photosForm.fullLength!),
           uploadImage(photosForm.casualLifestyle!),
-          uploadImage(photosForm.recent!),
         ])
 
       // The initial user data is now in state, no need to read from URL
@@ -1709,7 +1699,6 @@ function AuthPageContents() {
         headshot: headshotUrl,
         fullLength: fullLengthUrl,
         casualLifestyle: casualLifestyleUrl,
-        recent: recentUrl,
       }
 
       const formData = {
@@ -4381,12 +4370,12 @@ function AuthPageContents() {
                       />
                     </div>
                     <CardDescription>
-                      Please provide: All within 3 months.
+                      Please provide three clear photos of yourself.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <FileInput
-                      label="Headshot"
+                      label="1. Headshot"
                       file={photosForm.headshot}
                       onFileChange={(file) =>
                         setPhotosForm((p) => ({ ...p, headshot: file }))
@@ -4395,7 +4384,7 @@ function AuthPageContents() {
                       disabled={isSubmittingApplication}
                     />
                     <FileInput
-                      label="Full-Length Photo"
+                      label="2. Full-Length Photo"
                       file={photosForm.fullLength}
                       onFileChange={(file) =>
                         setPhotosForm((p) => ({ ...p, fullLength: file }))
@@ -4404,7 +4393,7 @@ function AuthPageContents() {
                       disabled={isSubmittingApplication}
                     />
                     <FileInput
-                      label="Casual Lifestyle Photo"
+                      label="3. Casual Lifestyle Photo"
                       file={photosForm.casualLifestyle}
                       onFileChange={(file) =>
                         setPhotosForm((p) => ({
@@ -4413,15 +4402,6 @@ function AuthPageContents() {
                         }))
                       }
                       error={formErrors.casualLifestyle}
-                      disabled={isSubmittingApplication}
-                    />
-                    <FileInput
-                      label="Recent Photo"
-                      file={photosForm.recent}
-                      onFileChange={(file) =>
-                        setPhotosForm((p) => ({ ...p, recent: file }))
-                      }
-                      error={formErrors.recent}
                       disabled={isSubmittingApplication}
                     />
                     <div className="space-y-4 rounded-md">

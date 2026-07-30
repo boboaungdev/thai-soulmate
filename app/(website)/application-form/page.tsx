@@ -4385,6 +4385,7 @@ function AuthPageContents() {
                       }
                       error={formErrors.headshot}
                       disabled={isSubmittingApplication}
+                      displayStyle="avatar"
                     />
                     <FileInput
                       label="2. Full-Length Photo"
@@ -4877,12 +4878,14 @@ function FileInput({
   onFileChange,
   error,
   disabled,
+  displayStyle = "default",
 }: {
   label: string
   file: File | null
   onFileChange: (file: File | null) => void
   error?: string
   disabled?: boolean
+  displayStyle?: "default" | "avatar"
 }) {
   const id = label.toLowerCase().replace(/\s/g, "-")
   return (
@@ -4890,26 +4893,56 @@ function FileInput({
       <Label htmlFor={id} className={disabled ? "text-muted-foreground" : ""}>
         {label}
       </Label>
-      <div className="relative">
-        <label
-          htmlFor={id}
-          className={cn(
-            "relative flex w-full cursor-pointer items-center rounded-lg border border-input bg-transparent text-sm shadow-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring",
-            disabled && "cursor-not-allowed opacity-50"
-          )}
-        >
-          <div className="flex h-8 items-center justify-center px-3">
-            <Upload className="size-4 text-muted-foreground" />
-          </div>
-          <span
+      <div className="flex w-full items-center gap-4">
+        {file && (
+          <Image
+            src={URL.createObjectURL(file)}
+            alt="Preview"
+            width={64}
+            height={64}
             className={cn(
-              "flex-1 truncate py-1 pr-20",
-              !file && "text-muted-foreground"
+              "h-16 w-16 flex-shrink-0 object-cover",
+              displayStyle === "avatar" ? "rounded-full" : "rounded-md"
+            )}
+          />
+        )}
+        <div className="relative min-w-0 flex-1">
+          <div
+            className={cn(
+              "relative flex w-full items-center rounded-lg border border-input bg-transparent text-sm shadow-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring",
+              disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+              file && "pr-24" // Apply padding to the visual input container when a file is present
             )}
           >
-            {file ? file.name : "Choose a file..."}
-          </span>
-        </label>
+            <div className="min-w-0 flex-1">
+              <label htmlFor={id} className="flex cursor-pointer items-center">
+                <div className="flex h-8 items-center justify-center px-3">
+                  <Upload className="size-4 text-muted-foreground" />
+                </div>
+                <span
+                  className={cn(
+                    "flex-1 truncate py-1", // min-w-0 is now on the parent div
+                    !file && "text-muted-foreground"
+                  )}
+                >
+                  {file ? file.name : "Choose a file..."}
+                </span>
+              </label>
+            </div>
+          </div>
+          {file && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onFileChange(null)}
+              className="absolute top-1/2 right-1 z-10 h-auto -translate-y-1/2 p-1 text-muted-foreground hover:bg-transparent hover:text-destructive" // Adjusted right-2 to right-1 for better fit
+              disabled={disabled}
+            >
+              <X className="size-4" />
+              <span>Remove</span>
+            </Button>
+          )}
+        </div>
         <input
           id={id}
           type="file"
@@ -4918,18 +4951,6 @@ function FileInput({
           accept="image/*"
           disabled={disabled}
         />
-        {file && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onFileChange(null)}
-            className="absolute top-1/2 right-1 h-auto -translate-y-1/2 p-1 text-muted-foreground hover:bg-transparent hover:text-destructive"
-            disabled={disabled}
-          >
-            <X className="size-4" />
-            <span>Remove</span>
-          </Button>
-        )}
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
     </div>

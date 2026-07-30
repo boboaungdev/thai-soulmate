@@ -146,6 +146,19 @@ const sortOrderLabels: Record<string, string> = {
   desc: "Desc",
 }
 
+const matchRangeLabels: Record<string, string> = {
+  all: "All Ranges",
+  "90-100": "100% - 90%",
+  "80-90": "90% - 80%",
+  "70-80": "80% - 70%",
+  "60-70": "70% - 60%",
+  "50-60": "60% - 50%",
+  "40-50": "50% - 40%",
+  "30-40": "40% - 30%",
+  "20-30": "30% - 20%",
+  "10-20": "20% - 10%",
+  "0-10": "10% - 0%",
+}
 // Safely parse JSON properties
 const parseApplicantData = (applicant: any) => {
   const safeParse = (json: string | object) => {
@@ -188,6 +201,7 @@ export default function MatchingPage() {
   const [sortKey, setSortKey] = useState("score")
   const [sortOrder, setSortOrder] = useState("desc")
   const [filterOption, setFilterOption] = useState("all")
+  const [matchRange, setMatchRange] = useState("all")
 
   const [criteriaState, setCriteriaState] =
     useState<Record<string, boolean>>(matchingCriteria)
@@ -233,6 +247,7 @@ export default function MatchingPage() {
         url.searchParams.set("filter", filterOption)
         url.searchParams.set("sortKey", sortKey)
         url.searchParams.set("sortOrder", sortOrder)
+        url.searchParams.set("matchRange", matchRange)
 
         if (selectedMale) {
           url.searchParams.set("userId", selectedMale.id)
@@ -262,7 +277,14 @@ export default function MatchingPage() {
       }
     }
     fetchMatches()
-  }, [selectedMale, criteriaState, filterOption, sortKey, sortOrder])
+  }, [
+    selectedMale,
+    criteriaState,
+    filterOption,
+    sortKey,
+    sortOrder,
+    matchRange,
+  ])
 
   const displayedMatches = useMemo(
     () =>
@@ -488,6 +510,35 @@ export default function MatchingPage() {
                   <Button
                     variant="outline"
                     className="w-[180px] justify-between"
+                    disabled={!selectedMale}
+                  >
+                    <span className="text-muted-foreground">Range:</span>
+                    {matchRangeLabels[matchRange]}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[180px]">
+                  {Object.entries(matchRangeLabels).map(([range, label]) => (
+                    <DropdownMenuItem
+                      key={range}
+                      onSelect={() => setMatchRange(range)}
+                    >
+                      {label}
+                      <Check
+                        className={cn(
+                          "ml-auto h-4 w-4",
+                          matchRange === range ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-[180px] justify-between"
                   >
                     <span className="text-muted-foreground">Order:</span>
                     {sortOrderLabels[sortOrder]}
@@ -558,6 +609,21 @@ export default function MatchingPage() {
           </div>
         ) : error ? (
           <div className="text-red-500">Error: {error}</div>
+        ) : displayedMatches.length === 0 ? (
+          <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed py-12 shadow-sm">
+            <div className="flex flex-col items-center gap-2 text-center">
+              <h3 className="text-2xl font-bold tracking-tight">
+                {selectedMale
+                  ? "No potential matches found"
+                  : "No female users found"}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {selectedMale
+                  ? "Try adjusting your filters or criteria to find more results."
+                  : "There are no female applicants to display at the moment."}
+              </p>
+            </div>
+          </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {displayedMatches.map(({ applicant, score }) => (
@@ -565,83 +631,87 @@ export default function MatchingPage() {
                 key={applicant.id}
                 className="relative flex flex-col items-center text-center"
               >
-                {selectedMale && (
-                  <Badge
-                    className={cn(
-                      "absolute top-2 right-2 hover:bg-primary/80",
-                      getMatchScoreBadgeClass(score)
-                    )}
-                  >
-                    {score}%
-                  </Badge>
-                )}
-                <CardHeader className="flex items-center justify-center p-2">
-                  <Avatar className="h-24 w-24">
-                    <AvatarImage
-                      src={applicant.photos?.headshot}
-                      alt={applicant.personalDetails?.name}
-                    />
-                    <AvatarFallback>
-                      {applicant.personalDetails?.name?.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                </CardHeader>
-                <CardContent className="flex-1 space-y-2 p-2">
-                  <CardTitle className="flex items-center justify-center gap-2 text-lg">
-                    <span>{applicant.personalDetails?.name}</span>
-                    {applicant.isVip && (
-                      <Badge className="border-pink text-gradient">VIP</Badge>
-                    )}
-                  </CardTitle>
-                  <CardDescription>ID: {applicant.customId}</CardDescription>
-                  <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
-                    <Venus className="h-4 w-4 text-pink-500" />
-                    <span>Age: {applicant.age}</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                    <Calendar className="h-3.5 w-3.5" />
-                    <span>
-                      Joined:{" "}
-                      {new Date(applicant.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-center gap-4 pt-1 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                      <Home className="h-3.5 w-3.5" />
-                      <span>{applicant.personalDetails?.nationality}</span>
+                <div className="flex h-full w-full flex-col">
+                  {selectedMale && (
+                    <Badge
+                      className={cn(
+                        "absolute top-2 right-2 hover:bg-primary/80",
+                        getMatchScoreBadgeClass(score)
+                      )}
+                    >
+                      {score}%
+                    </Badge>
+                  )}
+                  <CardHeader className="flex items-center justify-center p-2">
+                    <Avatar className="h-24 w-24">
+                      <AvatarImage
+                        src={applicant.photos?.headshot}
+                        alt={applicant.personalDetails?.name}
+                      />
+                      <AvatarFallback>
+                        {applicant.personalDetails?.name?.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </CardHeader>
+                  <CardContent className="flex-1 space-y-2 p-2">
+                    <CardTitle className="flex items-center justify-center gap-2 text-lg">
+                      <span>{applicant.personalDetails?.name}</span>
+                      {applicant.isVip && (
+                        <Badge className="border-pink text-gradient">VIP</Badge>
+                      )}
+                    </CardTitle>
+                    <CardDescription>ID: {applicant.customId}</CardDescription>
+                    <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
+                      <Venus className="h-4 w-4 text-pink-500" />
+                      <span>Age: {applicant.age}</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5" />
-                      <span>{applicant.personalDetails?.currentLocation}</span>
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                      <Calendar className="h-3.5 w-3.5" />
+                      <span>
+                        Joined:{" "}
+                        {new Date(applicant.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex w-full flex-col gap-2 p-2 pt-4">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    disabled={!selectedMale || !!isMatching}
-                    onClick={() => {
-                      if (selectedMale) {
-                        setIsMatching(applicant.id)
-                        router.push(
-                          `/dashboard/matching/${selectedMale.id}/${applicant.id}`
-                        )
-                      }
-                    }}
-                  >
-                    {isMatching === applicant.id ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Matching...
-                      </>
-                    ) : selectedMale ? (
-                      "Match"
-                    ) : (
-                      "Choose Male User"
-                    )}
-                  </Button>
-                </CardFooter>
+                    <div className="flex items-center justify-center gap-4 pt-1 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1.5">
+                        <Home className="h-3.5 w-3.5" />
+                        <span>{applicant.personalDetails?.nationality}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5" />
+                        <span>
+                          {applicant.personalDetails?.currentLocation}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex w-full flex-col gap-2 p-2 pt-4">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      disabled={!selectedMale || !!isMatching}
+                      onClick={() => {
+                        if (selectedMale) {
+                          setIsMatching(applicant.id)
+                          router.push(
+                            `/dashboard/matching/${selectedMale.id}/${applicant.id}`
+                          )
+                        }
+                      }}
+                    >
+                      {isMatching === applicant.id ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Matching...
+                        </>
+                      ) : selectedMale ? (
+                        "Match"
+                      ) : (
+                        "Choose Male User"
+                      )}
+                    </Button>
+                  </CardFooter>
+                </div>
               </Card>
             ))}
           </div>

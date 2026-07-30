@@ -221,11 +221,23 @@ const sortResults = (
   })
 }
 
+const parseMatchRangeParam = (range: string): [number, number] | null => {
+  if (range === "all") return null
+  const parts = range.split("-")
+  if (parts.length !== 2) return null
+  const min = parseInt(parts[0], 10)
+  const max = parseInt(parts[1], 10)
+  if (isNaN(min) || isNaN(max)) return null
+  // The ranges are like "90-100", so we need to find min and max of the two.
+  return [Math.min(min, max), Math.max(min, max)]
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get("userId")
   const activeCriteria = parseCriteria(searchParams.get("criteria"))
   const filter = searchParams.get("filter") ?? "all"
+  const matchRange = searchParams.get("matchRange") ?? "all"
   const sortKey = searchParams.get("sortKey") ?? "score"
   const sortOrder = searchParams.get("sortOrder") ?? "desc"
 
@@ -239,13 +251,22 @@ export async function GET(request: Request) {
         include: { membership: true },
       })
 
-      const matches = femaleApplicants.map((applicant) => ({
+      let matches = femaleApplicants.map((applicant) => ({
         score: 0,
         applicant: parseApplicant(applicant),
       }))
+
+      const scoreRange = parseMatchRangeParam(matchRange)
+      if (scoreRange) {
+        matches = matches.filter(
+          (match) =>
+            match.score >= scoreRange[0] && match.score <= scoreRange[1]
+        )
+      }
+
       sortResults(matches, sortKey, sortOrder)
 
-      return NextResponse.json(matches)
+      return NextResponse.json(matches) // No matches if range doesn't include 0
     }
 
     // If a userId is provided, perform matching logic
@@ -289,7 +310,7 @@ export async function GET(request: Request) {
       )
     }
 
-    const matches: MatchResult[] = femaleApplicants.map((femaleApplicant) => {
+    let matches: MatchResult[] = femaleApplicants.map((femaleApplicant) => {
       let score = 0
       let totalPossibleScore = 0
 
@@ -481,6 +502,13 @@ export async function GET(request: Request) {
         applicant: parsedFemale,
       }
     })
+
+    const scoreRange = parseMatchRangeParam(matchRange)
+    if (scoreRange) {
+      matches = matches.filter(
+        (match) => match.score >= scoreRange[0] && match.score <= scoreRange[1]
+      )
+    }
 
     sortResults(matches, sortKey, sortOrder)
 

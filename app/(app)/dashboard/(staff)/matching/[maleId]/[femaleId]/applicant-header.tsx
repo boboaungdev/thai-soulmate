@@ -1,9 +1,8 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { CardDescription } from "@/components/ui/card"
 import type { ApplicationForm } from "@/types/application-form"
-import { Cake, Copy, Home, MapPin, Mars, Venus } from "lucide-react"
+import { Copy, Home, MapPin, Mars, Venus } from "lucide-react"
 import { toast } from "sonner"
 
 const calculateAge = (dob: string | Date) => {

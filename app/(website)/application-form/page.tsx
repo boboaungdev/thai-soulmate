@@ -346,7 +346,11 @@ const dealBreakerOptions = [
   { value: "Poor hygiene", label: "Poor hygiene", icon: Waves },
   { value: "Has children", label: "Has children", icon: Baby },
   { value: "Heavy drinker", label: "Heavy drinker", icon: Wine },
-  { value: "Political differences", label: "Political differences", icon: Scale },
+  {
+    value: "Political differences",
+    label: "Political differences",
+    icon: Scale,
+  },
   { value: "Long distance", label: "Long distance", icon: MapPinOff },
   {
     value: "Financial instability",
@@ -1517,10 +1521,6 @@ function AuthPageContents() {
       }
     }
   }, [photosForm.casualLifestyle, registrationStep, formErrors.casualLifestyle])
-
-
-
-
 
   useEffect(() => {
     if (registrationStep === "financial" && formErrors.ownProperty) {
@@ -4266,7 +4266,6 @@ function AuthPageContents() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-
                     <div className="space-y-3">
                       <Label>Do you own property?</Label>
                       <RadioGroup
@@ -4372,6 +4371,10 @@ function AuthPageContents() {
                     <CardDescription>
                       Please provide three clear photos of yourself.
                     </CardDescription>
+                    <p className="pt-2 text-sm text-muted-foreground">
+                      Requirements: within 3 months, max 50MB, all image types
+                      accepted.
+                    </p>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <FileInput
@@ -4913,7 +4916,7 @@ function FileInput({
             type="file"
             className="sr-only"
             onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
-            accept="image/png, image/jpeg, image/webp" //
+            accept="image/*"
             disabled={disabled}
           />
           {file && (

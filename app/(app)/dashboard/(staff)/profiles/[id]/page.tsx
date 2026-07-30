@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,6 +23,7 @@ import {
   Phone,
   FileText,
   MoreVertical,
+  Loader2,
   Printer,
   Mars,
   Venus,
@@ -31,6 +32,7 @@ import {
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import {
   DropdownMenu,
@@ -42,7 +44,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { FaWhatsapp } from "react-icons/fa"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import { Check, ChevronsUpDown } from "lucide-react"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
+import { Label } from "@/components/ui/label"
 
 const ProfileInfo = ({
   icon,
@@ -93,8 +119,8 @@ const AboutSection = ({
   </Card>
 )
 
-const DetailsSection = ({ user }: { user: ApplicationForm }) => {
-  const { personalDetails, appearance, career } = user
+const DetailsSection = ({ profile }: { profile: ApplicationForm }) => {
+  const { personalDetails, appearance, career } = profile
   const age =
     personalDetails?.dob && !isNaN(new Date(personalDetails.dob).getTime())
       ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
@@ -178,8 +204,8 @@ const DetailsSection = ({ user }: { user: ApplicationForm }) => {
   )
 }
 
-const LifestyleSection = ({ user }: { user: ApplicationForm }) => {
-  const { lifestyle } = user
+const LifestyleSection = ({ profile }: { profile: ApplicationForm }) => {
+  const { lifestyle } = profile
   const lifestyleItems = [
     { label: "Smoking", value: lifestyle?.smoking || "N/A" },
     { label: "Drinking", value: lifestyle?.drinking || "N/A" },
@@ -214,8 +240,8 @@ const LifestyleSection = ({ user }: { user: ApplicationForm }) => {
   )
 }
 
-const LookingForSection = ({ user }: { user: ApplicationForm }) => {
-  const { relationshipGoals, personality, idealPartner } = user
+const LookingForSection = ({ profile }: { profile: ApplicationForm }) => {
+  const { relationshipGoals, personality, idealPartner } = profile
   return (
     <Card>
       <CardHeader>
@@ -249,13 +275,13 @@ const LookingForSection = ({ user }: { user: ApplicationForm }) => {
   )
 }
 
-const OverviewSection = ({ user }: { user: ApplicationForm }) => (
+const OverviewSection = ({ profile }: { profile: ApplicationForm }) => (
   <div className="space-y-6">
     <AboutSection
-      content={user.personality?.about || ""}
-      personalityTraits={user.personality?.personality}
+      content={profile.personality?.about || ""}
+      personalityTraits={profile.personality?.personality}
     />
-    <DetailsSection user={user} />
+    <DetailsSection profile={profile} />
   </div>
 )
 
@@ -263,8 +289,16 @@ export default function ProfilesDetailPage() {
   const params = useParams()
   const { id } = params as { id: string }
   const router = useRouter()
-  const [user, setUser] = useState<ApplicationForm | null>(null)
+  const [profile, setProfile] = useState<ApplicationForm | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSendDialogOpen, setIsSendDialogOpen] = useState(false)
+  const [sendToUsers, setSendToUsers] = useState<ApplicationForm[]>([])
+  const [isFetchingSendToUsers, setIsFetchingSendToUsers] = useState(false)
+  const [selectedUserIdToSend, setSelectedUserIdToSend] = useState<
+    string | null
+  >(null)
+  const [isSendingProfile, setIsSendingProfile] = useState(false)
+  const [isComboboxOpen, setIsComboboxOpen] = useState(false)
 
   useEffect(() => {
     async function fetchUser() {
@@ -275,7 +309,7 @@ export default function ProfilesDetailPage() {
           throw new Error("Failed to fetch user data")
         }
         const data = await response.json()
-        setUser(data.application)
+        setProfile(data.application)
       } catch (error) {
         console.error(error)
       } finally {
@@ -285,6 +319,51 @@ export default function ProfilesDetailPage() {
 
     fetchUser()
   }, [id])
+
+  useEffect(() => {
+    if (!isSendDialogOpen || !profile) return
+
+    async function fetchSendToUsers() {
+      setIsFetchingSendToUsers(true)
+      try {
+        const targetGender =
+          profile?.personalDetails?.gender === "Male" ? "Female" : "Male"
+        const response = await fetch(`/api/gallery?gender=${targetGender}`)
+        if (!response.ok) {
+          throw new Error("Failed to fetch users")
+        }
+        const data = await response.json()
+        setSendToUsers(data.data)
+      } catch (error) {
+        console.error(error)
+        toast.error("Could not fetch users to send profile to.")
+      } finally {
+        setIsFetchingSendToUsers(false)
+      }
+    }
+
+    fetchSendToUsers()
+  }, [isSendDialogOpen, profile])
+
+  const handleSendProfile = async () => {
+    if (!selectedUserIdToSend || !profile) {
+      toast.warning("Please select a user to send the profile to.")
+      return
+    }
+    setIsSendingProfile(true)
+    // Here you would implement the logic to send the profile.
+    // For now, we'll just simulate it with a timeout and a toast.
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    const fromUser = profile.personalDetails?.name
+    const toUser = sendToUsers.find((u) => u.id === selectedUserIdToSend)
+      ?.personalDetails?.name
+
+    toast.success(`Profile of ${fromUser} sent to ${toUser}.`)
+    setIsSendingProfile(false)
+    setIsSendDialogOpen(false)
+    setSelectedUserIdToSend(null)
+  }
 
   if (isLoading) {
     return (
@@ -307,13 +386,13 @@ export default function ProfilesDetailPage() {
     )
   }
 
-  if (!user) {
+  if (!profile) {
     return (
       <div className="container mx-auto py-8 text-center">User not found.</div>
     )
   }
 
-  const { personalDetails, photos, personality } = user
+  const { personalDetails, photos, personality } = profile
 
   const age =
     personalDetails?.dob && !isNaN(new Date(personalDetails.dob).getTime())
@@ -327,7 +406,7 @@ export default function ProfilesDetailPage() {
     .map(([key, url]) => ({ key, url: url as string })) // Map to an array of objects
 
   const handleCopyId = () => {
-    const idToCopy = String(user.customId).padStart(4, "0")
+    const idToCopy = String(profile.customId).padStart(4, "0")
     navigator.clipboard
       .writeText(idToCopy)
       .then(() => {
@@ -350,11 +429,153 @@ export default function ProfilesDetailPage() {
           Back
         </Button>
         <div className="flex items-center gap-2">
-          <Button variant="outline">
-            <Send className="mr-2 h-4 w-4" />
-            Send Profile to{" "}
-            {personalDetails?.gender === "Male" ? "Female" : "Male"}
-          </Button>
+          <Dialog
+            open={isSendDialogOpen}
+            onOpenChange={(open) => {
+              setIsSendDialogOpen(open)
+              if (!open) setSelectedUserIdToSend(null) // Clear selected user when dialog closes
+            }}
+          >
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Send className="mr-2 h-4 w-4" />
+                Send Profile to{" "}
+                {personalDetails?.gender === "Male" ? "Female" : "Male"}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Send Profile</DialogTitle>
+                <DialogDescription>
+                  Select a user to send {personalDetails?.prefix}{" "}
+                  {personalDetails?.name}&apos;s profile to.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="user-select" className="text-right">
+                    To
+                  </Label>
+                  <Popover
+                    open={isComboboxOpen}
+                    onOpenChange={setIsComboboxOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={isComboboxOpen}
+                        className="col-span-3 justify-between"
+                        disabled={isFetchingSendToUsers}
+                      >
+                        {selectedUserIdToSend
+                          ? sendToUsers.find(
+                              (u) => u.id === selectedUserIdToSend
+                            )?.personalDetails?.prefix +
+                            " " +
+                            sendToUsers.find(
+                              (u) => u.id === selectedUserIdToSend
+                            )?.personalDetails?.name
+                          : "Select a user..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[300px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search user..." />
+                        <CommandList>
+                          <CommandEmpty>
+                            {isFetchingSendToUsers
+                              ? "Loading..."
+                              : "No users found."}
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {sendToUsers.map((u) =>
+                              (() => {
+                                const userAge =
+                                  u.personalDetails?.dob &&
+                                  !isNaN(
+                                    new Date(u.personalDetails.dob).getTime()
+                                  )
+                                    ? new Date().getFullYear() -
+                                      new Date(
+                                        u.personalDetails.dob
+                                      ).getFullYear()
+                                    : "N/A"
+                                return (
+                                  <CommandItem
+                                    key={u.id}
+                                    value={`${u.personalDetails?.prefix || ""} ${
+                                      u.personalDetails?.name || ""
+                                    } ${String(u.customId).padStart(4, "0")}`}
+                                    onSelect={() => {
+                                      setSelectedUserIdToSend(u.id)
+                                      setIsComboboxOpen(false)
+                                    }}
+                                    className="flex items-center gap-3"
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "h-4 w-4",
+                                        selectedUserIdToSend === u.id
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    <Avatar className="h-8 w-8">
+                                      <AvatarImage src={u.photos?.headshot} />
+                                      <AvatarFallback>
+                                        {u.personalDetails?.name?.charAt(0)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex flex-col">
+                                      <span className="font-medium">
+                                        {u.personalDetails.prefix}{" "}
+                                        {u.personalDetails?.name}
+                                      </span>
+                                      <span className="text-xs text-muted-foreground">
+                                        ID:{" "}
+                                        {String(u.customId).padStart(4, "0")},{" "}
+                                        {userAge} years old
+                                      </span>
+                                    </div>
+                                  </CommandItem>
+                                )
+                              })()
+                            )}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setIsSendDialogOpen(false)
+                    setSelectedUserIdToSend(null)
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleSendProfile}
+                  disabled={isSendingProfile || !selectedUserIdToSend}
+                  className="btn-gradient"
+                >
+                  {isSendingProfile && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Send
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
@@ -364,14 +585,14 @@ export default function ProfilesDetailPage() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() =>
-                  router.push(`/dashboard/application-form/${user.id}`)
+                  router.push(`/dashboard/application-form/${profile.id}`)
                 }
               >
                 <FileText className="mr-2 h-4 w-4" /> View Application
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
-                  router.push(`/dashboard/profiles/${user.id}/print`)
+                  router.push(`/dashboard/profiles/${profile.id}/print`)
                 }
               >
                 <Printer className="mr-2 h-4 w-4" /> Print
@@ -423,7 +644,7 @@ export default function ProfilesDetailPage() {
               className="flex cursor-pointer items-center gap-1 hover:text-foreground"
               onClick={handleCopyId}
             >
-              <p>ID: {String(user.customId).padStart(4, "0")}</p>
+              <p>ID: {String(profile.customId).padStart(4, "0")}</p>
               <Copy className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-1">
@@ -447,9 +668,9 @@ export default function ProfilesDetailPage() {
           </div>
 
           <div className="mt-10 w-full space-y-6">
-            <OverviewSection user={user} />
-            <LifestyleSection user={user} />
-            <LookingForSection user={user} />
+            <OverviewSection profile={profile} />
+            <LifestyleSection profile={profile} />
+            <LookingForSection profile={profile} />
           </div>
         </CardContent>
       </Card>

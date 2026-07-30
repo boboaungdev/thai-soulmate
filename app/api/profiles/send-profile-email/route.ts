@@ -1,25 +1,22 @@
 import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
+import { SendFemaleMatchEmail, SendMaleMatchEmail } from "@/emails"
 import { NextResponse } from "next/server"
 import puppeteer from "puppeteer"
-import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+import { resend } from "@/lib/resend"
 
 export async function POST(req: Request) {
   try {
-    const { id, email } = await req.json()
+    const { profile, to, profileId } = await req.json()
 
     const browser = await puppeteer.launch({
       headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     })
 
     const page = await browser.newPage()
 
-    const url = `${BASE_URL}/print/profile/${id}`
-
-    await page.goto(url, {
-      waitUntil: "domcontentloaded",
-    })
+    const url = `${BASE_URL}/print/profile/${profileId}`
 
     await page.goto(url, {
       waitUntil: "networkidle0",
@@ -32,22 +29,25 @@ export async function POST(req: Request) {
 
     const pdfBuffer = Buffer.from(pdf)
 
-    console.log(pdfBuffer.length)
-
     await browser.close()
+
+    const reactEmail =
+      to.gender.toUpperCase() === "FEMALE"
+        ? SendFemaleMatchEmail({ to })
+        : SendMaleMatchEmail({ profileId, to })
 
     await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.noreply}>`,
-      to: email,
-      subject: "Your Profile",
-      html: `
-        <h2>Your profile</h2>
-        <p>Please find your profile attached.</p>
-      `,
+      to: "boolean405@gmail.com",
+      subject:
+        to.gender.toUpperCase() === "FEMALE"
+          ? "A Potential Match Has Been Selected for You"
+          : "Your Match Has Accepted – Please Review Her Profile",
+      react: reactEmail,
       attachments: [
         {
-          filename: "profile.pdf",
-          content: pdfBuffer.toString("base64"),
+          filename: `Match profile - ${profile.prefix} ${profile.name}.pdf`,
+          content: pdfBuffer,
         },
       ],
     })

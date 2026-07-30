@@ -297,6 +297,8 @@ export default function ProfilesDetailPage() {
   const [selectedUserIdToSend, setSelectedUserIdToSend] = useState<
     string | null
   >(null)
+  const [selectedUserToSend, setSelectedUserToSend] =
+    useState<ApplicationForm | null>(null)
   const [isSendingProfile, setIsSendingProfile] = useState(false)
   const [isComboboxOpen, setIsComboboxOpen] = useState(false)
 
@@ -356,8 +358,9 @@ export default function ProfilesDetailPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: profile?.id,
-          email: profile?.personalDetails.email,
+          profileId: profile?.id,
+          profile: profile?.personalDetails,
+          to: selectedUserToSend?.personalDetails,
         }),
       })
 
@@ -367,12 +370,14 @@ export default function ProfilesDetailPage() {
         toast.success("Profile sent")
         setIsSendDialogOpen(false)
         setSelectedUserIdToSend(null)
+        setSelectedUserToSend(null)
       }
     } catch (error) {
       toast.error("Failed to send")
     } finally {
       setIsSendingProfile(false)
       setSelectedUserIdToSend(null)
+      setSelectedUserToSend(null)
     }
   }
 
@@ -444,7 +449,10 @@ export default function ProfilesDetailPage() {
             open={isSendDialogOpen}
             onOpenChange={(open) => {
               setIsSendDialogOpen(open)
-              if (!open) setSelectedUserIdToSend(null) // Clear selected user when dialog closes
+              if (!open) {
+                setSelectedUserIdToSend(null)
+                setSelectedUserToSend(null)
+              }
             }}
           >
             <DialogTrigger asChild>
@@ -521,6 +529,7 @@ export default function ProfilesDetailPage() {
                                     } ${String(u.customId).padStart(4, "0")}`}
                                     onSelect={() => {
                                       setSelectedUserIdToSend(u.id)
+                                      setSelectedUserToSend(u)
                                       setIsComboboxOpen(false)
                                     }}
                                     className="flex items-center gap-3"
@@ -569,6 +578,7 @@ export default function ProfilesDetailPage() {
                   onClick={() => {
                     setIsSendDialogOpen(false)
                     setSelectedUserIdToSend(null)
+                    setSelectedUserToSend(null)
                   }}
                 >
                   Cancel

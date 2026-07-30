@@ -24,6 +24,7 @@ import {
   HeartHandshake,
   Home,
   Languages,
+  Loader2,
   LocateFixed,
   Mail,
   MapPin,
@@ -316,7 +317,10 @@ function NotesSection({
                 disabled={isSubmitting || !message.trim()}
                 className="btn-gradient"
               >
-                Add Note
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {isSubmitting ? "Adding..." : "Add Note"}
               </Button>
             </div>
           </div>
@@ -463,7 +467,7 @@ function PhotoGrid({ photos }: { photos: ApplicationForm["photos"] }) {
 
   return (
     <ProfileSection title="Photos" icon={<Camera />}>
-      <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-3">
         {photoEntries.map(([key, label, value]) => (
           <div key={key} className="flex flex-col gap-2">
             <Avatar className="h-56 w-full rounded-md">
@@ -654,7 +658,7 @@ export default function ApplicationDetailPage() {
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-6">
         <ProfileSection title="Personal Details" icon={<User />}>
           <DetailRow
             icon={<User />}

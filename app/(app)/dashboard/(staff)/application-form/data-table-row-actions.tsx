@@ -182,7 +182,7 @@ export function DataTableRowActions<TData>({
                 {isLoading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
-                Add Note
+                {isLoading ? "Adding..." : "Add Note"}
               </Button>
             </DialogFooter>
           </DialogContent>

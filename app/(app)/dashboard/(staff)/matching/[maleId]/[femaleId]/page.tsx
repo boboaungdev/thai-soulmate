@@ -639,14 +639,7 @@ export default async function MatchComparisonPage({
           <div className="text-center sm:text-left">
             <h1 className="text-2xl font-bold">Match Comparison</h1>
             <p className="text-muted-foreground">
-              Male profile:{" "}
-              <span className="text-gold font-semibold">
-                {male.personalDetails.name}
-              </span>{" "}
-              compared with female profile:{" "}
-              <span className="text-pink font-semibold">
-                {female.personalDetails.name}
-              </span>
+              Male profile compared with female profile.
             </p>
           </div>
           <div

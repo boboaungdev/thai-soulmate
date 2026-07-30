@@ -431,7 +431,7 @@ function SimpleStepper({
 
   return (
     <Badge variant="outline" className="font-medium">
-      {`Step ${currentStepIndex + 1} of ${steps.length}`}
+      {`Step ${currentStepIndex + 1} of ${steps.length - 2}`}
     </Badge>
   )
 }

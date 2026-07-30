@@ -4890,49 +4890,47 @@ function FileInput({
       <Label htmlFor={id} className={disabled ? "text-muted-foreground" : ""}>
         {label}
       </Label>
-      <InputGroup>
-        <InputGroupAddon
-          className={disabled ? "cursor-not-allowed text-muted-foreground" : ""}
-        >
-          <Upload className="size-4" />
-        </InputGroupAddon>
-        <div className="relative flex-1">
-          <InputGroupInput
-            id={`${id}-display`}
-            readOnly
-            value={file ? file.name : ""}
-            placeholder="Choose a file..."
-            className={disabled ? "cursor-not-allowed" : "cursor-pointer pr-16"}
-            disabled={disabled}
-          />
-          <label
-            htmlFor={id}
-            className={`absolute inset-0 ${
-              disabled ? "cursor-not-allowed" : "cursor-pointer"
-            }`}
-          ></label>
-          <input
-            id={id}
-            type="file"
-            className="sr-only"
-            onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
-            accept="image/*"
-            disabled={disabled}
-          />
-          {file && (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => onFileChange(null)}
-              disabled={disabled}
-              className="absolute top-1/2 right-2 -translate-y-1/2 text-destructive/80 hover:text-destructive"
-            >
-              <X className="size-4" />
-              <span className="sr-only">Clear file</span>
-            </Button>
+      <div className="relative">
+        <label
+          htmlFor={id}
+          className={cn(
+            "relative flex w-full cursor-pointer items-center rounded-lg border border-input bg-transparent text-sm shadow-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring",
+            disabled && "cursor-not-allowed opacity-50"
           )}
-        </div>
-      </InputGroup>
+        >
+          <div className="flex h-8 items-center justify-center px-3">
+            <Upload className="size-4 text-muted-foreground" />
+          </div>
+          <span
+            className={cn(
+              "flex-1 truncate py-1 pr-20",
+              !file && "text-muted-foreground"
+            )}
+          >
+            {file ? file.name : "Choose a file..."}
+          </span>
+        </label>
+        <input
+          id={id}
+          type="file"
+          className="sr-only"
+          onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
+          accept="image/*"
+          disabled={disabled}
+        />
+        {file && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onFileChange(null)}
+            className="absolute top-1/2 right-1 h-auto -translate-y-1/2 p-1 text-muted-foreground hover:bg-transparent hover:text-destructive"
+            disabled={disabled}
+          >
+            <X className="size-4" />
+            <span>Remove</span>
+          </Button>
+        )}
+      </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   )

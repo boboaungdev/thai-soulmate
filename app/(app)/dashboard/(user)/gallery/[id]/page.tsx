@@ -385,7 +385,7 @@ export default function UserDetailPage() {
 
       <div className="mt-8">
         <h2 className="text-gradient mb-4 text-2xl font-bold">Gallery</h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {galleryPhotos.length > 0 ? (
             galleryPhotos.map(({ key, url }) => (
               <div

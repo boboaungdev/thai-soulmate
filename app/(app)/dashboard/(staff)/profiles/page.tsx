@@ -56,7 +56,7 @@ function UserCard({ user }: { user: ApplicationForm }) {
             </div>
           )}
 
-          <Badge className="absolute top-3 left-3">
+          <Badge className="absolute top-3 left-3 bg-card text-muted-foreground">
             ID-{String(user.customId).padStart(4, "0")}
           </Badge>
 

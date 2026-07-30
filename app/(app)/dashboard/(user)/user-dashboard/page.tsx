@@ -43,7 +43,7 @@ const membershipData = {
   plan: "Membership (3 Months)",
   status: "Active",
   nextBillingDate: "2024-10-23",
-  renewalPrice: "฿4,500",
+  renewalPrice: "฿49,900",
   benefits: [
     "Unlimited Matches",
     "Advanced Search Filters",

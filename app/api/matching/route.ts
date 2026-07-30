@@ -387,14 +387,6 @@ export async function GET(request: Request) {
       }))
 
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
-        enabled: activeCriteria["Income Preference"],
-        weight: 6,
-        matched: hasValue(femaleFinancial.income),
-        score,
-        possibleScore: totalPossibleScore,
-      }))
-
-      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Relocation Preference"],
         weight: 6,
         matched: ["yes", "maybe"].includes(

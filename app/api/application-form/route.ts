@@ -117,7 +117,6 @@ export async function POST(req: Request) {
         },
 
         photos: {
-          recent: body.photos.recent,
           headshot: body.photos.headshot,
           fullLength: body.photos.fullLength,
           casualLifestyle: body.photos.casualLifestyle,

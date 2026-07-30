@@ -530,12 +530,6 @@ function ApplicantColumn({
 
       <ProfileSection title="Financial" icon={<DollarSign />}>
         <DetailRow
-          icon={<DollarSign />}
-          label="Income"
-          value={applicant.financial?.income}
-          isMatch={getMatch("income")}
-        />
-        <DetailRow
           icon={<Building />}
           label="Owns Business"
           value={applicant.financial?.ownBusiness}
@@ -551,7 +545,7 @@ function ApplicantColumn({
         <div className="grid grid-cols-2 gap-4 pt-4">
           {Object.entries(applicant.photos || {})
             .filter(([key]) =>
-              ["headshot", "fullLength", "recent", "casualLifestyle"].includes(
+              ["headshot", "fullLength", "casualLifestyle"].includes(
                 key
               )
             )

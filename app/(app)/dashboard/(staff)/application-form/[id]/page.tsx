@@ -459,7 +459,6 @@ function PhotoGrid({ photos }: { photos: ApplicationForm["photos"] }) {
     ["headshot", "Headshot", photos?.headshot],
     ["fullLength", "Full Length", photos?.fullLength],
     ["casualLifestyle", "Casual Lifestyle", photos?.casualLifestyle],
-    ["recent", "Recent Photo", photos?.recent],
   ].filter(([, , value]) => Boolean(value))
 
   return (
@@ -720,11 +719,6 @@ export default function ApplicationDetailPage() {
             icon={<GraduationCap />}
             label="Education"
             value={career?.education}
-          />
-          <DetailRow
-            icon={<DollarSign />}
-            label="Income"
-            value={financial?.income}
           />
           <DetailRow
             icon={<Home />}

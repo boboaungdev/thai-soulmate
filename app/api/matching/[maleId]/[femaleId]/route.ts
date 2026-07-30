@@ -244,15 +244,6 @@ const calculateMatchDetails = (male: any, female: any) => {
       weight: 10,
     }),
     createBreakdownItem({
-      key: "income",
-      category: "Profile Signals",
-      label: "Income",
-      malePreference: "Income provided",
-      femaleValue: female.financial?.income,
-      matched: hasValue(female.financial?.income),
-      weight: 6,
-    }),
-    createBreakdownItem({
       key: "relocation",
       category: "Profile Signals",
       label: "Relocation",

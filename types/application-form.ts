@@ -98,13 +98,11 @@ export interface IdealPartner {
 }
 
 export interface Financial {
-  income: string
   ownBusiness: string
   ownProperty: string
 }
 
 export interface Photos {
-  recent: string
   headshot: string
   fullLength: string
   casualLifestyle: string

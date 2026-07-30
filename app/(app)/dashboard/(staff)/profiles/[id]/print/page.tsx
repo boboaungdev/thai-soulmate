@@ -9,21 +9,21 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PrinterIcon, ChevronLeft } from "lucide-react"
-import { RegisterInterest } from "@/lib/generated/prisma/client"
+import { ApplicationForm } from "@/types/application-form"
 
 export default function ProfilePrintPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
-  const [user, setUser] = useState<RegisterInterest | null>(null)
+  const [user, setUser] = useState<ApplicationForm | null>(null)
   const router = useRouter()
 
   useEffect(() => {
     async function load() {
       const { id } = await params
 
-      const res = await fetch(`/api/register-interest/${id}`)
+      const res = await fetch(`/api/gallery/${id}`)
       const data = await res.json()
 
       setUser(data)
@@ -108,59 +108,38 @@ export default function ProfilePrintPage({
               <strong>Name</strong>
             </p>
             <p>
-              {user.prefix} {user.name}
+              {user.personalDetails.prefix} {user.personalDetails.name}
             </p>
 
             <p>
               <strong>Email</strong>
             </p>
-            <p>{user.email}</p>
+            <p>{user.personalDetails.email}</p>
 
             <p>
               <strong>Phone</strong>
             </p>
-            <p>
-              {user.phoneCountry} {user.phone}
-            </p>
+            <p>{user.personalDetails.phone}</p>
 
             <p>
               <strong>Gender</strong>
             </p>
-            <p>{user.gender}</p>
+            <p>{user.personalDetails.gender}</p>
 
             <p>
               <strong>Date of Birth</strong>
             </p>
-            <p>{new Date(user.dob).toLocaleDateString()}</p>
+            <p>{new Date(user.personalDetails.dob).toLocaleDateString()}</p>
 
             <p>
               <strong>Nationality</strong>
             </p>
-            <p>{user.nationality}</p>
+            <p>{user.personalDetails.nationality}</p>
 
             <p>
               <strong>Current Location</strong>
             </p>
-            <p>{user.currentLocation}</p>
-          </div>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="mb-3 text-lg font-semibold">Registration</h2>
-
-          <div className="grid grid-cols-2 gap-y-2">
-            <p>
-              <strong>Status</strong>
-            </p>
-            <p>{user.status}</p>
-
-            <p>
-              <strong>Source</strong>
-            </p>
-            <p>{user.source}</p>
-
-            {user.otherSource && <p>Other Source</p>}
-            {user.otherSource && <p>{user.otherSource}</p>}
+            <p>{user.personalDetails.currentLocation}</p>
           </div>
         </section>
 

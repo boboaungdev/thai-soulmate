@@ -11,13 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from "@/components/ui/chart"
 import { Separator } from "@/components/ui/separator"
 import {
   CreditCard,
@@ -28,16 +21,6 @@ import {
   Clock,
   CheckCircle2,
 } from "lucide-react"
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  XAxis,
-} from "recharts"
 
 const membershipData = {
   plan: "Membership (3 Months)",
@@ -93,19 +76,6 @@ const soulmateData = {
   avatarUrl: "https://randomuser.me/api/portraits/women/75.jpg",
 }
 
-const activityData = [
-  { name: "Profiles Viewed", value: 42, color: "#6366f1" },
-  { name: "Messages Sent", value: 18, color: "#84cc16" },
-  { name: "Dates Scheduled", value: 2, color: "#14b8a6" },
-  { name: "Matches Liked", value: 5, color: "#ec4899" },
-]
-
-const compatibilityBreakdown = [
-  { name: "Values", value: 25, color: "#00C49F" },
-  { name: "Interests", value: 30, color: "#FFBB28" },
-  { name: "Lifestyle", value: 20, color: "#FF8042" },
-  { name: "Communication", value: 25, color: "#8884d8" },
-]
 const StatusIcon = ({
   status,
 }: {
@@ -127,7 +97,7 @@ const UserDashboardPage = () => {
       <div className="flex items-center justify-between space-y-2">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Welcome to your Dashboard!
+            Welcome, John Doe!
           </h1>
           <p className="text-sm text-muted-foreground">
             Here&apos;s a snapshot of your journey to finding your soulmate.
@@ -234,33 +204,6 @@ const UserDashboardPage = () => {
                 ))}
               </div>
               <Separator className="my-4" />
-              <h4 className="font-semibold">Compatibility Breakdown</h4>
-              <ChartContainer config={{}} className="h-[200px] w-full">
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie
-                      data={compatibilityBreakdown}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      innerRadius={60}
-                      dataKey="value"
-                      labelLine={false}
-                    >
-                      {compatibilityBreakdown.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent />}
-                    />
-                    <ChartLegend
-                      content={<ChartLegendContent nameKey="name" />}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </ChartContainer>
             </div>
           </CardContent>
         </Card>
@@ -295,40 +238,6 @@ const UserDashboardPage = () => {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Recent Activity */}
-        <Card className="lg:col-span-3">
-          <CardHeader>
-            <CardTitle>Your Recent Activity</CardTitle>
-            <CardDescription>
-              A summary of your interactions on the platform.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={{
-                value: { label: "Count" },
-              }}
-              className="h-[250px] w-full"
-            >
-              <ResponsiveContainer>
-                <BarChart data={activityData}>
-                  <CartesianGrid vertical={false} />
-                  <XAxis dataKey="name" tickLine={false} axisLine={false} />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent />}
-                  />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                    {activityData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
           </CardContent>
         </Card>
       </div>

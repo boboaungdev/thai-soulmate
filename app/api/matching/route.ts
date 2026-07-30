@@ -45,7 +45,6 @@ const defaultCriteria: Record<string, boolean> = {
   "Ideal Partner Qualities": true,
   "Ideal Partner Personality": true,
   "Deal Breakers": true,
-  "Income Preference": true,
   "Relocation Preference": true,
   "Smoking Preference": true,
   "Drinking Preference": true,

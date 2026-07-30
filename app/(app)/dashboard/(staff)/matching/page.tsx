@@ -298,6 +298,15 @@ export default function MatchingPage() {
     [matches]
   )
 
+  const handleSortChange = (newSortKey: string) => {
+    setSortKey(newSortKey)
+    if (newSortKey === "score") {
+      setSortOrder("desc")
+    } else {
+      setSortOrder("asc")
+    }
+  }
+
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex flex-col gap-1">
@@ -492,7 +501,7 @@ export default function MatchingPage() {
                   {Object.entries(sortLabels).map(([key, label]) => (
                     <DropdownMenuItem
                       key={key}
-                      onSelect={() => setSortKey(key)}
+                      onSelect={() => handleSortChange(key)}
                     >
                       {label}
                       <Check

@@ -4,6 +4,7 @@ import { APP_INFO } from "@/constants"
 
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
+import { ApplicationForm } from "@/types/application-form"
 
 function calculateAge(dob: string | Date): number {
   const birthDate = new Date(dob)
@@ -50,15 +51,17 @@ export default async function ProfilePrintPage({
 }) {
   const { id } = await params
 
-  const user = await prisma.applicationForm.findUnique({
+  const userDB = await prisma.applicationForm.findUnique({
     where: {
       id,
     },
   })
 
-  if (!user) {
+  if (!userDB) {
     notFound()
   }
+
+  const user = userDB as unknown as ApplicationForm
 
   const age = user.personalDetails?.dob
     ? calculateAge(user.personalDetails.dob)

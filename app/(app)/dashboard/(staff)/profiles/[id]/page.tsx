@@ -347,6 +347,7 @@ export default function ProfilesDetailPage() {
 
   const handleSendProfile = async (e: React.MouseEvent) => {
     e.stopPropagation()
+    setIsSendingProfile(true)
 
     try {
       const res = await fetch("/api/profiles/send-profile-email", {
@@ -364,9 +365,14 @@ export default function ProfilesDetailPage() {
 
       if (data.success) {
         toast.success("Profile sent")
+        setIsSendDialogOpen(false)
+        setSelectedUserIdToSend(null)
       }
     } catch (error) {
       toast.error("Failed to send")
+    } finally {
+      setIsSendingProfile(false)
+      setSelectedUserIdToSend(null)
     }
   }
 
@@ -471,7 +477,7 @@ export default function ProfilesDetailPage() {
                         role="combobox"
                         aria-expanded={isComboboxOpen}
                         className="col-span-3 justify-between"
-                        disabled={isFetchingSendToUsers}
+                        disabled={isFetchingSendToUsers || isSendingProfile}
                       >
                         {selectedUserIdToSend
                           ? sendToUsers.find(
@@ -559,6 +565,7 @@ export default function ProfilesDetailPage() {
                 <Button
                   type="button"
                   variant="outline"
+                  disabled={isSendingProfile}
                   onClick={() => {
                     setIsSendDialogOpen(false)
                     setSelectedUserIdToSend(null)
@@ -573,9 +580,9 @@ export default function ProfilesDetailPage() {
                   className="btn-gradient"
                 >
                   {isSendingProfile && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   )}
-                  Send
+                  {isSendingProfile ? "Sending..." : "Send"}
                 </Button>
               </DialogFooter>
             </DialogContent>

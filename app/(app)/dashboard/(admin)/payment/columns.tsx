@@ -1,6 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
+import { StickyNote } from "lucide-react"
 import { format } from "date-fns"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +20,7 @@ export type Payment = {
   avatar: string
   plan: string
   amount: number
+  notes: { id: string }[]
 }
 
 export const columns: ColumnDef<Payment>[] = [
@@ -126,6 +128,26 @@ export const columns: ColumnDef<Payment>[] = [
       const formattedDate = format(date, "d MMM yyyy HH:mm")
 
       return <div>{formattedDate}</div>
+    },
+  },
+  {
+    id: "notes",
+    accessorFn: (row) => row.notes?.length ?? 0,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Notes" />
+    ),
+    cell: ({ row }) => {
+      const notesCount = row.original.notes?.length ?? 0
+      return (
+        <div
+          className={`flex w-[70px] items-center gap-1.5 ${
+            notesCount === 0 ? "text-muted-foreground" : ""
+          }`}
+        >
+          <StickyNote className="h-4 w-4" />
+          <span className="font-medium">{notesCount}</span>
+        </div>
+      )
     },
   },
   {

@@ -13,9 +13,10 @@ const payments: Payment[] = [
     phone: "(+66) 123456789",
     date: "2024-07-30 11:22",
     status: "confirmed",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+    avatar: "https://randomuser.me/api/portraits/men/3.jpg",
     plan: "1 Month",
     amount: 29900,
+    notes: [{ id: "1" }],
   },
   {
     id: "2",
@@ -24,9 +25,10 @@ const payments: Payment[] = [
     phone: "(+66) 987654321",
     date: "2024-07-29 10:15",
     status: "pending",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+    avatar: "https://randomuser.me/api/portraits/men/4.jpg",
     plan: "3 Months",
     amount: 39900,
+    notes: [],
   },
   {
     id: "3",
@@ -35,9 +37,10 @@ const payments: Payment[] = [
     phone: "(+1) 5555555555",
     date: "2024-07-28 12:30",
     status: "cancelled",
-    avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+    avatar: "https://randomuser.me/api/portraits/women/5.jpg",
     plan: "Free",
     amount: 0,
+    notes: [{ id: "1" }, { id: "2" }],
   },
   {
     id: "4",
@@ -46,9 +49,10 @@ const payments: Payment[] = [
     phone: "(+44) 1112223333",
     date: "2024-07-27 14:30",
     status: "refunded",
-    avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
+    avatar: "https://randomuser.me/api/portraits/men/6.jpg",
     plan: "6 Months",
     amount: 49900,
+    notes: [],
   },
 ]
 

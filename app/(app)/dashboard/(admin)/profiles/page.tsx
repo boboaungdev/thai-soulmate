@@ -193,13 +193,17 @@ function SendProfileDialog({
                   className="col-span-3 justify-between"
                   disabled={isFetchingSendToUsers || isSendingProfile}
                 >
-                  {selectedUserIdToSend
-                    ? sendToUsers.find((u) => u.id === selectedUserIdToSend)
-                        ?.personalDetails?.prefix +
-                      " " +
-                      sendToUsers.find((u) => u.id === selectedUserIdToSend)
-                        ?.personalDetails?.name
-                    : "Select a user..."}
+                  {isFetchingSendToUsers
+                    ? "Loading users..."
+                    : selectedUserIdToSend
+                      ? `${
+                          sendToUsers.find((u) => u.id === selectedUserIdToSend)
+                            ?.personalDetails?.prefix
+                        } ${
+                          sendToUsers.find((u) => u.id === selectedUserIdToSend)
+                            ?.personalDetails?.name
+                        }`
+                      : "Select a user"}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>

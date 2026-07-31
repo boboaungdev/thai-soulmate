@@ -345,9 +345,11 @@ export default function MatchingPage() {
                     className="w-full justify-between md:w-[250px]"
                     disabled={isLoadingMales}
                   >
-                    {selectedMale
-                      ? `${selectedMale.personalDetails.prefix} ${selectedMale.personalDetails.name}`
-                      : "Select male..."}
+                    {isLoadingMales
+                      ? "Loading males..."
+                      : selectedMale
+                        ? `${selectedMale.personalDetails.prefix} ${selectedMale.personalDetails.name}`
+                        : "Select male"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>

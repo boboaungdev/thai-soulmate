@@ -18,7 +18,7 @@ import {
 
 import { APP_INFO } from "@/constants"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageSwitcher } from "@/components/language-switcher"
+// import { LanguageSwitcher } from "@/components/language-switcher"
 import { AppName } from "@/components/app-name"
 import { cn } from "@/lib/utils"
 import { MotionDiv } from "./motion"
@@ -124,7 +124,7 @@ export function WebNavBar() {
 
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
-          <LanguageSwitcher />
+          {/* <LanguageSwitcher /> */}
           {!isClient ? (
             <div className="hidden h-10 w-[100px] items-center justify-center lg:flex" />
           ) : user ? (

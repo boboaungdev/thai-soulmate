@@ -21,7 +21,7 @@ export const CONTACT = {
 
 export const EMAIL = {
   noreply: "noreply@kkhay.com",
-  contact: "info@21stcenturygroup.org",
+  contact: "bobo@kkhay.com",
 } as const
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL

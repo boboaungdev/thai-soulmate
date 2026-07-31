@@ -2,7 +2,7 @@ import { z } from "zod"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
-import { APP_INFO, EMAIL } from "@/constants"
+import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 import { resend } from "@/lib/resend"
 import { AdminNotificationEmail, UserConfirmationEmail } from "@/emails"
 import { calculateAge } from "@/lib/utils"
@@ -90,8 +90,8 @@ export async function POST(req: Request) {
     try {
       await Promise.all([
         resend.emails.send({
-          from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
-          to: [EMAIL.contact],
+          from: `"${APP_INFO.name}" <${EMAIL.contact}>`,
+          to: [CONTACT.email],
           subject: `New Interest Registration: ${validatedData.name}`,
           react: AdminNotificationEmail({
             ...validatedData,
@@ -100,7 +100,7 @@ export async function POST(req: Request) {
           }),
         }),
         resend.emails.send({
-          from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+          from: `"${APP_INFO.name}" <${EMAIL.contact}>`,
           to: validatedData.email,
           subject: `Thank you for your interest in ${APP_INFO.name}!`,
           react: UserConfirmationEmail(validatedData),

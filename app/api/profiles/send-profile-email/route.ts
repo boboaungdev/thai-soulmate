@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         : SendMaleMatchEmail({ profileId, to })
 
     await resend.emails.send({
-      from: `${APP_INFO.name} <${"bobo@kkhay.com"}>`,
+      from: `${APP_INFO.name} <${EMAIL.contact}>`,
       to: [to.email],
       subject:
         to.gender.toUpperCase() === "FEMALE"

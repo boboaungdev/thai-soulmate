@@ -10,7 +10,6 @@ import {
   Section,
   Text,
 } from "react-email"
-import * as React from "react"
 
 import { APP_INFO, BASE_URL, CONTACT } from "@/constants"
 import { User } from "@/types"
@@ -20,9 +19,10 @@ const currentYear = new Date().getFullYear()
 export const UserConfirmationEmail = ({ ...userDetails }: User) => (
   <Html>
     <Head />
+
     <Preview>
-      Thank you for registering your interest with us. We have successfully
-      received your details.
+      Thank you for registering your interest with us. Welcome to{" "}
+      {APP_INFO.name}.
     </Preview>
 
     <Body style={main}>
@@ -33,15 +33,18 @@ export const UserConfirmationEmail = ({ ...userDetails }: User) => (
 
         <Text style={paragraph}>
           Thank you for registering your interest with us. We have successfully
-          received your details. A member of our matchmaking team will review
-          your information and contact you as soon as possible to discuss the
-          next steps.
+          received your details.
         </Text>
 
         <Text style={paragraph}>
-          In the meantime, you can get started by filling application form.
-          Please click the button below to complete your profile application
-          process.
+          Our matchmaking team will carefully review your information and
+          contact you soon to discuss the next steps.
+        </Text>
+
+        <Text style={paragraph}>
+          In the meantime, please complete your profile application form by
+          clicking the button below. This will help us understand your
+          preferences and create the best possible match for you.
         </Text>
 
         <Section style={btnContainer}>
@@ -49,11 +52,21 @@ export const UserConfirmationEmail = ({ ...userDetails }: User) => (
             style={button}
             href={`${BASE_URL}/application-form?email=${userDetails.email}`}
           >
-            Register Application Form
+            Complete Application Form
           </Button>
         </Section>
 
-        <Text style={paragraph}>Best regards,</Text>
+        <Text style={paragraph}>
+          If you have any questions or need assistance, simply reply to this
+          email or contact our team. We will be happy to help you.
+        </Text>
+
+        <Text style={paragraph}>
+          We look forward to helping you find a meaningful and lasting
+          relationship.
+        </Text>
+
+        <Text style={paragraph}>Warm regards,</Text>
 
         <Section style={signature}>
           <Container style={signatureContainer}>
@@ -65,6 +78,7 @@ export const UserConfirmationEmail = ({ ...userDetails }: User) => (
             />
 
             <Text style={appName}>{APP_INFO.name}</Text>
+
             <Text style={tagline}>{APP_INFO.tagline}</Text>
           </Container>
         </Section>
@@ -77,8 +91,9 @@ export const UserConfirmationEmail = ({ ...userDetails }: User) => (
           Phone: {CONTACT.primaryPhone}
         </Text>
 
-        <Text style={autoMessage}>
-          This is an automated message. Please do not reply to this email.
+        <Text style={replyMessage}>
+          You can reply directly to this email if you have any questions. Our
+          matchmaking team will be happy to assist you.
         </Text>
 
         <Section style={copyrightSection}>
@@ -102,43 +117,48 @@ const main = {
 const container = {
   margin: "0 auto",
   padding: "20px 0 48px",
+  maxWidth: "600px",
 }
 
 const paragraph = {
   fontSize: "16px",
   lineHeight: "26px",
+  color: "#333333",
 }
 
 const btnContainer = {
   textAlign: "center" as const,
+  margin: "32px 0",
 }
 
 const button = {
   backgroundColor: "#cfa14f",
-  borderRadius: "3px",
-  color: "#fff",
+  borderRadius: "6px",
+  color: "#ffffff",
   fontSize: "16px",
   textDecoration: "none",
   textAlign: "center" as const,
   display: "block",
-  padding: "12px",
+  padding: "12px 24px",
+  fontWeight: "600",
 }
 
 const hr = {
   borderColor: "#cccccc",
-  margin: "20px 0",
+  margin: "30px 0",
 }
 
 const footer = {
-  color: "#8898aa",
-  fontSize: "12px",
+  color: "#6b7280",
+  fontSize: "13px",
+  lineHeight: "22px",
 }
 
-const autoMessage = {
-  color: "#8898aa",
-  fontSize: "12px",
+const replyMessage = {
+  color: "#6b7280",
+  fontSize: "13px",
+  lineHeight: "20px",
   marginTop: "12px",
-  fontStyle: "italic",
 }
 
 const copyrightSection = {
@@ -146,7 +166,7 @@ const copyrightSection = {
 }
 
 const copyright = {
-  color: "#8898aa",
+  color: "#9ca3af",
   fontSize: "12px",
   marginTop: "8px",
   textAlign: "center" as const,

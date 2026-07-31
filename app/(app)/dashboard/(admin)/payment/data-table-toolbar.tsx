@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/input-group"
 
 import { paymentStatuses } from "./statuses"
+import { paymentPlans } from "./plans"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { DataTableViewOptions } from "./data-table-view-options"
 
@@ -42,6 +43,13 @@ export function DataTableToolbar<TData>({
             column={table.getColumn("status")}
             title="Status"
             options={paymentStatuses}
+          />
+        )}
+        {table.getColumn("plan") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("plan")}
+            title="Plan"
+            options={paymentPlans}
           />
         )}
         {isFiltered && (

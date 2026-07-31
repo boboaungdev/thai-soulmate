@@ -1,6 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
+import { format } from "date-fns"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -16,6 +17,8 @@ export type Payment = {
   date: string
   status: PaymentStatus // Use the imported PaymentStatus type
   avatar: string
+  plan: string
+  amount: number
 }
 
 export const columns: ColumnDef<Payment>[] = [
@@ -60,6 +63,30 @@ export const columns: ColumnDef<Payment>[] = [
     ),
   },
   {
+    accessorKey: "plan",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Plan" />
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Amount" />
+    ),
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("amount"))
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "THB",
+      }).format(amount)
+
+      return <div className="font-medium">{formatted}</div>
+    },
+  },
+  {
     accessorKey: "email",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Email" />
@@ -69,12 +96,6 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: "phone",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Phone" />
-    ),
-  },
-  {
-    accessorKey: "date",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date" />
     ),
   },
   {
@@ -93,6 +114,18 @@ export const columns: ColumnDef<Payment>[] = [
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: "date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date" />
+    ),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("date"))
+      const formattedDate = format(date, "d MMM yyyy HH:mm")
+
+      return <div>{formattedDate}</div>
     },
   },
   {

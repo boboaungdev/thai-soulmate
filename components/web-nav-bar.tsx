@@ -178,15 +178,27 @@ export function WebNavBar() {
                       </a>
                     </SheetClose>
                   ))}
-                  <SheetClose asChild>
-                    <Link
-                      href="/auth"
-                      className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
-                    >
-                      <span>Login</span>
-                      <ArrowUpRight className="size-4" />
-                    </Link>
-                  </SheetClose>
+                  {isClient && (
+                    <SheetClose asChild>
+                      {user ? (
+                        <Link
+                          href="/dashboard"
+                          className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
+                        >
+                          <span>Dashboard</span>
+                          <ArrowUpRight className="size-4" />
+                        </Link>
+                      ) : (
+                        <Link
+                          href="/auth"
+                          className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
+                        >
+                          <span>Login</span>
+                          <ArrowUpRight className="size-4" />
+                        </Link>
+                      )}
+                    </SheetClose>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>

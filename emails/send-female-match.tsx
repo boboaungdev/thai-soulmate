@@ -26,10 +26,7 @@ export const SendFemaleMatchEmail = ({ to }: SendFemaleMatchEmailProps) => (
   <Html>
     <Head />
 
-    <Preview>
-      A potential match has been selected for you. Please review the attached
-      profile.
-    </Preview>
+    <Preview>A carefully selected match is waiting for your review.</Preview>
 
     <Body style={main}>
       <Container style={container}>
@@ -37,47 +34,36 @@ export const SendFemaleMatchEmail = ({ to }: SendFemaleMatchEmailProps) => (
           Dear {to.prefix} {to.name},
         </Text>
 
-        <Text style={paragraph}>We hope you are doing well.</Text>
-
         <Text style={paragraph}>
-          Our matchmaking team is pleased to let you know that we have carefully
-          selected a potential match for you based on your preferences,
-          compatibility, and the information you shared with us.
+          We are pleased to let you know that our matchmaking team has carefully
+          selected a potential match for you.
         </Text>
 
         <Text style={paragraph}>
-          Please find the gentleman&apos;s profile attached to this email as a
-          PDF document. We encourage you to review it carefully and take your
-          time before making your decision.
+          His profile is attached to this email as a PDF for your review.
         </Text>
 
         <Text style={paragraph}>
-          If you are interested in getting to know this gentleman, please reply
-          to this email or contact our team within <strong>24 hours</strong>.
+          If you would like to proceed, please reply to this email within{" "}
+          <b>24 hours</b>.
         </Text>
 
         <Text style={paragraph}>
-          Once we receive your confirmation, we will proceed with the next step
-          of the introduction. If we do not hear from you within 24 hours, our
-          team will follow up with you before moving forward.
+          Once we receive your confirmation, we will notify him and continue
+          with the next step of the introduction.
         </Text>
 
         <Text style={paragraph}>
-          To protect the privacy of all members, we kindly ask that you keep the
-          attached profile confidential and do not share it with anyone.
+          To protect the privacy of all members, please keep the attached
+          profile confidential and do not share it with anyone.
         </Text>
 
         <Text style={paragraph}>
-          If you have any questions or need further assistance, please feel free
-          to contact us. We are always happy to help.
+          If you have any questions, simply reply to this email. Our matchmaking
+          team will be happy to assist you.
         </Text>
 
-        <Text style={paragraph}>
-          Thank you for trusting {APP_INFO.name}. We look forward to helping you
-          find a meaningful and lasting relationship.
-        </Text>
-
-        <Text style={paragraph}>Best regards,</Text>
+        <Text style={paragraph}>Warm regards,</Text>
 
         <Section style={signature}>
           <Container style={signatureContainer}>
@@ -102,9 +88,9 @@ export const SendFemaleMatchEmail = ({ to }: SendFemaleMatchEmailProps) => (
           Phone: {CONTACT.primaryPhone}
         </Text>
 
-        <Text style={autoMessage}>
-          This is an automated email. Please do not reply directly to this
-          message.
+        <Text style={replyMessage}>
+          Simply reply to this email to let us know your decision or if you have
+          any questions. We look forward to hearing from you.
         </Text>
 
         <Section style={copyrightSection}>
@@ -143,15 +129,16 @@ const hr = {
 }
 
 const footer = {
-  color: "#8898aa",
-  fontSize: "12px",
+  color: "#6b7280",
+  fontSize: "13px",
+  lineHeight: "22px",
 }
 
-const autoMessage = {
-  color: "#8898aa",
-  fontSize: "12px",
+const replyMessage = {
+  color: "#6b7280",
+  fontSize: "13px",
+  lineHeight: "20px",
   marginTop: "12px",
-  fontStyle: "italic",
 }
 
 const copyrightSection = {
@@ -159,7 +146,7 @@ const copyrightSection = {
 }
 
 const copyright = {
-  color: "#8898aa",
+  color: "#9ca3af",
   fontSize: "12px",
   marginTop: "8px",
   textAlign: "center" as const,

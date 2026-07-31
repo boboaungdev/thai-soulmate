@@ -32,7 +32,7 @@ export const SendMaleMatchEmail = ({
     <Head />
 
     <Preview>
-      Great news! Your potential match has accepted. View her profile now.
+      Your match has accepted. View her profile and reply within 24 hours.
     </Preview>
 
     <Body style={main}>
@@ -42,23 +42,13 @@ export const SendMaleMatchEmail = ({
         </Text>
 
         <Text style={paragraph}>
-          We are delighted to share some wonderful news.
+          We are pleased to let you know that the lady we recently introduced
+          has accepted your match.
         </Text>
 
         <Text style={paragraph}>
-          The lady we recently introduced has expressed her interest in getting
-          to know you. We are excited to move forward with the next stage of
-          your matchmaking journey.
-        </Text>
-
-        <Text style={paragraph}>
-          Please find her profile attached to this email as a PDF document for
-          your review.
-        </Text>
-
-        <Text style={paragraph}>
-          You can also securely view her profile online by clicking the button
-          below.
+          Her profile is attached to this email as a PDF. You can also securely
+          view it online by clicking the button below.
         </Text>
 
         <Section style={buttonSection}>
@@ -71,13 +61,8 @@ export const SendMaleMatchEmail = ({
         </Section>
 
         <Text style={paragraph}>
-          If you would like to proceed with this introduction, please accept the
-          match through your account or contact our team within <b>24 hours</b>.
-        </Text>
-
-        <Text style={paragraph}>
-          If we do not receive your response within this period, our team will
-          contact you before proceeding to the next step.
+          If you would like to proceed, please reply to this email or confirm
+          your interest through your account within <b>24 hours</b>.
         </Text>
 
         <Text style={paragraph}>
@@ -86,10 +71,11 @@ export const SendMaleMatchEmail = ({
         </Text>
 
         <Text style={paragraph}>
-          If you have any questions, our team will be happy to assist you.
+          If you have any questions, simply reply to this email. Our matchmaking
+          team will be happy to assist you.
         </Text>
 
-        <Text style={paragraph}>Best regards,</Text>
+        <Text style={paragraph}>Warm regards,</Text>
 
         <Section style={signature}>
           <Container style={signatureContainer}>
@@ -114,8 +100,9 @@ export const SendMaleMatchEmail = ({
           Phone: {CONTACT.primaryPhone}
         </Text>
 
-        <Text style={autoMessage}>
-          This is an automated email. Please do not reply to this email.
+        <Text style={replyMessage}>
+          Simply reply to this email to confirm your interest or ask any
+          questions. We look forward to hearing from you.
         </Text>
 
         <Section style={copyrightSection}>
@@ -169,15 +156,16 @@ const hr = {
 }
 
 const footer = {
-  color: "#8898aa",
-  fontSize: "12px",
+  color: "#6b7280",
+  fontSize: "13px",
+  lineHeight: "22px",
 }
 
-const autoMessage = {
-  color: "#8898aa",
-  fontSize: "12px",
+const replyMessage = {
+  color: "#6b7280",
+  fontSize: "13px",
+  lineHeight: "20px",
   marginTop: "12px",
-  fontStyle: "italic",
 }
 
 const copyrightSection = {
@@ -185,7 +173,7 @@ const copyrightSection = {
 }
 
 const copyright = {
-  color: "#8898aa",
+  color: "#9ca3af",
   fontSize: "12px",
   marginTop: "8px",
   textAlign: "center" as const,

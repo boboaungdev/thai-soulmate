@@ -45,7 +45,7 @@ export function Footer() {
                 <p className="truncate text-sm text-muted-foreground">
                   {APP_INFO.tagline}
                 </p>
-                <p className="text-sm whitespace-pre-line text-muted-foreground">
+                <p className="mt-2 text-sm whitespace-pre-line text-muted-foreground">
                   {APP_INFO.secondaryTagline}
                 </p>
               </div>

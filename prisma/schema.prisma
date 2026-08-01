@@ -61,6 +61,9 @@ model Note {
   applicationFormId String?
   applicationForm   ApplicationForm? @relation(fields: [applicationFormId], references: [id])
 
+  soulmateId String?
+  soulmate   Soulmate? @relation(fields: [soulmateId], references: [id])
+
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
@@ -75,26 +78,21 @@ model ApplicationForm {
   status ApplicationFormStatus @default(OPEN)
 
   personalDetails Json
-
-  career Json
-
-  appearance Json
-
-  personality Json
-
-  lifestyle Json
-
+  career          Json
+  appearance      Json
+  personality     Json
+  lifestyle       Json
   relationshipGoals Json
-
-  idealPartner Json
-
-  financial Json
-
-  photos Json
+  idealPartner    Json
+  financial       Json
+  photos          Json
 
   membership Membership?
 
   notes Note[]
+
+  asMale   Soulmate[] @relation("MaleSoulmate")
+  asFemale Soulmate[] @relation("FemaleSoulmate")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -115,6 +113,24 @@ model Membership {
   updatedAt DateTime @updatedAt
 }
 
+model Soulmate {
+  id   String @id @default(cuid())
+  male   ApplicationForm @relation("MaleSoulmate", fields: [maleId], references: [id])
+  maleId String
+
+  female   ApplicationForm @relation("FemaleSoulmate", fields: [femaleId], references: [id])
+  femaleId String
+
+  status SoulmateStatus @default(INITIAL_CONNECT)
+
+  notes Note[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([maleId, femaleId])
+}
+
 enum Role {
   DEV
   ADMIN
@@ -125,6 +141,7 @@ enum Role {
 enum NoteType {
   REGISTER_INTEREST
   APPLICATION_FORM
+  SOULMATE
 }
 
 enum RegisterInterestStatus {
@@ -146,4 +163,16 @@ enum ApplicationFormStatus {
 enum MembershipType {
   FREE
   VIP
+}
+
+enum SoulmateStatus {
+  INITIAL_CONNECT
+  MALE_PROFILE_SENT
+  FEMALE_PROFILE_SENT
+  MALE_REJECT
+  FEMALE_REJECT
+  PROFILES_ACCEPTED
+  FIRST_GOOGLE_MEET
+  SECOND_GOOGLE_MEET
+  FOLLOW_UP
 }

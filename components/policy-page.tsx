@@ -1,8 +1,8 @@
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 import React from "react"
 
-import { APP_INFO } from "@/constants"
+import { Button } from "./ui/button"
 
 type PolicyContent = {
   heading: string
@@ -19,13 +19,16 @@ export function PolicyPage({ title, content }: PolicyPageProps) {
     <main className="min-h-svh bg-gradient-to-b from-muted/20 to-background">
       <section className="border-b border-border/70">
         <div className="mx-auto w-full max-w-4xl px-4 pt-8 pb-16 sm:px-6 sm:pt-12 sm:pb-20 lg:px-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full px-1 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          <Button
+            asChild
+            variant="link"
+            className="text-muted-foreground hover:text-foreground"
           >
-            <ArrowLeft className="size-4" />
-            Back to {APP_INFO.name}
-          </Link>
+            <Link href="/" className="gap-2">
+              <ChevronLeft className="size-4" />
+              Back to Home
+            </Link>
+          </Button>
 
           <header className="mt-8 sm:mt-12">
             <h1 className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl lg:text-6xl">

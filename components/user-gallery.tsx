@@ -23,11 +23,8 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
 
   useEffect(() => {
     async function fetchUsers() {
-      const userCount = layout === "grid" ? 12 : 20
       try {
-        const response = await fetch(
-          `/api/gallery?results=${userCount}&gender=female`
-        )
+        const response = await fetch(`/api/gallery?gender=female`)
         if (!response.ok) {
           throw new Error("Failed to fetch users")
         }
@@ -49,7 +46,7 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
       if (!card) return
 
       const cardWidth = card.offsetWidth
-      const scrollAmount = (cardWidth + 24) * (direction === "left" ? -1 : 1) // 24px for gap-6
+      const scrollAmount = (cardWidth + 24) * (direction === "left" ? -1 : 1)
       viewportRef.current.scrollBy({
         left: scrollAmount,
         behavior: "smooth",

@@ -20,8 +20,8 @@ export const CONTACT = {
 } as const
 
 export const EMAIL = {
-  noreply: "noreply@kkhay.com",
-  contact: "bobo@kkhay.com",
+  noreply: "noreply@thaisoulmate.org",
+  contact: "contact@thaisoulmate.org",
 } as const
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL

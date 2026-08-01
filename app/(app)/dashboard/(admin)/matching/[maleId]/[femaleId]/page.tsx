@@ -577,17 +577,19 @@ type MatchComparisonPageProps = {
   }
 }
 
+import { ConnectButton } from "./ConnectButton";
+
 export default async function MatchComparisonPage({
   params,
 }: MatchComparisonPageProps) {
-  const { maleId, femaleId } = await params
+  const { maleId, femaleId } = await params;
 
   const res = await fetch(`${BASE_URL}/api/matching/${maleId}/${femaleId}`, {
     cache: "no-store",
-  })
+  });
 
   if (!res.ok) {
-    const errorText = await res.text()
+    const errorText = await res.text();
     return (
       <div className="flex h-full items-center justify-center p-6 text-center text-red-500">
         Error: Failed to fetch match details.
@@ -597,21 +599,21 @@ export default async function MatchComparisonPage({
           <pre className="mt-4 whitespace-pre-wrap">{errorText}</pre>
         )}
       </div>
-    )
+    );
   }
 
-  const data = await res.json()
+  const data = await res.json();
 
   if (data.error) {
     return (
       <div className="flex h-full items-center justify-center text-red-500">
         Error from API: {data.error}
       </div>
-    )
+    );
   }
 
   if (!data.male || !data.female) {
-    return notFound()
+    return notFound();
   }
 
   const {
@@ -620,10 +622,10 @@ export default async function MatchComparisonPage({
     matchPercentage,
     matchBreakdown = [],
     dealBreakerPenalties = [],
-  } = data
+  } = data;
   const matchByKey = Object.fromEntries(
     matchBreakdown.map((item: MatchBreakdownItem) => [item.key, item.matched])
-  )
+  );
 
   return (
     <main className="p-4 md:p-6">
@@ -635,10 +637,7 @@ export default async function MatchComparisonPage({
           </Link>
         </Button>
 
-        <Button className="btn-gradient">
-          <HeartHandshake className="mr-2 h-4 w-4" />
-          Connect Soulmates
-        </Button>
+        <ConnectButton maleId={maleId} femaleId={femaleId} />
       </div>
 
       <div className="mb-6 rounded-lg border bg-card p-4">

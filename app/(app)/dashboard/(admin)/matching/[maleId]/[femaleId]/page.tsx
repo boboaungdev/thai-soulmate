@@ -627,12 +627,19 @@ export default async function MatchComparisonPage({
 
   return (
     <main className="p-4 md:p-6">
-      <Button asChild variant="link" className="mb-4 text-foreground">
-        <Link href="/dashboard/matching">
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Back to Matching
-        </Link>
-      </Button>
+      <div className="mb-4 flex items-center justify-between">
+        <Button asChild variant="link" className="p-0 text-foreground">
+          <Link href="/dashboard/matching">
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Matching
+          </Link>
+        </Button>
+
+        <Button className="btn-gradient">
+          <HeartHandshake className="mr-2 h-4 w-4" />
+          Connect Soulmates
+        </Button>
+      </div>
 
       <div className="mb-6 rounded-lg border bg-card p-4">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">

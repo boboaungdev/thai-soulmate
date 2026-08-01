@@ -137,7 +137,7 @@ export function Footer() {
                   </span>
                 </a>
               </Button>
-              {/* <Button
+              <Button
                 asChild
                 variant="outline"
                 size="sm"
@@ -149,7 +149,7 @@ export function Footer() {
                     {CONTACT.secondaryPhone} (English)
                   </span>
                 </a>
-              </Button> */}
+              </Button>
             </div>
           </div>
         </div>

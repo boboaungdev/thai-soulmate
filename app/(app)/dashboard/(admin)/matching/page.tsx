@@ -349,7 +349,7 @@ export default function MatchingPage() {
                       ? "Loading males..."
                       : selectedMale
                         ? `${selectedMale.personalDetails.prefix} ${selectedMale.personalDetails.name}`
-                        : "Select male"}
+                        : "Select a male"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>

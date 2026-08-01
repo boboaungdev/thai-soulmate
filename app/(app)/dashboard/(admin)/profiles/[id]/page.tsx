@@ -499,7 +499,11 @@ export default function ProfilesDetailPage() {
                                   (u) => u.id === selectedUserIdToSend
                                 )?.personalDetails?.name
                               }`
-                            : "Select a user"}
+                            : personalDetails?.gender === "Male"
+                              ? "Select a female"
+                              : personalDetails?.gender === "Female"
+                                ? "Select a male"
+                                : "Select a user"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>

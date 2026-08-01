@@ -28,7 +28,7 @@ interface Soulmate {
   id: string
   maleId: string
   femaleId: string
-  status: SoulmateStatus | "Male Rejected" | "Female Rejected"
+  status: SoulmateStatus
   male: { personalDetails: PersonalDetails; photos: Photos }
   female: { personalDetails: PersonalDetails; photos: Photos }
 }

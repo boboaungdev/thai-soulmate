@@ -9,33 +9,14 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-
-interface RandomUser {
-  login: {
-    uuid: string
-  }
-  name: {
-    first: string
-    last: string
-  }
-  dob: {
-    age: number
-  }
-  location: {
-    city: string
-    country: string
-  }
-  picture: {
-    large: string
-  }
-}
+import { ApplicationForm } from "@/types/application-form"
 
 interface UserGalleryProps {
   layout?: "grid" | "scroll"
 }
 
 export function UserGallery({ layout = "grid" }: UserGalleryProps) {
-  const [users, setUsers] = useState<RandomUser[]>([])
+  const [users, setUsers] = useState<ApplicationForm[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
@@ -45,13 +26,13 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
       const userCount = layout === "grid" ? 12 : 20
       try {
         const response = await fetch(
-          `https://randomuser.me/api/?results=${userCount}&gender=female&nat=us,gb,au,ca,nz,ie`
+          `/api/gallery?results=${userCount}&gender=female`
         )
         if (!response.ok) {
           throw new Error("Failed to fetch users")
         }
         const data = await response.json()
-        setUsers(data.results)
+        setUsers(data.data)
       } catch (error) {
         console.error(error)
       } finally {
@@ -76,6 +57,17 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
     }
   }
 
+  const calculateAge = (dob: string | Date) => {
+    const birthDate = new Date(dob)
+    const today = new Date()
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const m = today.getMonth() - birthDate.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--
+    }
+    return age
+  }
+
   if (layout === "scroll") {
     return (
       <div className="relative">
@@ -83,8 +75,8 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
           {!isLoading && users.length > 0 && (
             <Button
               variant="outline"
-              size="icon"
-              className="rounded-full shadow-md"
+              size="lg"
+              className="btn-gradient rounded-full shadow-md"
               onClick={() => scroll("left")}
             >
               <ChevronLeft className="size-4" />
@@ -105,13 +97,16 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
               : users.map((user) => (
                   <Link
                     href="/#register-interest"
-                    key={user.login.uuid}
+                    key={user.id}
                     className="bg-gold block rounded-lg p-[2px]"
                   >
                     <Card className="group relative h-[380px] w-[280px] shrink-0 overflow-hidden rounded-md border-0 bg-background">
                       <Image
-                        src={user.picture.large}
-                        alt={`${user.name.first} ${user.name.last}`}
+                        src={user.photos.headshot}
+                        alt={
+                          user.personalDetails.nickname ||
+                          user.personalDetails.name
+                        }
                         fill
                         sizes="(max-width: 768px) 100vw, 280px"
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -120,13 +115,17 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
                       <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                         <p className="text-lg font-semibold">
                           <span className="text-gold">
-                            ID-{user.login.uuid.slice(0, 4).toUpperCase()}
+                            ID-
+                            {String(user.customId).padStart(4, "0")}
                           </span>
-                          , <span className="text-pink">{user.dob.age}</span>
+                          ,{" "}
+                          <span className="text-pink">
+                            {calculateAge(user.personalDetails.dob)}
+                          </span>
                         </p>
                         <p className="flex items-center gap-1 text-sm">
                           <MapPin className="size-3" />
-                           {user.location.country}
+                          {user.personalDetails.currentLocation}
                         </p>
                       </div>
                     </Card>
@@ -139,8 +138,8 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
           {!isLoading && users.length > 0 && (
             <Button
               variant="outline"
-              size="icon"
-              className="rounded-full shadow-md"
+              size="lg"
+              className="btn-gradient rounded-full shadow-md"
               onClick={() => scroll("right")}
             >
               <ChevronRight className="size-4" />
@@ -164,14 +163,16 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
           ))
         : users.map((user) => (
             <Link
-              href={`/gallery/${user.login.uuid}`}
-              key={user.login.uuid}
+              href={`/gallery/${user.id}`}
+              key={user.id}
               className="bg-gold block w-[280px] rounded-lg p-[2px]"
             >
               <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
                 <Image
-                  src={user.picture.large}
-                  alt={`${user.name.first} ${user.name.last}`}
+                  src={user.photos.headshot}
+                  alt={
+                    user.personalDetails.nickname || user.personalDetails.name
+                  }
                   fill
                   sizes="280px"
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -180,13 +181,16 @@ export function UserGallery({ layout = "grid" }: UserGalleryProps) {
                 <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                   <p className="text-lg font-semibold">
                     <span className="text-gold">
-                      ID-{user.login.uuid.slice(0, 4).toUpperCase()}
+                      ID-{String(user.customId).padStart(4, "0")}
                     </span>
-                    , <span className="text-pink">{user.dob.age}</span>
+                    ,{" "}
+                    <span className="text-pink">
+                      {calculateAge(user.personalDetails.dob)}
+                    </span>
                   </p>
                   <p className="flex items-center gap-1 text-sm">
                     <MapPin className="size-3" />
-                    {user.location.country}
+                    {user.personalDetails.currentLocation}
                   </p>
                 </div>
               </Card>

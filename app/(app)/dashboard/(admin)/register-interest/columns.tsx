@@ -141,7 +141,7 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <div className="w-[150px]">
+      <div className="max-w-[150px] truncate">
         {row.original.prefix} {row.getValue("name")}
       </div>
     ),
@@ -163,7 +163,7 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
       <DataTableColumnHeader column={column} title="Nationality" />
     ),
     cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue("nationality")}</div>
+      <div className="max-w-[80px] truncate">{row.getValue("nationality")}</div>
     ),
   },
   {
@@ -172,7 +172,9 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
       <DataTableColumnHeader column={column} title="Location" />
     ),
     cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue("currentLocation")}</div>
+      <div className="max-w-[120px] truncate">
+        {row.getValue("currentLocation")}
+      </div>
     ),
   },
   {
@@ -198,7 +200,7 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="min-w-[100px] truncate font-medium">
+          <span className="max-w-[140px] truncate font-medium">
             (+66) {row.getValue("phone")}
           </span>
         </div>
@@ -213,7 +215,7 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
+          <span className="max-w-[200px] truncate font-medium">
             {row.getValue("email")}
           </span>
         </div>

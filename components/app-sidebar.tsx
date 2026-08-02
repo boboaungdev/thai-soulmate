@@ -160,6 +160,9 @@ const adminItems = [
     url: "/dashboard/tracking",
     icon: HeartPulse,
   },
+]
+
+const securityItems = [
   {
     title: "Login User",
     url: "/dashboard/login-user",
@@ -285,6 +288,32 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {adminItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pathname === item.url}
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+        {(user?.role === "ADMIN" || user?.role === "DEV") && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+              Security
+            </SidebarGroupLabel>
+
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {securityItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild

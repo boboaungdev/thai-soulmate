@@ -47,8 +47,6 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { FaSmoking } from "react-icons/fa"
-import dayjs from "dayjs"
-import localizedFormat from "dayjs/plugin/localizedFormat"
 import { toast } from "sonner"
 
 import {
@@ -96,9 +94,7 @@ import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
 import { useAuthStore } from "@/stores/auth-store"
 
 import { applicationStatuses, getApplicationStatusMeta } from "../statuses"
-import { R2 } from "@/constants"
-
-dayjs.extend(localizedFormat)
+import { calculateAge, formatDateTime } from "@/lib/date"
 
 type NoteWithUser = Note & {
   user: Pick<PrismaUser, "name" | "avatar" | "email" | "role">
@@ -107,11 +103,6 @@ type NoteWithUser = Note & {
 type ApplicationDetail = ApplicationForm & {
   status: ApplicationFormStatus
   notes?: NoteWithUser[]
-}
-
-const calculateAge = (dob: string | Date) => {
-  if (!dob) return 0
-  return dayjs().diff(dayjs(dob), "year")
 }
 
 const displayValue = (value: React.ReactNode) => {
@@ -380,8 +371,7 @@ function NotesSection({
                       </DropdownMenu>
                     </div>
                     <div className="mt-1 text-xs text-muted-foreground">
-                      Created:{" "}
-                      {dayjs(note.createdAt).format("MMM D, YYYY h:mm A")}
+                      Created: {formatDateTime(note.createdAt)}
                     </div>
                     <p className="mt-2 text-sm whitespace-pre-wrap">
                       {note.message}
@@ -657,7 +647,6 @@ export default function ApplicationDetailPage() {
     status,
     notes = [],
   } = application
-  const age = calculateAge(personalDetails?.dob)
 
   const photoLabels: Record<string, string> = {
     headshot: "Headshot",
@@ -753,7 +742,7 @@ export default function ApplicationDetailPage() {
                 <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground md:justify-start">
                   <span className="flex items-center gap-1.5">
                     <Cake className="h-4 w-4" />
-                    {age} years old
+                    {calculateAge(personalDetails?.dob)} years old
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="h-4 w-4" />
@@ -761,7 +750,7 @@ export default function ApplicationDetailPage() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <CalendarDays className="h-4 w-4" />
-                    Submitted {dayjs(createdAt).format("LL")}
+                    Submitted {formatDateTime(createdAt)}
                   </span>
                 </div>
               </div>
@@ -818,7 +807,9 @@ export default function ApplicationDetailPage() {
               label="Date of Birth"
               value={
                 personalDetails?.dob
-                  ? `${dayjs(personalDetails.dob).format("LL")} (${age} years old)`
+                  ? `${formatDateTime(personalDetails.dob)} (${calculateAge(
+                      personalDetails.dob
+                    )} years old)`
                   : "-"
               }
             />

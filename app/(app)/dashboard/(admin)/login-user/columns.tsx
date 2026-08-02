@@ -4,10 +4,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
-import dayjs from "dayjs"
-import localizedFormat from "dayjs/plugin/localizedFormat"
-
-dayjs.extend(localizedFormat)
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"

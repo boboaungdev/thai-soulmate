@@ -5,16 +5,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
 import { StickyNote } from "lucide-react"
-import dayjs from "dayjs"
-import localizedFormat from "dayjs/plugin/localizedFormat"
-
-dayjs.extend(localizedFormat)
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { getApplicationStatusMeta } from "./statuses"
 import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
 import { ApplicationForm } from "@/types/application-form"
+import { calculateAge, formatDateTime } from "@/lib/date"
 
 export type ApplicationRow = ApplicationForm & {
   status: ApplicationFormStatus
@@ -25,8 +22,6 @@ export type ApplicationRow = ApplicationForm & {
     id: string
   }[]
 }
-
-const getAge = (dob: string | Date) => dayjs().diff(dayjs(dob), "year")
 
 export const columns: ColumnDef<ApplicationRow>[] = [
   {
@@ -130,13 +125,13 @@ export const columns: ColumnDef<ApplicationRow>[] = [
   },
   {
     id: "age",
-    accessorFn: (row) => getAge(row.personalDetails?.dob),
+    accessorFn: (row) => calculateAge(row.personalDetails?.dob),
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Age" />
     ),
     cell: ({ row }) => (
       <div className="w-[80px]">
-        {getAge(row.original.personalDetails?.dob)}
+        {calculateAge(row.original.personalDetails?.dob)}
       </div>
     ),
   },
@@ -225,7 +220,7 @@ export const columns: ColumnDef<ApplicationRow>[] = [
     ),
     cell: ({ row }) => (
       <div className="max-w-[150px] truncate font-medium">
-        {dayjs(row.original.createdAt).format("D MMM YYYY HH:mm")}
+        {formatDateTime(row.original.createdAt)}
       </div>
     ),
   },

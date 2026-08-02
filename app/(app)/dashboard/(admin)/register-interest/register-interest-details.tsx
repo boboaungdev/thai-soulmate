@@ -44,11 +44,7 @@ import { toast } from "sonner"
 
 import { useAuthStore } from "@/stores/auth-store"
 import { Note, RegisterInterest, User } from "@/lib/generated/prisma/client"
-
-import dayjs from "dayjs"
-import localizedFormat from "dayjs/plugin/localizedFormat"
-
-dayjs.extend(localizedFormat)
+import { calculateAge, formatDateTime, formatDOB } from "@/lib/date"
 
 type NoteWithUser = Note & {
   user: Pick<User, "name" | "avatar" | "email" | "role">
@@ -202,8 +198,6 @@ export function RegisterInterestDetails({
     }
   }
 
-  const age = dayjs().diff(item.dob, "year")
-
   return (
     <>
       <Sheet open={!!item} onOpenChange={(open) => !open && onClose()}>
@@ -222,7 +216,7 @@ export function RegisterInterestDetails({
               <DetailItem label="Gender" value={item.gender} />
               <DetailItem
                 label="Date of Birth"
-                value={`${dayjs(item.dob).format("LL")} (${age} years old)`}
+                value={`${formatDOB(item.dob, { showAge: true })}`}
               />
               <DetailItem label="Nationality" value={item.nationality} />
               <DetailItem
@@ -241,7 +235,7 @@ export function RegisterInterestDetails({
               <DetailItem label="Status" value={item.status} />
               <DetailItem
                 label="Registered On"
-                value={dayjs(item.createdAt).format("LLL")}
+                value={formatDateTime(item.createdAt)}
               />
             </div>
 
@@ -342,19 +336,10 @@ export function RegisterInterestDetails({
                           </DropdownMenu>
                         </div>
                         <div className="mt-1 text-xs text-muted-foreground">
-                          <p>
-                            Created:{" "}
-                            {dayjs(note.createdAt).format("MMM D, YYYY h:mm A")}
-                          </p>
-                          {dayjs(note.updatedAt).isAfter(
-                            dayjs(note.createdAt)
-                          ) && (
-                            <p>
-                              Updated:{" "}
-                              {dayjs(note.updatedAt).format(
-                                "MMM D, YYYY h:mm A"
-                              )}
-                            </p>
+                          <p>Created: {formatDateTime(note.createdAt)}</p>
+                          {formatDateTime(note.updatedAt) !==
+                            formatDateTime(note.createdAt) && (
+                            <p>Updated: {formatDateTime(note.updatedAt)}</p>
                           )}
                         </div>
                         <p className="mt-1 text-sm">{note.message}</p>

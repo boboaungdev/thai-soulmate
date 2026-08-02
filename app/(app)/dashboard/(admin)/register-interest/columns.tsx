@@ -12,15 +12,12 @@ import {
   StickyNote,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
-import dayjs from "dayjs"
-import localizedFormat from "dayjs/plugin/localizedFormat"
-
-dayjs.extend(localizedFormat)
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { RegisterInterestStatus } from "@/lib/generated/prisma/enums"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
+import { formatDateTime, formatDOB } from "@/lib/date"
 
 type RegisterInterestWithNotesCount = RegisterInterest & {
   _count: {
@@ -183,11 +180,9 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
       <DataTableColumnHeader column={column} title="DOB (Age)" />
     ),
     cell: ({ row }) => {
-      const dob = dayjs(row.getValue("dob") as string)
-      const age = dayjs().diff(dob, "year")
       return (
         <div className="w-[120px]">
-          {dob.format("D MMM YYYY")} ({age})
+          {formatDOB(row.getValue("dob"), { showAge: true })}
         </div>
       )
     },
@@ -267,11 +262,10 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
       <DataTableColumnHeader column={column} title="Registered On" />
     ),
     cell: ({ row }) => {
-      const createdAt = dayjs(row.getValue("createdAt") as string)
       return (
         <div className="flex space-x-2">
           <span className="max-w-[150px] truncate font-medium">
-            {createdAt.format("D MMM YYYY HH:mm")}
+            {formatDateTime(row.getValue("createdAt"))}
           </span>
         </div>
       )

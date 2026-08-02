@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 import { resend } from "@/lib/resend"
 import { AdminNotificationEmail, UserConfirmationEmail } from "@/emails"
-import { calculateAge } from "@/lib/utils"
+import { calculateAge } from "@/lib/date"
 
 const formSchema = z.object({
   prefix: z.string(),
@@ -21,10 +21,7 @@ const formSchema = z.object({
   gender: z.string(),
   nationality: z.string(),
   currentLocation: z.string(),
-  email: z
-    .string()
-    .email()
-    .transform((val) => val.toLowerCase()),
+  email: z.email().transform((val) => val.toLowerCase()),
 
   phoneCountry: z.string(),
   phone: z.string(),
@@ -58,7 +55,6 @@ export async function POST(req: Request) {
     }
 
     const birthDate = new Date(validatedData.dob)
-    const age = calculateAge(birthDate)
 
     const interestData = {
       prefix: validatedData.prefix,
@@ -105,7 +101,7 @@ export async function POST(req: Request) {
           subject: `New Interest Registration: ${validatedData.name}`,
           react: AdminNotificationEmail({
             ...validatedData,
-            age,
+            age: calculateAge(validatedData.dob),
             location: validatedData.currentLocation,
           }),
         }),

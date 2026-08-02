@@ -18,8 +18,8 @@ const faqs = [
     ),
     answer: (
       <>
-        <AppName /> is an exclusive 1-2-1 matchmaking service where we
-        function as your personal assistant in your search for a life partner in
+        <AppName /> is an exclusive 1-2-1 matchmaking service where we function
+        as your personal assistant in your search for a life partner in
         Thailand. We provide a discreet, confidential, and highly personalized
         experience to help you find a genuine, long-lasting relationship.
       </>
@@ -29,9 +29,7 @@ const faqs = [
     id: "how-different",
     question: (
       <>
-        How is&nbsp;
-        <AppName />
-        &nbsp;different from a dating app?
+        How is <AppName /> different from a dating app?
       </>
     ),
     answer: (
@@ -95,7 +93,7 @@ export function Faq() {
           >
             <AccordionItem value={faq.id}>
               <AccordionTrigger className="text-lg">
-                {faq.question}
+                <span className="min-w-0 flex-1 text-left">{faq.question}</span>
               </AccordionTrigger>
               <AccordionContent className="text-base text-muted-foreground">
                 {faq.answer}

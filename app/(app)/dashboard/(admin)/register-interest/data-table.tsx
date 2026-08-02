@@ -26,6 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { useRegisterInterestStore } from "@/stores/register-interest-store"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
@@ -41,17 +42,14 @@ export function DataTable<TData, TValue>({
   onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({
-      phone: true,
-      nationality: false,
-      currentLocation: false,
-      dob: false,
-      createdAt: true,
-      "_count.notes": true,
-    })
+  const columnVisibility = useRegisterInterestStore(
+    state => state.columnVisibility,
+  )
+  const setColumnVisibility = useRegisterInterestStore(
+    state => state.actions.setColumnVisibility,
+  )
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   )
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = React.useState("")
@@ -86,16 +84,16 @@ export function DataTable<TData, TValue>({
       <ScrollArea className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map(header => {
                   return (
                     <TableHead key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   )
@@ -105,18 +103,18 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map(row => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   className="cursor-pointer"
                   onClick={() => onRowClick?.(row.original)}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

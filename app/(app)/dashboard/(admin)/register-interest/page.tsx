@@ -1,11 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { RegisterInterestDetails } from "./register-interest-details"
 import { Skeleton } from "@/components/ui/skeleton"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
+import { useRegisterInterestStore } from "@/stores/register-interest-store"
 
 type RegisterInterestWithNotesCount = RegisterInterest & {
   _count: {
@@ -13,47 +14,26 @@ type RegisterInterestWithNotesCount = RegisterInterest & {
   }
 }
 
-async function getData(): Promise<RegisterInterestWithNotesCount[]> {
-  const res = await fetch("/api/register-interest")
-
-  if (!res.ok) {
-    const error = await res.json()
-    console.error("Failed to fetch data:", res.status, error)
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json()
-}
-
 export default function TaskPage() {
-  const [data, setData] = useState<RegisterInterestWithNotesCount[]>([])
-  const [loading, setLoading] = useState(true)
+  const data = useRegisterInterestStore(state => state.users)
+  const loading = useRegisterInterestStore(state => state.loading)
+  const actions = useRegisterInterestStore(state => state.actions)
+
   const [selectedItem, setSelectedItem] =
     useState<RegisterInterestWithNotesCount | null>(null)
 
-  const fetchData = useCallback(async () => {
-    setLoading(true)
-    try {
-      const data = await getData()
-      setData(data)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  useEffect(() => {
+    actions.fetchUsers()
+  }, [actions])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  useEffect(() => {
-    const handleUpdated = () => fetchData()
+    const handleUpdated = () => actions.forceFetchUsers()
     window.addEventListener("register-interest-updated", handleUpdated)
     return () => {
       window.removeEventListener("register-interest-updated", handleUpdated)
     }
-  }, [fetchData])
+  }, [actions])
+
   const handleRowClick = (item: RegisterInterestWithNotesCount) => {
     setSelectedItem(item)
   }
@@ -62,7 +42,7 @@ export default function TaskPage() {
     setSelectedItem(null)
   }
 
-  if (loading) {
+  if (loading && data.length === 0) {
     return (
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
@@ -71,7 +51,7 @@ export default function TaskPage() {
               Register Interest
             </h1>
             <p className="text-sm text-muted-foreground">
-              Users2 who submitted matchmaking interest forms
+              Users who submitted matchmaking interest forms
             </p>
           </div>
           <div className="flex items-center space-x-2"></div>
@@ -100,7 +80,7 @@ export default function TaskPage() {
               Register Interest
             </h1>
             <p className="text-sm text-muted-foreground">
-              Users2 who submitted matchmaking interest forms
+              Users who submitted matchmaking interest forms
             </p>
           </div>
           <div className="flex items-center space-x-2"></div>

@@ -158,7 +158,10 @@ const parseApplicant = (applicant: any) => ({
   idealPartner: safeParse(applicant.idealPartner),
   financial: safeParse(applicant.financial),
   photos: safeParse(applicant.photos),
-  isVip: applicant.membership?.type === "VIP",
+  isVip:
+    applicant.membership?.plan === "FEMALE_VIP_ONE_MONTH" ||
+    applicant.membership?.plan === "FEMALE_VIP_THREE_MONTHS" ||
+    applicant.membership?.plan === "FEMALE_VIP_SIX_MONTHS",
 })
 
 const buildFemaleWhere = (filter: string): Prisma.ApplicationFormWhereInput => {
@@ -170,11 +173,24 @@ const buildFemaleWhere = (filter: string): Prisma.ApplicationFormWhereInput => {
   }
 
   if (filter === "vip") {
-    where.membership = { is: { type: "VIP" } }
+    where.membership = {
+      is: {
+        plan: {
+          in: [
+            "FEMALE_VIP_ONE_MONTH",
+            "FEMALE_VIP_THREE_MONTHS",
+            "FEMALE_VIP_SIX_MONTHS",
+          ],
+        },
+      },
+    }
   }
 
   if (filter === "free") {
-    where.OR = [{ membership: null }, { membership: { is: { type: "FREE" } } }]
+    where.OR = [
+      { membership: null },
+      { membership: { is: { plan: "FEMALE_FREE" } } },
+    ]
   }
 
   return where
@@ -320,7 +336,7 @@ export async function GET(request: Request) {
       const femaleCareer = parsedFemale.career
       const femalePersonality = parsedFemale.personality
       const femaleLifestyle = parsedFemale.lifestyle
-      const femaleFinancial = parsedFemale.financial
+      // const femaleFinancial = parsedFemale.financial
       const femaleRelationshipGoals = parsedFemale.relationshipGoals
 
       // Age range match

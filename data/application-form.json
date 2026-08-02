@@ -374,7 +374,7 @@
       "casualLifestyle": "https://randomuser.me/api/portraits/women/4.jpg"
     },
     "membership": {
-      "type": "VIP",
+      "plan": "FEMALE_VIP_ONE_MONTH",
       "startsAt": "2026-07-26T00:00:00.000Z",
       "expiresAt": "2027-07-26T00:00:00.000Z"
     }
@@ -1134,7 +1134,7 @@
       "casualLifestyle": "https://randomuser.me/api/portraits/women/10.jpg"
     },
     "membership": {
-      "type": "VIP",
+      "plan": "FEMALE_VIP_THREE_MONTH",
       "startsAt": "2026-07-26T00:00:00.000Z",
       "expiresAt": "2027-07-26T00:00:00.000Z"
     }
@@ -1391,7 +1391,7 @@
       "casualLifestyle": "https://randomuser.me/api/portraits/women/12.jpg"
     },
     "membership": {
-      "type": "VIP",
+      "plan": "FEMALE_VIP_THREE_MONTHS",
       "startsAt": "2026-07-26T00:00:00.000Z",
       "expiresAt": "2027-07-26T00:00:00.000Z"
     }
@@ -1522,7 +1522,7 @@
       "casualLifestyle": "https://randomuser.me/api/portraits/women/13.jpg"
     },
     "membership": {
-      "type": "VIP",
+      "plan": "FEMALE_VIP_SIX_MONTHS",
       "startsAt": "2026-07-26T00:00:00.000Z",
       "expiresAt": "2027-07-26T00:00:00.000Z"
     }

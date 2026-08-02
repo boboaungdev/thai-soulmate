@@ -77,15 +77,15 @@ model ApplicationForm {
 
   status ApplicationFormStatus @default(OPEN)
 
-  personalDetails Json
-  career          Json
-  appearance      Json
-  personality     Json
-  lifestyle       Json
+  personalDetails   Json
+  career            Json
+  appearance        Json
+  personality       Json
+  lifestyle         Json
   relationshipGoals Json
-  idealPartner    Json
-  financial       Json
-  photos          Json
+  idealPartner      Json
+  financial         Json
+  photos            Json
 
   membership Membership?
 
@@ -104,7 +104,7 @@ model Membership {
   applicationFormId String          @unique
   applicationForm   ApplicationForm @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
 
-  type MembershipType @default(FREE)
+  plan MembershipPlan @default(NONE)
 
   startsAt  DateTime?
   expiresAt DateTime?
@@ -114,7 +114,7 @@ model Membership {
 }
 
 model Soulmate {
-  id   String @id @default(cuid())
+  id     String          @id @default(cuid())
   male   ApplicationForm @relation("MaleSoulmate", fields: [maleId], references: [id])
   maleId String
 
@@ -160,9 +160,15 @@ enum ApplicationFormStatus {
   CLOSED
 }
 
-enum MembershipType {
-  FREE
-  VIP
+enum MembershipPlan {
+  NONE
+  FEMALE_FREE
+  FEMALE_VIP_ONE_MONTH
+  FEMALE_VIP_THREE_MONTHS
+  FEMALE_VIP_SIX_MONTHS
+  MALE_ONE_MONTH
+  MALE_THREE_MONTHS
+  MALE_SIX_MONTHS
 }
 
 enum SoulmateStatus {

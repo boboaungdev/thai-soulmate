@@ -47,7 +47,7 @@ export function DataTable<TData, TValue>({
       phone: false,
       nationality: false,
       currentLocation: false,
-      occupation: true,
+      occupation: false,
       notes: true,
     })
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(

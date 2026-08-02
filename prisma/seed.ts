@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.js"
-import { MembershipType } from "../lib/generated/prisma/client.js"
+import { MembershipPlan } from "../lib/generated/prisma/client.js"
 import applicationForms from "../data/application-form.json" with { type: "json" }
 
 async function main() {
@@ -20,7 +20,7 @@ async function main() {
         membership: form.membership
           ? {
               create: {
-                type: form.membership.type as MembershipType,
+                plan: form.membership.plan as MembershipPlan,
                 startsAt: new Date(form.membership.startsAt),
                 expiresAt: new Date(form.membership.expiresAt),
               },

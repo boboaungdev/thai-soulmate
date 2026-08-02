@@ -1701,12 +1701,14 @@ function AuthPageContents() {
         casualLifestyle: casualLifestyleUrl,
       }
 
+      const membershipPlan = gender === "Female" ? "FEMALE_FREE" : "NONE"
       const formData = {
         details: detailsData,
         profile: profileData,
         relationshipGoals: relationshipGoalsForm,
         financial: financialForm,
         photos: photosData,
+        membershipPlan,
       }
 
       const response = await fetch("/api/application-form", {

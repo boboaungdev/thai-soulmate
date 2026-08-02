@@ -55,7 +55,7 @@ const roleIcons: Record<string, React.ElementType> = {
   DEV: Code,
   ADMIN: Shield,
   STAFF: Users2,
-  USER: User2,
+  MEMBER: User2,
 }
 
 const userItems = [
@@ -226,7 +226,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {(user.role === "USER" || user.role === "DEV") && (
+        {(user.role === "MEMBER" || user.role === "DEV") && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
               User Menu

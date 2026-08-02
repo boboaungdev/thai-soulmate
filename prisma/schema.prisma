@@ -14,7 +14,7 @@ model User {
   avatar   String?
   email    String  @unique
   password String
-  role     Role    @default(USER)
+  role     Role    @default(MEMBER)
 
   registerInterest RegisterInterest?
   notes            Note[]
@@ -135,7 +135,7 @@ enum Role {
   DEV
   ADMIN
   STAFF
-  USER
+  MEMBER
 }
 
 enum NoteType {

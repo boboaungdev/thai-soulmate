@@ -12,8 +12,8 @@ export const roles = [
     icon: Users2,
   },
   {
-    value: "USER",
-    label: "User",
+    value: "MEMBER",
+    label: "Member",
     icon: User,
   },
 ]

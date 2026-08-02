@@ -5,7 +5,7 @@ interface User {
   id: string
   name: string
   email: string
-  role: "USER" | "STAFF" | "ADMIN" | 'DEV'
+  role: "MEMBER" | "STAFF" | "ADMIN" | 'DEV'
   avatar?: string
   fallback?: string
 }

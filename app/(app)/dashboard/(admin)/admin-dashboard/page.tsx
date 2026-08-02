@@ -172,7 +172,7 @@ const monthlyRevenueData = [
 ]
 
 const userRoleDistribution = [
-  { name: "Users", value: 2350, color: "#8884d8" },
+  { name: "Members", value: 2350, color: "#8884d8" },
   { name: "Staff", value: 45, color: "#82ca9d" },
   { name: "Admins", value: 5, color: "#ffc658" },
 ]

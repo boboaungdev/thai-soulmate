@@ -19,7 +19,7 @@ export type User = {
   name: string
   email: string
   avatar: string | null
-  role: "ADMIN" | "STAFF" | "USER"
+  role: "ADMIN" | "STAFF" | "MEMBER"
   createdAt: string
 }
 

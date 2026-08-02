@@ -42,7 +42,7 @@ import { FaUserShield } from "react-icons/fa"
 const Role = {
   ADMIN: "ADMIN",
   STAFF: "STAFF",
-  USER: "USER",
+  MEMBER: "MEMBER",
 } as const
 
 type Role = (typeof Role)[keyof typeof Role]
@@ -51,7 +51,7 @@ type Role = (typeof Role)[keyof typeof Role]
 const roleIcons: Record<Role, React.ElementType> = {
   [Role.ADMIN]: Shield,
   [Role.STAFF]: Users2,
-  [Role.USER]: User,
+  [Role.MEMBER]: User,
 }
 
 interface AddUserSheetProps {
@@ -77,7 +77,7 @@ export function AddUserSheet({
       name: "",
       email: "",
       password: "",
-      role: Role.USER as Role,
+      role: Role.MEMBER as Role,
       avatar: null as string | null, // This will temporarily hold the URL, but the file is in avatarFile state
     },
   })

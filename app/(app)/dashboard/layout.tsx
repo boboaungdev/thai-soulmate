@@ -21,7 +21,7 @@ const allowedRoutes = {
     "/dashboard/profiles",
     "/dashboard/profile",
     "/dashboard/settings",
-    '/dashboard/login-user'
+    "/dashboard/login-user",
   ],
   STAFF: [
     "/dashboard/staff-dashboard",
@@ -34,7 +34,7 @@ const allowedRoutes = {
     "/dashboard/profile",
     "/dashboard/settings",
   ],
-  USER: [
+  MEMBER: [
     "/dashboard/user-dashboard",
     "/dashboard/billing",
     "/dashboard/gallery",
@@ -49,7 +49,7 @@ const dashboardHome = {
   DEV: "/dashboard/admin-dashboard",
   ADMIN: "/dashboard/admin-dashboard",
   STAFF: "/dashboard/staff-dashboard",
-  USER: "/dashboard/user-dashboard",
+  MEMBER: "/dashboard/user-dashboard",
 } as const
 
 function isAllowedRoute(role: keyof typeof allowedRoutes, pathname: string) {

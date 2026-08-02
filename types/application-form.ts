@@ -12,7 +12,9 @@ export interface ApplicationForm {
   financial: Financial
   photos: Photos
   membership?: {
-    type: string
+    plan: string
+    startsAt?: Date | string
+    expiresAt?: Date | string
   } | null
   notes?: {
     id: string

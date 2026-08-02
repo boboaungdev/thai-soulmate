@@ -16,7 +16,9 @@ import { calculateAge, formatDateTime } from "@/lib/date"
 export type ApplicationRow = ApplicationForm & {
   status: ApplicationFormStatus
   membership?: {
-    type: string
+    plan: string
+    startsAt?: Date | string
+    expiresAt?: Date | string
   } | null
   notes?: {
     id: string
@@ -144,6 +146,18 @@ export const columns: ColumnDef<ApplicationRow>[] = [
     cell: ({ row }) => (
       <div className="min-w-[140px]">
         {row.original.career?.occupation || "-"}
+      </div>
+    ),
+  },
+  {
+    id: "plan",
+    accessorFn: (row) => row.membership?.plan ?? "",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Plan" />
+    ),
+    cell: ({ row }) => (
+      <div className="min-w-[100px]">
+        {row.original.membership?.plan || "-"}
       </div>
     ),
   },

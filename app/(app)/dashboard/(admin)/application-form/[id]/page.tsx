@@ -44,6 +44,7 @@ import {
   Users2,
   Utensils,
   Waypoints,
+  IdCard,
 } from "lucide-react"
 import Image from "next/image"
 import { FaSmoking } from "react-icons/fa"
@@ -737,6 +738,11 @@ export default function ApplicationDetailPage() {
                     ID: {String(customId).padStart(4, "0")}
                   </Badge>
                   <Badge variant="outline">{personalDetails?.gender}</Badge>
+                  {application.membership?.plan && (
+                    <Badge variant="outline">
+                      {application.membership.plan}
+                    </Badge>
+                  )}
                   <StatusBadge status={status} />
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground md:justify-start">
@@ -784,6 +790,29 @@ export default function ApplicationDetailPage() {
         </Card>
 
         <div className="grid grid-cols-1 items-start gap-6">
+          {application.membership && (
+            <ProfileSection title="Membership Details" icon={<IdCard />}>
+              <DetailRow
+                icon={<Sparkles />}
+                label="Plan"
+                value={application.membership.plan}
+              />
+              <DetailRow
+                icon={<CalendarDays />}
+                label="Start Date"
+                value={
+                  application.membership.startsAt
+                    ? formatDateTime(application.membership.startsAt)
+                    : "-"
+                }
+              />
+              <DetailRow
+                icon={<CalendarDays />}
+                label="End Date"
+                value={application.membership.expiresAt ? formatDateTime(application.membership.expiresAt) : "-"}
+              />
+            </ProfileSection>
+          )}
           <ProfileSection title="Personal Details" icon={<User />}>
             <DetailRow
               icon={<User />}

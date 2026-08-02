@@ -13,6 +13,12 @@ import {
 import { applicationStatuses } from "./statuses"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { DataTableViewOptions } from "./data-table-view-options"
+import { MembershipPlan } from "@/lib/generated/prisma/enums"
+
+const membershipPlans = Object.values(MembershipPlan).map((plan) => ({
+  label: plan.replace(/_/g, " "), // Replace underscores with spaces for readability
+  value: plan,
+}))
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -54,6 +60,13 @@ export function DataTableToolbar<TData>({
             ]}
           />
         )}
+        {table.getColumn("plan") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("plan")}
+            title="Plan"
+            options={membershipPlans}
+          />
+        )}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -72,3 +85,4 @@ export function DataTableToolbar<TData>({
     </div>
   )
 }
+

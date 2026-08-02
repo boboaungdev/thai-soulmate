@@ -122,6 +122,9 @@
       "headshot": "https://randomuser.me/api/portraits/women/2.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/2.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/2.jpg"
+    },
+    "membership": {
+      "plan": "FEMALE_FREE"
     }
   },
   {
@@ -247,6 +250,9 @@
       "headshot": "https://randomuser.me/api/portraits/women/3.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/3.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/3.jpg"
+    },
+    "membership": {
+      "plan": "FEMALE_FREE"
     }
   },
   {
@@ -502,6 +508,9 @@
       "headshot": "https://randomuser.me/api/portraits/women/5.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/5.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/5.jpg"
+    },
+    "membership": {
+      "plan": "FEMALE_FREE"
     }
   },
   {
@@ -628,6 +637,9 @@
       "headshot": "https://randomuser.me/api/portraits/women/6.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/6.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/6.jpg"
+    },
+    "membership": {
+      "plan": "FEMALE_FREE"
     }
   },
   {
@@ -754,6 +766,9 @@
       "headshot": "https://randomuser.me/api/portraits/women/7.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/7.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/7.jpg"
+    },
+    "membership": {
+      "plan": "FEMALE_FREE"
     }
   },
   {
@@ -880,6 +895,9 @@
       "headshot": "https://randomuser.me/api/portraits/women/8.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/8.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/8.jpg"
+    },
+    "membership": {
+      "plan": "FEMALE_FREE"
     }
   },
   {
@@ -1006,6 +1024,9 @@
       "headshot": "https://randomuser.me/api/portraits/women/9.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/9.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/9.jpg"
+    },
+    "membership": {
+      "plan": "FEMALE_FREE"
     }
   },
   {
@@ -1263,6 +1284,9 @@
       "headshot": "https://randomuser.me/api/portraits/women/11.jpg",
       "fullLength": "https://randomuser.me/api/portraits/women/11.jpg",
       "casualLifestyle": "https://randomuser.me/api/portraits/women/11.jpg"
+    },
+    "membership": {
+      "plan": "FEMALE_FREE"
     }
   },
   {

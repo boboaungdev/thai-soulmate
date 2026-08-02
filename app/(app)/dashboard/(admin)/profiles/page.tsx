@@ -303,7 +303,7 @@ function SendProfileDialog({
 
 function UserCard({ user }: { user: ApplicationForm }) {
   const router = useRouter()
-  const isVip = user.membership?.type === "VIP"
+  const isVip = user.membership?.plan === "VIP"
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false)
 
   const personalDetails =

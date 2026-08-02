@@ -187,7 +187,7 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
       const age = dayjs().diff(dob, "year")
       return (
         <div className="w-[120px]">
-          {dob.format("L")} ({age})
+          {dob.format("D MMM YYYY")} ({age})
         </div>
       )
     },
@@ -270,8 +270,8 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
       const createdAt = dayjs(row.getValue("createdAt") as string)
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {createdAt.format("YYYY-MM-DD HH:mm")}
+          <span className="max-w-[150px] truncate font-medium">
+            {createdAt.format("D MMM YYYY HH:mm")}
           </span>
         </div>
       )

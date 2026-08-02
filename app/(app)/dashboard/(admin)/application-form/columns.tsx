@@ -111,7 +111,7 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       <DataTableColumnHeader column={column} title="Nationality" />
     ),
     cell: ({ row }) => (
-      <div className="min-w-[110px]">
+      <div className="max-w-[100px] truncate">
         {row.original.personalDetails?.nationality || "-"}
       </div>
     ),
@@ -123,7 +123,7 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       <DataTableColumnHeader column={column} title="Location" />
     ),
     cell: ({ row }) => (
-      <div className="min-w-[120px]">
+      <div className="max-w-[120px] truncate">
         {row.original.personalDetails?.currentLocation || "-"}
       </div>
     ),
@@ -159,7 +159,7 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       <DataTableColumnHeader column={column} title="Email" />
     ),
     cell: ({ row }) => (
-      <div className="min-w-[220px] truncate font-medium">
+      <div className="max-w-[200px] truncate font-medium">
         {row.original.personalDetails?.email || "-"}
       </div>
     ),
@@ -171,7 +171,7 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       <DataTableColumnHeader column={column} title="Phone" />
     ),
     cell: ({ row }) => (
-      <div className="min-w-[140px] font-medium">
+      <div className="max-w-[140px] truncate font-medium">
         {row.original.personalDetails?.phone || "-"}
       </div>
     ),
@@ -224,8 +224,8 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       <DataTableColumnHeader column={column} title="Submitted" />
     ),
     cell: ({ row }) => (
-      <div className="min-w-[140px]">
-        {dayjs(row.original.createdAt).format("YYYY-MM-DD HH:mm")}
+      <div className="max-w-[150px] truncate font-medium">
+        {dayjs(row.original.createdAt).format("D MMM YYYY HH:mm")}
       </div>
     ),
   },

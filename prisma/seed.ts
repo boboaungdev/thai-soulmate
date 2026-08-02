@@ -21,8 +21,12 @@ async function main() {
           ? {
               create: {
                 plan: form.membership.plan as MembershipPlan,
-                startsAt: new Date(form.membership.startsAt),
-                expiresAt: new Date(form.membership.expiresAt),
+                startsAt: form.membership.startsAt
+                  ? new Date(form.membership.startsAt)
+                  : undefined,
+                expiresAt: form.membership.expiresAt
+                  ? new Date(form.membership.expiresAt)
+                  : undefined,
               },
             }
           : undefined,

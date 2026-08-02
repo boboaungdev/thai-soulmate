@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import React from "react"
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
@@ -13,8 +12,8 @@ import {
   CalendarDays,
   Camera,
   ChevronLeft,
-  DollarSign,
   Dumbbell,
+  Download,
   Flag,
   GlassWater,
   GraduationCap,
@@ -46,6 +45,7 @@ import {
   Utensils,
   Waypoints,
 } from "lucide-react"
+import Image from "next/image"
 import { FaSmoking } from "react-icons/fa"
 import dayjs from "dayjs"
 import localizedFormat from "dayjs/plugin/localizedFormat"
@@ -96,6 +96,7 @@ import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
 import { useAuthStore } from "@/stores/auth-store"
 
 import { applicationStatuses, getApplicationStatusMeta } from "../statuses"
+import { R2 } from "@/constants"
 
 dayjs.extend(localizedFormat)
 
@@ -458,7 +459,17 @@ function NotesSection({
   )
 }
 
-function PhotoGrid({ photos }: { photos: ApplicationForm["photos"] }) {
+function PhotoGrid({
+  photos,
+  onImageClick,
+  onDownloadClick,
+  downloading,
+}: {
+  photos: ApplicationForm["photos"]
+  onImageClick: (url: string, key: string) => void
+  onDownloadClick: (url: string, imgKey: string) => void
+  downloading: string | null
+}) {
   const photoEntries = [
     ["headshot", "Headshot", photos?.headshot],
     ["fullLength", "Full Length", photos?.fullLength],
@@ -469,17 +480,42 @@ function PhotoGrid({ photos }: { photos: ApplicationForm["photos"] }) {
     <ProfileSection title="Photos" icon={<Camera />}>
       <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-3">
         {photoEntries.map(([key, label, value]) => (
-          <div key={key} className="flex flex-col gap-2">
-            <Avatar className="h-56 w-full rounded-md">
-              <AvatarImage
+          <div key={key as string} className="flex flex-col gap-2">
+            <div
+              className="relative h-56 w-full cursor-pointer overflow-hidden rounded-md"
+              onClick={() => onImageClick(value as string, key as string)}
+            >
+              <Image
                 src={value as string}
-                className="rounded-md object-cover"
+                alt={label as string}
+                fill
+                className="rounded-md object-cover transition-transform duration-300 hover:scale-105"
               />
-              <AvatarFallback className="rounded-md">Img</AvatarFallback>
-            </Avatar>
-            <span className="text-center text-sm text-muted-foreground">
-              {label}
-            </span>
+            </div>
+            <div className="flex items-center justify-center gap-10">
+              <span className="text-center text-sm text-muted-foreground">
+                {label}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onDownloadClick(value as string, key as string)}
+                className="text-muted-foreground"
+                disabled={!!downloading}
+              >
+                {downloading === key ? (
+                  <>
+                    <Download className="mr-2 h-4 w-4 animate-bounce" />
+                    Downloading...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         ))}
       </div>
@@ -493,6 +529,11 @@ export default function ApplicationDetailPage() {
   const [application, setApplication] = useState<ApplicationDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [isStatusUpdating, setIsStatusUpdating] = useState(false)
+  const [viewingImage, setViewingImage] = useState<{
+    url: string
+    key: string
+  } | null>(null)
+  const [downloading, setDownloading] = useState<string | null>(null)
 
   useEffect(() => {
     if (!params.id) return
@@ -548,6 +589,42 @@ export default function ApplicationDetailPage() {
     }
   }
 
+  const handleDownload = async (url: string, imgKey: string) => {
+    setDownloading(imgKey)
+
+    try {
+      const key = new URL(url).pathname.slice(1)
+
+      const response = await fetch(
+        `/api/download?key=${encodeURIComponent(key)}`
+      )
+
+      if (!response.ok) {
+        throw new Error("Download failed.")
+      }
+
+      const blob = await response.blob()
+      const objectUrl = URL.createObjectURL(blob)
+
+      const link = document.createElement("a")
+      link.href = objectUrl
+      link.download = key.split("/").pop() ?? "photo"
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+
+      URL.revokeObjectURL(objectUrl)
+
+      toast.success("Photo downloaded successfully.")
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Could not download photo."
+      )
+    } finally {
+      setDownloading(null)
+    }
+  }
+
   if (loading) {
     return (
       <main className="space-y-6 p-4 md:p-6">
@@ -582,356 +659,422 @@ export default function ApplicationDetailPage() {
   } = application
   const age = calculateAge(personalDetails?.dob)
 
-  return (
-    <main className="space-y-6 p-4 md:p-6">
-      <Button
-        variant="link"
-        className="text-foreground"
-        onClick={() => router.back()}
-      >
-        <ChevronLeft className="mr-2 h-4 w-4" />
-        Back
-      </Button>
+  const photoLabels: Record<string, string> = {
+    headshot: "Headshot",
+    fullLength: "Full Length",
+    casualLifestyle: "Casual Lifestyle",
+  }
 
-      <Card className="p-6">
-        <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
-          <div className="flex flex-col items-center gap-4 md:flex-row">
-            <Avatar className="h-28 w-28 border-4 border-primary/20">
-              <AvatarImage src={photos?.headshot} className="object-cover" />
-              <AvatarFallback>
-                {personalDetails?.name?.charAt(0) || "A"}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-gradient text-2xl font-bold">
-                {personalDetails?.prefix} {personalDetails?.name}
-                {personalDetails?.nickname
-                  ? ` (${personalDetails.nickname})`
-                  : ""}
-              </h1>
-              <div className="mt-2 flex flex-wrap items-center justify-center gap-2 md:justify-start">
-                <Badge variant="outline">
-                  ID: {String(customId).padStart(4, "0")}
-                </Badge>
-                <Badge variant="outline">{personalDetails?.gender}</Badge>
-                <StatusBadge status={status} />
-              </div>
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground md:justify-start">
-                <span className="flex items-center gap-1.5">
-                  <Cake className="h-4 w-4" />
-                  {age} years old
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4" />
-                  {personalDetails?.currentLocation}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CalendarDays className="h-4 w-4" />
-                  Submitted {dayjs(createdAt).format("LL")}
-                </span>
+  return (
+    <>
+      <Dialog
+        open={!!viewingImage}
+        onOpenChange={(open) => !open && setViewingImage(null)}
+      >
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Photo Preview</DialogTitle>
+            <DialogDescription>
+              {photoLabels[viewingImage?.key ?? ""] ?? viewingImage?.key}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative mt-4 h-[70vh] w-full">
+            {viewingImage?.url && (
+              <Image
+                src={viewingImage.url}
+                alt="Full size photo preview"
+                fill
+                className="object-contain"
+              />
+            )}
+          </div>
+          <DialogFooter className="sm:justify-between">
+            <Button variant="outline" onClick={() => setViewingImage(null)}>
+              Close
+            </Button>
+            {viewingImage && (
+              <Button
+                variant="default"
+                onClick={() =>
+                  handleDownload(viewingImage.url, viewingImage.key)
+                }
+                className="btn-gradient"
+                disabled={!!downloading}
+              >
+                {downloading === viewingImage.key ? (
+                  <>
+                    <Download className="mr-2 h-4 w-4 animate-bounce" />
+                    Downloading...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                  </>
+                )}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <main className="space-y-6 p-4 md:p-6">
+        <Button
+          variant="link"
+          className="text-foreground"
+          onClick={() => router.back()}
+        >
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
+
+        <Card className="p-6">
+          <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+            <div className="flex flex-col items-center gap-4 md:flex-row">
+              <Avatar className="h-28 w-28 border-4 border-primary/20">
+                <AvatarImage src={photos?.headshot} className="object-cover" />
+                <AvatarFallback>
+                  {personalDetails?.name?.charAt(0) || "A"}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h1 className="text-gradient text-2xl font-bold">
+                  {personalDetails?.prefix} {personalDetails?.name}
+                  {personalDetails?.nickname
+                    ? ` (${personalDetails.nickname})`
+                    : ""}
+                </h1>
+                <div className="mt-2 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+                  <Badge variant="outline">
+                    ID: {String(customId).padStart(4, "0")}
+                  </Badge>
+                  <Badge variant="outline">{personalDetails?.gender}</Badge>
+                  <StatusBadge status={status} />
+                </div>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground md:justify-start">
+                  <span className="flex items-center gap-1.5">
+                    <Cake className="h-4 w-4" />
+                    {age} years old
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4" />
+                    {personalDetails?.currentLocation}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <CalendarDays className="h-4 w-4" />
+                    Submitted {dayjs(createdAt).format("LL")}
+                  </span>
+                </div>
               </div>
             </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" disabled={isStatusUpdating}>
+                  Change Status
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuRadioGroup
+                  value={status}
+                  onValueChange={handleStatusChange}
+                >
+                  {applicationStatuses.map((item) => (
+                    <DropdownMenuRadioItem
+                      key={item.value}
+                      value={item.value}
+                      className={item.color}
+                    >
+                      <item.icon className="mr-2 h-4 w-4" />
+                      {item.label}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
+        </Card>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" disabled={isStatusUpdating}>
-                Change Status
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuRadioGroup
-                value={status}
-                onValueChange={handleStatusChange}
-              >
-                {applicationStatuses.map((item) => (
-                  <DropdownMenuRadioItem
-                    key={item.value}
-                    value={item.value}
-                    className={item.color}
-                  >
-                    <item.icon className="mr-2 h-4 w-4" />
-                    {item.label}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </Card>
+        <div className="grid grid-cols-1 items-start gap-6">
+          <ProfileSection title="Personal Details" icon={<User />}>
+            <DetailRow
+              icon={<User />}
+              label="Name"
+              value={`${personalDetails?.prefix} ${personalDetails?.name}`}
+            />
+            {personalDetails.gender === "Female" && (
+              <DetailRow
+                icon={<Smile />}
+                label="Nickname"
+                value={personalDetails?.nickname}
+              />
+            )}
+            <DetailRow
+              icon={<PersonStanding />}
+              label="Gender"
+              value={personalDetails?.gender}
+            />
+            <DetailRow
+              icon={<Cake />}
+              label="Date of Birth"
+              value={
+                personalDetails?.dob
+                  ? `${dayjs(personalDetails.dob).format("LL")} (${age} years old)`
+                  : "-"
+              }
+            />
+            <DetailRow
+              icon={<Mail />}
+              label="Email"
+              value={personalDetails?.email}
+            />
+            <DetailRow
+              icon={<Phone />}
+              label="Phone"
+              value={personalDetails?.phone}
+            />
+            <DetailRow
+              icon={<Flag />}
+              label="Nationality"
+              value={personalDetails?.nationality}
+            />
+            <DetailRow
+              icon={<LocateFixed />}
+              label="Current Location"
+              value={personalDetails?.currentLocation}
+            />
+          </ProfileSection>
 
-      <div className="grid grid-cols-1 items-start gap-6">
-        <ProfileSection title="Personal Details" icon={<User />}>
-          <DetailRow
-            icon={<User />}
-            label="Name"
-            value={`${personalDetails?.prefix} ${personalDetails?.name}`}
-          />
-          {personalDetails.gender === "Female" && (
+          <ProfileSection title="Career & Financial" icon={<Briefcase />}>
+            <DetailRow
+              icon={<Briefcase />}
+              label="Occupation"
+              value={career?.occupation}
+            />
+            <DetailRow
+              icon={<Building />}
+              label="Company"
+              value={career?.company}
+            />
+            <DetailRow
+              icon={<GraduationCap />}
+              label="Education"
+              value={career?.education}
+            />
+            <DetailRow
+              icon={<Home />}
+              label="Owns Property"
+              value={financial?.ownProperty}
+            />
+            <DetailRow
+              icon={<Building />}
+              label="Owns Business"
+              value={financial?.ownBusiness}
+            />
+          </ProfileSection>
+
+          <ProfileSection title="Appearance" icon={<Sparkles />}>
+            <DetailRow
+              icon={<Ruler />}
+              label="Height"
+              value={appearance?.height ? `${appearance.height} cm` : undefined}
+            />
+            <DetailRow
+              icon={<Scale />}
+              label="Weight"
+              value={appearance?.weight ? `${appearance.weight} kg` : undefined}
+            />
+            <DetailRow
+              icon={<Heart />}
+              label="Religion"
+              value={appearance?.religion}
+            />
+            <DetailRow
+              icon={<Languages />}
+              label="English Fluency"
+              value={`${appearance?.englishFluency?.[0] ?? 0}%`}
+            />
+            <DetailRow
+              icon={<Languages />}
+              label="Thai Fluency"
+              value={`${appearance?.thaiFluency?.[0] ?? 0}%`}
+            />
+          </ProfileSection>
+
+          <ProfileSection title="Personality & Background" icon={<Smile />}>
             <DetailRow
               icon={<Smile />}
-              label="Nickname"
-              value={personalDetails?.nickname}
+              label="About"
+              value={personality?.about}
             />
-          )}
-          <DetailRow
-            icon={<PersonStanding />}
-            label="Gender"
-            value={personalDetails?.gender}
-          />
-          <DetailRow
-            icon={<Cake />}
-            label="Date of Birth"
-            value={
-              personalDetails?.dob
-                ? `${dayjs(personalDetails.dob).format("LL")} (${age} years old)`
-                : "-"
-            }
-          />
-          <DetailRow
-            icon={<Mail />}
-            label="Email"
-            value={personalDetails?.email}
-          />
-          <DetailRow
-            icon={<Phone />}
-            label="Phone"
-            value={personalDetails?.phone}
-          />
-          <DetailRow
-            icon={<Flag />}
-            label="Nationality"
-            value={personalDetails?.nationality}
-          />
-          <DetailRow
-            icon={<LocateFixed />}
-            label="Current Location"
-            value={personalDetails?.currentLocation}
-          />
-        </ProfileSection>
-
-        <ProfileSection title="Career & Financial" icon={<Briefcase />}>
-          <DetailRow
-            icon={<Briefcase />}
-            label="Occupation"
-            value={career?.occupation}
-          />
-          <DetailRow
-            icon={<Building />}
-            label="Company"
-            value={career?.company}
-          />
-          <DetailRow
-            icon={<GraduationCap />}
-            label="Education"
-            value={career?.education}
-          />
-          <DetailRow
-            icon={<Home />}
-            label="Owns Property"
-            value={financial?.ownProperty}
-          />
-          <DetailRow
-            icon={<Building />}
-            label="Owns Business"
-            value={financial?.ownBusiness}
-          />
-        </ProfileSection>
-
-        <ProfileSection title="Appearance" icon={<Sparkles />}>
-          <DetailRow
-            icon={<Ruler />}
-            label="Height"
-            value={appearance?.height ? `${appearance.height} cm` : undefined}
-          />
-          <DetailRow
-            icon={<Scale />}
-            label="Weight"
-            value={appearance?.weight ? `${appearance.weight} kg` : undefined}
-          />
-          <DetailRow
-            icon={<Heart />}
-            label="Religion"
-            value={appearance?.religion}
-          />
-          <DetailRow
-            icon={<Languages />}
-            label="English Fluency"
-            value={`${appearance?.englishFluency?.[0] ?? 0}%`}
-          />
-          <DetailRow
-            icon={<Languages />}
-            label="Thai Fluency"
-            value={`${appearance?.thaiFluency?.[0] ?? 0}%`}
-          />
-        </ProfileSection>
-
-        <ProfileSection title="Personality & Background" icon={<Smile />}>
-          <DetailRow
-            icon={<Smile />}
-            label="About"
-            value={personality?.about}
-          />
-          <DetailRow
-            icon={<Smile />}
-            label="Personality Traits"
-            value={personality?.personality}
-          />
-          <DetailRow
-            icon={<Sparkles />}
-            label="Best Qualities"
-            value={personality?.bestQualities}
-          />
-          <DetailRow
-            icon={<Heart />}
-            label="Looking For Qualities"
-            value={personality?.lookingForQualities}
-          />
-          <DetailRow
-            icon={<Users2 />}
-            label="Marital Status"
-            value={personality?.maritalStatus}
-          />
-          <DetailRow
-            icon={<Baby />}
-            label="Has Children"
-            value={personality?.hasChildren}
-          />
-          {personality?.hasChildren === "Yes" && (
+            <DetailRow
+              icon={<Smile />}
+              label="Personality Traits"
+              value={personality?.personality}
+            />
+            <DetailRow
+              icon={<Sparkles />}
+              label="Best Qualities"
+              value={personality?.bestQualities}
+            />
+            <DetailRow
+              icon={<Heart />}
+              label="Looking For Qualities"
+              value={personality?.lookingForQualities}
+            />
             <DetailRow
               icon={<Users2 />}
-              label="Children Count"
-              value={personality?.childrenCount}
+              label="Marital Status"
+              value={personality?.maritalStatus}
             />
-          )}
-        </ProfileSection>
+            <DetailRow
+              icon={<Baby />}
+              label="Has Children"
+              value={personality?.hasChildren}
+            />
+            {personality?.hasChildren === "Yes" && (
+              <DetailRow
+                icon={<Users2 />}
+                label="Children Count"
+                value={personality?.childrenCount}
+              />
+            )}
+          </ProfileSection>
 
-        <ProfileSection title="Lifestyle & Interests" icon={<HeartHandshake />}>
-          <DetailRow
-            icon={<Handshake />}
-            label="Lifestyle"
-            value={lifestyle?.lifestyle}
-          />
-          <DetailRow
-            icon={<FaSmoking />}
-            label="Smoking"
-            value={lifestyle?.smoking}
-          />
-          <DetailRow
-            icon={<GlassWater />}
-            label="Drinking"
-            value={lifestyle?.drinking}
-          />
-          <DetailRow
-            icon={<Dumbbell />}
-            label="Exercise"
-            value={lifestyle?.exercise}
-          />
-          <DetailRow
-            icon={<Target />}
-            label="Interests"
-            value={lifestyle?.interests}
-          />
-          <DetailRow
-            icon={<Utensils />}
-            label="Other Interest"
-            value={lifestyle?.otherInterest}
-          />
-          <DetailRow
-            icon={<Plane />}
-            label="Travel Destinations"
-            value={lifestyle?.travelDestinations}
-          />
-          <DetailRow
-            icon={<Sun />}
-            label="Weekend Activity"
-            value={lifestyle?.weekendActivity}
-          />
-          <DetailRow
+          <ProfileSection
+            title="Lifestyle & Interests"
             icon={<HeartHandshake />}
-            label="Family Importance"
-            value={lifestyle?.familyImportance}
-          />
-          <DetailRow
-            icon={<Baby />}
-            label="Future Children"
-            value={lifestyle?.futureChildren}
-          />
-          <DetailRow
-            icon={<Handshake />}
-            label="Values"
-            value={lifestyle?.values}
-          />
-        </ProfileSection>
+          >
+            <DetailRow
+              icon={<Handshake />}
+              label="Lifestyle"
+              value={lifestyle?.lifestyle}
+            />
+            <DetailRow
+              icon={<FaSmoking />}
+              label="Smoking"
+              value={lifestyle?.smoking}
+            />
+            <DetailRow
+              icon={<GlassWater />}
+              label="Drinking"
+              value={lifestyle?.drinking}
+            />
+            <DetailRow
+              icon={<Dumbbell />}
+              label="Exercise"
+              value={lifestyle?.exercise}
+            />
+            <DetailRow
+              icon={<Target />}
+              label="Interests"
+              value={lifestyle?.interests}
+            />
+            <DetailRow
+              icon={<Utensils />}
+              label="Other Interest"
+              value={lifestyle?.otherInterest}
+            />
+            <DetailRow
+              icon={<Plane />}
+              label="Travel Destinations"
+              value={lifestyle?.travelDestinations}
+            />
+            <DetailRow
+              icon={<Sun />}
+              label="Weekend Activity"
+              value={lifestyle?.weekendActivity}
+            />
+            <DetailRow
+              icon={<HeartHandshake />}
+              label="Family Importance"
+              value={lifestyle?.familyImportance}
+            />
+            <DetailRow
+              icon={<Baby />}
+              label="Future Children"
+              value={lifestyle?.futureChildren}
+            />
+            <DetailRow
+              icon={<Handshake />}
+              label="Values"
+              value={lifestyle?.values}
+            />
+          </ProfileSection>
 
-        <ProfileSection title="Relationship Goals" icon={<Heart />}>
-          <DetailRow
-            icon={<Waypoints />}
-            label="Willing to Relocate"
-            value={relationshipGoals?.relocate}
-          />
-          <DetailRow
-            icon={<Heart />}
-            label="Looking For"
-            value={relationshipGoals?.lookingFor}
-          />
-          <DetailRow
-            icon={<CalendarDays />}
-            label="Settle Down Timeline"
-            value={relationshipGoals?.settleDown}
-          />
-        </ProfileSection>
+          <ProfileSection title="Relationship Goals" icon={<Heart />}>
+            <DetailRow
+              icon={<Waypoints />}
+              label="Willing to Relocate"
+              value={relationshipGoals?.relocate}
+            />
+            <DetailRow
+              icon={<Heart />}
+              label="Looking For"
+              value={relationshipGoals?.lookingFor}
+            />
+            <DetailRow
+              icon={<CalendarDays />}
+              label="Settle Down Timeline"
+              value={relationshipGoals?.settleDown}
+            />
+          </ProfileSection>
 
-        <ProfileSection
-          title="Ideal Partner Preferences"
-          icon={<Accessibility />}
-        >
-          <DetailRow
-            icon={<Cake />}
-            label="Age Range"
-            value={idealPartner?.ageRange}
-          />
-          <DetailRow
-            icon={<Flag />}
-            label="Nationality"
-            value={idealPartner?.nationality}
-          />
-          <DetailRow
-            icon={<MapPin />}
-            label="Location"
-            value={idealPartner?.location}
-          />
-          <DetailRow
-            icon={<Ruler />}
-            label="Height"
-            value={idealPartner?.height}
-          />
-          <DetailRow
-            icon={<GraduationCap />}
-            label="Education"
-            value={idealPartner?.education}
-          />
-          <DetailRow
-            icon={<Smile />}
-            label="Personality Traits"
-            value={idealPartner?.personality}
-          />
-          <DetailRow
-            icon={<Sparkles />}
-            label="Desired Qualities"
-            value={idealPartner?.qualities}
-          />
-          <DetailRow
-            icon={<HeartCrack />}
-            label="Deal Breakers"
-            value={idealPartner?.dealBreakers}
-          />
-        </ProfileSection>
-      </div>
+          <ProfileSection
+            title="Ideal Partner Preferences"
+            icon={<Accessibility />}
+          >
+            <DetailRow
+              icon={<Cake />}
+              label="Age Range"
+              value={idealPartner?.ageRange}
+            />
+            <DetailRow
+              icon={<Flag />}
+              label="Nationality"
+              value={idealPartner?.nationality}
+            />
+            <DetailRow
+              icon={<MapPin />}
+              label="Location"
+              value={idealPartner?.location}
+            />
+            <DetailRow
+              icon={<Ruler />}
+              label="Height"
+              value={idealPartner?.height}
+            />
+            <DetailRow
+              icon={<GraduationCap />}
+              label="Education"
+              value={idealPartner?.education}
+            />
+            <DetailRow
+              icon={<Smile />}
+              label="Personality Traits"
+              value={idealPartner?.personality}
+            />
+            <DetailRow
+              icon={<Sparkles />}
+              label="Desired Qualities"
+              value={idealPartner?.qualities}
+            />
+            <DetailRow
+              icon={<HeartCrack />}
+              label="Deal Breakers"
+              value={idealPartner?.dealBreakers}
+            />
+          </ProfileSection>
+        </div>
 
-      <PhotoGrid photos={photos} />
+        <PhotoGrid
+          photos={photos}
+          onImageClick={(url, key) => setViewingImage({ url, key })}
+          onDownloadClick={handleDownload}
+          downloading={downloading}
+        />
 
-      <NotesSection applicationId={application.id} initialNotes={notes} />
-    </main>
+        <NotesSection applicationId={application.id} initialNotes={notes} />
+      </main>
+    </>
   )
 }

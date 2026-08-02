@@ -1636,13 +1636,13 @@ function AuthPageContents() {
     exit: { opacity: 0, x: 20 },
   }
 
-  const uploadImage = async (file: File) => {
+  const uploadImage = async (file: File, type: string) => {
     const formData = new FormData()
 
     formData.append("file", file)
 
     const response = await fetch(
-      `/api/upload?email=${encodeURIComponent(detailsForm.email)}`,
+      `/api/upload?email=${encodeURIComponent(detailsForm.email)}&type=${type}`,
       {
         method: "POST",
         body: formData,
@@ -1673,9 +1673,9 @@ function AuthPageContents() {
     try {
       const [headshotUrl, fullLengthUrl, casualLifestyleUrl] =
         await Promise.all([
-          uploadImage(photosForm.headshot!),
-          uploadImage(photosForm.fullLength!),
-          uploadImage(photosForm.casualLifestyle!),
+          uploadImage(photosForm.headshot!, "headshot"),
+          uploadImage(photosForm.fullLength!, "full-length"),
+          uploadImage(photosForm.casualLifestyle!, "casual-lifestyle"),
         ])
 
       // The initial user data is now in state, no need to read from URL

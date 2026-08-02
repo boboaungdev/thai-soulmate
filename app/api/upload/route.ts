@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     const formData = await req.formData()
     const { searchParams } = new URL(req.url)
     const email = searchParams.get("email")
+    const type = searchParams.get("type") || "no-type"
     const path = searchParams.get("path") || "applications/photos"
 
     if (!email) {
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
 
     const extension = file.name.split(".").pop()
 
-    const fileName = `${path}/${email}/${email}-${Date.now()}.${extension}`
+    const fileName = `${path}/${email}/${email}-${type}-${Date.now()}.${extension}`
 
     await r2.send(
       new PutObjectCommand({

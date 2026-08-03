@@ -36,6 +36,11 @@ const formatFluency = (fluency: number[] | undefined) => {
   return `${level}%`
 }
 
+const joinValues = (values: string[] | undefined) => {
+  if (!values || values.length === 0) return "N/A"
+  return values.join(", ")
+}
+
 const DetailItem = ({
   label,
   value,
@@ -43,10 +48,16 @@ const DetailItem = ({
   label: string
   value: React.ReactNode
 }) => (
-  <div>
-    <p className="text-sm text-gray-500">{label}</p>
-    <p className="font-semibold">{value}</p>
+  <div className="border-b border-gray-100 pb-2">
+    <p className="text-[11px] font-medium text-gray-400 uppercase">{label}</p>
+    <p className="mt-1 text-sm font-semibold text-gray-900">{value || "N/A"}</p>
   </div>
+)
+
+const GradientPrintName = ({ name }: { name: string }) => (
+  <h2 className="text-gradient mt-2 block text-3xl leading-none font-bold [box-shadow:none] [border-bottom:0] [text-decoration:none]">
+    {name}
+  </h2>
 )
 
 export default function ProfilePrintPage({
@@ -104,6 +115,10 @@ export default function ProfilePrintPage({
   const age = user.personalDetails?.dob
     ? calculateAge(user.personalDetails.dob)
     : null
+  const displayName = `${user.personalDetails?.prefix || ""} ${
+    user.personalDetails?.name || ""
+  }`.trim()
+  const nickname = user.personalDetails?.nickname
 
   return (
     <>
@@ -128,156 +143,256 @@ export default function ProfilePrintPage({
       <div ref={printRef}>
         <main
           id="printable-area"
-          className="mx-auto max-w-4xl bg-white p-10 text-black"
+          className="mx-auto max-w-4xl bg-white text-black"
         >
-          {/* App Header */}
-          <header className="mb-10 flex items-center justify-between border-b-2 border-gray-200 pb-5">
-            <div className="flex items-center gap-4">
-              <Image src="/logo.png" alt="Logo" width={64} height={64} />
-              <div>
-                <AppName className="text-2xl font-bold" />
-                <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-lg font-semibold">Confidential Profile</p>
-              <p className="text-xs text-gray-400">
-                ID: {String(user.customId).padStart(4, "0")}
-              </p>
-            </div>
-          </header>
-
-          <div className="grid grid-cols-3 gap-10">
-            {/* Left Column */}
-            <div className="col-span-1 space-y-6">
-              {user.photos?.headshot && (
-                <div className="relative aspect-square w-full">
-                  <Image
-                    src={user.photos.headshot}
-                    alt="Headshot"
-                    fill
-                    className="rounded-lg object-cover"
-                  />
+          <section
+            className="flex min-h-[265mm] flex-col"
+            style={{ breakAfter: "page", pageBreakAfter: "always" }}
+          >
+            {/* App Header */}
+            <header className="mb-8 flex items-center justify-between border-b border-gray-200 pb-5">
+              <div className="flex items-center gap-4">
+                <Image src="/logo.png" alt="Logo" width={56} height={56} />
+                <div>
+                  <AppName className="text-gradient text-2xl font-bold" />
+                  <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
                 </div>
-              )}
-              <div className="space-y-3">
-                <DetailItem label="Age" value={age} />
-                <DetailItem
-                  label="Height"
-                  value={`${user.appearance?.height} cm`}
-                />
-                <DetailItem
-                  label="Weight"
-                  value={`${user.appearance?.weight} kg`}
-                />
-                <DetailItem
-                  label="Nationality"
-                  value={user.personalDetails?.nationality}
-                />
-                <DetailItem
-                  label="Location"
-                  value={user.personalDetails?.currentLocation}
-                />
-                <DetailItem
-                  label="Religion"
-                  value={user.appearance?.religion}
-                />
-                <DetailItem
-                  label="Occupation"
-                  value={user.career?.occupation}
-                />
-                <DetailItem label="Education" value={user.career?.education} />
-                <DetailItem
-                  label="Languages"
-                  value={`Thai (${formatFluency(
-                    user.appearance?.thaiFluency
-                  )}), English (${formatFluency(
-                    user.appearance?.englishFluency
-                  )})`}
-                />
-                <DetailItem label="Smoking" value={user.lifestyle?.smoking} />
-                <DetailItem label="Drinking" value={user.lifestyle?.drinking} />
-                <DetailItem label="Exercise" value={user.lifestyle?.exercise} />
               </div>
-            </div>
-
-            {/* Right Column */}
-            <div className="col-span-2 space-y-8">
-              <div>
-                <h1 className="text-4xl font-bold">
-                  {user.personalDetails?.prefix} {user.personalDetails?.name}
-                  {user.personalDetails?.nickname &&
-                    ` (${user.personalDetails.nickname})`}
-                </h1>
-              </div>
-
-              <section>
-                <h2 className="text-xl font-bold">About Me</h2>
-                <p className="mt-2 text-gray-700">
-                  {user.personality?.about}
+              <div className="text-right">
+                <p className="text-sm font-semibold text-gray-500 uppercase">
+                  Confidential Profile
                 </p>
-              </section>
+                <p className="mt-1 text-xs text-gray-400">
+                  ID: {String(user.customId).padStart(4, "0")}
+                </p>
+              </div>
+            </header>
 
-              <section>
-                <h2 className="text-xl font-bold">Personality & Interests</h2>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {[
-                    ...(user.personality?.personality || []),
-                    ...(user.lifestyle?.interests || []),
-                  ].map((item) => (
-                    <div
-                      key={item}
-                      className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm"
-                    >
-                      {item}
+            <div className="grid flex-1 grid-cols-[0.95fr_1.35fr] gap-10">
+              <aside className="space-y-5">
+                {user.photos?.headshot && (
+                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-md bg-gray-100">
+                    <Image
+                      src={user.photos.headshot}
+                      alt="Headshot"
+                      fill
+                      sizes="280px"
+                      className="object-cover object-top"
+                    />
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-x-5 gap-y-3">
+                  <DetailItem label="Age" value={age} />
+                  <DetailItem
+                    label="Height"
+                    value={
+                      user.appearance?.height
+                        ? `${user.appearance.height} cm`
+                        : "N/A"
+                    }
+                  />
+                  <DetailItem
+                    label="Weight"
+                    value={
+                      user.appearance?.weight
+                        ? `${user.appearance.weight} kg`
+                        : "N/A"
+                    }
+                  />
+                  <DetailItem
+                    label="Nationality"
+                    value={user.personalDetails?.nationality}
+                  />
+                  <DetailItem
+                    label="Location"
+                    value={user.personalDetails?.currentLocation}
+                  />
+                  <DetailItem
+                    label="Religion"
+                    value={user.appearance?.religion}
+                  />
+                </div>
+              </aside>
+
+              <div className="flex flex-col">
+                <div className="border-b border-gray-200 pb-6">
+                  <p className="text-xs font-semibold text-gray-400 uppercase">
+                    Profile Introduction
+                  </p>
+                  <h1 className="text-gradient mt-3 text-5xl leading-tight font-bold">
+                    {displayName}
+                    {nickname && (
+                      <span className="block text-2xl font-semibold text-gray-500">
+                        {nickname}
+                      </span>
+                    )}
+                  </h1>
+                </div>
+
+                <div className="mt-7 grid grid-cols-2 gap-x-8 gap-y-5">
+                  <DetailItem
+                    label="Occupation"
+                    value={user.career?.occupation}
+                  />
+                  <DetailItem
+                    label="Education"
+                    value={user.career?.education}
+                  />
+                  <DetailItem
+                    label="Languages"
+                    value={`Thai (${formatFluency(
+                      user.appearance?.thaiFluency
+                    )}), English (${formatFluency(
+                      user.appearance?.englishFluency
+                    )})`}
+                  />
+                  <DetailItem
+                    label="Exercise"
+                    value={user.lifestyle?.exercise}
+                  />
+                  <DetailItem label="Smoking" value={user.lifestyle?.smoking} />
+                  <DetailItem
+                    label="Drinking"
+                    value={user.lifestyle?.drinking}
+                  />
+                </div>
+
+                <section className="mt-8">
+                  <h2 className="text-gradient text-xl font-bold">About Me</h2>
+                  <p className="mt-3 text-[15px] leading-7 text-gray-700">
+                    {user.personality?.about || "N/A"}
+                  </p>
+                </section>
+
+                <section className="mt-7">
+                  <h2 className="text-gradient text-xl font-bold">
+                    Personality & Interests
+                  </h2>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {[
+                      ...(user.personality?.personality || []),
+                      ...(user.lifestyle?.interests || []),
+                    ].map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-sm border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-700"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="mt-7">
+                  <h2 className="text-gradient text-xl font-bold">
+                    Looking For
+                  </h2>
+                  <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
+                    <DetailItem
+                      label="Relationship Goals"
+                      value={joinValues(user.relationshipGoals?.lookingFor)}
+                    />
+                    <DetailItem
+                      label="Ideal Age Range"
+                      value={user.idealPartner?.ageRange}
+                    />
+                    <div className="col-span-2">
+                      <DetailItem
+                        label="Qualities in a Partner"
+                        value={joinValues(
+                          user.personality?.lookingForQualities
+                        )}
+                      />
                     </div>
-                  ))}
-                </div>
-              </section>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </section>
 
-              <section>
-                <h2 className="text-xl font-bold">Looking For</h2>
-                <div className="mt-4 space-y-3">
-                  <DetailItem
-                    label="Relationship Goals"
-                    value={user.relationshipGoals?.lookingFor?.join(", ")}
-                  />
-                  <DetailItem
-                    label="Qualities in a Partner"
-                    value={user.personality?.lookingForQualities?.join(", ")}
-                  />
-                  <DetailItem
-                    label="Ideal Age Range"
-                    value={user.idealPartner?.ageRange}
-                  />
+          <section
+            className="flex min-h-[265mm] flex-col"
+            style={{ breakAfter: "page", pageBreakAfter: "always" }}
+          >
+            <header className="mb-5">
+              <div className="flex items-end justify-between pb-5">
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 uppercase">
+                    Full Length Portrait
+                  </p>
+                  <GradientPrintName name={displayName} />
                 </div>
-              </section>
+                <p className="text-xs font-medium text-gray-400">
+                  ID: {String(user.customId).padStart(4, "0")}
+                </p>
+              </div>
+              <div className="h-px w-full bg-gray-200" />
+            </header>
 
-              <section>
-                <h2 className="text-xl font-bold">Gallery</h2>
-                <div className="mt-4 grid grid-cols-2 gap-4">
-                  {user.photos?.fullLength && (
+            <div className="flex flex-1 items-center justify-center">
+              {user.photos?.fullLength ? (
+                <figure className="flex flex-col items-center">
+                  <div className="relative h-[200mm] w-[150mm] overflow-hidden rounded-md bg-gray-100">
                     <Image
                       src={user.photos.fullLength}
-                      alt="Full Length"
-                      width={300}
-                      height={400}
-                      className="rounded-lg object-cover"
+                      alt="Full length portrait"
+                      fill
+                      sizes="567px"
+                      className="object-cover object-top"
                     />
-                  )}
-                  {user.photos?.casualLifestyle && (
+                  </div>
+                  <figcaption className="mt-3 text-center text-xs font-semibold text-gray-400 uppercase">
+                    Full Length
+                  </figcaption>
+                </figure>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center rounded-md border border-dashed border-gray-200 text-sm text-gray-400">
+                  No full length photo available
+                </div>
+              )}
+            </div>
+          </section>
+
+          <section className="flex min-h-[265mm] flex-col">
+            <header className="mb-5">
+              <div className="flex items-end justify-between pb-5">
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 uppercase">
+                    Lifestyle Portrait
+                  </p>
+                  <GradientPrintName name={displayName} />
+                </div>
+                <p className="text-xs font-medium text-gray-400">
+                  ID: {String(user.customId).padStart(4, "0")}
+                </p>
+              </div>
+              <div className="h-px w-full bg-gray-200" />
+            </header>
+
+            <div className="flex flex-1 items-center justify-center">
+              {user.photos?.casualLifestyle ? (
+                <figure className="flex w-full flex-col items-center">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-gray-100">
                     <Image
                       src={user.photos.casualLifestyle}
-                      alt="Lifestyle"
-                      width={300}
-                      height={400}
-                      className="rounded-lg object-cover"
+                      alt="Lifestyle portrait"
+                      fill
+                      sizes="760px"
+                      className="object-cover object-center"
                     />
-                  )}
+                  </div>
+                  <figcaption className="mt-3 text-center text-xs font-semibold text-gray-400 uppercase">
+                    Lifestyle
+                  </figcaption>
+                </figure>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center rounded-md border border-dashed border-gray-200 text-sm text-gray-400">
+                  No lifestyle photo available
                 </div>
-              </section>
+              )}
             </div>
-          </div>
+          </section>
         </main>
       </div>
     </>

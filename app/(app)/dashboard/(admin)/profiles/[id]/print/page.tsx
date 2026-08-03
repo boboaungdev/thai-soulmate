@@ -153,8 +153,8 @@ export default function ProfilePrintPage({
             <header className="mb-8 flex items-center justify-between border-b border-gray-200 pb-5">
               <div className="flex items-center gap-4">
                 <Image src="/logo.png" alt="Logo" width={56} height={56} />
-                <div>
-                  <AppName className="text-gradient text-2xl font-bold" />
+                <div className="text-center">
+                  <AppName className="text-gradient text-xl font-bold" />
                   <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
                 </div>
               </div>

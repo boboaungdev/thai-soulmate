@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const url = `${BASE_URL}/print/profile/${profileId}`
 
     await page.goto(url, {
-      waitUntil: "networkidle0",
+      waitUntil: "networkidle2",
     })
 
     const pdf = await page.pdf({
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.contact}>`,
       // to: [to.email],
-      to: ['boolean405@gmail.com'],
+      to: ["boolean405@gmail.com"],
       subject:
         to.gender.toUpperCase() === "FEMALE"
           ? "A Potential Match Has Been Selected for You"

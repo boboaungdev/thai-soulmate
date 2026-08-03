@@ -116,15 +116,21 @@ export default async function ProfilePrintPage({
             <div className="grid flex-1 grid-cols-[0.95fr_1.35fr] gap-10">
               <aside className="space-y-5">
                 {user.photos?.headshot && (
-                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-md bg-gray-100">
-                    <Image
-                      src={user.photos.headshot}
-                      alt="Headshot"
-                      fill
-                      sizes="280px"
-                      className="object-cover object-top"
-                    />
-                  </div>
+                  <div
+  className="relative w-full overflow-hidden rounded-md bg-gray-100"
+  style={{ height: "120mm" }}
+>
+  <Image
+    src={user.photos.headshot}
+    alt="Headshot"
+    fill
+    priority
+    loading="eager"
+    unoptimized
+    sizes="280px"
+    className="object-cover object-top"
+  />
+</div>
                 )}
 
                 <div className="grid grid-cols-2 gap-x-5 gap-y-3">
@@ -278,15 +284,24 @@ export default async function ProfilePrintPage({
             <div className="flex flex-1 items-center justify-center">
               {user.photos?.fullLength ? (
                 <figure className="flex flex-col items-center">
-                  <div className="relative h-[200mm] w-[150mm] overflow-hidden rounded-md bg-gray-100">
-                    <Image
-                      src={user.photos.fullLength}
-                      alt="Full length portrait"
-                      fill
-                      sizes="567px"
-                      className="object-cover object-top"
-                    />
-                  </div>
+                 <div
+  className="relative overflow-hidden rounded-md bg-gray-100"
+  style={{
+    width: "150mm",
+    height: "200mm",
+  }}
+>
+  <Image
+    src={user.photos.fullLength}
+    alt="Full length portrait"
+    fill
+    priority
+    loading="eager"
+    unoptimized
+    sizes="567px"
+    className="object-cover object-top"
+  />
+</div>
                   <figcaption className="mt-3 text-center text-xs font-semibold text-gray-400 uppercase">
                     Full Length
                   </figcaption>
@@ -318,11 +333,17 @@ export default async function ProfilePrintPage({
             <div className="flex flex-1 items-center justify-center">
               {user.photos?.casualLifestyle ? (
                 <figure className="flex w-full flex-col items-center">
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-gray-100">
+                  <div
+                    className="relative w-full overflow-hidden rounded-md bg-gray-100"
+                    style={{ height: "180mm" }}
+                  >
                     <Image
                       src={user.photos.casualLifestyle}
                       alt="Lifestyle portrait"
                       fill
+                      priority
+                      loading="eager"
+                      unoptimized
                       sizes="760px"
                       className="object-cover object-center"
                     />

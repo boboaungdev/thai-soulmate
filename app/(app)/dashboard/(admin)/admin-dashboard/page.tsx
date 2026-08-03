@@ -12,24 +12,19 @@ import {
   FileText,
   HeartHandshake,
   HeartPulse,
-  Mars,
   CreditCard,
   Mail,
   MailQuestion,
   MailCheck,
   MailX,
-  Venus,
 } from "lucide-react"
 import {
   DollarSign,
-  Users2,
   Clock,
   UserCog,
   UserCheck,
   TrendingUp,
-  Users,
-  UserPlus,
-  TrendingDown,
+  Users2,
 } from "lucide-react"
 import {
   ChartContainer,
@@ -43,7 +38,6 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -150,7 +144,7 @@ const dashboardCategories = {
       title: "Profiles Completed",
       value: "2,890",
       change: "Ready for matching",
-      icon: Users,
+      icon: Users2,
       color: "text-teal-500",
     },
   ],
@@ -214,14 +208,12 @@ const userActivityData = [
   { name: "Matched Members", value: 125, color: "#ec4899" }, // text-pink-500
 ]
 
-const RADIAN = Math.PI / 180
-
 const categoryIcons: { [key: string]: React.ElementType } = {
   "Financial Overview": DollarSign,
   "Registered Interest": ClipboardPen,
   "Application Form": FileText,
   Payment: CreditCard,
-  Profiles: Users,
+  Profiles: Users2,
   Matching: HeartHandshake,
 }
 

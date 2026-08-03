@@ -16,14 +16,21 @@ type ApplicationFormState = {
 }
 
 const defaultColumnVisibility: VisibilityState = {
-  phone: true,
-  nationality: true,
-  currentLocation: true,
-  dob: true,
+  profile: true,
+  gender: true,
+  plan: true,
+  notes: true,
+  status: true,
   createdAt: true,
-  'user.name': true,
-  'user.email': true,
-  'user.phone': true,
+  phone: false,
+  nationality: false,
+  currentLocation: false,
+  dob: false,
+  'user.name': false,
+  'user.email': false,
+  'user.phone': false,
+  occupation: false,
+  email: false,
 }
 
 export const useApplicationFormStore = create<ApplicationFormState>()(

@@ -22,7 +22,9 @@ import {
   Settings2,
   UserKey,
   Code,
+  Moon,
 } from "lucide-react"
+import { useTheme } from "next-themes"
 
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
@@ -36,6 +38,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Switch } from "@/components/ui/switch"
 import {
   Sidebar,
   SidebarContent,
@@ -174,6 +177,7 @@ export function AppSidebar() {
   const { user, logout } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
 
   if (!user) {
     return null
@@ -407,6 +411,17 @@ export function AppSidebar() {
                 <User2 className="mr-2 size-4" />
                 <span>Profile</span>
               </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <Moon className="mr-2 size-4" />
+              <span className="flex-1">Dark Mode</span>
+
+              <Switch
+                checked={theme === "dark"}
+                onCheckedChange={(checked) => {
+                  setTheme(checked ? "dark" : "light")
+                }}
+              />
             </DropdownMenuItem>
 
             <DropdownMenuItem asChild>

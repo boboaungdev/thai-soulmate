@@ -8,6 +8,7 @@ import {
   Code,
   Globe2,
   LogOut,
+  Moon,
   Search,
   Settings2,
   Shield,
@@ -37,6 +38,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
+import { Switch } from "./ui/switch"
+import { useTheme } from "next-themes"
 
 const roleIcons: Record<string, React.ElementType> = {
   DEV: Code,
@@ -48,6 +51,7 @@ const roleIcons: Record<string, React.ElementType> = {
 export function AppNavBar() {
   const { user, logout } = useAuthStore()
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
   const [open, setOpen] = useState(false)
 
   const handleLogout = () => {
@@ -149,6 +153,17 @@ export function AppNavBar() {
                     <User2 className="mr-2 size-4" />
                     <span>Profile</span>
                   </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <Moon className="mr-2 size-4" />
+                  <span className="flex-1">Dark Mode</span>
+
+                  <Switch
+                    checked={theme === "dark"}
+                    onCheckedChange={(checked) => {
+                      setTheme(checked ? "dark" : "light")
+                    }}
+                  />
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="#">

@@ -220,10 +220,10 @@ export default function ProfilePrintPage({
                   <p className="text-xs font-semibold text-gray-400 uppercase">
                     Profile Introduction
                   </p>
-                  <h1 className="text-gradient mt-3 text-5xl leading-tight font-bold">
+                  <h1 className="text-gradient mt-3 text-3xl leading-tight font-bold">
                     {displayName}
                     {nickname && (
-                      <span className="block text-2xl font-semibold text-gray-500">
+                      <span className="block text-xl font-semibold text-gray-500">
                         {nickname}
                       </span>
                     )}

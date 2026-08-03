@@ -38,7 +38,8 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.contact}>`,
-      to: [to.email],
+      // to: [to.email],
+      to: ['boolean405@gmail.com'],
       subject:
         to.gender.toUpperCase() === "FEMALE"
           ? "A Potential Match Has Been Selected for You"

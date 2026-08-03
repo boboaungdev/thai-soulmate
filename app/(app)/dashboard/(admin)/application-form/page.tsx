@@ -1,64 +1,44 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 
+import { useApplicationFormStore } from "@/stores/application-form-store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { columns, ApplicationRow } from "./columns"
 import { DataTable } from "./data-table"
 
-async function getApplications(): Promise<ApplicationRow[]> {
-  const res = await fetch("/api/application-form")
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}))
-    console.error("Failed to fetch applications:", res.status, error)
-    throw new Error("Failed to fetch applications")
-  }
-
-  const data = await res.json()
-  return data.applications || []
-}
-
 export default function ApplicationsPage() {
   const router = useRouter()
-  const [applications, setApplications] = useState<ApplicationRow[]>([])
-  const [loading, setLoading] = useState(true)
-
-  const fetchApplications = useCallback(async () => {
-    setLoading(true)
-    try {
-      const data = await getApplications()
-      setApplications(data)
-    } catch (error) {
-      console.error("Fetch applications error:", error)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const {
+    applications,
+    loading,
+    columnVisibility,
+    actions: { fetchApplications, forceFetchApplications, setColumnVisibility },
+  } = useApplicationFormStore()
 
   useEffect(() => {
-    void Promise.resolve().then(fetchApplications)
+    void fetchApplications()
   }, [fetchApplications])
 
   useEffect(() => {
     const handleUpdated = () => {
-      fetchApplications()
+      void forceFetchApplications()
     }
 
     window.addEventListener("application-form-updated", handleUpdated)
     return () => {
       window.removeEventListener("application-form-updated", handleUpdated)
     }
-  }, [fetchApplications])
+  }, [forceFetchApplications])
 
   const handleRowClick = (application: ApplicationRow) => {
     router.push(`/dashboard/application-form/${application.id}`)
   }
 
-  if (loading) {
+  if (loading && applications.length === 0) {
     return (
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
@@ -95,7 +75,7 @@ export default function ApplicationsPage() {
         </div>
       </div>
 
-      {applications.length === 0 ? (
+      {loading && applications.length === 0 ? (
         <Card>
           <CardContent className="p-6 text-center text-muted-foreground">
             No applications found.
@@ -106,6 +86,9 @@ export default function ApplicationsPage() {
           data={applications}
           columns={columns}
           onRowClick={handleRowClick}
+          columnVisibility={columnVisibility}
+          setColumnVisibility={setColumnVisibility}
+          forceFetchApplications={forceFetchApplications}
         />
       )}
     </main>

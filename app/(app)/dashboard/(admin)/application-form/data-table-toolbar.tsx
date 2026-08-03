@@ -1,6 +1,6 @@
 "use client"
 
-import { Search, XCircle } from "lucide-react"
+import { RefreshCw, Search, XCircle } from "lucide-react"
 import { Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -15,17 +15,19 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { DataTableViewOptions } from "./data-table-view-options"
 import { MembershipPlan } from "@/lib/generated/prisma/enums"
 
-const membershipPlans = Object.values(MembershipPlan).map((plan) => ({
+const membershipPlans = Object.values(MembershipPlan).map(plan => ({
   label: plan.replace(/_/g, " "), // Replace underscores with spaces for readability
   value: plan,
 }))
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
+  forceFetchApplications: () => Promise<void>
 }
 
 export function DataTableToolbar<TData>({
   table,
+  forceFetchApplications,
 }: DataTableToolbarProps<TData>) {
   const isFiltered =
     table.getState().columnFilters.length > 0 || !!table.getState().globalFilter
@@ -40,7 +42,7 @@ export function DataTableToolbar<TData>({
           <InputGroupInput
             placeholder="Search applications"
             value={table.getState().globalFilter ?? ""}
-            onChange={(event) => table.setGlobalFilter(event.target.value)}
+            onChange={event => table.setGlobalFilter(event.target.value)}
           />
         </InputGroup>
         {table.getColumn("status") && (
@@ -81,7 +83,18 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="ml-auto h-8"
+          onClick={() => forceFetchApplications()}
+        >
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Refresh
+        </Button>
+        <DataTableViewOptions table={table} />
+      </div>
     </div>
   )
 }

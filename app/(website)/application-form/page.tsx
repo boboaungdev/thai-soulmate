@@ -4987,7 +4987,7 @@ PasswordToggle.displayName = "PasswordToggle"
 
 export default function AuthPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={null}>
       <AuthPageContents />
     </Suspense>
   )

@@ -111,14 +111,14 @@ const staffItems = [
     icon: DollarSign,
   },
   {
-    title: "Matching",
-    url: "/dashboard/matching",
-    icon: HeartHandshake,
-  },
-  {
     title: "Profiles",
     url: "/dashboard/profiles",
     icon: Users2,
+  },
+  {
+    title: "Matching",
+    url: "/dashboard/matching",
+    icon: HeartHandshake,
   },
   {
     title: "Tracking",
@@ -149,14 +149,14 @@ const adminItems = [
     icon: DollarSign,
   },
   {
-    title: "Matching",
-    url: "/dashboard/matching",
-    icon: HeartHandshake,
-  },
-  {
     title: "Profiles",
     url: "/dashboard/profiles",
     icon: Users2,
+  },
+  {
+    title: "Matching",
+    url: "/dashboard/matching",
+    icon: HeartHandshake,
   },
   {
     title: "Tracking",

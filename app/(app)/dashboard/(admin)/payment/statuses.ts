@@ -6,7 +6,7 @@ import {
   LucideIcon,
 } from "lucide-react"
 
-export type PaymentStatus = "cancelled" | "refunded" | "confirmed" | "pending"
+export type PaymentStatus = "cancelled" | "refunded" | "completed" | "pending"
 
 type PaymentStatusMeta = {
   value: PaymentStatus
@@ -23,8 +23,8 @@ export const paymentStatuses: PaymentStatusMeta[] = [
     badgeClassName: "bg-gray-500 text-white",
   },
   {
-    value: "confirmed",
-    label: "Confirmed",
+    value: "completed",
+    label: "Completed",
     icon: CheckCircle2,
     badgeClassName: "bg-green-500 text-white",
   },

@@ -39,7 +39,7 @@ model RegisterInterest {
   source       String
   otherSource  String?
 
-  status RegisterInterestStatus @default(PENDING)
+  status RegisterInterestStatus @default(RECEIVED)
 
   userId String? @unique
   user   User?   @relation(fields: [userId], references: [id])
@@ -75,7 +75,7 @@ model ApplicationForm {
   id       String @id @default(cuid())
   customId Int    @unique @default(autoincrement())
 
-  status ApplicationFormStatus @default(OPEN)
+  status ApplicationFormStatus @default(RECEIVED)
 
   personalDetails   Json
   career            Json
@@ -145,17 +145,19 @@ enum NoteType {
 }
 
 enum RegisterInterestStatus {
+  RECEIVED
   PENDING
+  ACCEPTED
+  DECLINED
   CONTACTED_EMAIL
   CONTACTED_PHONE
   CONTACTED_WHATSAPP
-  COMPLETED
-  NOT_INTERESTED
 }
 
 enum ApplicationFormStatus {
-  OPEN
-  IN_MATCHING
+  RECEIVED
+  PENDING
+  COMPLETED
   MATCHED
   CLOSED
 }

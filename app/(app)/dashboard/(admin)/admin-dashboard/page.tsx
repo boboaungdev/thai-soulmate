@@ -13,6 +13,11 @@ import {
   HeartHandshake,
   HeartPulse,
   Mars,
+  CreditCard,
+  Mail,
+  MailQuestion,
+  MailCheck,
+  MailX,
   Venus,
 } from "lucide-react"
 import {
@@ -22,6 +27,7 @@ import {
   UserCog,
   UserCheck,
   TrendingUp,
+  Users,
   UserPlus,
   TrendingDown,
 } from "lucide-react"
@@ -62,95 +68,120 @@ const dashboardCategories = {
       icon: TrendingUp,
       color: "text-green-600",
     },
-    {
-      title: "Total Expenses",
-      value: "฿27,495.55",
-      change: "+5% from last month",
-      icon: TrendingDown,
-      color: "text-red-500",
-    },
-    {
-      title: "Pending Payments",
-      value: "15",
-      change: "+3 since last week",
-      icon: Clock,
-      color: "text-orange-500",
-    },
   ],
-  "User Metrics": [
+  "Registered Interest": [
     {
-      title: "Total Users",
-      value: "2,350",
-      change: "+180 since last month",
-      icon: Users2,
-      color: "text-blue-500",
-    },
-    {
-      title: "Female Users",
-      value: "1,850",
-      change: "78% of total",
-      icon: Venus,
-      color: "text-pink-400",
-    },
-    {
-      title: "Male Users",
-      value: "500",
-      change: "22% of total",
-      icon: Mars, // text-amber-500
-      color: "text-amber-500",
-    },
-    {
-      title: "New Users (This Month)",
-      value: "+180",
-      change: "vs. 150 last month",
-      icon: UserPlus,
-      color: "text-green-500",
-    },
-  ],
-  "Platform Activity": [
-    {
-      title: "Registered Interests",
+      title: "Interest Received",
       value: "5,430",
-      change: "+250 this week",
-      icon: ClipboardPen,
+      change: "+250 this month",
+      icon: Mail,
       color: "text-indigo-500",
     },
     {
-      title: "Application Forms",
-      value: "3,120",
-      change: "+150 this week",
-      icon: FileText,
-      color: "text-lime-500",
+      title: "Interest Pending",
+      value: "200",
+      change: "+10 since yesterday",
+      icon: MailQuestion,
+      color: "text-orange-500",
     },
     {
-      title: "In Matching Process",
-      value: "340",
-      change: "+5% from last week",
-      icon: HeartPulse,
+      title: "Interest Accepted",
+      value: "4,800",
+      change: "+200 this month",
+      icon: MailCheck,
+      color: "text-green-500",
+    },
+    {
+      title: "Interest Declined",
+      value: "430",
+      change: "+40 this month",
+      icon: MailX,
+      color: "text-red-500",
+    },
+  ],
+  "Application Form": [
+    {
+      title: "Apps Received",
+      value: "3,120",
+      change: "+150 this month",
+      icon: FileText,
+      color: "text-blue-500",
+    },
+    {
+      title: "Apps Pending",
+      value: "150",
+      change: "-5 since yesterday",
+      icon: Clock,
+      color: "text-orange-500",
+    },
+    {
+      title: "Apps Completed",
+      value: "2,970",
+      change: "+155 this month",
+      icon: UserCheck,
+      color: "text-green-500",
+    },
+  ],
+  Payment: [
+    {
+      title: "Payment Pending",
+      value: "15",
+      change: "+3 this month",
+      icon: Clock,
+      color: "text-orange-500",
+    },
+    {
+      title: "Payment Completed",
+      value: "850",
+      change: "+50 this month",
+      icon: UserCheck,
+      color: "text-green-500",
+    },
+  ],
+  Profiles: [
+    {
+      title: "Profiles Pending",
+      value: "80",
+      change: "Needs review",
+      icon: UserCog,
+      color: "text-yellow-500",
+    },
+    {
+      title: "Profiles Completed",
+      value: "2,890",
+      change: "Ready for matching",
+      icon: Users,
       color: "text-teal-500",
     },
+  ],
+  Matching: [
     {
-      title: "Matched Users",
+      title: "Profiles Matched",
       value: "125",
       change: "+12 this month",
       icon: HeartHandshake,
       color: "text-pink-500",
     },
-  ],
-  Administration: [
     {
-      title: "Staff Members",
-      value: "45",
-      change: "No change",
-      icon: UserCog,
-      color: "text-purple-500",
+      title: "Profiles Pending",
+      value: "340",
+      change: "+5% from last month",
+      icon: HeartPulse,
+      color: "text-teal-500",
     },
     {
-      title: "Admins",
-      value: "5",
-      change: "No change",
+      title: "Awaiting Confirmation",
+      value: "75",
+      change: "Needs member action",
       icon: UserCheck,
-      color: "text-red-500",
+      color: "text-yellow-500",
+    },
+    {
+      title: "Total Matches Initiated",
+      value: "465",
+      change: "+20 this month",
+      icon: HeartPulse, // Reusing HeartPulse for this
+      color: "text-blue-500",
     },
   ],
 }
@@ -171,18 +202,6 @@ const monthlyRevenueData = [
   { month: "Dec", revenue: 45000 },
 ]
 
-const userRoleDistribution = [
-  { name: "Members", value: 2350, color: "#8884d8" },
-  { name: "Staff", value: 45, color: "#82ca9d" },
-  { name: "Admins", value: 5, color: "#ffc658" },
-]
-
-const paymentStatusData = [
-  { name: "Completed", value: 850, color: "#00C49F" },
-  { name: "Pending", value: 15, color: "#FFBB28" },
-  { name: "Failed", value: 5, color: "#FF8042" },
-]
-
 const genderDistributionData = [
   { name: "Female", value: 1850, color: "#f472b6" }, // text-pink-400
   { name: "Male", value: 500, color: "#FFD700" }, // gold
@@ -192,10 +211,19 @@ const userActivityData = [
   { name: "Registered Interests", value: 5430, color: "#6366f1" }, // text-indigo-500
   { name: "Application Forms", value: 3120, color: "#84cc16" }, // text-lime-500
   { name: "In Matching Process", value: 340, color: "#14b8a6" }, // text-teal-500
-  { name: "Matched Users", value: 125, color: "#ec4899" }, // text-pink-500
+  { name: "Matched Members", value: 125, color: "#ec4899" }, // text-pink-500
 ]
 
 const RADIAN = Math.PI / 180
+
+const categoryIcons: { [key: string]: React.ElementType } = {
+  "Financial Overview": DollarSign,
+  "Registered Interest": ClipboardPen,
+  "Application Form": FileText,
+  Payment: CreditCard,
+  Profiles: Users,
+  Matching: HeartHandshake,
+}
 
 export default function AdminDashboardPage() {
   return (
@@ -214,35 +242,41 @@ export default function AdminDashboardPage() {
 
       {/* Stats Cards */}
       <div className="space-y-6">
-        {Object.entries(dashboardCategories).map(([category, stats]) => (
-          <div key={category}>
-            <h2 className="mb-4 text-xl font-semibold tracking-tight">
-              {category}
-            </h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {stats.map((stat, index) => (
-                <Card key={index}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      {stat.title}
-                    </CardTitle>
-                    <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                  </CardHeader>
-                  <CardContent>
-                    <div
-                      className={`text-2xl font-bold ${stat.title === "Net Profit" ? stat.color : ""}`}
-                    >
-                      {stat.value}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {stat.change}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
+        {Object.entries(dashboardCategories).map(([category, stats]) => {
+          const Icon = categoryIcons[category]
+          return (
+            <div key={category}>
+              <h2 className="mb-4 flex items-center text-xl font-semibold tracking-tight">
+                {Icon && <Icon className="mr-2 h-5 w-5" />}
+                {category}
+              </h2>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {stats.map((stat, index) => (
+                  <Card key={index}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        {stat.title}
+                      </CardTitle>
+                      <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                    </CardHeader>
+                    <CardContent>
+                      <div
+                        className={`text-2xl font-bold ${
+                          stat.title === "Net Profit" ? stat.color : ""
+                        }`}
+                      >
+                        {stat.value}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {stat.change}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Charts Section */}
@@ -296,73 +330,8 @@ export default function AdminDashboardPage() {
 
         <Card className="col-span-3 xl:col-span-2">
           <CardHeader>
-            <CardTitle>User Role Distribution</CardTitle>
-            <CardDescription>
-              Breakdown of users by their assigned roles.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center pb-0">
-            <ChartContainer config={{}} className="aspect-square h-[250px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={userRoleDistribution}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    labelLine={false}
-                    label={({
-                      cx,
-                      cy,
-                      midAngle,
-                      innerRadius,
-                      outerRadius,
-                      percent,
-                    }) => {
-                      // midAngle is possibly undefined
-                      if (midAngle === undefined || percent === undefined) {
-                        return null // Don't render label if midAngle or percent is undefined
-                      }
-                      const radius =
-                        innerRadius + (outerRadius - innerRadius) * 0.5
-                      const x = cx + radius * Math.cos(-midAngle * RADIAN)
-                      const y = cy + radius * Math.sin(-midAngle * RADIAN)
-                      return (
-                        <text
-                          x={x}
-                          y={y}
-                          fill="white"
-                          textAnchor={x > cx ? "start" : "end"}
-                          dominantBaseline="central"
-                        >
-                          {`${(percent * 100).toFixed(0)}%`}
-                        </text>
-                      )
-                    }}
-                  >
-                    {userRoleDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent />}
-                  />
-                  <ChartLegend
-                    content={<ChartLegendContent nameKey="name" />}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-3 xl:col-span-2">
-          <CardHeader>
             <CardTitle>Gender Distribution</CardTitle>
-            <CardDescription>Breakdown of users by gender.</CardDescription>
+            <CardDescription>Breakdown of members by gender.</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center pb-0">
             <ChartContainer config={{}} className="aspect-square h-[250px]">
@@ -376,24 +345,55 @@ export default function AdminDashboardPage() {
                     innerRadius={60}
                     fill="#8884d8"
                     dataKey="value"
-                    labelLine={false}
-                    label={({ name, percent }) => {
-                      if (name === undefined || percent === undefined) {
-                        return null
-                      }
-                      return `${name} ${(percent * 100).toFixed(0)}%`
-                    }}
                   >
                     {genderDistributionData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
+                  <text
+                    x="50%"
+                    y="45%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="fill-foreground text-sm font-semibold"
+                  >
+                    Total Members
+                  </text>
+                  <text
+                    x="50%"
+                    y="58%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="fill-foreground text-2xl font-bold"
+                  >
+                    {genderDistributionData.reduce(
+                      (acc, curr) => acc + curr.value,
+                      0
+                    )}
+                  </text>
                   <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent />}
                   />
                   <ChartLegend
-                    content={<ChartLegendContent nameKey="name" />}
+                    content={({ payload }) => {
+                      return (
+                        <div className="flex items-center justify-center gap-4">
+                          {payload?.map((entry) => (
+                            <div
+                              key={entry.value}
+                              className="flex flex-col items-center gap-1"
+                            >
+                              <div
+                                className="h-3 w-3 rounded-full"
+                                style={{ backgroundColor: entry.color }}
+                              />
+                              <span className="text-xs">{entry.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -401,64 +401,17 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-7 xl:col-span-4">
-          <CardHeader>
-            <CardTitle>Payment Status Overview</CardTitle>
-            <CardDescription>Current status of all payments.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={{
-                value: { label: "Count", color: "hsl(var(--chart-2))" },
-              }}
-              className="aspect-video h-[300px] w-full"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={paymentStatusData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="name"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                  />
-                  <YAxis tickLine={false} axisLine={false} />
-                  <Bar
-                    dataKey="value"
-                    fill="var(--color-value)"
-                    radius={[4, 4, 0, 0]}
-                  >
-                    {paymentStatusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent />}
-                  />
-                  <ChartLegend
-                    content={<ChartLegendContent nameKey="name" />}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-
         <Card className="col-span-7 xl:col-span-6">
           <CardHeader>
-            <CardTitle>User Activity Funnel</CardTitle>
+            <CardTitle>Member Activity Funnel</CardTitle>
             <CardDescription>
-              Progression of users through the platform stages.
+              Progression of members through the platform stages.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer
               config={{
-                value: { label: "User Count" },
+                value: { label: "Member Count" },
               }}
               className="h-[300px] w-full"
             >
@@ -477,8 +430,7 @@ export default function AdminDashboardPage() {
                     cursor={false}
                     content={<ChartTooltipContent hideLabel />}
                   />
-                  <Legend />
-                  <Bar dataKey="value" name="User Count">
+                  <Bar dataKey="value">
                     {userActivityData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}

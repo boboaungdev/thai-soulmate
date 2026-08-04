@@ -73,7 +73,7 @@ export const statuses: {
       "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300",
   },
   {
-    value: "NOT_INTERESTED",
+    value: "",
     label: "Not interested",
     icon: CircleX,
     color: "text-red-500",

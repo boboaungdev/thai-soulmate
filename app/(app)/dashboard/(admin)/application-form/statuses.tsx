@@ -2,6 +2,7 @@
 
 import {
   CircleCheck,
+  CircleX,
   CircleDot,
   CircleSlash,
   HeartHandshake,
@@ -17,15 +18,15 @@ export const applicationStatuses: {
 }[] = [
   {
     value: "RECEIVED",
-    label: "received",
-    icon: CircleSlash,
-    color: "text-red-500",
+    label: "Received",
+    icon: CircleDot,
+    color: "text-gray-500",
     badgeClassName:
-      "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300",
+      "border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300",
   },
   {
     value: "PENDING",
-    label: "In matching",
+    label: "Pending",
     icon: HeartHandshake,
     color: "text-yellow-600",
     badgeClassName:
@@ -33,7 +34,7 @@ export const applicationStatuses: {
   },
   {
     value: "COMPLETED",
-    label: "Matched",
+    label: "Completed",
     icon: CircleCheck,
     color: "text-green-600",
     badgeClassName:
@@ -41,19 +42,19 @@ export const applicationStatuses: {
   },
   {
     value: "MATCHED",
-    label: "Closed",
-    icon: CircleSlash,
-    color: "text-red-500",
+    label: "Matched",
+    icon: CircleCheck,
+    color: "text-blue-600",
     badgeClassName:
-      "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300",
+      "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300",
   },
   {
     value: "CLOSED",
-    label: "Closed",
-    icon: CircleSlash,
-    color: "text-red-500",
+    label: "Rejected",
+    icon: CircleX,
+    color: "text-gray-500",
     badgeClassName:
-      "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300",
+      "border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300",
   },
 ]
 

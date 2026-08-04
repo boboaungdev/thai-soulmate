@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const profiles = await prisma.profile.findMany({
       include: {
+        notes: true,
         applicationForm: {
           include: {
             membership: true,

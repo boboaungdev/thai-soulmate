@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
-import { ProfileStatus } from "@/lib/generated/prisma"
+import { StickyNote } from "lucide-react"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
@@ -14,6 +14,9 @@ import { calculateAge, formatDateTime } from "@/lib/date"
 // The data is now a flattened combination of Profile and ApplicationForm
 export type ProfileRow = ApplicationForm & {
   status: ProfileStatus
+  notes?: {
+    id: string
+  }[]
 }
 
 export const columns: ColumnDef<ProfileRow>[] = [
@@ -51,7 +54,7 @@ export const columns: ColumnDef<ProfileRow>[] = [
     cell: ({ row }) => {
       const applicant = row.original
       const name = applicant.personalDetails?.name || "-"
-      const nickname = applicant.nickname
+      const nickname = applicant?.personalDetails?.nickname
 
       return (
         <div className="flex min-w-[220px] items-center gap-3">
@@ -142,7 +145,27 @@ export const columns: ColumnDef<ProfileRow>[] = [
       return value.includes(row.getValue(id))
     },
   },
-    {
+  {
+    id: "notes",
+    accessorFn: (row) => row.notes?.length ?? 0,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Notes" />
+    ),
+    cell: ({ row }) => {
+      const notesCount = row.original.notes?.length ?? 0
+      return (
+        <div
+          className={`flex w-[70px] items-center gap-1.5 ${
+            notesCount === 0 ? "text-muted-foreground" : ""
+          }`}
+        >
+          <StickyNote className="h-4 w-4" />
+          <span className="font-medium">{notesCount}</span>
+        </div>
+      )
+    },
+  },
+  {
     id: "status",
     accessorFn: (row) => row.status,
     header: ({ column }) => (
@@ -151,7 +174,7 @@ export const columns: ColumnDef<ProfileRow>[] = [
     cell: ({ row }) => {
       const status = row.original.status
       return (
-        <Badge variant={status === 'COMPLETED' ? 'default' : 'secondary'}>
+        <Badge variant={status === "COMPLETED" ? "default" : "secondary"}>
           {status}
         </Badge>
       )

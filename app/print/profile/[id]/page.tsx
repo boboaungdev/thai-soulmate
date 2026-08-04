@@ -89,8 +89,8 @@ const DetailItem = ({
   value: React.ReactNode
   icon?: React.ReactNode
 }) => (
-  <div className="flex items-center gap-4">
-    {icon && <div className="w-5 text-pink-400">{icon}</div>}
+  <div className="flex items-center gap-3">
+    {icon && <div className="w-4 text-pink-400">{icon}</div>}
     <div className="flex-1">
       <p className="text-sm font-semibold text-gray-800">{value || "N/A"}</p>
       <p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
@@ -108,7 +108,7 @@ const SectionTitle = ({
   icon?: React.ReactNode
 }) => (
   <div className="flex items-center gap-3">
-    {icon && <div className="w-6 text-pink-500">{icon}</div>}
+    {icon && <div className="w-5 text-pink-500">{icon}</div>}
     <h2 className="text-lg font-bold text-pink-500">{children}</h2>
   </div>
 )

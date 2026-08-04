@@ -127,6 +127,128 @@
   },
   {
     "personalDetails": {
+      "dob": "1999-04-28T00:00:00.000Z",
+      "name": "John Doe",
+      "gender": "Male",
+      "prefix": "Mr.",
+      "email": "johndoe@gmail.com",
+      "phone": "+66901234567",
+      "nationality": "British",
+      "currentLocation": "Thailand"
+    },
+    "career": {
+      "company": "Phuket Hospital",
+      "education": "Bachelor's Degree",
+      "occupation": "Doctor"
+    },
+    "appearance": {
+      "height": "170",
+      "weight": "60",
+      "religion": "Buddhism",
+      "englishFluency": [
+        100
+      ],
+      "thaiFluency": [
+        0
+      ]
+    },
+    "personality": {
+      "about": "I like traveling, cooking, and spending time with family.",
+      "hasChildren": "No",
+      "personality": [
+        "Kind",
+        "Confident",
+        "Family-Oriented"
+      ],
+      "bestQualities": [
+        "Honest",
+        "Kind",
+        "Funny"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Loyal",
+        "Supportive",
+        "Kind"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Honesty",
+        "Financial Stability",
+        "Kindness",
+        "Adventure",
+        "Communication"
+      ],
+      "smoking": "Never",
+      "drinking": "Never",
+      "exercise": "Daily",
+      "interests": [
+        "Travel",
+        "Cooking",
+        "Movies",
+        "Golf",
+        "Yoga"
+      ],
+      "lifestyle": [
+        "Relaxed"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Yes",
+      "weekendActivity": "Cafe hopping and golfing",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Paris",
+        "Tokyo",
+        "New York"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Yes",
+      "lookingFor": [
+        "Long-Term Relationship"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'8\"+",
+      "ageRange": "30-38",
+      "location": "Asia",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Family-Oriented",
+        "Romantic",
+        "Easy Going",
+        "Financially Stable"
+      ],
+      "nationality": "Asian",
+      "personality": [
+        "Kind",
+        "Ambitious",
+        "Confident",
+        "Spiritual",
+        "Easy Going"
+      ],
+      "dealBreakers": [
+        "Smoker",
+        "Dishonest",
+        "Disrespectful"
+      ]
+    },
+    "financial": {
+      "ownBusiness": "Yes",
+      "ownProperty": "No"
+    },
+    "photos": {
+      "headshot": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg",
+      "fullLength": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg",
+      "casualLifestyle": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg"
+    }
+  },
+  {
+    "personalDetails": {
       "dob": "1995-10-08T00:00:00.000Z",
       "name": "Nicha Chareon",
       "nickname": "Mook",

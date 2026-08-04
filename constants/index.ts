@@ -22,6 +22,7 @@ export const CONTACT = {
 export const EMAIL = {
   noreply: "noreply@thaisoulmate.org",
   contact: "contact@thaisoulmate.org",
+  notify: "notify@thaisoulmate.org",
 } as const
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL

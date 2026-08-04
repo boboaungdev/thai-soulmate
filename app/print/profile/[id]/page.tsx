@@ -155,13 +155,7 @@ export default async function ProfilePrintPage({
             {/* App Header */}
             <header className="mb-6 flex items-center justify-between border-b-2 border-gray-100 pb-5">
               <div className="flex items-center gap-4">
-                <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  width={48}
-                  height={48}
-                  className="rounded-full"
-                />
+                <Image src="/logo.png" alt="Logo" width={56} height={56} />
                 <div className="text-center">
                   <h1 className="text-gradient text-xl font-bold">
                     {APP_INFO.name}
@@ -240,34 +234,7 @@ export default async function ProfilePrintPage({
                       value={user.appearance?.religion}
                       icon={<HeartHandshake />}
                     />
-                  </div>
-                </aside>
-
-                {/* Right Column */}
-                <main className="space-y-6">
-                  <section>
-                    <SectionTitle icon={<BookUser />}>About Me</SectionTitle>
-                    <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                      {user.personality?.about || "N/A"}
-                    </p>
-                  </section>
-
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                    <section>
-                      <SectionTitle icon={<Building2 />}>Vocation</SectionTitle>
-                      <div className="mt-3 space-y-3">
-                        <DetailItem
-                          label="Occupation"
-                          value={user.career?.occupation}
-                        />
-                        <DetailItem
-                          label="Education"
-                          value={user.career?.education}
-                        />
-                      </div>
-                    </section>
-
-                    <section>
+                    <div className="pt-2">
                       <SectionTitle icon={<Languages />}>
                         Languages
                       </SectionTitle>
@@ -281,43 +248,65 @@ export default async function ProfilePrintPage({
                           level={user.appearance?.englishFluency?.[0]}
                         />
                       </div>
-                    </section>
-
-                    <section>
-                      <SectionTitle icon={<Bike />}>Lifestyle</SectionTitle>
-                      <div className="mt-3 space-y-3">
-                        <DetailItem
-                          label="Exercise"
-                          value={user.lifestyle?.exercise}
-                        />
-                        <DetailItem
-                          label="Smoking"
-                          value={user.lifestyle?.smoking}
-                          icon={<Cigarette />}
-                        />
-                        <DetailItem
-                          label="Drinking"
-                          value={user.lifestyle?.drinking}
-                          icon={<GlassWater />}
-                        />
-                      </div>
-                    </section>
-                    <section>
-                      <SectionTitle icon={<Sparkles />}>
-                        Looking For
-                      </SectionTitle>
-                      <div className="mt-3 space-y-3">
-                        <DetailItem
-                          label="Relationship Goals"
-                          value={joinValues(user.relationshipGoals?.lookingFor)}
-                        />
-                        <DetailItem
-                          label="Ideal Age Range"
-                          value={user.idealPartner?.ageRange}
-                        />
-                      </div>
-                    </section>
+                    </div>
                   </div>
+                </aside>
+
+                {/* Right Column */}
+                <main className="space-y-6">
+                  <section>
+                    <SectionTitle icon={<BookUser />}>About Me</SectionTitle>
+                    <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                      {user.personality?.about || "N/A"}
+                    </p>
+                  </section>
+
+                  <section>
+                    <SectionTitle icon={<Building2 />}>Vocation</SectionTitle>
+                    <div className="mt-3 space-y-3">
+                      <DetailItem
+                        label="Occupation"
+                        value={user.career?.occupation}
+                      />
+                      <DetailItem
+                        label="Education"
+                        value={user.career?.education}
+                      />
+                    </div>
+                  </section>
+
+                  <section>
+                    <SectionTitle icon={<Bike />}>Lifestyle</SectionTitle>
+                    <div className="mt-3 space-y-3">
+                      <DetailItem
+                        label="Exercise"
+                        value={user.lifestyle?.exercise}
+                      />
+                      <DetailItem
+                        label="Smoking"
+                        value={user.lifestyle?.smoking}
+                        icon={<Cigarette />}
+                      />
+                      <DetailItem
+                        label="Drinking"
+                        value={user.lifestyle?.drinking}
+                        icon={<GlassWater />}
+                      />
+                    </div>
+                  </section>
+                  <section>
+                    <SectionTitle icon={<Sparkles />}>Looking For</SectionTitle>
+                    <div className="mt-3 space-y-3">
+                      <DetailItem
+                        label="Relationship Goals"
+                        value={joinValues(user.relationshipGoals?.lookingFor)}
+                      />
+                      <DetailItem
+                        label="Ideal Age Range"
+                        value={user.idealPartner?.ageRange}
+                      />
+                    </div>
+                  </section>
 
                   <section>
                     <SectionTitle icon={<Clapperboard />}>

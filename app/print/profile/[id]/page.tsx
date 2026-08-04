@@ -4,7 +4,6 @@ import { APP_INFO } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { ApplicationForm } from "@/types/application-form"
-import { AppName } from "@/components/app-name"
 
 function calculateAge(dob: string | Date): number {
   const birthDate = new Date(dob)
@@ -124,10 +123,9 @@ export default async function ProfilePrintPage({
               <div className="flex items-center gap-4">
                 <Image src="/logo.png" alt="Logo" width={56} height={56} />
                 <div className="text-center">
-                  {/* <h1 className="text-gradient text-xl font-bold">
+                  <h1 className="text-gradient text-xl font-bold">
                     {APP_INFO.name}
-                  </h1> */}
-                  <AppName className="text-lg font-semibold" />
+                  </h1>
                   <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
                 </div>
               </div>

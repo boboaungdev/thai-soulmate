@@ -2514,7 +2514,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -2689,7 +2689,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -2870,7 +2870,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -3097,7 +3097,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -3239,7 +3239,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -3419,7 +3419,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -3587,7 +3587,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -3735,7 +3735,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -4232,7 +4232,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -4340,7 +4340,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -4528,7 +4528,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }
@@ -4720,7 +4720,7 @@ function AuthPageContents() {
                     <div className="flex w-full items-center justify-between text-sm">
                       <Button
                         variant="link"
-                        className="flex items-center p-0 text-muted-foreground"
+                        className="flex items-center p-0 text-muted-foreground hover:text-foreground"
                         onClick={() =>
                           setRegistrationStep(getPreviousStep(registrationStep))
                         }

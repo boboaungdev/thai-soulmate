@@ -69,6 +69,7 @@ import {
 } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
+import Link from "next/link"
 
 const ProfileInfo = ({
   icon,
@@ -439,7 +440,7 @@ export default function ProfilesDetailPage() {
         <Button
           variant="link"
           onClick={() => router.back()}
-          className="flex items-center gap-1 p-0 text-foreground hover:text-foreground"
+          className="flex items-center gap-1 p-0 text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" />
           Back
@@ -620,12 +621,15 @@ export default function ProfilesDetailPage() {
               >
                 <FileText className="mr-2 h-4 w-4" /> View Application
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  router.push(`/dashboard/profiles/${profile.id}/print`)
-                }
-              >
-                <Printer className="mr-2 h-4 w-4" /> Print
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/print/profile/${profile.id}?print=true`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Printer className="mr-2 h-4 w-4" />
+                  Print
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>

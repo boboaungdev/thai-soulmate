@@ -710,7 +710,7 @@ export default function ApplicationDetailPage() {
       <main className="space-y-6 p-4 md:p-6">
         <Button
           variant="link"
-          className="text-foreground"
+          className="text-muted-foreground hover:text-foreground"
           onClick={() => router.back()}
         >
           <ChevronLeft className="mr-2 h-4 w-4" />
@@ -809,7 +809,11 @@ export default function ApplicationDetailPage() {
               <DetailRow
                 icon={<CalendarDays />}
                 label="End Date"
-                value={application.membership.expiresAt ? formatDateTime(application.membership.expiresAt) : "-"}
+                value={
+                  application.membership.expiresAt
+                    ? formatDateTime(application.membership.expiresAt)
+                    : "-"
+                }
               />
             </ProfileSection>
           )}

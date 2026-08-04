@@ -327,11 +327,6 @@ function UserCard({ user }: { user: ApplicationForm }) {
     toast.success(`Copied ID: ${idToCopy}`)
   }
 
-  const handlePrint = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    router.push(`/dashboard/profiles/${user.id}/print`)
-  }
-
   const handleSendProfile = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsSendDialogOpen(true)
@@ -432,9 +427,15 @@ function UserCard({ user }: { user: ApplicationForm }) {
                 <Send className="mr-2 h-4 w-4" />
                 <span>Send Profile</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handlePrint}>
-                <Printer className="mr-2 h-4 w-4" />
-                <span>Print</span>
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/print/profile/${user.id}?print=true`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Printer className="mr-2 h-4 w-4" />
+                  Print
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleCopyId}>
                 <Copy className="mr-2 h-4 w-4" />

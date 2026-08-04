@@ -630,7 +630,7 @@ export default async function MatchComparisonPage({
   return (
     <main className="p-4 md:p-6">
       <div className="mb-4 flex items-center justify-between">
-        <Button asChild variant="link" className="p-0 text-foreground">
+        <Button asChild variant="link" className="p-0 text-muted-foreground hover:text-foreground">
           <Link href="/dashboard/matching">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Matching

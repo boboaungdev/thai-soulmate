@@ -70,7 +70,7 @@ export default function PrintPage({
         <Button
           onClick={() => router.back()}
           variant="link"
-          className="text-bg"
+          className="text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="mr-2 h-4 w-4" /> Back
         </Button>

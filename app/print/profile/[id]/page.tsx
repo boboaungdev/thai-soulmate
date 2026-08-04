@@ -109,7 +109,7 @@ const SectionTitle = ({
 }) => (
   <div className="flex items-center gap-3">
     {icon && <div className="w-6 text-pink-500">{icon}</div>}
-    <h2 className="text-xl font-bold text-pink-500">{children}</h2>
+    <h2 className="text-lg font-bold text-pink-500">{children}</h2>
   </div>
 )
 
@@ -162,8 +162,8 @@ export default async function ProfilePrintPage({
                   height={48}
                   className="rounded-full"
                 />
-                <div>
-                  <h1 className="text-gradient text-2xl font-bold">
+                <div className="text-center">
+                  <h1 className="text-gradient text-xl font-bold">
                     {APP_INFO.name}
                   </h1>
                   <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
@@ -198,11 +198,11 @@ export default async function ProfilePrintPage({
                     </div>
                   )}
                   <div className="mt-5 text-center">
-                    <h1 className="text-3xl font-bold text-gray-800">
+                    <h1 className="text-2xl font-bold text-gray-800">
                       {displayName}
                     </h1>
                     {nickname && (
-                      <p className="text-xl text-pink-500">{nickname}</p>
+                      <p className="text-lg text-pink-500">{nickname}</p>
                     )}
                   </div>
                   <div className="mt-6 w-full space-y-4 border-t-2 border-pink-100 pt-6">
@@ -321,31 +321,43 @@ export default async function ProfilePrintPage({
 
                   <section>
                     <SectionTitle icon={<Clapperboard />}>
-                      Interests & Qualities
+                      Interests
                     </SectionTitle>
                     <div className="mt-3 text-sm text-gray-700">
-                      <p className="font-semibold">I enjoy:</p>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {[
                           ...(user.personality?.personality || []),
                           ...(user.lifestyle?.interests || []),
-                        ].map((item) => (
-                          <span
-                            key={item}
-                            className="rounded-full border border-pink-200 bg-white px-3 py-1 text-xs font-medium text-pink-700"
-                          >
-                            {item}
-                          </span>
-                        ))}
+                        ]
+                          .filter(Boolean)
+                          .map((item) => (
+                            <span
+                              key={item}
+                              className="rounded-full border border-pink-200 bg-white px-3 py-1 text-xs font-medium text-pink-700"
+                            >
+                              {item}
+                            </span>
+                          ))}
                       </div>
                     </div>
+                  </section>
+                  <section>
+                    <SectionTitle icon={<Sparkles />}>
+                      Qualities I&apos;m Looking For
+                    </SectionTitle>
                     <div className="mt-3 text-sm text-gray-700">
-                      <p className="font-semibold">
-                        I'm looking for someone who is:
-                      </p>
-                      <p className="text-xs">
-                        {joinValues(user.personality?.lookingForQualities)}
-                      </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {(user.personality?.lookingForQualities || []).map(
+                          (item) => (
+                            <span
+                              key={item}
+                              className="rounded-full border border-pink-200 bg-white px-3 py-1 text-xs font-medium text-pink-700"
+                            >
+                              {item}
+                            </span>
+                          )
+                        )}
+                      </div>
                     </div>
                   </section>
                 </main>

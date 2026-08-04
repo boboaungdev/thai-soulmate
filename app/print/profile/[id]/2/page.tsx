@@ -354,7 +354,6 @@ export default async function ProfilePrintPage({
               </div>
               <div className="h-px w-full bg-gray-200" />
             </header>
-
             <div className="flex flex-1 items-center justify-center">
               {user.photos?.casualLifestyle ? (
                 <figure className="flex w-full flex-col items-center">
@@ -382,9 +381,13 @@ export default async function ProfilePrintPage({
                   No lifestyle photo available
                 </div>
               )}
-            </div>i dont like current style print profile page, edit as you like, i would like to use pink and gold color , not gradient color, i want to change only first page and dont touch header, i want headshot and user details want to edit postion and layout , design as you like, dont touch other pages, dont touch second and third page these are phtos, edit as you like fist page print
-
-
+            </div>
+            i dont like current style print profile page, edit as you like, i
+            would like to use pink and gold color , not gradient color, i want
+            to change only first page and dont touch header, i want headshot and
+            user details want to edit postion and layout , design as you like,
+            dont touch other pages, dont touch second and third page these are
+            phtos, edit as you like fist page print
           </section>
         </main>
       </div>

@@ -1,10 +1,10 @@
 import Image from "next/image"
-import { AppName } from "@/components/app-name"
 import { APP_INFO } from "@/constants"
 
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { ApplicationForm } from "@/types/application-form"
+import { AppName } from "@/components/app-name"
 
 function calculateAge(dob: string | Date): number {
   const birthDate = new Date(dob)
@@ -36,23 +36,48 @@ const joinValues = (values: string[] | undefined) => {
   return values.join(", ")
 }
 
+const FluencyBar = ({
+  label,
+  level,
+}: {
+  label: string
+  level: number | undefined
+}) => {
+  const displayLevel = level || 0
+  return (
+    <div>
+      <div className="flex justify-between text-xs font-medium text-gray-500">
+        <span>{label}</span>
+        <span>{formatFluency([displayLevel])}</span>
+      </div>
+      <div className="mt-1 h-1.5 w-full rounded-full bg-gray-200">
+        <div
+          className="h-1.5 rounded-full bg-pink-400"
+          style={{ width: `${displayLevel}%` }}
+        />
+      </div>
+    </div>
+  )
+}
+
 const DetailItem = ({
   label,
   value,
+  icon,
 }: {
   label: string
   value: React.ReactNode
+  icon?: React.ReactNode
 }) => (
-  <div className="border-b border-gray-100 pb-2">
-    <p className="text-[11px] font-medium text-gray-400 uppercase">{label}</p>
-    <p className="mt-1 text-sm font-semibold text-gray-900">{value || "N/A"}</p>
+  <div className="flex items-start gap-3">
+    {icon && <div className="mt-0.5 w-4 text-gray-400">{icon}</div>}
+    <div className="flex-1">
+      <p className="text-[11px] font-medium text-gray-400 uppercase">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-gray-800">
+        {value || "N/A"}
+      </p>
+    </div>
   </div>
-)
-
-const GradientPrintName = ({ name }: { name: string }) => (
-  <h2 className="text-gradient mt-2 block text-3xl leading-none font-bold [box-shadow:none] [border-bottom:0] [text-decoration:none]">
-    {name}
-  </h2>
 )
 
 export default async function ProfilePrintPage({
@@ -99,7 +124,10 @@ export default async function ProfilePrintPage({
               <div className="flex items-center gap-4">
                 <Image src="/logo.png" alt="Logo" width={56} height={56} />
                 <div className="text-center">
-                  <AppName className="text-gradient text-xl font-bold" />
+                  {/* <h1 className="text-gradient text-xl font-bold">
+                    {APP_INFO.name}
+                  </h1> */}
+                  <AppName className="text-lg font-semibold" />
                   <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
                 </div>
               </div>
@@ -113,24 +141,24 @@ export default async function ProfilePrintPage({
               </div>
             </header>
 
-            <div className="grid flex-1 grid-cols-[0.95fr_1.35fr] gap-10">
+            <div className="grid flex-1 grid-cols-[1fr_1.5fr] gap-10">
               <aside className="space-y-5">
                 {user.photos?.headshot && (
                   <div
-  className="relative w-full overflow-hidden rounded-md bg-gray-100"
-  style={{ height: "120mm" }}
->
-  <Image
-    src={user.photos.headshot}
-    alt="Headshot"
-    fill
-    priority
-    loading="eager"
-    unoptimized
-    sizes="280px"
-    className="object-cover object-top"
-  />
-</div>
+                    className="relative w-full overflow-hidden rounded-md bg-gray-100"
+                    style={{ height: "110mm" }}
+                  >
+                    <Image
+                      src={user.photos.headshot}
+                      alt="Headshot"
+                      fill
+                      priority
+                      loading="eager"
+                      unoptimized
+                      sizes="280px"
+                      className="object-cover object-top"
+                    />
+                  </div>
                 )}
 
                 <div className="grid grid-cols-2 gap-x-5 gap-y-3">
@@ -167,11 +195,11 @@ export default async function ProfilePrintPage({
               </aside>
 
               <div className="flex flex-col">
-                <div className="border-b border-gray-200 pb-6">
+                <div className="pb-6">
                   <p className="text-xs font-semibold text-gray-400 uppercase">
                     Profile Introduction
                   </p>
-                  <h1 className="text-gradient mt-3 text-3xl leading-tight font-bold">
+                  <h1 className="mt-3 text-2xl leading-tight font-bold">
                     {displayName}
                     {nickname && (
                       <span className="block text-xl font-semibold text-gray-500">
@@ -181,7 +209,7 @@ export default async function ProfilePrintPage({
                   </h1>
                 </div>
 
-                <div className="mt-7 grid grid-cols-2 gap-x-8 gap-y-5">
+                <div className="mt-5 grid grid-cols-2 gap-x-8 gap-y-4 border-t border-gray-100 pt-5">
                   <DetailItem
                     label="Occupation"
                     value={user.career?.occupation}
@@ -190,14 +218,19 @@ export default async function ProfilePrintPage({
                     label="Education"
                     value={user.career?.education}
                   />
-                  <DetailItem
-                    label="Languages"
-                    value={`Thai (${formatFluency(
-                      user.appearance?.thaiFluency
-                    )}), English (${formatFluency(
-                      user.appearance?.englishFluency
-                    )})`}
-                  />
+                  <div className="col-span-2 space-y-3">
+                    <p className="text-[11px] font-medium text-gray-400 uppercase">
+                      Languages
+                    </p>
+                    <FluencyBar
+                      label="Thai"
+                      level={user.appearance?.thaiFluency?.[0]}
+                    />
+                    <FluencyBar
+                      label="English"
+                      level={user.appearance?.englishFluency?.[0]}
+                    />
+                  </div>
                   <DetailItem
                     label="Exercise"
                     value={user.lifestyle?.exercise}
@@ -209,17 +242,15 @@ export default async function ProfilePrintPage({
                   />
                 </div>
 
-                <section className="mt-8">
-                  <h2 className="text-gradient text-xl font-bold">About Me</h2>
-                  <p className="mt-3 text-[15px] leading-7 text-gray-700">
+                <section className="mt-6 border-t border-gray-100 pt-5">
+                  <h2 className="font-bold">About Me</h2>
+                  <p className="mt-2 text-sm leading-6 text-gray-700">
                     {user.personality?.about || "N/A"}
                   </p>
                 </section>
 
-                <section className="mt-7">
-                  <h2 className="text-gradient text-xl font-bold">
-                    Personality & Interests
-                  </h2>
+                <section className="mt-6 border-t border-gray-100 pt-5">
+                  <h2 className="font-bold">Personality & Interests</h2>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {[
                       ...(user.personality?.personality || []),
@@ -227,7 +258,7 @@ export default async function ProfilePrintPage({
                     ].map((item) => (
                       <span
                         key={item}
-                        className="rounded-sm border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-700"
+                        className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                       >
                         {item}
                       </span>
@@ -235,11 +266,9 @@ export default async function ProfilePrintPage({
                   </div>
                 </section>
 
-                <section className="mt-7">
-                  <h2 className="text-gradient text-xl font-bold">
-                    Looking For
-                  </h2>
-                  <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-4">
+                <section className="mt-6 border-t border-gray-100 pt-5">
+                  <h2 className="font-bold">Looking For</h2>
+                  <div className="mt-2 grid grid-cols-2 gap-x-8 gap-y-3">
                     <DetailItem
                       label="Relationship Goals"
                       value={joinValues(user.relationshipGoals?.lookingFor)}
@@ -272,7 +301,6 @@ export default async function ProfilePrintPage({
                   <p className="text-xs font-semibold text-gray-400 uppercase">
                     Full Length Portrait
                   </p>
-                  <GradientPrintName name={displayName} />
                 </div>
                 <p className="text-xs font-medium text-gray-400">
                   ID: {String(user.customId).padStart(4, "0")}
@@ -284,24 +312,24 @@ export default async function ProfilePrintPage({
             <div className="flex flex-1 items-center justify-center">
               {user.photos?.fullLength ? (
                 <figure className="flex flex-col items-center">
-                 <div
-  className="relative overflow-hidden rounded-md bg-gray-100"
-  style={{
-    width: "150mm",
-    height: "200mm",
-  }}
->
-  <Image
-    src={user.photos.fullLength}
-    alt="Full length portrait"
-    fill
-    priority
-    loading="eager"
-    unoptimized
-    sizes="567px"
-    className="object-cover object-top"
-  />
-</div>
+                  <div
+                    className="relative overflow-hidden rounded-md bg-gray-100"
+                    style={{
+                      width: "150mm",
+                      height: "200mm",
+                    }}
+                  >
+                    <Image
+                      src={user.photos.fullLength}
+                      alt="Full length portrait"
+                      fill
+                      priority
+                      loading="eager"
+                      unoptimized
+                      sizes="567px"
+                      className="object-cover object-top"
+                    />
+                  </div>
                   <figcaption className="mt-3 text-center text-xs font-semibold text-gray-400 uppercase">
                     Full Length
                   </figcaption>
@@ -321,7 +349,6 @@ export default async function ProfilePrintPage({
                   <p className="text-xs font-semibold text-gray-400 uppercase">
                     Lifestyle Portrait
                   </p>
-                  <GradientPrintName name={displayName} />
                 </div>
                 <p className="text-xs font-medium text-gray-400">
                   ID: {String(user.customId).padStart(4, "0")}

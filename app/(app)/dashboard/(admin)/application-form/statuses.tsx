@@ -52,7 +52,7 @@ export const applicationStatuses: {
     value: "CLOSED",
     label: "Rejected",
     icon: CircleX,
-    color: "text-gray-500",
+    color: "text-red-500",
     badgeClassName:
       "border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300",
   },

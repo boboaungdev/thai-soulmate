@@ -15,7 +15,7 @@ async function main() {
         idealPartner: form.idealPartner,
         financial: form.financial,
         photos: form.photos,
-        status: "OPEN",
+        status: "RECEIVED",
 
         membership: form.membership
           ? {

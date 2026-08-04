@@ -3,9 +3,11 @@
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef } from "@tanstack/react-table"
+import { ThumbsUp, ThumbsDown } from "lucide-react"
 import {
   CircleCheck,
   CircleX,
+  CircleDot,
   Clock,
   MailCheck,
   PhoneOutgoing,
@@ -32,6 +34,14 @@ export const statuses: {
   color?: string
   badgeClassName: string
 }[] = [
+  {
+    value: "RECEIVED",
+    label: "Received",
+    icon: CircleDot,
+    color: "text-gray-500",
+    badgeClassName:
+      "border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300",
+  },
   {
     value: "PENDING",
     label: "Pending",
@@ -65,17 +75,17 @@ export const statuses: {
       "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300",
   },
   {
-    value: "COMPLETED",
-    label: "Completed",
-    icon: CircleCheck,
+    value: "ACCEPTED",
+    label: "Accepted",
+    icon: ThumbsUp,
     color: "text-green-500",
     badgeClassName:
       "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300",
   },
   {
-    value: "",
-    label: "Not interested",
-    icon: CircleX,
+    value: "DECLINED",
+    label: "Declined",
+    icon: ThumbsDown,
     color: "text-red-500",
     badgeClassName:
       "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300",

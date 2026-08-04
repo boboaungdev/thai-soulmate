@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
     const application = await prisma.applicationForm.create({
       data: {
-        status: "OPEN",
+        status: "RECEIVED",
         personalDetails: {
           nickname: body.profile.nickname,
           prefix: body.details.prefix,

@@ -41,87 +41,129 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    const application = await prisma.applicationForm.create({
-      data: {
-        status: "RECEIVED",
-        personalDetails: {
+    const application = await prisma.$transaction(async (tx) => {
+      const application = await tx.applicationForm.create({
+        data: {
+          status: "RECEIVED",
+
+          personalDetails: {
+            nickname: body.profile.nickname,
+            prefix: body.details.prefix,
+            name: body.details.name,
+            gender: body.details.gender,
+            dob: body.details.dob,
+            email: body.details.email,
+            phone: body.details.phone,
+            nationality: body.details.nationality,
+            currentLocation: body.details.currentLocation,
+          },
+
+          career: {
+            occupation: body.profile.occupation,
+            company: body.profile.company,
+            education: body.profile.education,
+          },
+
+          appearance: {
+            height: body.profile.height,
+            weight: body.profile.weight,
+            religion: body.profile.religion,
+            thaiFluency: body.profile.thaiFluency,
+            englishFluency: body.profile.englishFluency,
+          },
+
+          personality: {
+            personality: body.profile.personality,
+            about: body.profile.about,
+            bestQualities: body.profile.bestQualities,
+            lookingForQualities: body.profile.lookingForQualities,
+            maritalStatus: body.profile.maritalStatus,
+            hasChildren: body.profile.hasChildren,
+            childrenCount: body.profile.childrenCount,
+          },
+
+          lifestyle: {
+            lifestyle: body.profile.lifestyle,
+            smoking: body.profile.smoking,
+            drinking: body.profile.drinking,
+            exercise: body.profile.exercise,
+            interests: body.profile.interests,
+            otherInterest: body.profile.otherInterest,
+            travelDestinations: body.profile.travelDestinations,
+            weekendActivity: body.profile.weekendActivity,
+            familyImportance: body.profile.familyImportance,
+            futureChildren: body.profile.futureChildren,
+            values: body.profile.values,
+          },
+
+          relationshipGoals: {
+            relocate: body.relationshipGoals.relocate,
+            lookingFor: body.relationshipGoals.lookingFor,
+            settleDown: body.relationshipGoals.settleDown,
+          },
+
+          idealPartner: {
+            ageRange: body.profile.idealPartnerAgeRange,
+            nationality: body.profile.idealPartnerNationality,
+            location: body.profile.idealPartnerLocation,
+            height: body.profile.idealPartnerHeight,
+            education: body.profile.idealPartnerEducation,
+            personality: body.profile.idealPartnerPersonality,
+            qualities: body.profile.idealPartnerQualities,
+            dealBreakers: body.profile.dealBreakers,
+          },
+
+          financial: {
+            ownBusiness: body.financial.ownBusiness,
+            ownProperty: body.financial.ownProperty,
+          },
+
+          photos: {
+            headshot: body.photos.headshot,
+            fullLength: body.photos.fullLength,
+            casualLifestyle: body.photos.casualLifestyle,
+          },
+        },
+      })
+
+      await tx.profile.create({
+        data: {
+          applicationFormId: application.id,
+          customId: application.customId,
+          status: "PENDING",
+
           nickname: body.profile.nickname,
-          prefix: body.details.prefix,
-          name: body.details.name,
-          gender: body.details.gender,
-          dob: body.details.dob,
-          email: body.details.email,
-          phone: body.details.phone,
-          nationality: body.details.nationality,
-          currentLocation: body.details.currentLocation,
-        },
-
-        career: {
           occupation: body.profile.occupation,
-          company: body.profile.company,
           education: body.profile.education,
-        },
 
-        appearance: {
           height: body.profile.height,
           weight: body.profile.weight,
           religion: body.profile.religion,
+
           thaiFluency: body.profile.thaiFluency,
           englishFluency: body.profile.englishFluency,
-        },
 
-        personality: {
           personality: body.profile.personality,
           about: body.profile.about,
-          bestQualities: body.profile.bestQualities,
           lookingForQualities: body.profile.lookingForQualities,
-          maritalStatus: body.profile.maritalStatus,
-          hasChildren: body.profile.hasChildren,
-          childrenCount: body.profile.childrenCount,
-        },
 
-        lifestyle: {
-          lifestyle: body.profile.lifestyle,
           smoking: body.profile.smoking,
           drinking: body.profile.drinking,
           exercise: body.profile.exercise,
+
           interests: body.profile.interests,
-          otherInterest: body.profile.otherInterest,
-          travelDestinations: body.profile.travelDestinations,
-          weekendActivity: body.profile.weekendActivity,
-          familyImportance: body.profile.familyImportance,
-          futureChildren: body.profile.futureChildren,
-          values: body.profile.values,
-        },
 
-        relationshipGoals: {
-          relocate: body.relationshipGoals.relocate,
           lookingFor: body.relationshipGoals.lookingFor,
-          settleDown: body.relationshipGoals.settleDown,
-        },
 
-        idealPartner: {
-          ageRange: body.profile.idealPartnerAgeRange,
-          nationality: body.profile.idealPartnerNationality,
-          location: body.profile.idealPartnerLocation,
-          height: body.profile.idealPartnerHeight,
-          education: body.profile.idealPartnerEducation,
-          personality: body.profile.idealPartnerPersonality,
-          qualities: body.profile.idealPartnerQualities,
-          dealBreakers: body.profile.dealBreakers,
-        },
+          idealPartnerAgeRange: body.profile.idealPartnerAgeRange,
 
-        financial: {
-          ownBusiness: body.financial.ownBusiness,
-          ownProperty: body.financial.ownProperty,
-        },
-
-        photos: {
           headshot: body.photos.headshot,
           fullLength: body.photos.fullLength,
           casualLifestyle: body.photos.casualLifestyle,
         },
-      },
+      })
+
+      return application
     })
 
     return NextResponse.json({

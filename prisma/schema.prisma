@@ -61,6 +61,9 @@ model Note {
   applicationFormId String?
   applicationForm   ApplicationForm? @relation(fields: [applicationFormId], references: [id])
 
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id])
+
   soulmateId String?
   soulmate   Soulmate? @relation(fields: [soulmateId], references: [id])
 
@@ -89,6 +92,8 @@ model ApplicationForm {
 
   membership Membership?
 
+  profile Profile?
+
   notes Note[]
 
   asMale   Soulmate[] @relation("MaleSoulmate")
@@ -96,6 +101,52 @@ model ApplicationForm {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id       String @id @default(cuid())
+  customId Int    @unique
+
+  applicationFormId String          @unique
+  applicationForm   ApplicationForm @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
+
+  status ProfileStatus @default(PENDING)
+
+  nickname   String?
+  occupation String?
+  education  String?
+
+  height         Int?
+  weight         Int?
+  religion       String?
+  thaiFluency    Int?
+  englishFluency Int?
+
+  personality         String[]
+  about               String?
+  lookingForQualities String[]
+
+  smoking   String?
+  drinking  String?
+  exercise  String?
+  interests String[]
+
+  lookingFor           String[]
+  idealPartnerAgeRange String?
+
+  headshot        String?
+  fullLength      String?
+  casualLifestyle String?
+
+  notes Note[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ProfileStatus {
+  PENDING
+  COMPLETED
 }
 
 model Membership {
@@ -141,6 +192,7 @@ enum Role {
 enum NoteType {
   REGISTER_INTEREST
   APPLICATION_FORM
+  PROFILE
   SOULMATE
 }
 

@@ -116,8 +116,8 @@ model Profile {
   occupation String?
   education  String?
 
-  height         Int?
-  weight         Int?
+  height         String?
+  weight         String?
   religion       String?
   thaiFluency    Int?
   englishFluency Int?

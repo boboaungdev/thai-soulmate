@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  CircleCheck,
-  CircleX,
-  CircleDot,
-  CircleSlash,
-  HeartHandshake,
-} from "lucide-react"
+import { CircleCheck, CircleX, CircleDot, HeartHandshake } from "lucide-react"
 import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
 
 export const applicationStatuses: {

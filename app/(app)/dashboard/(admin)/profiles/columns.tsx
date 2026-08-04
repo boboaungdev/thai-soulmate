@@ -2,19 +2,18 @@
 
 import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
+import { ProfileStatus } from "@/lib/generated/prisma"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { ApplicationForm } from "@/types/application-form"
 import { calculateAge, formatDateTime } from "@/lib/date"
 
+// The data is now a flattened combination of Profile and ApplicationForm
 export type ProfileRow = ApplicationForm & {
-  membership?: {
-    plan: string
-    startsAt?: Date | string
-    expiresAt?: Date | string
-  } | null
+  status: ProfileStatus
 }
 
 export const columns: ColumnDef<ProfileRow>[] = [
@@ -52,7 +51,7 @@ export const columns: ColumnDef<ProfileRow>[] = [
     cell: ({ row }) => {
       const applicant = row.original
       const name = applicant.personalDetails?.name || "-"
-      const nickname = applicant.personalDetails?.nickname
+      const nickname = applicant.nickname
 
       return (
         <div className="flex min-w-[220px] items-center gap-3">
@@ -130,15 +129,33 @@ export const columns: ColumnDef<ProfileRow>[] = [
   },
   {
     id: "plan",
-    accessorFn: (row) => row.membership?.plan ?? "",
+    accessorFn: (row) => row.membership?.plan ?? "NONE",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Plan" />
     ),
     cell: ({ row }) => (
       <div className="min-w-[100px]">
-        {row.original.membership?.plan || "-"}
+        {row.original.membership?.plan || "NONE"}
       </div>
     ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+    {
+    id: "status",
+    accessorFn: (row) => row.status,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status = row.original.status
+      return (
+        <Badge variant={status === 'COMPLETED' ? 'default' : 'secondary'}>
+          {status}
+        </Badge>
+      )
+    },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },

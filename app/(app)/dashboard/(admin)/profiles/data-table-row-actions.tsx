@@ -47,7 +47,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { ApplicationForm } from "@/types/application-form"
+import { ProfileRow } from "./columns"
 
 function SendProfileDialog({
   isOpen,
@@ -56,15 +56,15 @@ function SendProfileDialog({
 }: {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
-  user: ApplicationForm
+  user: ProfileRow
 }) {
-  const [sendToUsers, setSendToUsers] = useState<ApplicationForm[]>([])
+  const [sendToUsers, setSendToUsers] = useState<ProfileRow[]>([])
   const [isFetchingSendToUsers, setIsFetchingSendToUsers] = useState(false)
   const [selectedUserIdToSend, setSelectedUserIdToSend] = useState<
     string | null
   >(null)
   const [selectedUserToSend, setSelectedUserToSend] =
-    useState<ApplicationForm | null>(null)
+    useState<ProfileRow | null>(null)
   const [isSendingProfile, setIsSendingProfile] = useState(false)
   const [isComboboxOpen, setIsComboboxOpen] = useState(false)
 
@@ -284,7 +284,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter()
-  const user = row.original as ApplicationForm
+  const user = row.original as ProfileRow
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false)
 
   const handleCopyId = (e: React.MouseEvent) => {

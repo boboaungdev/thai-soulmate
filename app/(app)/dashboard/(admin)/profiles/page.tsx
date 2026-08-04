@@ -1,19 +1,18 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { VisibilityState } from "@tanstack/react-table"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ApplicationForm } from "@/types/application-form"
 
 import { columns, ProfileRow } from "./columns"
 import { DataTable } from "./data-table"
 
 export default function ProfilesPage() {
   const router = useRouter()
-  const [profiles, setProfiles] = useState<ApplicationForm[]>([])
+  const [profiles, setProfiles] = useState<ProfileRow[]>([])
   const [loading, setLoading] = useState(true)
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 

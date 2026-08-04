@@ -3,84 +3,43 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-
-    const gender = searchParams.get("gender") || "All"
-    const nickname = searchParams.get("nickname") || ""
-    const customId = searchParams.get("customId") || ""
-    const sortBy = searchParams.get("sortBy") || "createdAt"
-    const sortOrder = searchParams.get("sortOrder") === "asc" ? "asc" : "desc"
-
-    let applicationForms = await prisma.applicationForm.findMany({
+    const profiles = await prisma.profile.findMany({
+      include: {
+        applicationForm: {
+          include: {
+            membership: true,
+          },
+        },
+      },
       orderBy: {
-        createdAt: "desc",
+        customId: "asc",
       },
     })
 
-    // Gender filter
-    if (gender !== "All") {
-      applicationForms = applicationForms.filter((form) => {
-        const personalDetails = form.personalDetails as any
+    // The 'photos' are on the ApplicationForm, but as a Json type.
+    // The client-side components expect 'photos' to be an object.
+    // The prisma client will return it as a JSON object, so no transformation is needed here.
+    // personalDetails is also a Json field on ApplicationForm, handled similarly.
 
-        return personalDetails?.gender?.toLowerCase() === gender.toLowerCase()
-      })
-    }
+    const data = profiles.map(p => ({
+      ...p,
+      ...p.applicationForm, // flatten applicationForm props
+      id: p.id, // keep profile id
+      customId: p.customId, // keep profile customId
+    }))
 
-    // Name filter
-    if (nickname) {
-      applicationForms = applicationForms.filter((form) => {
-        const personalDetails = form.personalDetails as any
-        return personalDetails?.nickname
-          ?.toLowerCase()
-          .includes(nickname.toLowerCase())
-      })
-    }
-
-    // Custom ID filter
-    if (customId) {
-      applicationForms = applicationForms.filter((form) =>
-        String(form.customId).padStart(4, "0").includes(customId)
-      )
-    }
-
-    // Sorting
-    applicationForms.sort((a, b) => {
-      let aValue: any
-      let bValue: any
-
-      switch (sortBy) {
-        case "customId":
-          aValue = a.customId
-          bValue = b.customId
-          break
-
-        case "nickname":
-          aValue = ((a.personalDetails as any)?.nickname || "").toLowerCase()
-          bValue = ((b.personalDetails as any)?.nickname || "").toLowerCase()
-          break
-
-        case "createdAt":
-        default:
-          aValue = new Date(a.createdAt).getTime()
-          bValue = new Date(b.createdAt).getTime()
-      }
-
-      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1
-      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1
-      return 0
-    })
 
     return NextResponse.json({
       success: true,
-      data: applicationForms,
+      data: data,
     })
   } catch (error) {
-    console.error("Fetch application forms error:", error)
+    console.error("Fetch profiles error:", error)
 
     return NextResponse.json(
       {
         success: false,
-        error: "Failed to fetch application forms",
+        error: "Failed to fetch profiles",
       },
       { status: 500 }
     )

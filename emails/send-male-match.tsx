@@ -141,7 +141,7 @@ const buttonSection = {
 }
 
 const button = {
-  backgroundColor: "#111827",
+  backgroundColor: "#cfa14f",
   color: "#ffffff",
   padding: "14px 32px",
   borderRadius: "8px",

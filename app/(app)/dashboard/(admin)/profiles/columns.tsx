@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
 import { StickyNote, Clock, CheckCircle2 } from "lucide-react"
+import { ProfileStatus } from "@/lib/generated/prisma/enums"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
@@ -12,11 +13,28 @@ import { ApplicationForm } from "@/types/application-form"
 import { calculateAge, formatDateTime } from "@/lib/date"
 import { Profile } from "@/lib/generated/prisma/client"
 
+const profileStatuses = [
+  {
+    value: ProfileStatus.PENDING,
+    label: "Pending",
+    icon: Clock,
+  },
+  {
+    value: ProfileStatus.COMPLETED,
+    label: "Completed",
+    icon: CheckCircle2,
+  },
+]
+
 export type ProfileRow = Profile &
   Pick<
     ApplicationForm,
     "personalDetails" | "photos" | "membership" | "notes" | "customId"
   >
+
+const getStatusMeta = (status: ProfileStatus) => {
+  return profileStatuses.find((s) => s.value === status)
+}
 
 export const columns: ColumnDef<ProfileRow>[] = [
   {
@@ -171,24 +189,23 @@ export const columns: ColumnDef<ProfileRow>[] = [
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
-      const status = row.original.status
+      const statusMeta = getStatusMeta(row.original.status)
+      if (!statusMeta) return null
+
       return (
         <Badge
           variant={
-            status === "COMPLETED"
+            statusMeta.value === "COMPLETED"
               ? "success"
-              : status === "PENDING"
+              : statusMeta.value === "PENDING"
                 ? "pending"
                 : "secondary"
           }
-          className="flex w-[120px] items-center justify-center gap-1.5"
+          // className="flex w-[120px] items-center justify-center gap-1.5"
         >
-          {status === "PENDING" ? (
-            <Clock className="h-4 w-4" />
-          ) : status === "COMPLETED" ? (
-            <CheckCircle2 className="h-4 w-4" />
-          ) : null}
-          {status}
+          {/* <statusMeta.icon className="h-4 w-4" /> */}
+          <statusMeta.icon className="mr-1.5 h-3.5 w-3.5" />
+          {statusMeta.label}
         </Badge>
       )
     },

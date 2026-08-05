@@ -81,7 +81,9 @@ export function PaymentDetails({ payment, onClose }: PaymentDetailsProps) {
                 <AvatarFallback>{payment.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="text-center">
-                <h2 className="text-xl font-semibold">{payment.name}</h2>
+                <h2 className="text-xl font-semibold">
+                  {payment.prefix} {payment.name}
+                </h2>
                 <p className="text-sm text-muted-foreground">{payment.email}</p>
               </div>
               <Badge variant="outline" className={status.badgeClassName}>

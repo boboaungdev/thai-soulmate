@@ -14,6 +14,7 @@ export type Payment = {
   id: string
   customId: string | number
   nickname?: string
+  prefix?: string
   name: string
   gender: "Male" | "Female"
   email: string
@@ -66,7 +67,9 @@ export const columns: ColumnDef<Payment>[] = [
           <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div>
-          <div className="truncate font-medium">{row.getValue("name")}</div>
+          <div className="truncate font-medium">
+            {row.original.prefix} {row.getValue("name")}
+          </div>
           <div className="text-xs text-muted-foreground">
             ID: {String(row.original.customId).padStart(4, "0")}{" "}
             {row.original.nickname ? `· ${row.original.nickname}` : ""}

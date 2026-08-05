@@ -86,18 +86,21 @@ export default async function ProfilePrintPage({
 }) {
   const { id } = await params
 
-  const userDB = await prisma.applicationForm.findUnique({
+  // Fetch the Profile using the ID from params
+  const profile = await prisma.profile.findUnique({
     where: {
       id,
     },
+    include: {
+      applicationForm: true, // Include the related ApplicationForm data
+    },
   })
 
-  if (!userDB) {
+  if (!profile || !profile.applicationForm) {
     notFound()
   }
 
-  const user = userDB as unknown as ApplicationForm
-
+  const user = profile.applicationForm as unknown as ApplicationForm
   const age = user.personalDetails?.dob
     ? calculateAge(user.personalDetails.dob)
     : null

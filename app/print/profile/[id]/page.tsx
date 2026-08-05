@@ -3,7 +3,7 @@ import { APP_INFO } from "@/constants"
 
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
-import { ApplicationForm } from "@/types/application-form"
+import { ApplicationForm } from "@/types/application-form" // Assuming this type is correct for the nested applicationForm
 
 function calculateAge(dob: string | Date): number {
   const birthDate = new Date(dob)
@@ -94,17 +94,21 @@ export default async function ProfilePrintPage({
 }) {
   const { id } = await params
 
-  const userDB = await prisma.applicationForm.findUnique({
+  // Fetch the Profile using the ID from params
+  const profile = await prisma.profile.findUnique({
     where: {
       id,
     },
+    include: {
+      applicationForm: true, // Include the related ApplicationForm data
+    },
   })
 
-  if (!userDB) {
+  if (!profile || !profile.applicationForm) {
     notFound()
   }
 
-  const user = userDB as unknown as ApplicationForm
+  const user = profile.applicationForm as unknown as ApplicationForm
 
   const age = user.personalDetails?.dob
     ? calculateAge(user.personalDetails.dob)

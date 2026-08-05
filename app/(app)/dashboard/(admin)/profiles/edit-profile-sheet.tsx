@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Loader2, User, Venus, Mars } from "lucide-react"
 
@@ -32,10 +32,20 @@ export function EditProfileSheet({
   onOpenChange,
   profile,
 }: EditProfileSheetProps) {
-  const [about, setAbout] = useState(profile?.personality?.about || "")
+  const initialAbout = profile?.personality?.about || ""
+  const [about, setAbout] = useState(initialAbout)
   const [isSaving, setIsSaving] = useState(false)
 
+  // Reset the form state when the sheet is opened
+  useEffect(() => {
+    if (isOpen) {
+      setAbout(profile?.personality?.about || "")
+    }
+  }, [isOpen, profile])
+
   if (!profile) return null
+
+  const hasChanges = about !== initialAbout
 
   const { personalDetails, photos } = profile
   const age = calculateAge(personalDetails?.dob)
@@ -103,6 +113,7 @@ export function EditProfileSheet({
                 onChange={(e) => setAbout(e.target.value)}
                 rows={8}
                 placeholder="Tell us about this person..."
+                disabled={isSaving}
               />
             </div>
           </div>
@@ -110,7 +121,7 @@ export function EditProfileSheet({
         <SheetFooter className="px-6 pb-6">
           <Button
             onClick={handleSaveChanges}
-            disabled={isSaving}
+            disabled={isSaving || !hasChanges}
             className="btn-gradient w-full"
           >
             {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

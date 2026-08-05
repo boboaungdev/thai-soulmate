@@ -11,6 +11,7 @@ import {
   ChevronsUpDown,CircleCheck,
   FileEdit,
   Clock,
+  Trash2,
 } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { useRouter } from "next/navigation"
@@ -23,6 +24,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -410,6 +413,12 @@ export function DataTableRowActions<TData>({
             <Copy className="mr-2 h-4 w-4" />
             <span>Copy ID</span>
           </DropdownMenuItem>
+           <DropdownMenuSeparator />
+        <DropdownMenuItem disabled variant="destructive">
+          <Trash2 className="mr-2 h-4 w-4" />
+          <span>Delete</span>
+            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+        </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <SendProfileDialog

@@ -9,6 +9,7 @@ import {
   Mail,
   MoreHorizontal,
   Phone,
+  Trash2,
 } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { useRouter } from "next/navigation"
@@ -33,6 +34,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -248,6 +250,12 @@ export function DataTableRowActions<TData>({
           </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem disabled variant="destructive">
+          <Trash2 className="mr-2 h-4 w-4" />
+          <span>Delete</span>
+          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

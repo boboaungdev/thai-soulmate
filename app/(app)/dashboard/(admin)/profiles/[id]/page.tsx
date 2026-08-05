@@ -113,7 +113,7 @@ const AboutSection = ({
         <div>
           <h3 className="font-semibold">Personality</h3>
           <div className="mt-2 flex flex-wrap gap-2">
-            {personalityTraits.map(trait => (
+            {personalityTraits.map((trait) => (
               <Badge key={trait} variant="secondary">
                 {trait}
               </Badge>
@@ -197,7 +197,7 @@ const DetailsSection = ({ profile }: { profile: ApplicationForm }) => {
         <CardTitle className="text-gradient">Details</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6">
-        {details.map(item => (
+        {details.map((item) => (
           <ProfileInfo
             key={item.label}
             icon={item.icon}
@@ -224,7 +224,7 @@ const LifestyleSection = ({ profile }: { profile: ApplicationForm }) => {
         <CardTitle className="text-gradient">Lifestyle</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {lifestyleItems.map(item => (
+        {lifestyleItems.map((item) => (
           <div key={item.label} className="flex justify-between">
             <p className="text-muted-foreground">{item.label}</p>
             <p className="font-semibold">{item.value}</p>
@@ -234,7 +234,7 @@ const LifestyleSection = ({ profile }: { profile: ApplicationForm }) => {
         <div>
           <h3 className="font-semibold">Interests</h3>
           <div className="mt-2 flex flex-wrap gap-2">
-            {lifestyle?.interests?.map(interest => (
+            {lifestyle?.interests?.map((interest) => (
               <Badge key={interest} variant="secondary">
                 {interest}
               </Badge>
@@ -257,7 +257,7 @@ const LookingForSection = ({ profile }: { profile: ApplicationForm }) => {
         <div>
           <h3 className="font-semibold">Relationship Goals</h3>
           <div className="mt-2 flex flex-wrap gap-2">
-            {relationshipGoals?.lookingFor?.map(goal => (
+            {relationshipGoals?.lookingFor?.map((goal) => (
               <Badge key={goal} variant="outline">
                 {goal}
               </Badge>
@@ -424,7 +424,7 @@ export default function ProfilesDetailPage() {
       : "N/A"
 
   const mainPhoto =
-    photos?.headshot || Object.values(photos || {}).find(p => p)
+    photos?.headshot || Object.values(photos || {}).find((p) => p)
   const galleryPhotos = Object.entries(photos || {})
     .filter(([, url]) => url) // Filter out entries with null/undefined URLs
     .map(([key, url]) => ({ key, url: url as string })) // Map to an array of objects
@@ -455,7 +455,7 @@ export default function ProfilesDetailPage() {
         <div className="flex items-center gap-2">
           <Dialog
             open={isSendDialogOpen}
-            onOpenChange={open => {
+            onOpenChange={(open) => {
               setIsSendDialogOpen(open)
               if (!open) {
                 setSelectedUserIdToSend(null)
@@ -500,11 +500,11 @@ export default function ProfilesDetailPage() {
                           : selectedUserIdToSend
                             ? `${
                                 sendToUsers.find(
-                                  u => u.id === selectedUserIdToSend
+                                  (u) => u.id === selectedUserIdToSend
                                 )?.personalDetails?.prefix
                               } ${
                                 sendToUsers.find(
-                                  u => u.id === selectedUserIdToSend
+                                  (u) => u.id === selectedUserIdToSend
                                 )?.personalDetails?.name
                               }`
                             : personalDetails?.gender === "Male"
@@ -525,7 +525,7 @@ export default function ProfilesDetailPage() {
                               : "No users found."}
                           </CommandEmpty>
                           <CommandGroup>
-                            {sendToUsers.map(u =>
+                            {sendToUsers.map((u) =>
                               (() => {
                                 const userAge =
                                   u.personalDetails?.dob &&
@@ -605,8 +605,6 @@ export default function ProfilesDetailPage() {
                   disabled={isSendingProfile || !selectedUserIdToSend}
                   className="btn-gradient"
                 >
-                  {isSending.tsx...
-                  )}
                   {isSendingProfile ? "Sending..." : "Send"}
                 </Button>
               </DialogFooter>

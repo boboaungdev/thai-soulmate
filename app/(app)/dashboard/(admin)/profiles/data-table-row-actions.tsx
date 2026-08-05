@@ -59,6 +59,7 @@ import { ProfileStatus } from "@/lib/generated/prisma/enums"
 import { useAuthStore } from "@/stores/auth-store"
 import { Textarea } from "@/components/ui/textarea"
 import { ProfileRow } from "./columns"
+import { EditProfileSheet } from "./edit-profile-sheet"
 
 const profileStatuses = [
   {
@@ -316,6 +317,7 @@ export function DataTableRowActions<TData>({
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+  const [isEditSheetOpen, setIsEditSheetOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleCopyId = (e: React.MouseEvent) => {
@@ -397,7 +399,10 @@ export function DataTableRowActions<TData>({
           <Button
             variant="ghost"
             className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(e) => {
+              // Stop propagation to prevent the row's onClick from firing.
+              e.stopPropagation()
+            }}
           >
             <MoreHorizontal className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
@@ -406,20 +411,20 @@ export function DataTableRowActions<TData>({
         <DropdownMenuContent
           align="end"
           className="w-[180px]"
-          onClick={(event) => event.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
         >
           <DropdownMenuItem onClick={handleViewProfile}>
             <Eye className="mr-2 h-4 w-4" />
             <span>View Profile</span>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link
-              href={`/dashboard/profiles/${user.id}/edit`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <FileEdit className="mr-2 h-4 w-4" />
-              Edit Profile
-            </Link>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsEditSheetOpen(true)
+            }}
+          >
+            <FileEdit className="mr-2 h-4 w-4" />
+            Edit Profile
           </DropdownMenuItem>
           <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
             <DialogTrigger asChild>
@@ -527,6 +532,11 @@ export function DataTableRowActions<TData>({
         isOpen={isSendDialogOpen}
         onOpenChange={setIsSendDialogOpen}
         user={user}
+      />
+      <EditProfileSheet
+        isOpen={isEditSheetOpen}
+        onOpenChange={setIsEditSheetOpen}
+        profile={user}
       />
     </>
   )

@@ -80,23 +80,20 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar
-        table={table}
-        forceFetch={forceFetch}
-      />
+      <DataTableToolbar table={table} forceFetch={forceFetch} />
       <ScrollArea className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
+                {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   )
@@ -106,18 +103,31 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map(row => (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   className="cursor-pointer"
-                  onClick={() => onRowClick?.(row.original)}
+                  onClick={(e) => {
+                    // Prevent row click when interacting with actions, checkboxes, etc.
+                    // This includes menus, dialogs, and sheets that are portaled.
+                    const target = e.target as HTMLElement
+                    if (
+                      target.closest('[role="menu"]') ||
+                      target.closest('[role="checkbox"]') ||
+                      target.closest('[data-slot="sheet-content"]') ||
+                      target.closest('[data-slot="sheet-overlay"]')
+                    ) {
+                      return
+                    }
+                    onRowClick?.(row.original)
+                  }}
                 >
-                  {row.getVisibleCells().map(cell => (
+                  {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}

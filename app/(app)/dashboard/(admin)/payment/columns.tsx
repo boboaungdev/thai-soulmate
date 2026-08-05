@@ -12,7 +12,10 @@ import { getPaymentStatusMeta, PaymentStatus } from "./statuses" // Import getPa
 
 export type Payment = {
   id: string
+  customId: string | number
+  nickname?: string
   name: string
+  gender: "Male" | "Female"
   email: string
   phone: string
   date: string
@@ -60,9 +63,24 @@ export const columns: ColumnDef<Payment>[] = [
           <AvatarImage src={row.original.avatar} alt={row.original.name} />
           <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
         </Avatar>
-        <div>{row.getValue("name")}</div>
+        <div>
+          <div className="truncate font-medium">{row.getValue("name")}</div>
+          <div className="text-xs text-muted-foreground">
+            ID: {String(row.original.customId).padStart(4, "0")}{" "}
+            {row.original.nickname ? `· ${row.original.nickname}` : ""}
+          </div>
+        </div>
       </div>
     ),
+  },
+  {
+    accessorKey: "gender",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Gender" />
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: "plan",

@@ -45,6 +45,16 @@ export function DataTableToolbar<TData>({
             options={paymentStatuses}
           />
         )}
+        {table.getColumn("gender") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("gender")}
+            title="Gender"
+            options={[
+              { value: "Male", label: "Male" },
+              { value: "Female", label: "Female" },
+            ]}
+          />
+        )}
         {table.getColumn("plan") && (
           <DataTableFacetedFilter
             column={table.getColumn("plan")}

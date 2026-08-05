@@ -8,7 +8,9 @@ import { DataTable } from "./data-table"
 const payments: Payment[] = [
   {
     id: "1",
+    customId: 1,
     name: "John Doe",
+    gender: "Male",
     email: "john.doe@example.com",
     phone: "(+66) 123456789",
     date: "2024-07-30 11:22",
@@ -20,7 +22,9 @@ const payments: Payment[] = [
   },
   {
     id: "2",
+    customId: 2,
     name: "Jane Smith",
+    gender: "Female",
     email: "jane.smith@example.com",
     phone: "(+66) 987654321",
     date: "2024-07-29 10:15",
@@ -32,7 +36,9 @@ const payments: Payment[] = [
   },
   {
     id: "3",
+    customId: 3,
     name: "Sam Wilson",
+    gender: "Male",
     email: "sam.wilson@example.com",
     phone: "(+1) 5555555555",
     date: "2024-07-28 12:30",
@@ -44,7 +50,9 @@ const payments: Payment[] = [
   },
   {
     id: "4",
+    customId: 4,
     name: "Alice Johnson",
+    gender: "Female",
     email: "alice.j@example.com",
     phone: "(+44) 1112223333",
     date: "2024-07-27 14:30",
@@ -52,6 +60,21 @@ const payments: Payment[] = [
     avatar: "https://randomuser.me/api/portraits/men/6.jpg",
     plan: "6 Months",
     amount: 49900,
+    notes: [],
+  },
+  {
+    id: "5",
+    customId: 5,
+    name: "Emily White",
+    nickname: "Em",
+    gender: "Female",
+    email: "emily.white@example.com",
+    phone: "(+66) 555123456",
+    date: "2024-07-26 09:00",
+    status: "completed",
+    avatar: "https://randomuser.me/api/portraits/women/7.jpg",
+    plan: "1 Month",
+    amount: 29900,
     notes: [],
   },
 ]

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
 import { ApplicationForm } from "@/types/application-form"
+import { Profile as PrismaProfile } from "@/lib/generated/prisma"
 import { Button } from "@/components/ui/button"
 import {
   ChevronLeft,
@@ -71,6 +72,10 @@ import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 
+interface Profile extends PrismaProfile {
+  applicationForm: ApplicationForm
+}
+
 const ProfileInfo = ({
   icon,
   label,
@@ -108,7 +113,7 @@ const AboutSection = ({
         <div>
           <h3 className="font-semibold">Personality</h3>
           <div className="mt-2 flex flex-wrap gap-2">
-            {personalityTraits.map((trait) => (
+            {personalityTraits.map(trait => (
               <Badge key={trait} variant="secondary">
                 {trait}
               </Badge>
@@ -192,7 +197,7 @@ const DetailsSection = ({ profile }: { profile: ApplicationForm }) => {
         <CardTitle className="text-gradient">Details</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6">
-        {details.map((item) => (
+        {details.map(item => (
           <ProfileInfo
             key={item.label}
             icon={item.icon}
@@ -219,7 +224,7 @@ const LifestyleSection = ({ profile }: { profile: ApplicationForm }) => {
         <CardTitle className="text-gradient">Lifestyle</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {lifestyleItems.map((item) => (
+        {lifestyleItems.map(item => (
           <div key={item.label} className="flex justify-between">
             <p className="text-muted-foreground">{item.label}</p>
             <p className="font-semibold">{item.value}</p>
@@ -229,7 +234,7 @@ const LifestyleSection = ({ profile }: { profile: ApplicationForm }) => {
         <div>
           <h3 className="font-semibold">Interests</h3>
           <div className="mt-2 flex flex-wrap gap-2">
-            {lifestyle?.interests?.map((interest) => (
+            {lifestyle?.interests?.map(interest => (
               <Badge key={interest} variant="secondary">
                 {interest}
               </Badge>
@@ -252,7 +257,7 @@ const LookingForSection = ({ profile }: { profile: ApplicationForm }) => {
         <div>
           <h3 className="font-semibold">Relationship Goals</h3>
           <div className="mt-2 flex flex-wrap gap-2">
-            {relationshipGoals?.lookingFor?.map((goal) => (
+            {relationshipGoals?.lookingFor?.map(goal => (
               <Badge key={goal} variant="outline">
                 {goal}
               </Badge>
@@ -290,7 +295,7 @@ export default function ProfilesDetailPage() {
   const params = useParams()
   const { id } = params as { id: string }
   const router = useRouter()
-  const [profile, setProfile] = useState<ApplicationForm | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false)
   const [sendToUsers, setSendToUsers] = useState<ApplicationForm[]>([])
@@ -312,7 +317,7 @@ export default function ProfilesDetailPage() {
           throw new Error("Failed to fetch user data")
         }
         const data = await response.json()
-        setProfile(data.application)
+        setProfile(data.profile)
       } catch (error) {
         console.error(error)
       } finally {
@@ -330,7 +335,9 @@ export default function ProfilesDetailPage() {
       setIsFetchingSendToUsers(true)
       try {
         const targetGender =
-          profile?.personalDetails?.gender === "Male" ? "Female" : "Male"
+          profile?.applicationForm.personalDetails?.gender === "Male"
+            ? "Female"
+            : "Male"
         const response = await fetch(`/api/profiles?gender=${targetGender}`)
         if (!response.ok) {
           throw new Error("Failed to fetch users")
@@ -360,7 +367,7 @@ export default function ProfilesDetailPage() {
         },
         body: JSON.stringify({
           profileId: profile?.id,
-          profile: profile?.personalDetails,
+          profile: profile?.applicationForm.personalDetails,
           to: selectedUserToSend?.personalDetails,
         }),
       })
@@ -409,7 +416,7 @@ export default function ProfilesDetailPage() {
     )
   }
 
-  const { personalDetails, photos } = profile
+  const { personalDetails, photos } = profile.applicationForm
 
   const age =
     personalDetails?.dob && !isNaN(new Date(personalDetails.dob).getTime())
@@ -417,7 +424,7 @@ export default function ProfilesDetailPage() {
       : "N/A"
 
   const mainPhoto =
-    photos?.headshot || Object.values(photos || {}).find((p) => p)
+    photos?.headshot || Object.values(photos || {}).find(p => p)
   const galleryPhotos = Object.entries(photos || {})
     .filter(([, url]) => url) // Filter out entries with null/undefined URLs
     .map(([key, url]) => ({ key, url: url as string })) // Map to an array of objects
@@ -448,7 +455,7 @@ export default function ProfilesDetailPage() {
         <div className="flex items-center gap-2">
           <Dialog
             open={isSendDialogOpen}
-            onOpenChange={(open) => {
+            onOpenChange={open => {
               setIsSendDialogOpen(open)
               if (!open) {
                 setSelectedUserIdToSend(null)
@@ -493,11 +500,11 @@ export default function ProfilesDetailPage() {
                           : selectedUserIdToSend
                             ? `${
                                 sendToUsers.find(
-                                  (u) => u.id === selectedUserIdToSend
+                                  u => u.id === selectedUserIdToSend
                                 )?.personalDetails?.prefix
                               } ${
                                 sendToUsers.find(
-                                  (u) => u.id === selectedUserIdToSend
+                                  u => u.id === selectedUserIdToSend
                                 )?.personalDetails?.name
                               }`
                             : personalDetails?.gender === "Male"
@@ -518,7 +525,7 @@ export default function ProfilesDetailPage() {
                               : "No users found."}
                           </CommandEmpty>
                           <CommandGroup>
-                            {sendToUsers.map((u) =>
+                            {sendToUsers.map(u =>
                               (() => {
                                 const userAge =
                                   u.personalDetails?.dob &&
@@ -598,8 +605,7 @@ export default function ProfilesDetailPage() {
                   disabled={isSendingProfile || !selectedUserIdToSend}
                   className="btn-gradient"
                 >
-                  {isSendingProfile && (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                  {isSending.tsx...
                   )}
                   {isSendingProfile ? "Sending..." : "Send"}
                 </Button>
@@ -616,14 +622,16 @@ export default function ProfilesDetailPage() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() =>
-                  router.push(`/dashboard/application-form/${profile.id}`)
+                  router.push(
+                    `/dashboard/application-form/${profile.applicationForm.id}`
+                  )
                 }
               >
                 <FileText className="mr-2 h-4 w-4" /> View Application
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/print/profile/${profile.id}?print=true`}
+                  href={`/print/profile/${profile.applicationForm.id}?print=true`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -702,9 +710,9 @@ export default function ProfilesDetailPage() {
           </div>
 
           <div className="mt-10 w-full space-y-6">
-            <OverviewSection profile={profile} />
-            <LifestyleSection profile={profile} />
-            <LookingForSection profile={profile} />
+            <OverviewSection profile={profile.applicationForm} />
+            <LifestyleSection profile={profile.applicationForm} />
+            <LookingForSection profile={profile.applicationForm} />
           </div>
         </CardContent>
       </Card>

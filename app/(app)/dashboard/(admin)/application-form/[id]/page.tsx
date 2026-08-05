@@ -35,12 +35,13 @@ import {
   Ruler,
   Scale,
   Smile,
+  Shield,
   Sparkles,
   StickyNote,
   Sun,
   Target,
   Trash2,
-  User,
+  User2,
   Users2,
   Utensils,
   Waypoints,
@@ -104,6 +105,12 @@ type NoteWithUser = Note & {
 type ApplicationDetail = ApplicationForm & {
   status: ApplicationFormStatus
   notes?: NoteWithUser[]
+}
+
+const roleIcons: Record<string, React.ElementType> = {
+  ADMIN: Shield,
+  STAFF: Users2,
+  MEMBER: User2,
 }
 
 const displayValue = (value: React.ReactNode) => {
@@ -335,7 +342,16 @@ function NotesSection({
                       <div>
                         <div className="flex items-center gap-2">
                           <p className="font-semibold">{note.user.name}</p>
-                          <Badge variant="secondary">{note.user.role}</Badge>
+                          <Badge
+                            variant="secondary"
+                            className="flex items-center gap-1"
+                          >
+                            {roleIcons[note.user.role] &&
+                              React.createElement(roleIcons[note.user.role], {
+                                className: "h-3 w-3",
+                              })}
+                            <span>{note.user.role}</span>
+                          </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
                           {note.user.email}
@@ -820,9 +836,9 @@ export default function ApplicationDetailPage() {
               />
             </ProfileSection>
           )}
-          <ProfileSection title="Personal Details" icon={<User />}>
+          <ProfileSection title="Personal Details" icon={<User2 />}>
             <DetailRow
-              icon={<User />}
+              icon={<User2 />}
               label="Name"
               value={`${personalDetails?.prefix} ${personalDetails?.name}`}
             />

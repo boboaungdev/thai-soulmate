@@ -101,6 +101,26 @@ export const columns: ColumnDef<Payment>[] = [
     ),
   },
   {
+    id: "notes",
+    accessorFn: (row) => row.notes?.length ?? 0,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Notes" />
+    ),
+    cell: ({ row }) => {
+      const notesCount = row.original.notes?.length ?? 0
+      return (
+        <div
+          className={`flex w-[70px] items-center gap-1.5 ${
+            notesCount === 0 ? "text-muted-foreground" : ""
+          }`}
+        >
+          <StickyNote className="h-4 w-4" />
+          <span className="font-medium">{notesCount}</span>
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
@@ -130,26 +150,7 @@ export const columns: ColumnDef<Payment>[] = [
       return <div>{formattedDate}</div>
     },
   },
-  {
-    id: "notes",
-    accessorFn: (row) => row.notes?.length ?? 0,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Notes" />
-    ),
-    cell: ({ row }) => {
-      const notesCount = row.original.notes?.length ?? 0
-      return (
-        <div
-          className={`flex w-[70px] items-center gap-1.5 ${
-            notesCount === 0 ? "text-muted-foreground" : ""
-          }`}
-        >
-          <StickyNote className="h-4 w-4" />
-          <span className="font-medium">{notesCount}</span>
-        </div>
-      )
-    },
-  },
+
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

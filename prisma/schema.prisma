@@ -140,6 +140,8 @@ model Profile {
 
   notes Note[]
 
+  membership Membership?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -152,8 +154,11 @@ enum ProfileStatus {
 model Membership {
   id String @id @default(cuid())
 
-  applicationFormId String          @unique
-  applicationForm   ApplicationForm @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
+  applicationFormId String?          @unique
+  applicationForm   ApplicationForm? @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
+
+  profileId String?  @unique
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   plan MembershipPlan @default(NONE)
 

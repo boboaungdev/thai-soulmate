@@ -116,7 +116,9 @@ export const genders: {
   },
 ]
 
-export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
+export const getColumns = (
+  onViewDetails: (item: RegisterInterestWithNotesCount) => void
+): ColumnDef<RegisterInterestWithNotesCount>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -284,6 +286,8 @@ export const columns: ColumnDef<RegisterInterestWithNotesCount>[] = [
 
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <DataTableRowActions row={row} onViewDetails={onViewDetails} />
+    ),
   },
 ]

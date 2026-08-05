@@ -8,7 +8,8 @@ import {
   FileText,
   Loader2,
   FileEdit,
-  Contact2, // Added Loader2
+  Contact2,
+  Eye, // Added Loader2
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { Row } from "@tanstack/react-table"
@@ -50,10 +51,12 @@ import { useAuthStore } from "@/stores/auth-store"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
+  onViewDetails: (item: TData) => void
 }
 
 export function DataTableRowActions<TData>({
   row,
+  onViewDetails,
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter()
   const task = row.original as RegisterInterest
@@ -161,6 +164,10 @@ export function DataTableRowActions<TData>({
         className="w-[180px]"
         onClick={(e) => e.stopPropagation()}
       >
+        <DropdownMenuItem onClick={() => onViewDetails(row.original)}>
+          <Eye className="mr-2 h-4 w-4" />
+          View details
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handlePrint}>
           <Printer className="mr-2 h-4 w-4" />
           Print

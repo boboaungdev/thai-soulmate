@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { columns } from "./columns"
+import { getColumns } from "./columns"
 import { DataTable } from "./data-table"
 import { RegisterInterestDetails } from "./register-interest-details"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -15,9 +15,9 @@ type RegisterInterestWithNotesCount = RegisterInterest & {
 }
 
 export default function TaskPage() {
-  const data = useRegisterInterestStore(state => state.users)
-  const loading = useRegisterInterestStore(state => state.loading)
-  const actions = useRegisterInterestStore(state => state.actions)
+  const data = useRegisterInterestStore((state) => state.users)
+  const loading = useRegisterInterestStore((state) => state.loading)
+  const actions = useRegisterInterestStore((state) => state.actions)
 
   const [selectedItem, setSelectedItem] =
     useState<RegisterInterestWithNotesCount | null>(null)
@@ -85,7 +85,11 @@ export default function TaskPage() {
           </div>
           <div className="flex items-center space-x-2"></div>
         </div>
-        <DataTable data={data} columns={columns} onRowClick={handleRowClick} />
+        <DataTable
+          data={data}
+          columns={getColumns}
+          onRowClick={handleRowClick}
+        />
       </div>
       <RegisterInterestDetails
         item={selectedItem}

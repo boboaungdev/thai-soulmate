@@ -25,9 +25,9 @@ export async function GET(
   try {
     const { id } = context.params
 
-    const profile = await prisma.profile.findFirst({
+    const profile = await prisma.profile.findUnique({
       where: {
-        applicationFormId: id,
+        id,
       },
       include: {
         applicationForm: true,
@@ -95,27 +95,9 @@ export async function PATCH(
     const { id } = context.params
     const { status } = await req.json()
 
-    const profile = await prisma.profile.findFirst({
-      where: {
-        applicationFormId: id,
-      },
-    })
-
-    if (!profile) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Profile not found",
-        },
-        {
-          status: 404,
-        }
-      )
-    }
-
     const updatedProfile = await prisma.profile.update({
       where: {
-        id: profile.id,
+        id,
       },
       data: {
         status,

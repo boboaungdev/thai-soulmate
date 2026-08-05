@@ -13,15 +13,15 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy: {
-        customId: "asc",
+        applicationForm: {
+          customId: "asc",
+        },
       },
     })
 
-    const data = profiles.map((p) => ({
-      ...p,
-      ...p.applicationForm, // flatten applicationForm props
-      id: p.id, // keep profile id
-      customId: p.customId, // keep profile customId
+    const data = profiles.map(({ applicationForm, ...profile }) => ({
+      ...applicationForm,
+      ...profile,
     }))
 
     return NextResponse.json({

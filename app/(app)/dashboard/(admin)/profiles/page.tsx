@@ -80,7 +80,7 @@ export default function ProfilesPage() {
         </Card>
       ) : (
         <DataTable
-          data={profiles || []}
+          data={(profiles as ProfileRow[]) || []}
           columns={columns}
           onRowClick={handleRowClick}
           columnVisibility={columnVisibility}

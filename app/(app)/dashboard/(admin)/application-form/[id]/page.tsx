@@ -625,7 +625,7 @@ export default function ApplicationDetailPage() {
 
       URL.revokeObjectURL(objectUrl)
 
-      toast.success("Photo downloaded successfully.")
+      toast.success(`${imgKey.toUpperCase()} photo downloaded successfully.`)
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Could not download photo."

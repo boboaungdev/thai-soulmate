@@ -129,37 +129,7 @@ export async function POST(req: Request) {
       await tx.profile.create({
         data: {
           applicationFormId: application.id,
-          customId: application.customId,
           status: "PENDING",
-
-          nickname: body.profile.nickname,
-          occupation: body.profile.occupation,
-          education: body.profile.education,
-
-          height: body.profile.height,
-          weight: body.profile.weight,
-          religion: body.profile.religion,
-
-          thaiFluency: body.profile.thaiFluency,
-          englishFluency: body.profile.englishFluency,
-
-          personality: body.profile.personality,
-          about: body.profile.about,
-          lookingForQualities: body.profile.lookingForQualities,
-
-          smoking: body.profile.smoking,
-          drinking: body.profile.drinking,
-          exercise: body.profile.exercise,
-
-          interests: body.profile.interests,
-
-          lookingFor: body.relationshipGoals.lookingFor,
-
-          idealPartnerAgeRange: body.profile.idealPartnerAgeRange,
-
-          headshot: body.photos.headshot,
-          fullLength: body.photos.fullLength,
-          casualLifestyle: body.photos.casualLifestyle,
         },
       })
 

@@ -1,8 +1,8 @@
 
 import { create } from 'zustand'
-import { type Profile } from '@prisma/client'
 import { type VisibilityState } from '@tanstack/react-table'
 import { persist } from 'zustand/middleware'
+import { Profile } from '@/lib/generated/prisma/client'
 
 type ProfileState = {
   profiles: Profile[]

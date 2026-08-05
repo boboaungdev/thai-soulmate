@@ -7,9 +7,9 @@ import {
   Trash,
   FileText,
   Loader2,
-  FileEdit,
   Contact2,
-  Eye, // Added Loader2
+  Eye,
+  CheckCircle2, // Added Loader2
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { Row } from "@tanstack/react-table"
@@ -168,10 +168,6 @@ export function DataTableRowActions<TData>({
           <Eye className="mr-2 h-4 w-4" />
           View details
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handlePrint}>
-          <Printer className="mr-2 h-4 w-4" />
-          Print
-        </DropdownMenuItem>
         <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
           <DialogTrigger asChild>
             <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
@@ -223,6 +219,29 @@ export function DataTableRowActions<TData>({
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
+            <CheckCircle2 className="mr-2 h-4 w-4" />
+            <span>Change Status</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuRadioGroup
+              value={task.status}
+              onValueChange={handleStatusChange}
+            >
+              {statuses.map((status) => (
+                <DropdownMenuRadioItem
+                  key={status.value}
+                  value={status.value}
+                  className={status.color}
+                >
+                  {status.icon && <status.icon className="mr-2 h-4 w-4" />}
+                  {status.label}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
             <Contact2 className="mr-2 h-4 w-4" />
             <span>Contact</span>
           </DropdownMenuSubTrigger>{" "}
@@ -251,30 +270,11 @@ export function DataTableRowActions<TData>({
             </DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <FileEdit className="mr-2 h-4 w-4" />
-            <span>Change Status</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup
-              value={task.status}
-              onValueChange={handleStatusChange}
-            >
-              {statuses.map((status) => (
-                <DropdownMenuRadioItem
-                  key={status.value}
-                  value={status.value}
-                  className={status.color}
-                >
-                  {status.icon && <status.icon className="mr-2 h-4 w-4" />}
-                  {status.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handlePrint}>
+          <Printer className="mr-2 h-4 w-4" />
+          Print
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogTrigger asChild>

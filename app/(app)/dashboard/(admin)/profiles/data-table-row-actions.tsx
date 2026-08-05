@@ -8,7 +8,7 @@ import {
   Send,
   Loader2,
   CheckCircle2,
-  ChevronsUpDown,CircleCheck,
+  ChevronsUpDown,
   FileEdit,
   Clock,
   Trash2,
@@ -355,9 +355,19 @@ export function DataTableRowActions<TData>({
             <Eye className="mr-2 h-4 w-4" />
             <span>View Profile</span>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/profiles/${user.id}/edit`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <FileEdit className="mr-2 h-4 w-4" />
+              Edit Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
-              <FileEdit className="mr-2 h-4 w-4" />
+              <CheckCircle2 className="mr-2 h-4 w-4" />
               <span>Change Status</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
@@ -395,30 +405,32 @@ export function DataTableRowActions<TData>({
               })}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleSendProfile}>
             <Send className="mr-2 h-4 w-4" />
             <span>Send Profile</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleCopyId}>
+            <Copy className="mr-2 h-4 w-4" />
+            <span>Copy ID</span>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
               href={`/print/profile/${user.id}?print=true`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
             >
               <Printer className="mr-2 h-4 w-4" />
               Print
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleCopyId}>
-            <Copy className="mr-2 h-4 w-4" />
-            <span>Copy ID</span>
-          </DropdownMenuItem>
-           <DropdownMenuSeparator />
-        <DropdownMenuItem disabled variant="destructive">
-          <Trash2 className="mr-2 h-4 w-4" />
-          <span>Delete</span>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem disabled variant="destructive">
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>Delete</span>
             <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <SendProfileDialog

@@ -1,9 +1,9 @@
 "use client"
 
 import {
+  CheckCircle2,
   Contact2,
   Eye,
-  FileEdit,
   FileText,
   Loader2,
   Mail,
@@ -194,6 +194,30 @@ export function DataTableRowActions<TData>({
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
+            <CheckCircle2 className="mr-2 h-4 w-4" />
+            <span>Change Status</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuRadioGroup
+              value={application.status}
+              onValueChange={handleStatusChange}
+            >
+              {applicationStatuses.map((status) => (
+                <DropdownMenuRadioItem
+                  key={status.value}
+                  value={status.value}
+                  className={status.color}
+                  disabled={status.value === application.status}
+                >
+                  <status.icon className="mr-2 h-4 w-4" />
+                  {status.label}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
             <Contact2 className="mr-2 h-4 w-4" />
             <span>Contact</span>
           </DropdownMenuSubTrigger>
@@ -224,30 +248,6 @@ export function DataTableRowActions<TData>({
                 WhatsApp
               </a>
             </DropdownMenuItem>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <FileEdit className="mr-2 h-4 w-4" />
-            <span>Change Status</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup
-              value={application.status}
-              onValueChange={handleStatusChange}
-            >
-              {applicationStatuses.map((status) => (
-                <DropdownMenuRadioItem
-                  key={status.value}
-                  value={status.value}
-                  className={status.color}
-                  disabled={status.value === application.status}
-                >
-                  <status.icon className="mr-2 h-4 w-4" />
-                  {status.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />

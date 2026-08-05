@@ -4,6 +4,7 @@ import { APP_INFO } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { ApplicationForm } from "@/types/application-form" // Assuming this type is correct for the nested applicationForm
+import { PrintTrigger } from "./print-trigger"
 
 function calculateAge(dob: string | Date): number {
   const birthDate = new Date(dob)
@@ -120,6 +121,7 @@ export default async function ProfilePrintPage({
 
   return (
     <>
+      <PrintTrigger />
       {/* PRINT ONLY THIS */}
       <div>
         <main

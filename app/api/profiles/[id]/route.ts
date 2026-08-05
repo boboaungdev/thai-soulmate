@@ -74,3 +74,61 @@ export async function GET(
     )
   }
 }
+
+export async function PATCH(
+  req: Request,
+  context: {
+    params: {
+      id: string
+    }
+  }
+) {
+  try {
+    const { id } = context.params
+    const { status } = await req.json()
+
+    const profile = await prisma.profile.findFirst({
+      where: {
+        applicationFormId: id,
+      },
+    })
+
+    if (!profile) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Profile not found",
+        },
+        {
+          status: 404,
+        }
+      )
+    }
+
+    const updatedProfile = await prisma.profile.update({
+      where: {
+        id: profile.id,
+      },
+      data: {
+        status,
+      },
+    })
+
+    return NextResponse.json({
+      success: true,
+      profile: updatedProfile,
+    })
+  } catch (error) {
+    console.error("UPDATE PROFILE STATUS ERROR:", error)
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to update profile status",
+      },
+      {
+        status: 500,
+      }
+    )
+  }
+}

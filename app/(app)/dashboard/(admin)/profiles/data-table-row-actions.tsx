@@ -9,6 +9,7 @@ import {
   Loader2,
   Check,
   ChevronsUpDown,
+  FileEdit,
 } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { useRouter } from "next/navigation"
@@ -21,6 +22,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -47,6 +51,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { ProfileStatus } from "@/lib/generated/prisma/enums"
 import { ProfileRow } from "./columns"
 
 function SendProfileDialog({
@@ -133,7 +138,7 @@ function SendProfileDialog({
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={(open) => {
+      onOpenChange={open => {
         onOpenChange(open)
         if (!open) {
           setSelectedUserIdToSend(null)
@@ -143,7 +148,7 @@ function SendProfileDialog({
     >
       <DialogContent
         className="sm:max-w-[425px]"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <DialogHeader>
           <DialogTitle>Send Profile</DialogTitle>
@@ -171,10 +176,10 @@ function SendProfileDialog({
                     ? "Loading users..."
                     : selectedUserIdToSend
                       ? `${
-                          sendToUsers.find((u) => u.id === selectedUserIdToSend)
+                          sendToUsers.find(u => u.id === selectedUserIdToSend)
                             ?.personalDetails?.prefix
                         } ${
-                          sendToUsers.find((u) => u.id === selectedUserIdToSend)
+                          sendToUsers.find(u => u.id === selectedUserIdToSend)
                             ?.personalDetails?.name
                         }`
                       : personalDetails?.gender === "Male"
@@ -193,7 +198,7 @@ function SendProfileDialog({
                       {isFetchingSendToUsers ? "Loading..." : "No users found."}
                     </CommandEmpty>
                     <CommandGroup>
-                      {sendToUsers.map((u) => {
+                      {sendToUsers.map(u => {
                         const userAge =
                           u.personalDetails?.dob &&
                           !isNaN(new Date(u.personalDetails.dob).getTime())
@@ -252,7 +257,7 @@ function SendProfileDialog({
             type="button"
             variant="outline"
             disabled={isSendingProfile}
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation()
               onOpenChange(false)
               setSelectedUserIdToSend(null)
@@ -286,6 +291,7 @@ export function DataTableRowActions<TData>({
   const router = useRouter()
   const user = row.original as ProfileRow
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false)
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
 
   const handleCopyId = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -303,6 +309,27 @@ export function DataTableRowActions<TData>({
     router.push(`/dashboard/profiles/${user.id}`)
   }
 
+  const handleStatusChange = async (status: ProfileStatus) => {
+    setIsUpdatingStatus(true)
+    const promise = fetch(`/api/profiles/${user.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    })
+
+    toast.promise(promise, {
+      loading: "Updating status...",
+      success: () => {
+        setIsUpdatingStatus(false)
+        router.refresh()
+        return "Status updated successfully"
+      },
+      error: () => {
+        setIsUpdatingStatus(false)
+        return "Failed to update status"
+      },
+    })
+  }
+
   return (
     <>
       <DropdownMenu>
@@ -310,7 +337,7 @@ export function DataTableRowActions<TData>({
           <Button
             variant="ghost"
             className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-            onClick={(event) => event.stopPropagation()}
+            onClick={event => event.stopPropagation()}
           >
             <MoreHorizontal className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
@@ -319,12 +346,39 @@ export function DataTableRowActions<TData>({
         <DropdownMenuContent
           align="end"
           className="w-[180px]"
-          onClick={(event) => event.stopPropagation()}
+          onClick={event => event.stopPropagation()}
         >
           <DropdownMenuItem onClick={handleViewProfile}>
             <Eye className="mr-2 h-4 w-4" />
             <span>View Profile</span>
           </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <FileEdit className="mr-2 h-4 w-4" />
+              <span>Change Status</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              {Object.values(ProfileStatus).map(status => (
+                <DropdownMenuItem
+                  key={status}
+                  onClick={() => handleStatusChange(status)}
+                  disabled={isUpdatingStatus || user.status === status}
+                >
+                  {isUpdatingStatus && user.status !== status ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        user.status === status ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                  )}
+                  {status}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
           <DropdownMenuItem onClick={handleSendProfile}>
             <Send className="mr-2 h-4 w-4" />
             <span>Send Profile</span>

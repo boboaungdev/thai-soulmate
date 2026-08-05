@@ -14,7 +14,10 @@ export default function ProfilesPage() {
   const router = useRouter()
   const [profiles, setProfiles] = useState<ProfileRow[]>([])
   const [loading, setLoading] = useState(true)
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    nationality: false,
+    currentLocation: false,
+  })
 
   const fetchProfiles = async () => {
     setLoading(true)

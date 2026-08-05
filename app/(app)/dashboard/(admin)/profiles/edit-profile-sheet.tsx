@@ -32,7 +32,7 @@ export function EditProfileSheet({
   onOpenChange,
   profile,
 }: EditProfileSheetProps) {
-  const [about, setAbout] = useState(profile?.personalDetails?.about || "")
+  const [about, setAbout] = useState(profile?.personality?.about || "")
   const [isSaving, setIsSaving] = useState(false)
 
   if (!profile) return null

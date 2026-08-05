@@ -29,7 +29,7 @@ const profileStatuses = [
 export type ProfileRow = Profile &
   Pick<
     ApplicationForm,
-    "personalDetails" | "photos" | "membership" | "notes" | "customId"
+    "personalDetails" | "photos" | "membership" | "notes" | "customId" | 'personality'
   >
 
 const getStatusMeta = (status: ProfileStatus) => {

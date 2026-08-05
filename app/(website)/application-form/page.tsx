@@ -444,12 +444,6 @@ function AuthPageContents() {
   const [registrationStep, setRegistrationStep] =
     useState<ApplicationStep>("details")
 
-  const bestQualitiesPlaceholders = ["e.g. Honest", "e.g. Kind", "e.g. Funny"]
-  const lookingForQualitiesPlaceholders = [
-    "e.g. Ambitious",
-    "e.g. Loyal",
-    "e.g. Supportive",
-  ]
   const travelDestinationsPlaceholders = [
     "e.g. Paris",
     "e.g. Tokyo",
@@ -565,6 +559,7 @@ function AuthPageContents() {
     email: "",
     phone: "",
   })
+
   const fullPhoneNumber = `+${countries.find((c) => c.code === phoneCountry)?.callCode || ""}${detailsForm.phone}`
 
   useEffect(() => {
@@ -2088,9 +2083,18 @@ function AuthPageContents() {
                                 .toLowerCase(),
                             })
                           }
-                          disabled={isInitializing || loadingCountries}
+                          disabled={
+                            !!initialUserData?.email ||
+                            isInitializing ||
+                            loadingCountries
+                          }
                         />
                       </InputGroup>
+                      {initialUserData?.email && (
+                        <p className="pt-1 text-xs text-muted-foreground">
+                          Registered email cannot be edited.
+                        </p>
+                      )}
                       {formErrors.email && (
                         <p className="text-sm text-destructive">
                           {formErrors.email}

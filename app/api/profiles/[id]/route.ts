@@ -17,13 +17,13 @@ function parseJSONField(field: any): any {
 export async function GET(
   req: Request,
   context: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
   try {
-    const { id } = context.params
+    const { id } = await context.params
 
     const profile = await prisma.profile.findUnique({
       where: {
@@ -86,9 +86,9 @@ export async function GET(
 export async function PATCH(
   req: Request,
   context: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
   try {

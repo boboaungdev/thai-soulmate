@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
 import { ApplicationForm } from "@/types/application-form"
-import { Profile as PrismaProfile } from "@/lib/generated/prisma"
+import { Profile as PrismaProfile } from "@/lib/generated/prisma/client"
 import { Button } from "@/components/ui/button"
 import {
   ChevronLeft,
@@ -382,6 +382,7 @@ export default function ProfilesDetailPage() {
       }
     } catch (error) {
       toast.error("Failed to send")
+      console.log("SEND PROFILE ERROR:", error)
     } finally {
       setIsSendingProfile(false)
       setSelectedUserIdToSend(null)
@@ -430,7 +431,7 @@ export default function ProfilesDetailPage() {
     .map(([key, url]) => ({ key, url: url as string })) // Map to an array of objects
 
   const handleCopyId = () => {
-    const idToCopy = String(profile.customId).padStart(4, "0")
+    const idToCopy = String(profile.applicationForm.customId).padStart(4, "0")
     navigator.clipboard
       .writeText(idToCopy)
       .then(() => {
@@ -684,7 +685,9 @@ export default function ProfilesDetailPage() {
               className="flex cursor-pointer items-center gap-1 hover:text-foreground"
               onClick={handleCopyId}
             >
-              <p>ID: {String(profile.customId).padStart(4, "0")}</p>
+              <p>
+                ID: {String(profile.applicationForm.customId).padStart(4, "0")}
+              </p>
               <Copy className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-1">

@@ -6,7 +6,9 @@ import {
   Printer,
   Trash,
   FileText,
-  Loader2, // Added Loader2
+  Loader2,
+  FileEdit,
+  Contact2, // Added Loader2
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { Row } from "@tanstack/react-table"
@@ -156,7 +158,7 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-[160px]"
+        className="w-[180px]"
         onClick={(e) => e.stopPropagation()}
       >
         <DropdownMenuItem onClick={handlePrint}>
@@ -213,7 +215,10 @@ export function DataTableRowActions<TData>({
         </Dialog>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Contact</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>
+            <Contact2 className="mr-2 h-4 w-4" />
+            <span>Contact</span>
+          </DropdownMenuSubTrigger>{" "}
           <DropdownMenuSubContent>
             <DropdownMenuItem asChild>
               <a
@@ -241,7 +246,10 @@ export function DataTableRowActions<TData>({
         </DropdownMenuSub>
 
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>
+            <FileEdit className="mr-2 h-4 w-4" />
+            <span>Change Status</span>
+          </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuRadioGroup
               value={task.status}

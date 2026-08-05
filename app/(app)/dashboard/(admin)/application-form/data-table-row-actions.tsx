@@ -1,7 +1,9 @@
 "use client"
 
 import {
+  Contact2,
   Eye,
+  FileEdit,
   FileText,
   Loader2,
   Mail,
@@ -189,7 +191,10 @@ export function DataTableRowActions<TData>({
         </Dialog>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Contact</DropdownMenuSubTrigger>
+     <DropdownMenuSubTrigger>
+              <Contact2 className="mr-2 h-4 w-4" />
+              <span>Contact</span>
+            </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuItem asChild>
               <a
@@ -220,23 +225,27 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+        <DropdownMenuSubTrigger>
+              <FileEdit className="mr-2 h-4 w-4" />
+              <span>Change Status</span>
+            </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup
-              value={application.status}
-              onValueChange={handleStatusChange}
-            >
-              {applicationStatuses.map((status) => (
-                <DropdownMenuRadioItem
-                  key={status.value}
-                  value={status.value}
-                  className={status.color}
-                >
-                  <status.icon className="mr-2 h-4 w-4" />
-                  {status.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
+          <DropdownMenuRadioGroup
+            value={application.status}
+            onValueChange={handleStatusChange}
+          >
+            {applicationStatuses.map((status) => (
+              <DropdownMenuRadioItem
+                key={status.value}
+                value={status.value}
+                className={status.color}
+                disabled={status.value === application.status}
+              >
+                <status.icon className="mr-2 h-4 w-4" />
+                {status.label}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
       </DropdownMenuContent>

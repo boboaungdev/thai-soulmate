@@ -7,7 +7,7 @@ import {
   Printer,
   Send,
   Loader2,
-  Check,
+  CheckCircle2,
   ChevronsUpDown,
   FileEdit,
 } from "lucide-react"
@@ -217,7 +217,7 @@ function SendProfileDialog({
                             }}
                             className="flex items-center gap-3"
                           >
-                            <Check
+                            <CheckCircle2
                               className={cn(
                                 "h-4 w-4",
                                 selectedUserIdToSend === u.id
@@ -366,7 +366,7 @@ export function DataTableRowActions<TData>({
                   {isUpdatingStatus && user.status !== status ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
-                    <Check
+                    <CheckCircle2
                       className={cn(
                         "mr-2 h-4 w-4",
                         user.status === status ? "opacity-100" : "opacity-0"

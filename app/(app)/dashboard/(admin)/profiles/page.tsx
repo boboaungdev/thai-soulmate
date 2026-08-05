@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { VisibilityState } from "@tanstack/react-table"
 
+import { useProfileStore } from "@/stores/profile-store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -12,32 +12,12 @@ import { DataTable } from "./data-table"
 
 export default function ProfilesPage() {
   const router = useRouter()
-  const [profiles, setProfiles] = useState<ProfileRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    nationality: false,
-    currentLocation: false,
-  })
-
-  const fetchProfiles = useCallback(async () => {
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/profiles`)
-      if (!response.ok) {
-        throw new Error("Failed to fetch profiles")
-      }
-      const data = await response.json()
-      setProfiles(data.data)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  const forceFetch = useCallback(async () => {
-    await fetchProfiles()
-  }, [fetchProfiles])
+  const {
+    profiles,
+    loading,
+    columnVisibility,
+    actions: { fetchProfiles, forceFetchProfiles, setColumnVisibility },
+  } = useProfileStore()
 
   useEffect(() => {
     void fetchProfiles()
@@ -45,11 +25,11 @@ export default function ProfilesPage() {
 
   useEffect(() => {
     const handleUpdated = () => {
-      void forceFetch()
+      void forceFetchProfiles()
     }
     window.addEventListener("profile-updated", handleUpdated)
     return () => window.removeEventListener("profile-updated", handleUpdated)
-  }, [forceFetch])
+  }, [forceFetchProfiles])
 
   const handleRowClick = (profile: ProfileRow) => {
     router.push(`/dashboard/profiles/${profile.id}`)
@@ -92,7 +72,7 @@ export default function ProfilesPage() {
         </div>
       </div>
 
-      {!loading && profiles.length === 0 ? (
+      {!loading && profiles?.length === 0 ? (
         <Card>
           <CardContent className="p-6 text-center text-muted-foreground">
             No profiles found.
@@ -100,12 +80,12 @@ export default function ProfilesPage() {
         </Card>
       ) : (
         <DataTable
-          data={profiles}
+          data={profiles || []}
           columns={columns}
           onRowClick={handleRowClick}
           columnVisibility={columnVisibility}
           setColumnVisibility={setColumnVisibility}
-          forceFetch={forceFetch}
+          forceFetch={forceFetchProfiles}
         />
       )}
     </main>

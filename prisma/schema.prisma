@@ -104,43 +104,13 @@ model ApplicationForm {
 }
 
 model Profile {
-  id       String @id @default(cuid())
-  customId Int    @unique
+  id String @id @default(cuid())
 
   applicationFormId String          @unique
   applicationForm   ApplicationForm @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
 
   status ProfileStatus @default(PENDING)
-
-  nickname   String?
-  occupation String?
-  education  String?
-
-  height         String?
-  weight         String?
-  religion       String?
-  thaiFluency    Int?
-  englishFluency Int?
-
-  personality         String[]
-  about               String?
-  lookingForQualities String[]
-
-  smoking   String?
-  drinking  String?
-  exercise  String?
-  interests String[]
-
-  lookingFor           String[]
-  idealPartnerAgeRange String?
-
-  headshot        String?
-  fullLength      String?
-  casualLifestyle String?
-
-  notes Note[]
-
-  membership Membership?
+  notes  Note[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -156,9 +126,6 @@ model Membership {
 
   applicationFormId String?          @unique
   applicationForm   ApplicationForm? @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
-
-  profileId String?  @unique
-  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   plan MembershipPlan @default(NONE)
 

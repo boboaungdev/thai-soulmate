@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
-import { StickyNote, Clock, CheckCircle } from "lucide-react"
+import { StickyNote, Clock, CheckCircle2 } from "lucide-react"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
@@ -186,7 +186,7 @@ export const columns: ColumnDef<ProfileRow>[] = [
           {status === "PENDING" ? (
             <Clock className="h-4 w-4" />
           ) : status === "COMPLETED" ? (
-            <CheckCircle className="h-4 w-4" />
+            <CheckCircle2 className="h-4 w-4" />
           ) : null}
           {status}
         </Badge>

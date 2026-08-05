@@ -8,8 +8,9 @@ import {
   Send,
   Loader2,
   CheckCircle2,
-  ChevronsUpDown,
+  ChevronsUpDown,CircleCheck,
   FileEdit,
+  Clock,
 } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { useRouter } from "next/navigation"
@@ -357,25 +358,38 @@ export function DataTableRowActions<TData>({
               <span>Change Status</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {Object.values(ProfileStatus).map((status) => (
-                <DropdownMenuItem
-                  key={status}
-                  onClick={() => handleStatusChange(status)}
-                  disabled={isUpdatingStatus || user.status === status}
-                >
-                  {isUpdatingStatus && user.status !== status ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <CheckCircle2
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        user.status === status ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                  )}
-                  {status}
-                </DropdownMenuItem>
-              ))}
+              {Object.values(ProfileStatus).map((status) => {
+                let IconComponent
+                switch (status) {
+                  case ProfileStatus.PENDING:
+                    IconComponent = Clock
+                    break
+                  case ProfileStatus.COMPLETED:
+                    IconComponent = CheckCircle2
+                    break
+                  default:
+                    IconComponent = ChevronsUpDown
+                }
+                return (
+                  <DropdownMenuItem
+                    key={status}
+                    onClick={() => handleStatusChange(status)}
+                    disabled={isUpdatingStatus || user.status === status}
+                  >
+                    {isUpdatingStatus && user.status !== status ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <IconComponent
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          user.status === status ? "opacity-100" : "opacity-40"
+                        )}
+                      />
+                    )}
+                    {status}
+                  </DropdownMenuItem>
+                )
+              })}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
           <DropdownMenuItem onClick={handleSendProfile}>

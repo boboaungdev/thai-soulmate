@@ -176,9 +176,9 @@ export const columns: ColumnDef<ProfileRow>[] = [
         <Badge
           variant={
             status === "COMPLETED"
-              ? "default"
+              ? "success"
               : status === "PENDING"
-                ? "outline"
+                ? "pending"
                 : "secondary"
           }
           className="flex w-[120px] items-center justify-center gap-1.5"

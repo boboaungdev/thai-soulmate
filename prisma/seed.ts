@@ -11,26 +11,20 @@ async function main() {
       data: {
         prefix: personal.prefix,
         name: personal.name,
-
         dob: new Date(personal.dob),
-
         gender: personal.gender,
         nationality: personal.nationality,
         currentLocation: personal.currentLocation,
-
         email: personal.email,
-
         phoneCountry: personal.phone.substring(0, 3),
         phone: personal.phone,
-
         source: "Facebook",
-
         status: "RECEIVED",
       },
     })
   }
 
-  // 2. Seed ApplicationForm + Profile
+  // 2. Seed ApplicationForm + Membership + Profile
   for (const form of applicationForms) {
     const application = await prisma.applicationForm.create({
       data: {
@@ -58,49 +52,16 @@ async function main() {
               },
             }
           : undefined,
+
+        profile: {
+          create: {
+            status: "PENDING",
+          },
+        },
       },
     })
 
-    await prisma.profile.create({
-      data: {
-        applicationFormId: application.id,
-        customId: application.customId,
-
-        status: "PENDING",
-
-        nickname: form.personalDetails.nickname,
-
-        occupation: form.career.occupation,
-        education: form.career.education,
-
-        height: form.appearance.height,
-        weight: form.appearance.weight,
-        religion: form.appearance.religion,
-
-        thaiFluency: form.appearance.thaiFluency?.[0],
-        englishFluency: form.appearance.englishFluency?.[0],
-
-        personality: form.personality.personality ?? [],
-        about: form.personality.about,
-        lookingForQualities: form.personality.lookingForQualities ?? [],
-
-        smoking: form.lifestyle.smoking,
-        drinking: form.lifestyle.drinking,
-        exercise: form.lifestyle.exercise,
-
-        interests: form.lifestyle.interests ?? [],
-
-        lookingFor: form.relationshipGoals.lookingFor ?? [],
-
-        idealPartnerAgeRange: form.idealPartner.ageRange,
-
-        headshot: form.photos.headshot,
-        fullLength: form.photos.fullLength,
-        casualLifestyle: form.photos.casualLifestyle,
-      },
-    })
-
-    console.log(`Created profile ${application.customId}`)
+    console.log(`Created application ${application.customId}`)
   }
 
   console.log(`Imported ${applicationForms.length} forms`)

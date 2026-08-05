@@ -79,9 +79,7 @@ function SendProfileDialog({
     async function fetchSendToUsers() {
       setIsFetchingSendToUsers(true)
       try {
-        const targetGender =
-          personalDetails?.gender === "Male" ? "Female" : "Male"
-        const response = await fetch(`/api/profiles?gender=${targetGender}`)
+        const response = await fetch(`/api/profiles`)
         if (!response.ok) {
           throw new Error("Failed to fetch users")
         }
@@ -136,7 +134,7 @@ function SendProfileDialog({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        if (open) e.stopPropagation();
+        if (open) e.stopPropagation()
         onOpenChange(open)
         if (!open) {
           setSelectedUserIdToSend(null)
@@ -144,7 +142,10 @@ function SendProfileDialog({
         }
       }}
     >
-      <DialogContent className="sm:max-w-[425px]" onClick={(e) => e.stopPropagation()}>
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onClick={(e) => e.stopPropagation()}
+      >
         <DialogHeader>
           <DialogTitle>Send Profile</DialogTitle>
           <DialogDescription>
@@ -253,7 +254,7 @@ function SendProfileDialog({
             variant="outline"
             disabled={isSendingProfile}
             onClick={(e) => {
-              e.stopPropagation();
+              e.stopPropagation()
               onOpenChange(false)
               setSelectedUserIdToSend(null)
               setSelectedUserToSend(null)

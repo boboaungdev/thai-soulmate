@@ -4,20 +4,19 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
-import { StickyNote } from "lucide-react"
+import { StickyNote, Clock, CheckCircle } from "lucide-react"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { ApplicationForm } from "@/types/application-form"
 import { calculateAge, formatDateTime } from "@/lib/date"
+import { Profile } from "@/lib/generated/prisma/client"
 
-// The data is now a flattened combination of Profile and ApplicationForm
-export type ProfileRow = ApplicationForm & {
-  status: ProfileStatus
-  notes?: {
-    id: string
-  }[]
-}
+export type ProfileRow = Profile &
+  Pick<
+    ApplicationForm,
+    "personalDetails" | "photos" | "membership" | "notes" | "customId"
+  >
 
 export const columns: ColumnDef<ProfileRow>[] = [
   {
@@ -174,7 +173,21 @@ export const columns: ColumnDef<ProfileRow>[] = [
     cell: ({ row }) => {
       const status = row.original.status
       return (
-        <Badge variant={status === "COMPLETED" ? "default" : "secondary"}>
+        <Badge
+          variant={
+            status === "COMPLETED"
+              ? "default"
+              : status === "PENDING"
+                ? "outline"
+                : "secondary"
+          }
+          className="flex w-[120px] items-center justify-center gap-1.5"
+        >
+          {status === "PENDING" ? (
+            <Clock className="h-4 w-4" />
+          ) : status === "COMPLETED" ? (
+            <CheckCircle className="h-4 w-4" />
+          ) : null}
           {status}
         </Badge>
       )

@@ -73,10 +73,9 @@ function SendProfileDialog({
   const [isSendingProfile, setIsSendingProfile] = useState(false)
   const [isComboboxOpen, setIsComboboxOpen] = useState(false)
 
-  const personalDetails =
-    typeof user.personalDetails === "string"
-      ? JSON.parse(user.personalDetails)
-      : user.personalDetails || {}
+  const personalDetails = user.personalDetails || {}
+  const toPersonalDetails = selectedUserToSend?.personalDetails || {}
+  const toPhotos = selectedUserToSend?.photos || {}
 
   useEffect(() => {
     if (!isOpen || !user) return
@@ -113,8 +112,8 @@ function SendProfileDialog({
         },
         body: JSON.stringify({
           profileId: user?.id,
-          profile: personalDetails,
-          to: selectedUserToSend?.personalDetails,
+          profile: { ...personalDetails, photos: user.photos },
+          to: { ...toPersonalDetails, photos: toPhotos },
         }),
       })
 
@@ -138,7 +137,7 @@ function SendProfileDialog({
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={open => {
+      onOpenChange={(open) => {
         onOpenChange(open)
         if (!open) {
           setSelectedUserIdToSend(null)
@@ -148,7 +147,7 @@ function SendProfileDialog({
     >
       <DialogContent
         className="sm:max-w-[425px]"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <DialogHeader>
           <DialogTitle>Send Profile</DialogTitle>
@@ -176,11 +175,11 @@ function SendProfileDialog({
                     ? "Loading users..."
                     : selectedUserIdToSend
                       ? `${
-                          sendToUsers.find(u => u.id === selectedUserIdToSend)
-                            ?.personalDetails?.prefix
+                          sendToUsers.find((u) => u.id === selectedUserIdToSend)
+                            ?.personalDetails.prefix
                         } ${
-                          sendToUsers.find(u => u.id === selectedUserIdToSend)
-                            ?.personalDetails?.name
+                          sendToUsers.find((u) => u.id === selectedUserIdToSend)
+                            ?.personalDetails.name
                         }`
                       : personalDetails?.gender === "Male"
                         ? "Select a female"
@@ -198,9 +197,9 @@ function SendProfileDialog({
                       {isFetchingSendToUsers ? "Loading..." : "No users found."}
                     </CommandEmpty>
                     <CommandGroup>
-                      {sendToUsers.map(u => {
+                      {sendToUsers.map((u) => {
                         const userAge =
-                          u.personalDetails?.dob &&
+                          u.personalDetails.dob &&
                           !isNaN(new Date(u.personalDetails.dob).getTime())
                             ? new Date().getFullYear() -
                               new Date(u.personalDetails.dob).getFullYear()
@@ -208,8 +207,8 @@ function SendProfileDialog({
                         return (
                           <CommandItem
                             key={u.id}
-                            value={`${u.personalDetails?.prefix || ""} ${
-                              u.personalDetails?.name || ""
+                            value={`${u.personalDetails.prefix || ""} ${
+                              u.personalDetails.name || ""
                             } ${String(u.customId).padStart(4, "0")}`}
                             onSelect={() => {
                               setSelectedUserIdToSend(u.id)
@@ -229,12 +228,12 @@ function SendProfileDialog({
                             <Avatar className="h-8 w-8">
                               <AvatarImage src={u.photos?.headshot} />
                               <AvatarFallback>
-                                {u.personalDetails?.name?.charAt(0)}
+                                {u.personalDetails.name?.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
                               <span className="font-medium">
-                                {u.personalDetails.prefix}{" "}
+                                {u.personalDetails.prefix || ""}{" "}
                                 {u.personalDetails?.name}
                               </span>
                               <span className="text-xs text-muted-foreground">
@@ -257,7 +256,7 @@ function SendProfileDialog({
             type="button"
             variant="outline"
             disabled={isSendingProfile}
-            onClick={e => {
+            onClick={(e) => {
               e.stopPropagation()
               onOpenChange(false)
               setSelectedUserIdToSend(null)
@@ -337,7 +336,7 @@ export function DataTableRowActions<TData>({
           <Button
             variant="ghost"
             className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-            onClick={event => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
           >
             <MoreHorizontal className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
@@ -346,7 +345,7 @@ export function DataTableRowActions<TData>({
         <DropdownMenuContent
           align="end"
           className="w-[180px]"
-          onClick={event => event.stopPropagation()}
+          onClick={(event) => event.stopPropagation()}
         >
           <DropdownMenuItem onClick={handleViewProfile}>
             <Eye className="mr-2 h-4 w-4" />
@@ -358,7 +357,7 @@ export function DataTableRowActions<TData>({
               <span>Change Status</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {Object.values(ProfileStatus).map(status => (
+              {Object.values(ProfileStatus).map((status) => (
                 <DropdownMenuItem
                   key={status}
                   onClick={() => handleStatusChange(status)}

@@ -869,9 +869,6 @@ export default function ProfilesDetailPage() {
       : "N/A"
   const mainPhoto =
     photos?.headshot || Object.values(photos || {}).find((p) => p)
-  const galleryPhotos = Object.entries(photos || {})
-    .filter(([, url]) => url) // Filter out entries with null/undefined URLs
-    .map(([key, url]) => ({ key, url: url as string })) // Map to an array of objects
 
   const handleCopyId = () => {
     const idToCopy = String(profile.applicationForm.customId).padStart(4, "0")

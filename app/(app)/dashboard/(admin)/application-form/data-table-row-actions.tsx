@@ -62,26 +62,26 @@ export function DataTableRowActions<TData>({
   }
 
   const handleStatusChange = async (status: string) => {
-    try {
-      const response = await fetch(`/api/application-form/${application.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      })
+    const promise = fetch(`/api/application-form/${application.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    })
 
-      if (response.ok) {
-        toast.success("Application status updated.")
+    toast.promise(promise, {
+      loading: "Updating application status...",
+      success: async (response) => {
+        if (!response.ok) throw new Error("Failed to update status.")
         window.dispatchEvent(new Event("application-form-updated"))
-        router.refresh()
-      } else {
-        const result = await response.json()
-        toast.error(result.message || "Failed to update status.")
-      }
-    } catch {
-      toast.error("An unexpected error occurred while updating status.")
-    }
+        return "Application status updated."
+      },
+      error: async (error) => {
+        const result = await error.response?.json()
+        return result?.message || result?.error || "Failed to update status."
+      },
+    })
   }
 
   const handleAddNote = async () => {

@@ -107,16 +107,60 @@ export async function PATCH(
   }
 ) {
   try {
-    const params = await context.params
-    const { id } = params
-    const { status } = await req.json()
+    const { id } = await context.params
+    const body = await req.json()
+    const { status, about } = body
 
-    const updatedProfile = await prisma.profile.update({
+    if (status === undefined && about === undefined) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "No fields to update provided.",
+        },
+        { status: 400 }
+      )
+    }
+
+    const profile = await prisma.profile.findUnique({
+      where: { id },
+      include: { applicationForm: true },
+    })
+
+    if (!profile) {
+      return NextResponse.json(
+        { success: false, message: "Profile not found" },
+        { status: 404 }
+      )
+    }
+
+    const profileUpdateData: { status?: any } = {}
+    if (status) {
+      profileUpdateData.status = status
+    }
+
+    if (about !== undefined) {
+      const personality = parseJSONField(profile.applicationForm.personality)
+      personality.about = about
+
+      await prisma.applicationForm.update({
+        where: { id: profile.applicationFormId },
+        data: { personality },
+      })
+    }
+
+    if (Object.keys(profileUpdateData).length > 0) {
+      await prisma.profile.update({
+        where: { id },
+        data: profileUpdateData,
+      })
+    }
+
+    const updatedProfile = await prisma.profile.findUnique({
       where: {
         id,
       },
-      data: {
-        status,
+      include: {
+        applicationForm: true,
       },
     })
 
@@ -125,12 +169,12 @@ export async function PATCH(
       profile: updatedProfile,
     })
   } catch (error) {
-    console.error("UPDATE PROFILE STATUS ERROR:", error)
+    console.error("UPDATE PROFILE ERROR:", error)
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to update profile status",
+        message: "Failed to update profile",
       },
       {
         status: 500,

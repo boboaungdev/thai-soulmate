@@ -51,16 +51,32 @@ export function EditProfileSheet({
   const age = calculateAge(personalDetails?.dob)
 
   const handleSaveChanges = async () => {
+    if (!profile) return
+
     setIsSaving(true)
-    // Here you would typically make an API call to save the changes.
-    // For now, we'll just simulate it.
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    console.log("Saving changes for profile:", profile.id, { about })
-    toast.success("Profile updated successfully!")
-    setIsSaving(false)
-    onOpenChange(false)
-    // You might want to trigger a data refresh here
-    window.dispatchEvent(new Event("profile-updated"))
+    try {
+      const response = await fetch(`/api/profiles/${profile.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ about }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update profile")
+      }
+
+      toast.success("Profile updated successfully!")
+      onOpenChange(false)
+      // You might want to trigger a data refresh here
+      window.dispatchEvent(new Event("profile-updated"))
+    } catch (error) {
+      console.error("Failed to save profile:", error)
+      toast.error("Failed to update profile. Please try again.")
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (

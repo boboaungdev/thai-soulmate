@@ -21,12 +21,14 @@ const payments: Payment[] = [
     plan: "1 Month",
     amount: 29900,
     notes: [{ id: "1" }],
+    startsAt: "2024-07-30",
+    expiresAt: "2024-08-30",
   },
   {
     id: "2",
     customId: 2,
     name: "Jane Smith",
-    gender: "Female",
+    gender: "Male",
     email: "jane.smith@example.com",
     phone: "(+66) 987654321",
     date: "2024-07-29 10:15",
@@ -35,6 +37,8 @@ const payments: Payment[] = [
     plan: "3 Months",
     amount: 39900,
     notes: [],
+    startsAt: "2024-07-29",
+    expiresAt: "2024-10-29",
   },
   {
     id: "3",
@@ -49,12 +53,14 @@ const payments: Payment[] = [
     plan: "3 Months",
     amount: 39900,
     notes: [{ id: "1" }, { id: "2" }],
+    startsAt: "2024-07-28",
+    expiresAt: "2024-10-28",
   },
   {
     id: "4",
     customId: 4,
     name: "Alice Johnson",
-    gender: "Female",
+    gender: "Male",
     email: "alice.j@example.com",
     phone: "(+44) 1112223333",
     date: "2024-07-27 14:30",
@@ -63,6 +69,8 @@ const payments: Payment[] = [
     plan: "6 Months",
     amount: 49900,
     notes: [],
+    startsAt: "2024-07-27",
+    expiresAt: "2025-01-27",
   },
   {
     id: "5",
@@ -78,6 +86,8 @@ const payments: Payment[] = [
     plan: "1 Month",
     amount: 29900,
     notes: [],
+    startsAt: "2024-07-26",
+    expiresAt: "2024-08-26",
   },
 ]
 

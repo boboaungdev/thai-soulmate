@@ -24,6 +24,8 @@ export type Payment = {
   plan: string
   amount: number
   notes: { id: string }[]
+  startsAt?: string
+  expiresAt?: string
 }
 
 export const columns: ColumnDef<Payment>[] = [
@@ -106,6 +108,36 @@ export const columns: ColumnDef<Payment>[] = [
       return <div className="font-medium">{formatted}</div>
     },
   },
+
+  {
+    accessorKey: "startsAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Starts At" />
+    ),
+    cell: ({ row }) => {
+      const startsAt = row.original.startsAt
+      if (!startsAt) return <div>-</div>
+      const date = new Date(startsAt)
+      const formattedDate = format(date, "d MMM yyyy")
+
+      return <div>{formattedDate}</div>
+    },
+  },
+  {
+    accessorKey: "expiresAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Expires At" />
+    ),
+    cell: ({ row }) => {
+      const expiresAt = row.original.expiresAt
+      if (!expiresAt) return <div>-</div>
+      const date = new Date(expiresAt)
+      const formattedDate = format(date, "d MMM yyyy")
+
+      return <div>{formattedDate}</div>
+    },
+  },
+
   {
     accessorKey: "email",
     header: ({ column }) => (

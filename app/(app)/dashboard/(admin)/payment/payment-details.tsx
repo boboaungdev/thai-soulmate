@@ -110,6 +110,18 @@ export function PaymentDetails({ payment, onClose }: PaymentDetailsProps) {
                 label="Payment Date"
                 value={format(new Date(payment.date), "d MMM yyyy, HH:mm")}
               />
+              {payment.startsAt && (
+                <DetailRowNoIcon
+                  label="Starts At"
+                  value={format(new Date(payment.startsAt), "d MMM yyyy")}
+                />
+              )}
+              {payment.expiresAt && (
+                <DetailRowNoIcon
+                  label="Expires At"
+                  value={format(new Date(payment.expiresAt), "d MMM yyyy")}
+                />
+              )}
               <DetailRowNoIcon label="Notes" value={payment.notes.length} />
             </div>
           </div>

@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 
 import { columns, Payment } from "./columns"
 import { DataTable } from "./data-table"
+import { PaymentDetails } from "./payment-details"
 
 const payments: Payment[] = [
   {
@@ -45,7 +47,7 @@ const payments: Payment[] = [
     status: "cancelled",
     avatar: "https://randomuser.me/api/portraits/women/5.jpg",
     plan: "3 Months",
-   amount: 39900,
+    amount: 39900,
     notes: [{ id: "1" }, { id: "2" }],
   },
   {
@@ -80,26 +82,43 @@ const payments: Payment[] = [
 ]
 
 export default function PaymentPage() {
-  return (
-    <main className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Payments</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage customer payments.
-          </p>
-        </div>
-      </div>
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
 
-      {payments.length === 0 ? (
-        <Card>
-          <CardContent className="p-6 text-center text-muted-foreground">
-            No payments found.
-          </CardContent>
-        </Card>
-      ) : (
-        <DataTable data={payments} columns={columns} />
-      )}
-    </main>
+  const handleRowClick = (payment: Payment) => {
+    setSelectedPayment(payment)
+  }
+
+  const handleCloseDetails = () => {
+    setSelectedPayment(null)
+  }
+
+  return (
+    <>
+      <main className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
+        <div className="flex items-center justify-between space-y-2">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Payments</h1>
+            <p className="text-sm text-muted-foreground">
+              Manage customer payments.
+            </p>
+          </div>
+        </div>
+
+        {payments.length === 0 ? (
+          <Card>
+            <CardContent className="p-6 text-center text-muted-foreground">
+              No payments found.
+            </CardContent>
+          </Card>
+        ) : (
+          <DataTable
+            data={payments}
+            columns={columns}
+            onRowClick={handleRowClick}
+          />
+        )}
+      </main>
+      <PaymentDetails payment={selectedPayment} onClose={handleCloseDetails} />
+    </>
   )
 }

@@ -171,6 +171,11 @@ export const columns: ColumnDef<Payment>[] = [
 
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row, table }) => {
+      const { onRowClick } = table.options.meta as {
+        onRowClick: (row: Payment) => void
+      }
+      return <DataTableRowActions row={row} onViewDetails={onRowClick} />
+    },
   },
 ]

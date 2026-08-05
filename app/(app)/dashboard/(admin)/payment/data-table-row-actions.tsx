@@ -9,7 +9,6 @@ import {
   XCircle,
 } from "lucide-react"
 import { Row } from "@tanstack/react-table"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -30,6 +29,7 @@ import { Payment } from "./columns"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
+  onViewDetails: (item: TData) => void
 }
 
 const paymentStatuses = [
@@ -61,15 +61,9 @@ const paymentStatuses = [
 
 export function DataTableRowActions<TData>({
   row,
+  onViewDetails,
 }: DataTableRowActionsProps<TData>) {
-  const router = useRouter()
   const payment = row.original as Payment
-
-  const goToDetails = () => {
-    // Navigate to a payment details page if it exists
-    // router.push(`/dashboard/payment/${payment.id}`)
-    toast.info("Drill-down functionality is not yet implemented for this page.")
-  }
 
   const handleStatusChange = async (status: string) => {
     toast.info(
@@ -94,7 +88,7 @@ export function DataTableRowActions<TData>({
         className="w-[180px]"
         onClick={(event) => event.stopPropagation()}
       >
-        <DropdownMenuItem onClick={goToDetails}>
+        <DropdownMenuItem onClick={() => onViewDetails(row.original)}>
           <Eye className="mr-2 h-4 w-4" />
           View details
         </DropdownMenuItem>

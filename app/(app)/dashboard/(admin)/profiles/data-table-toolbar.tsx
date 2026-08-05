@@ -12,11 +12,19 @@ import {
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { DataTableViewOptions } from "./data-table-view-options"
-import { MembershipPlan } from "@/lib/generated/prisma/enums"
+import {
+  MembershipPlan,
+  ProfileStatus,
+} from "@/lib/generated/prisma/enums"
 
 const membershipPlans = Object.values(MembershipPlan).map(plan => ({
   label: plan.replace(/_/g, " "), // Replace underscores with spaces for readability
   value: plan,
+}))
+
+const statuses = Object.values(ProfileStatus).map(status => ({
+  label: status.replace(/_/g, " "),
+  value: status,
 }))
 
 interface DataTableToolbarProps<TData> {
@@ -52,6 +60,13 @@ export function DataTableToolbar<TData>({
               { value: "Male", label: "Male" },
               { value: "Female", label: "Female" },
             ]}
+          />
+        )}
+        {table.getColumn("status") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("status")}
+            title="Status"
+            options={statuses}
           />
         )}
         {table.getColumn("plan") && (

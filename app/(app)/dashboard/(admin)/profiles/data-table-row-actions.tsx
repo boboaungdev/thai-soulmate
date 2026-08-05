@@ -134,7 +134,6 @@ function SendProfileDialog({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        if (open) e.stopPropagation()
         onOpenChange(open)
         if (!open) {
           setSelectedUserIdToSend(null)

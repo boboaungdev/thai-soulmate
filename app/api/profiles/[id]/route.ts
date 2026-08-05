@@ -92,7 +92,8 @@ export async function PATCH(
   }
 ) {
   try {
-    const { id } = context.params
+    const params = await context.params
+    const { id } = params
     const { status } = await req.json()
 
     const updatedProfile = await prisma.profile.update({

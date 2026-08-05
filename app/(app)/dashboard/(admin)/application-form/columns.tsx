@@ -63,7 +63,7 @@ export const columns: ColumnDef<ApplicationRow>[] = [
       const nickname = applicant.personalDetails?.nickname
 
       return (
-        <div className="flex min-w-[220px] items-center gap-3">
+        <div className="flex max-w-[200px] items-center gap-3 truncate">
           <Avatar className="h-10 w-10">
             <AvatarImage
               src={applicant.photos?.headshot}

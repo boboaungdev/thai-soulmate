@@ -56,7 +56,7 @@ export const columns: ColumnDef<ProfileRow>[] = [
       const nickname = applicant?.personalDetails?.nickname
 
       return (
-        <div className="flex min-w-[220px] items-center gap-3">
+        <div className="flex max-w-[200px] items-center gap-3 truncate">
           <Avatar className="h-10 w-10">
             <AvatarImage
               src={applicant.photos?.headshot}
@@ -66,7 +66,7 @@ export const columns: ColumnDef<ProfileRow>[] = [
             <AvatarFallback>{name.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">
+            <div className="truncate font-medium">
               {applicant.personalDetails?.prefix} {name}
             </div>
             <div className="text-xs text-muted-foreground">

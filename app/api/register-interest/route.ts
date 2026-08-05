@@ -69,7 +69,30 @@ export async function POST(req: Request) {
       otherSource: validatedData.otherSource,
     }
 
-    // Save registration to database
+    // Send confirmation email to user first
+    const { data: userData, error: userError } = await resend.emails.send({
+      from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
+      to: validatedData.email,
+      subject: `Thank you for your interest in ${APP_INFO.name}!`,
+      react: UserConfirmationEmail(validatedData),
+    })
+
+    if (userError) {
+      console.error("User email failed:", userError)
+
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "We couldn't send your confirmation email. Please check your email address and try again.",
+        },
+        { status: 500 }
+      )
+    }
+
+    console.log("User email sent:", userData?.id)
+
+    // Save registration after email succeeds
     try {
       await prisma.registerInterest.upsert({
         where: {
@@ -87,40 +110,36 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          error: "Failed to save registration.",
+          error: "Email sent, but failed to save your registration.",
         },
         { status: 500 }
       )
     }
 
-    try {
-      await Promise.all([
-        resend.emails.send({
-          from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
-          to: [CONTACT.email],
-          subject: `New Interest Registration: ${validatedData.name}`,
-          react: AdminNotificationEmail({
-            ...validatedData,
-            age: calculateAge(validatedData.dob),
-            location: validatedData.currentLocation,
-          }),
-        }),
-        resend.emails.send({
-          from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
-          to: validatedData.email,
-          subject: `Thank you for your interest in ${APP_INFO.name}!`,
-          react: UserConfirmationEmail(validatedData),
-        }),
-      ])
-    } catch (emailError) {
-      console.error("Email error:", emailError)
+    // Send admin notification last
+    const { data: adminData, error: adminError } = await resend.emails.send({
+      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+      to: [CONTACT.email],
+      subject: `New Interest Registration: ${validatedData.name}`,
+      react: AdminNotificationEmail({
+        ...validatedData,
+        age: calculateAge(validatedData.dob),
+        location: validatedData.currentLocation,
+      }),
+    })
 
-      // Registration is already saved, so just report the email issue.
-      return NextResponse.json({
-        success: true,
-        warning:
-          "Your registration has been received, but we couldn't send the confirmation email.",
-      })
+    console.log("Admin email sent:", adminData?.id)
+
+    if (adminError) {
+      console.error("Admin email failed:", adminError)
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Registration completed, but admin notification failed.",
+        },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({
@@ -160,7 +179,11 @@ export async function GET() {
           },
         },
       },
+      orderBy: {
+        updatedAt: "desc",
+      },
     })
+
     return NextResponse.json(registerInterests)
   } catch (error) {
     console.error(error)

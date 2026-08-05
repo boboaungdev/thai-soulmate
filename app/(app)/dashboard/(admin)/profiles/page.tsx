@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { VisibilityState } from "@tanstack/react-table"
 
@@ -19,7 +19,7 @@ export default function ProfilesPage() {
     currentLocation: false,
   })
 
-  const fetchProfiles = async () => {
+  const fetchProfiles = useCallback(async () => {
     setLoading(true)
     try {
       const response = await fetch(`/api/profiles`)
@@ -33,15 +33,23 @@ export default function ProfilesPage() {
     } finally {
       setLoading(false)
     }
-  }
-
-  useEffect(() => {
-    fetchProfiles()
   }, [])
 
-  const forceFetch = async () => {
+  const forceFetch = useCallback(async () => {
     await fetchProfiles()
-  }
+  }, [fetchProfiles])
+
+  useEffect(() => {
+    void fetchProfiles()
+  }, [fetchProfiles])
+
+  useEffect(() => {
+    const handleUpdated = () => {
+      void forceFetch()
+    }
+    window.addEventListener("profile-updated", handleUpdated)
+    return () => window.removeEventListener("profile-updated", handleUpdated)
+  }, [forceFetch])
 
   const handleRowClick = (profile: ProfileRow) => {
     router.push(`/dashboard/profiles/${profile.id}`)

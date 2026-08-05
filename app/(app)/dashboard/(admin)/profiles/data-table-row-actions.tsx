@@ -319,7 +319,7 @@ export function DataTableRowActions<TData>({
       loading: "Updating status...",
       success: () => {
         setIsUpdatingStatus(false)
-        router.refresh()
+        window.dispatchEvent(new Event("profile-updated"))
         return "Status updated successfully"
       },
       error: () => {

@@ -58,6 +58,21 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { ProfileStatus } from "@/lib/generated/prisma/enums"
 import { ProfileRow } from "./columns"
 
+const profileStatuses = [
+  {
+    value: ProfileStatus.PENDING,
+    label: "Pending",
+    icon: Clock,
+    color: "text-yellow-500",
+  },
+  {
+    value: ProfileStatus.COMPLETED,
+    label: "Completed",
+    icon: CheckCircle2,
+    color: "text-green-500",
+  },
+]
+
 function SendProfileDialog({
   isOpen,
   onOpenChange,
@@ -371,38 +386,25 @@ export function DataTableRowActions<TData>({
               <span>Change Status</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {Object.values(ProfileStatus).map((status) => {
-                let IconComponent
-                switch (status) {
-                  case ProfileStatus.PENDING:
-                    IconComponent = Clock
-                    break
-                  case ProfileStatus.COMPLETED:
-                    IconComponent = CheckCircle2
-                    break
-                  default:
-                    IconComponent = ChevronsUpDown
-                }
-                return (
-                  <DropdownMenuItem
-                    key={status}
-                    onClick={() => handleStatusChange(status)}
-                    disabled={isUpdatingStatus || user.status === status}
-                  >
-                    {isUpdatingStatus && user.status !== status ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <IconComponent
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          user.status === status ? "opacity-100" : "opacity-40"
-                        )}
-                      />
-                    )}
-                    {status}
-                  </DropdownMenuItem>
-                )
-              })}
+              {profileStatuses.map((status) => (
+                <DropdownMenuItem
+                  key={status.value}
+                  onClick={() => handleStatusChange(status.value)}
+                  disabled={isUpdatingStatus || user.status === status.value}
+                  className={cn(status.color)}
+                >
+                  {isUpdatingStatus && user.status !== status.value ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <status.icon
+                      className={cn("mr-2 h-4 w-4", {
+                        "opacity-40": user.status === status.value,
+                      })}
+                    />
+                  )}
+                  {status.label}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
           <DropdownMenuSeparator />

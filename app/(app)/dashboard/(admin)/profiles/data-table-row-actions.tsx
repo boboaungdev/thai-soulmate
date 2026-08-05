@@ -146,6 +146,7 @@ function SendProfileDialog({
       }
     } catch (error) {
       toast.error("Failed to send")
+      console.log(error)
     } finally {
       setIsSendingProfile(false)
       setSelectedUserIdToSend(null)

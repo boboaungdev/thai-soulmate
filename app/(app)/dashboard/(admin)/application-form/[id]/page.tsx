@@ -372,7 +372,10 @@ function NotesSection({
                       </DropdownMenu>
                     </div>
                     <div className="mt-1 text-xs text-muted-foreground">
-                      Created: {formatDateTime(note.createdAt)}
+                      <div>Created: {formatDateTime(note.createdAt)}</div>
+                      {note.updatedAt && note.updatedAt !== note.createdAt && (
+                        <div>Updated: {formatDateTime(note.updatedAt)}</div>
+                      )}
                     </div>
                     <p className="mt-2 text-sm whitespace-pre-wrap">
                       {note.message}

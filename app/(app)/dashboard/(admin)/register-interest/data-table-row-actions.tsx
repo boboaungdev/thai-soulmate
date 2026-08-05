@@ -179,7 +179,7 @@ export function DataTableRowActions<TData>({
             <DialogHeader>
               <DialogTitle>Add Note</DialogTitle>
               <DialogDescription>
-                Add a note to this record. Click save when you&apos;re done.
+                Add a note to this interest record.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-2 py-4">

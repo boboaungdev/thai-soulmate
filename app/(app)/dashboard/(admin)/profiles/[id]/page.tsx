@@ -1,12 +1,22 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
 import { ApplicationForm } from "@/types/application-form"
-import { Profile as PrismaProfile } from "@/lib/generated/prisma/client"
+import {
+  Note,
+  Profile as PrismaProfile,
+  User as PrismaUser,
+} from "@/lib/generated/prisma/client"
 import { Button } from "@/components/ui/button"
 import {
   ChevronLeft,
@@ -30,6 +40,12 @@ import {
   Venus,
   Home,
   Send,
+  StickyNote,
+  Pencil,
+  Trash2,
+  Shield,
+  Users2,
+  User2 as UserIcon,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -45,6 +61,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { FaWhatsapp } from "react-icons/fa"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import {
   Dialog,
   DialogContent,
@@ -71,9 +97,23 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { useAuthStore } from "@/stores/auth-store"
+import { Textarea } from "@/components/ui/textarea"
+import { formatDateTime } from "@/lib/date"
+
+type NoteWithUser = Note & {
+  user: Pick<PrismaUser, "name" | "avatar" | "email" | "role">
+}
 
 interface Profile extends PrismaProfile {
   applicationForm: ApplicationForm
+  notes: NoteWithUser[]
+}
+
+const roleIcons: Record<string, React.ElementType> = {
+  ADMIN: Shield,
+  STAFF: Users2,
+  MEMBER: UserIcon,
 }
 
 const ProfileInfo = ({
@@ -290,6 +330,293 @@ const OverviewSection = ({ profile }: { profile: ApplicationForm }) => (
     <DetailsSection profile={profile} />
   </div>
 )
+
+function NotesSection({
+  profileId,
+  initialNotes,
+}: {
+  profileId: string
+  initialNotes: NoteWithUser[]
+}) {
+  const { user } = useAuthStore()
+  const [notes, setNotes] = useState<NoteWithUser[]>(initialNotes)
+  const [message, setMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [noteToDelete, setNoteToDelete] = useState<NoteWithUser | null>(null)
+  const [editingNote, setEditingNote] = useState<NoteWithUser | null>(null)
+  const [editedMessage, setEditedMessage] = useState("")
+
+  const router = useRouter()
+  const handleAddNote = async () => {
+    if (!user?.id) {
+      toast.error("You must be logged in to add a note.")
+      return
+    }
+
+    if (!message.trim()) {
+      toast.error("Please enter a note.")
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      const response = await fetch(`/api/notes/${profileId}/profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, userId: user.id }),
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setNotes([result.note, ...notes])
+        setMessage("")
+        toast.success("Note added successfully.")
+        router.refresh()
+      } else {
+        toast.error(result.error || "Failed to add note.")
+      }
+    } catch {
+      toast.error("An unexpected error occurred while adding the note.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleDeleteNote = async () => {
+    if (!noteToDelete) return
+
+    try {
+      const response = await fetch(`/api/notes/${noteToDelete.id}`, {
+        method: "DELETE",
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setNotes(notes.filter((note) => note.id !== noteToDelete.id))
+        toast.success("Note deleted successfully.")
+        router.refresh()
+      } else {
+        toast.error(result.error || "Failed to delete note.")
+      }
+    } catch {
+      toast.error("An unexpected error occurred while deleting the note.")
+    } finally {
+      setNoteToDelete(null)
+    }
+  }
+
+  const handleUpdateNote = async () => {
+    if (!editingNote || !editedMessage.trim()) return
+
+    setIsSubmitting(true)
+    try {
+      const response = await fetch(`/api/notes/${editingNote.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: editedMessage }),
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setNotes(
+          notes.map((note) => (note.id === editingNote.id ? result.note : note))
+        )
+        toast.success("Note updated successfully.")
+        router.refresh()
+      } else {
+        toast.error(result.error || "Failed to update note.")
+      }
+    } catch {
+      toast.error("An unexpected error occurred while updating the note.")
+    } finally {
+      setEditingNote(null)
+      setEditedMessage("")
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <>
+      <Card>
+        <CardHeader className="flex flex-row items-center gap-3">
+          <div className="text-muted-foreground">
+            <StickyNote />
+          </div>
+          <div>
+            <CardTitle className="text-gradient">Notes</CardTitle>
+            <CardDescription>
+              Internal notes for this application.
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid gap-2">
+            <Label htmlFor="new-application-note">Add note</Label>
+            <Textarea
+              id="new-application-note"
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              rows={4}
+              placeholder="Type your note here."
+              disabled={isSubmitting}
+            />
+            <div className="flex justify-end">
+              <Button
+                onClick={handleAddNote}
+                disabled={isSubmitting || !message.trim()}
+                className="btn-gradient"
+              >
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {isSubmitting ? "Adding..." : "Add Note"}
+              </Button>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {notes.length === 0 ? (
+              <div className="rounded-md border border-dashed p-4 text-center text-sm text-muted-foreground">
+                No notes yet.
+              </div>
+            ) : (
+              notes.map((note) => (
+                <div key={note.id} className="flex items-start gap-3">
+                  <Avatar>
+                    <AvatarImage src={note.user.avatar || undefined} />
+                    <AvatarFallback>{note.user.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold">{note.user.name}</p>
+                          <Badge
+                            variant="secondary"
+                            className="flex items-center gap-1"
+                          >
+                            {roleIcons[note.user.role] &&
+                              React.createElement(roleIcons[note.user.role], {
+                                className: "h-3 w-3",
+                              })}
+                            <span>{note.user.role}</span>
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {note.user.email}
+                        </p>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setEditingNote(note)
+                              setEditedMessage(note.message)
+                            }}
+                          >
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setNoteToDelete(note)}
+                            className="text-red-500"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      <div>Created: {formatDateTime(note.createdAt)}</div>
+                      {note.updatedAt && note.updatedAt !== note.createdAt && (
+                        <div>Updated: {formatDateTime(note.updatedAt)}</div>
+                      )}
+                    </div>
+                    <p className="mt-2 text-sm whitespace-pre-wrap">
+                      {note.message}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <AlertDialog
+        open={!!noteToDelete}
+        onOpenChange={(open) => !open && setNoteToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              note.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteNote} variant="destructive">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog
+        open={!!editingNote}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditingNote(null)
+            setEditedMessage("")
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Note</DialogTitle>
+            <DialogDescription>
+              Update the content of this application note.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={editedMessage}
+            onChange={(event) => setEditedMessage(event.target.value)}
+            disabled={isSubmitting}
+            rows={5}
+          />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setEditingNote(null)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleUpdateNote}
+              disabled={!editedMessage.trim() || isSubmitting}
+              className="btn-gradient"
+            >
+              {isSubmitting ? "Updating..." : "Update"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
 
 export default function ProfilesDetailPage() {
   const params = useParams()
@@ -667,7 +994,7 @@ export default function ProfilesDetailPage() {
       </div>
 
       <Card className="overflow-hidden">
-        <CardContent className="flex flex-col items-center">
+        <CardContent className="flex flex-col items-center pt-6">
           <Avatar className="mx-auto mb-4 h-32 w-32 border-4 border-background">
             <AvatarImage src={mainPhoto} alt="Profile photo" />
             <AvatarFallback>
@@ -739,6 +1066,9 @@ export default function ProfilesDetailPage() {
             <p className="text-muted-foreground">No additional photos.</p>
           )}
         </div>
+      </div>
+      <div className="mt-8">
+        <NotesSection profileId={profile.id} initialNotes={profile.notes} />
       </div>
     </div>
   )

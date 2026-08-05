@@ -1,5 +1,3 @@
-"use client"
-
 import {
   Copy,
   Eye,
@@ -12,6 +10,7 @@ import {
   FileEdit,
   Clock,
   Trash2,
+  FileText,
 } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { useRouter } from "next/navigation"
@@ -38,6 +37,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   Popover,
@@ -56,6 +56,8 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { ProfileStatus } from "@/lib/generated/prisma/enums"
+import { useAuthStore } from "@/stores/auth-store"
+import { Textarea } from "@/components/ui/textarea"
 import { ProfileRow } from "./columns"
 
 const profileStatuses = [
@@ -309,8 +311,12 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter()
   const user = row.original as ProfileRow
+  const { user: authUser } = useAuthStore()
+  const [message, setMessage] = useState("")
+  const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleCopyId = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -349,6 +355,41 @@ export function DataTableRowActions<TData>({
     })
   }
 
+  const handleAddNote = async () => {
+    if (!authUser?.id) {
+      toast.error("You must be logged in to add a note.")
+      return
+    }
+
+    if (!message.trim()) {
+      toast.error("Please enter a note.")
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const res = await fetch(`/api/notes/${user.id}/profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, userId: authUser.id }),
+      })
+
+      if (res.ok) {
+        toast.success("Note added successfully.")
+        setMessage("")
+        setIsNoteDialogOpen(false)
+        window.dispatchEvent(new Event("profile-updated"))
+      } else {
+        const { message: errorMessage, error } = await res.json()
+        toast.error(errorMessage || error || "Failed to add note.")
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <>
       <DropdownMenu>
@@ -380,6 +421,52 @@ export function DataTableRowActions<TData>({
               Edit Profile
             </Link>
           </DropdownMenuItem>
+          <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
+            <DialogTrigger asChild>
+              <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                <FileText className="mr-2 h-4 w-4" />
+                Add Note
+              </DropdownMenuItem>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Note</DialogTitle>
+                <DialogDescription>
+                  Add a note to this profile record.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-2 py-4">
+                <Label htmlFor="profile-note">Note</Label>
+                <Textarea
+                  id="profile-note"
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  rows={4}
+                  placeholder="Type your note here."
+                  disabled={isLoading}
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() => setIsNoteDialogOpen(false)}
+                  variant="outline"
+                  disabled={isLoading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleAddNote}
+                  disabled={isLoading || !message.trim()}
+                  className="btn-gradient"
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  {isLoading ? "Adding..." : "Add Note"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <DropdownMenuSeparator />
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>

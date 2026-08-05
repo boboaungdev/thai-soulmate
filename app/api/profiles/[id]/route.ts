@@ -31,6 +31,21 @@ export async function GET(
       },
       include: {
         applicationForm: true,
+        notes: {
+          include: {
+            user: {
+              select: {
+                name: true,
+                avatar: true,
+                email: true,
+                role: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     })
 

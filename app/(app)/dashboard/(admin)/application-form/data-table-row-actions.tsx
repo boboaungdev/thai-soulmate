@@ -156,7 +156,7 @@ export function DataTableRowActions<TData>({
             <DialogHeader>
               <DialogTitle>Add Note</DialogTitle>
               <DialogDescription>
-                Add a staff note to this application.
+                Add a note to this application record.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-2 py-4">

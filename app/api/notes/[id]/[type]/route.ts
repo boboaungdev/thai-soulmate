@@ -18,6 +18,10 @@ function getTypeFromString(type: string): NoteType | null {
     return NoteType.APPLICATION_FORM
   }
 
+  if (type === "profile") {
+    return NoteType.PROFILE
+  }
+
   return null
 }
 
@@ -45,16 +49,23 @@ export async function GET(
       )
     }
 
-    const where =
-      type === NoteType.REGISTER_INTEREST
-        ? {
-            type,
-            registerInterestId: parentId,
-          }
-        : {
-            type,
-            applicationFormId: parentId,
-          }
+    let where: any
+    if (type === NoteType.REGISTER_INTEREST) {
+      where = {
+        type,
+        registerInterestId: parentId,
+      }
+    } else if (type === NoteType.APPLICATION_FORM) {
+      where = {
+        type,
+        applicationFormId: parentId,
+      }
+    } else if (type === NoteType.PROFILE) {
+      where = {
+        type,
+        profileId: parentId,
+      }
+    }
 
     const notes = await prisma.note.findMany({
       where,
@@ -137,20 +148,29 @@ export async function POST(
 
     const { message, userId } = postBodySchema.parse(body)
 
-    const data =
-      type === NoteType.REGISTER_INTEREST
-        ? {
-            message,
-            userId,
-            type,
-            registerInterestId: parentId,
-          }
-        : {
-            message,
-            userId,
-            type,
-            applicationFormId: parentId,
-          }
+    let data: any
+    if (type === NoteType.REGISTER_INTEREST) {
+      data = {
+        message,
+        userId,
+        type,
+        registerInterestId: parentId,
+      }
+    } else if (type === NoteType.APPLICATION_FORM) {
+      data = {
+        message,
+        userId,
+        type,
+        applicationFormId: parentId,
+      }
+    } else if (type === NoteType.PROFILE) {
+      data = {
+        message,
+        userId,
+        type,
+        profileId: parentId,
+      }
+    }
 
     const note = await prisma.note.create({
       data,

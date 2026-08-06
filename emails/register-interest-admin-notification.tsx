@@ -30,13 +30,13 @@ type AdminNotificationDetails = {
 
 const currentYear = new Date().getFullYear()
 
-export const AdminNotificationEmail = ({
+export const RegisterInterestAdminNotificationEmail = ({
   ...details
 }: AdminNotificationDetails) => (
   <Html>
     <Head />
 
-    <Preview>A new user has registered their interest on the website.</Preview>
+    <Preview>[Register Interest] A new user has registered their interest on the website.</Preview>
 
     <Body style={main}>
       <Container style={container}>
@@ -115,7 +115,7 @@ export const AdminNotificationEmail = ({
   </Html>
 )
 
-export default AdminNotificationEmail
+export default RegisterInterestAdminNotificationEmail
 
 const main = {
   backgroundColor: "#ffffff",

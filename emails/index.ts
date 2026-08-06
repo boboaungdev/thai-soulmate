@@ -1,5 +1,5 @@
-export * from "./user-confirmation"
-export * from "./admin-notification"
+export * from "./register-interest-user-confirmation"
+export * from "./register-interest-admin-notification"
 export * from "./send-male-match"
 export * from "./send-female-match"
 export * from "./website-review-notification"

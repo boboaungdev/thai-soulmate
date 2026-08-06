@@ -16,13 +16,13 @@ import { User } from "@/types"
 
 const currentYear = new Date().getFullYear()
 
-export const UserConfirmationEmail = ({ ...userDetails }: User) => (
+export const RegisterInterestUserConfirmationEmail = ({ ...userDetails }: User) => (
   <Html>
     <Head />
 
     <Preview>
-      Thank you for registering your interest with us. Welcome to{" "}
-      {APP_INFO.name}.
+      [Register Interest] Thank you for registering your interest with us.
+      Welcome to {APP_INFO.name}.
     </Preview>
 
     <Body style={main}>
@@ -106,7 +106,7 @@ export const UserConfirmationEmail = ({ ...userDetails }: User) => (
   </Html>
 )
 
-export default UserConfirmationEmail
+export default RegisterInterestUserConfirmationEmail
 
 const main = {
   backgroundColor: "#ffffff",

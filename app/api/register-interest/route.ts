@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma"
 
 import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 import { resend } from "@/lib/resend"
-import { AdminNotificationEmail, UserConfirmationEmail } from "@/emails"
+import {
+  RegisterInterestAdminNotificationEmail,
+  RegisterInterestUserConfirmationEmail,
+} from "@/emails"
 import { calculateAge } from "@/lib/date"
 
 const formSchema = z.object({
@@ -73,8 +76,8 @@ export async function POST(req: Request) {
     const { data: userData, error: userError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
       to: validatedData.email,
-      subject: `Thank you for your interest in ${APP_INFO.name}!`,
-      react: UserConfirmationEmail(validatedData),
+      subject: `[Register Interest] Thank you for your interest in ${APP_INFO.name}!`,
+      react: RegisterInterestUserConfirmationEmail(validatedData),
     })
 
     if (userError) {
@@ -120,8 +123,8 @@ export async function POST(req: Request) {
     const { data: adminData, error: adminError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
       to: [CONTACT.email],
-      subject: `New Interest Registration: ${validatedData.name}`,
-      react: AdminNotificationEmail({
+      subject: `[Register Interest] New Interest Registration: ${validatedData.name}`,
+      react: RegisterInterestAdminNotificationEmail({
         ...validatedData,
         age: calculateAge(validatedData.dob),
         location: validatedData.currentLocation,

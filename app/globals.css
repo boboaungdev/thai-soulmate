@@ -200,16 +200,19 @@
   }
 
   .btn-gradient {
-    background-image: linear-gradient(to right, var(--gold), var(--pink));
+    background: linear-gradient(to right, var(--gold), var(--pink), var(--gold));
+    background-size: 200% auto;
     color: white; /* Or another contrasting color */
+    animation: bg-pan 5s ease-in-out infinite;
   }
 
   .text-gradient {
-    background: linear-gradient(to right, var(--gold), var(--pink));
-    display: inline-block;
+    background: linear-gradient(to right, var(--gold), var(--pink), var(--gold));
+    background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: bg-pan 5s ease-in-out infinite;
   }
 }
 

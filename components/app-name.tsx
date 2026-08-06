@@ -7,12 +7,7 @@ interface AppNameProps {
 
 export function AppName({ className }: AppNameProps) {
   return (
-    <span
-      className={cn(
-        "bg-gradient-to-r from-[#cfa14f] via-[#cb5d7a] to-[#cb5d7a] bg-clip-text text-transparent",
-        className
-      )}
-    >
+    <span className={cn("text-gradient", className)}>
       {APP_INFO.name}
     </span>
   )

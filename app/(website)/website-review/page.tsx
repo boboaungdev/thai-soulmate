@@ -282,8 +282,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-1">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <Sparkles className="h-5 w-5" /> First Impression (first
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       1. First Impression (first
                       30 seconds)
                     </AccordionTrigger>
                   </CardHeader>
@@ -354,8 +354,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-2">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <MousePointerClick className="h-5 w-5" /> Ease of Use
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       2. Ease of Use
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -406,8 +406,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-3">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <Palette className="h-5 w-5" /> Design & Branding
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       3. Design & Branding
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -452,8 +452,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-4">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <Lightbulb className="h-5 w-5" /> Understanding the
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       4. Understanding the
                       Service
                     </AccordionTrigger>
                   </CardHeader>
@@ -488,8 +488,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-5">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <ShieldCheck className="h-5 w-5" /> Trust & Safety
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       5. Trust & Safety
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -540,8 +540,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-6">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <FileText className="h-5 w-5" /> Content Quality
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       6. Content Quality
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -591,8 +591,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-7">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <UserPlus className="h-5 w-5" /> Registration / Inquiry
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       7. Registration / Inquiry
                       Process
                     </AccordionTrigger>
                   </CardHeader>
@@ -639,8 +639,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-8">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <DollarSign className="h-5 w-5" /> Pricing & Value
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       8. Pricing & Value
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -690,8 +690,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-9">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <Star className="h-5 w-5" /> Overall Experience
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       9. Overall Experience
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -724,8 +724,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-10">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
-                      <Heart className="h-5 w-5" /> Matchmaking Service Specific
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       10. Matchmaking Service Specific
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -775,8 +775,8 @@ export default function WebsiteReviewPage() {
               {/* Reviewer Information */}
               <Card className="mb-4">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-xl font-semibold">
-                    <UserCheck className="h-5 w-5" /> Reviewer Information
+                  <CardTitle className="flex items-center gap-2 text-xl font-semibold text-gradient">
+                     11. Reviewer Information
                   </CardTitle>
                 </CardHeader>
                 <CardContent>

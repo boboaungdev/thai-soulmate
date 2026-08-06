@@ -742,8 +742,7 @@ export default function ReviewPage() {
                             Submit Anonymously
                           </FormLabel>
                           <CardDescription>
-                            Your name and email will not be submitted with your
-                            feedback.
+                            You can submit your review anonymously.
                           </CardDescription>
                         </div>
                         <FormControl>

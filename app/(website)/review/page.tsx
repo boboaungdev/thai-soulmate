@@ -133,7 +133,7 @@ const formSchema = z.object({
     .object({
       isAnonymous: z.boolean().default(false),
       name: z.string().optional(),
-      email: z.email({ message: "Please enter a valid email." }).optional(),
+      email: z.email().optional(),
     })
     .superRefine((data, ctx) => {
       if (!data.isAnonymous) {
@@ -150,6 +150,17 @@ const formSchema = z.object({
             message: "Email is required.",
             path: ["email"],
           })
+        } else {
+          const emailValidation = z
+            .string()
+            .email({ message: "Please enter a valid email." })
+          const result = emailValidation.safeParse(data.email)
+          if (!result.success) {
+            ctx.addIssue({
+              ...result.error.issues[0],
+              path: ["email"],
+            })
+          }
         }
       }
     }),

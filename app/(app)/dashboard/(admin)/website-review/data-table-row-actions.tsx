@@ -113,7 +113,11 @@ export function DataTableRowActions<TData>({
               >
                 Cancel
               </AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+              <AlertDialogAction
+                onClick={handleDelete}
+                disabled={isDeleting}
+                variant="destructive"
+              >
                 {isDeleting && <Spinner className="mr-2 h-4 w-4" />}
                 {isDeleting ? "Deleting..." : "Delete"}
               </AlertDialogAction>

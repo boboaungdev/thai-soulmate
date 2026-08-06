@@ -1,10 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import confetti from "canvas-confetti"
 
 import { User2, Mail, CheckCircle2, Home, ChevronLeft } from "lucide-react"
 
@@ -188,6 +189,16 @@ type WebsiteReviewFormOutput = z.output<typeof websiteReviewSchema>
 export default function WebsiteReviewPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (isSubmitted) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      })
+    }
+  }, [isSubmitted])
 
   const form = useForm<
     WebsiteReviewFormInput,

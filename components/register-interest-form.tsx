@@ -866,7 +866,7 @@ export function RegisterInterestForm() {
             <Button
               type="submit"
               disabled={isPending}
-              className="w-full bg-gradient-to-r from-[#cfa14f] via-[#cb5d7a] to-[#cb5d7a] text-white"
+              className="btn-gradient w-full"
             >
               {isPending ? (
                 <>

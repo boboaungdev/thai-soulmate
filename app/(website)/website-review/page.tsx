@@ -258,7 +258,7 @@ export default function WebsiteReviewPage() {
         whatWouldEncourageSignUp: "",
       },
       reviewerInfo: {
-        isAnonymous: false,
+        isAnonymous: true,
         name: "",
         email: "",
       },
@@ -337,7 +337,19 @@ export default function WebsiteReviewPage() {
             <Accordion
               type="multiple"
               className="w-full"
-              defaultValue={["item-1"]}
+              defaultValue={[
+                "item-1",
+                "item-2",
+                "item-3",
+                "item-4",
+                "item-5",
+                "item-6",
+                "item-7",
+                "item-8",
+                "item-9",
+                "item-10",
+                "item-11",
+              ]}
             >
               {/* First Impression */}
               <Card className="mb-4">

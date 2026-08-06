@@ -68,10 +68,12 @@ const websiteReviewSchema = z
     }),
     designBranding: z.object({
       overallRating: z.coerce
-        .number()
+        .number({
+          error: "Please rate the overall design and branding.",
+        })
         .min(1, "Rating must be 1-10")
-        .max(10, "Rating must be 1-10")
-        .optional(),
+        .max(10, "Rating must be 1-10"),
+        
       suitableForPremium: z
         .string()
         .min(1, { message: "Please select an option." }),
@@ -107,10 +109,11 @@ const websiteReviewSchema = z
     }),
     registrationProcess: z.object({
       formEaseRating: z.coerce
-        .number()
+        .number({
+          error: "Please rate the form ease.",
+        })
         .min(1, "Rating must be 1-10")
-        .max(10, "Rating must be 1-10")
-        .optional(),
+        .max(10, "Rating must be 1-10"),
       unnecessaryQuestions: z
         .string()
         .min(1, { message: "This field is required." }),
@@ -730,7 +733,7 @@ export default function WebsiteReviewPage() {
                                   type="number"
                                   min="1"
                                   max="10"
-                                  placeholder="e.g., 8"
+                                  placeholder="e.g., 8 (1 = poor, 10 = excellent)"
                                   className="mt-1"
                                   onKeyDown={(event) => {
                                     if (
@@ -1243,7 +1246,7 @@ export default function WebsiteReviewPage() {
                                   type="number"
                                   min="1"
                                   max="10"
-                                  placeholder="e.g., 7"
+                                  placeholder="e.g., 7 (1 = very difficult, 10 = very easy)"
                                   className="mt-1"
                                   onKeyDown={(event) => {
                                     if (

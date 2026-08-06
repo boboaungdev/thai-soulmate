@@ -13,7 +13,7 @@ export default function ServicePage() {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="mb-8 text-4xl font-bold tracking-tighter md:text-5xl">
+            <h1 className="mb-8 text-4xl font-bold tracking-tighter md:text-5xl text-gradient">
               Our Services
             </h1>
           </MotionDiv>

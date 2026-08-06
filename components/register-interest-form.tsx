@@ -265,7 +265,7 @@ export function RegisterInterestForm() {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h2 className="mb-2 text-3xl font-bold">Register Your Interest</h2>
+        <h2 className="mb-2 text-3xl font-bold text-gradient">Register Your Interest</h2>
         <p className="mb-6 text-muted-foreground">
           Fill out the form below to let us know you&apos;re interested.
           We&apos;ll be in touch.

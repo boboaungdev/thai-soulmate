@@ -82,7 +82,7 @@ export default function HomePage() {
                     <span className="text-gradient">{APP_INFO.tagline}</span>
                   </p>
 
-                  <p className="text-lg font-bold md:text-xl pt-4">
+                  <p className="pt-4 text-lg font-bold md:text-xl">
                     <span className="text-gradient whitespace-pre-line">
                       {APP_INFO.secondaryTagline}
                     </span>
@@ -122,7 +122,9 @@ export default function HomePage() {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h2 className="mb-2 text-3xl font-bold">Featured Members</h2>
+            <h2 className="text-gradient mb-2 text-3xl font-bold">
+              Featured Members
+            </h2>
             <p className="mb-6 text-muted-foreground">
               Meet some of our amazing members.
             </p>
@@ -147,7 +149,7 @@ export default function HomePage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-center"
           >
-            <h2 className="mb-2 text-3xl font-bold">
+            <h2 className="text-gradient mb-2 text-3xl font-bold">
               Frequently Asked Questions
             </h2>
           </MotionDiv>
@@ -166,7 +168,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="register-interest" ref={registerInterestRef} className="py-16 sm:py-20">
+      <section
+        id="register-interest"
+        ref={registerInterestRef}
+        className="py-16 sm:py-20"
+      >
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <RegisterInterestForm />
         </div>

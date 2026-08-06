@@ -31,7 +31,7 @@ export function PolicyPage({ title, content }: PolicyPageProps) {
           </Button>
 
           <header className="mt-8 sm:mt-12">
-            <h1 className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl text-gradient">
               {title}
             </h1>
           </header>

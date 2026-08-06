@@ -31,7 +31,7 @@ export function Footer() {
     <footer className="border-t border-border/70 bg-background">
       <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          <div className="space-y-4">
+          <div className="flex justify-center space-y-4 lg:justify-start">
             <div className="flex items-center gap-3">
               <Image
                 src="/logo.png"
@@ -51,8 +51,8 @@ export function Footer() {
               </div>
             </div>
           </div>
-          <div className="flex justify-end">
-            <div className="flex flex-wrap justify-end gap-2">
+          <div className="flex justify-center lg:justify-end">
+            <div className="flex flex-wrap justify-center gap-2 lg:justify-end">
               <Button
                 asChild
                 variant="outline"

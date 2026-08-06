@@ -50,6 +50,7 @@ import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
 
 const formSchema = z.object({
@@ -171,6 +172,7 @@ const formSchema = z.object({
 
 export default function ReviewPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -217,10 +219,29 @@ export default function ReviewPage() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Review Form Data:", values)
-    toast.success("Thank you for your feedback!")
-    setIsSubmitted(true)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true)
+    try {
+      const response = await fetch("/api/review", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      })
+
+      if (response.ok) {
+        toast.success("Thank you for your feedback!")
+        setIsSubmitted(true)
+      } else {
+        toast.error("There was a problem with your submission.")
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred.")
+      console.error("Submission error:", error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const isAnonymous = form.watch("reviewerInfo.isAnonymous")
@@ -844,8 +865,16 @@ export default function ReviewPage() {
               <Button
                 type="submit"
                 className="btn-gradient px-8 py-3 font-semibold"
+                disabled={isLoading}
               >
-                Submit Review
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <Spinner className="mr-2 h-4 w-4 animate-spin" />
+                    <span>Submitting...</span>
+                  </div>
+                ) : (
+                  "Submit Review"
+                )}
               </Button>
             </div>
           </form>

@@ -154,6 +154,24 @@ model Soulmate {
   @@unique([maleId, femaleId])
 }
 
+model Review {
+  id                    String    @id @default(uuid())
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  firstImpression       Json
+  easeOfUse             Json
+  designBranding        Json
+  understandingService  Json
+  trustSafety           Json
+  contentQuality        Json
+  registrationProcess   Json
+  pricingValue          Json
+  overallExperience     Json
+  matchmakingSpecific   Json
+  reviewerInfo          Json?
+}
+
 enum Role {
   DEV
   ADMIN

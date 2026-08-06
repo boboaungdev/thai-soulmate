@@ -22,6 +22,7 @@ import {
   UserCheck,
   CheckCircle2,
   Home,
+  ChevronLeft,
 } from "lucide-react"
 
 import {
@@ -283,8 +284,18 @@ export default function ReviewPage() {
       </div>
 
       {isSubmitted ? (
-        <Card className="w-full py-12 text-center">
-          <CardContent className="flex flex-col items-center justify-center space-y-6">
+        <Card className="w-full">
+          <CardContent className="relative flex flex-col items-center justify-center space-y-6 py-12">
+            <Button
+              variant="link"
+              onClick={() => {
+                setIsSubmitted(false)
+                form.reset()
+              }}
+              className="absolute left-4 top-4 flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <ChevronLeft className="h-4 w-4" /> Back to Review
+            </Button>
             <CheckCircle2 className="h-20 w-20 text-green-500" />
             <CardTitle className="text-3xl font-bold">Thank You!</CardTitle>
             <CardDescription className="max-w-md text-lg text-muted-foreground">

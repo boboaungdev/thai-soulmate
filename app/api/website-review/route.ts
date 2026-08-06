@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       reviewerInfo,
     } = body
 
-    const review = await prisma.review.create({
+    const review = await prisma.websiteReview.create({
       data: {
         firstImpression,
         easeOfUse,
@@ -45,5 +45,22 @@ export async function POST(req: Request) {
       { message: "Error submitting review." },
       { status: 500 }
     )
+  }
+}
+
+
+
+
+export async function GET() {
+  try {
+    const reviews = await prisma.websiteReview.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return NextResponse.json(reviews);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

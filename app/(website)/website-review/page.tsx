@@ -6,13 +6,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
-import {
-  User2,
-  Mail,
-  CheckCircle2,
-  Home,
-  ChevronLeft,
-} from "lucide-react"
+import { User2, Mail, CheckCircle2, Home, ChevronLeft } from "lucide-react"
 
 import {
   Accordion,
@@ -48,7 +42,9 @@ const websiteReviewSchema = z
     firstImpression: z.object({
       offer: z.string().min(1, { message: "This field is required." }),
       designedFor: z.string().min(1, { message: "This field is required." }),
-      caughtAttention: z.string().min(1, { message: "This field is required." }),
+      caughtAttention: z
+        .string()
+        .min(1, { message: "This field is required." }),
       professionalTrustworthy: z
         .string()
         .min(1, { message: "Please select an option." }),
@@ -69,14 +65,11 @@ const websiteReviewSchema = z
         .min(1, { message: "Please select an option." }),
     }),
     designBranding: z.object({
-      overallRating: z.preprocess(
-        (a) => (a === "" ? undefined : a),
-        z.coerce
-          .number()
-          .min(1, "Rating must be 1-10")
-          .max(10, "Rating must be 1-10")
-          .optional()
-      ),
+      overallRating: z.coerce
+        .number()
+        .min(1, "Rating must be 1-10")
+        .max(10, "Rating must be 1-10")
+        .optional(),
       suitableForPremium: z
         .string()
         .min(1, { message: "Please select an option." }),
@@ -96,7 +89,9 @@ const websiteReviewSchema = z
     }),
     trustSafety: z.object({
       feelSafe: z.string().min(1, { message: "Please select an option." }),
-      explainPrivacy: z.string().min(1, { message: "Please select an option." }),
+      explainPrivacy: z
+        .string()
+        .min(1, { message: "Please select an option." }),
       increaseTrust: z.string().optional(),
     }),
     contentQuality: z.object({
@@ -107,14 +102,11 @@ const websiteReviewSchema = z
         .min(1, { message: "Please select an option." }),
     }),
     registrationProcess: z.object({
-      formEaseRating: z.preprocess(
-        (a) => (a === "" ? undefined : a),
-        z.coerce
-          .number()
-          .min(1, "Rating must be 1-10")
-          .max(10, "Rating must be 1-10")
-          .optional()
-      ),
+      formEaseRating: z.coerce
+        .number()
+        .min(1, "Rating must be 1-10")
+        .max(10, "Rating must be 1-10")
+        .optional(),
       unnecessaryQuestions: z.string().optional(),
       stoppedAt: z.string().optional(),
     }),
@@ -190,13 +182,18 @@ const websiteReviewSchema = z
     }
   })
 
-type WebsiteReviewFormValues = z.infer<typeof websiteReviewSchema>
+type WebsiteReviewFormInput = z.input<typeof websiteReviewSchema>
+type WebsiteReviewFormOutput = z.output<typeof websiteReviewSchema>
 
 export default function WebsiteReviewPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const form = useForm<WebsiteReviewFormValues>({
+  const form = useForm<
+    WebsiteReviewFormInput,
+    unknown,
+    WebsiteReviewFormOutput
+  >({
     resolver: zodResolver(websiteReviewSchema),
     defaultValues: {
       firstImpression: {
@@ -206,6 +203,7 @@ export default function WebsiteReviewPage() {
         professionalTrustworthy: "",
         professionalTrustworthyReason: "",
       },
+
       easeOfUse: {
         findServiceInfo: "",
         findRegistration: "",
@@ -265,7 +263,7 @@ export default function WebsiteReviewPage() {
     },
   })
 
-  async function onSubmit(values: WebsiteReviewFormValues) {
+  async function onSubmit(values: WebsiteReviewFormOutput) {
     setIsLoading(true)
     try {
       const response = await fetch("/api/website-review", {
@@ -355,9 +353,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-1">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       1. First Impression
-                      (first 30 seconds)
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      1. First Impression (first 30 seconds)
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -486,8 +483,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-2">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       2. Ease of Use
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      2. Ease of Use
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -591,8 +588,7 @@ export default function WebsiteReviewPage() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="mb-2 block">
-                              Did the website work well on your phone or
-                              tablet?
+                              Did the website work well on your phone or tablet?
                             </FormLabel>
                             <FormControl>
                               <RadioGroup
@@ -639,8 +635,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-3">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       3. Design & Branding
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      3. Design & Branding
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -669,7 +665,7 @@ export default function WebsiteReviewPage() {
                                   }
                                 }}
                                 {...field}
-                                value={field.value ?? ""}
+                           value={field.value == null ? "" : String(field.value)}
                               />
                             </FormControl>
                             <FormMessage />
@@ -778,9 +774,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-4">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       4. Understanding the
-                      Service
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      4. Understanding the Service
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -871,8 +866,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-5">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       5. Trust & Safety
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      5. Trust & Safety
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -979,8 +974,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-6">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       6. Content Quality
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      6. Content Quality
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -1120,9 +1115,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-7">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       7. Registration /
-                      Inquiry Process
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      7. Registration / Inquiry Process
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -1152,7 +1146,7 @@ export default function WebsiteReviewPage() {
                                   }
                                 }}
                                 {...field}
-                                value={field.value ?? ""}
+                               value={field.value == null ? "" : String(field.value)}
                               />
                             </FormControl>
                             <FormMessage />
@@ -1208,8 +1202,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-8">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       8. Pricing & Value
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      8. Pricing & Value
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -1263,7 +1257,7 @@ export default function WebsiteReviewPage() {
                               <RadioGroup
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
-                                className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0"
+                                className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4"
                               >
                                 <FormItem className="flex items-center space-x-2">
                                   <FormControl>
@@ -1341,8 +1335,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-9">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       9. Overall Experience
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      9. Overall Experience
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -1466,9 +1460,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-10">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       10. Matchmaking Service
-                      Specific
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      10. Matchmaking Service Specific
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -1639,8 +1632,8 @@ export default function WebsiteReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-11">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       11. Reviewer Information
+                    <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
+                      11. Reviewer Information
                     </AccordionTrigger>
                   </CardHeader>
                   <CardContent className="p-6 pt-0">

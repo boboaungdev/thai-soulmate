@@ -1,6 +1,6 @@
 "use client"
 
-import { WebsiteReview } from "@/lib/generated/prisma/client"
+import { Prisma, WebsiteReview } from "@/lib/generated/prisma/client"
 import {
   Sheet,
   SheetContent,
@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { Prisma } from "@prisma/client"
 
 interface WebsiteReviewDetailsProps {
   item: WebsiteReview | null

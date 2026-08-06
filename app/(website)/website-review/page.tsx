@@ -253,7 +253,7 @@ export default function ReviewPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
     try {
-      const response = await fetch("/api/review", {
+      const response = await fetch("/api/website-review", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

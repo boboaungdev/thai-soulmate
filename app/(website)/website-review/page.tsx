@@ -317,9 +317,14 @@ export default function WebsiteReviewPage() {
             </Button>
             <CheckCircle2 className="h-20 w-20 text-green-500" />
             <CardTitle className="text-3xl font-bold">Thank You!</CardTitle>
-            <CardDescription className="max-w-md text-lg text-muted-foreground">
+            <CardDescription className="text-center text-lg text-muted-foreground">
               Your feedback is much appreciated. If you feel this service is for
-              you, we will offer you a 50% discount on the service you choose.
+              you, we will offer you a 50% discount on the service you choose.{" "}
+              <br />
+              <br />
+              If you would like to be contacted about this offer, please
+              register your interest on the home page. We will contact you when
+              the service is ready to launch.
             </CardDescription>
             <Button asChild className="btn-gradient px-6 py-3 font-semibold">
               <Link href="/">
@@ -665,7 +670,9 @@ export default function WebsiteReviewPage() {
                                   }
                                 }}
                                 {...field}
-                           value={field.value == null ? "" : String(field.value)}
+                                value={
+                                  field.value == null ? "" : String(field.value)
+                                }
                               />
                             </FormControl>
                             <FormMessage />
@@ -1146,7 +1153,9 @@ export default function WebsiteReviewPage() {
                                   }
                                 }}
                                 {...field}
-                               value={field.value == null ? "" : String(field.value)}
+                                value={
+                                  field.value == null ? "" : String(field.value)
+                                }
                               />
                             </FormControl>
                             <FormMessage />

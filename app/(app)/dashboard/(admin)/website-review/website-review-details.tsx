@@ -49,7 +49,7 @@ export function WebsiteReviewDetails({
 
   return (
     <Sheet open={!!item} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent className="w-full sm:max-w-lg">
+      <SheetContent className="w-full sm:max_w_lg p-6">
         <SheetHeader>
           <SheetTitle>Review Details</SheetTitle>
           <SheetDescription>

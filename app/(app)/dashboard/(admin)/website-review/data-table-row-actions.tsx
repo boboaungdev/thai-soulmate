@@ -1,23 +1,21 @@
 "use client"
 
-import {
-  MoreHorizontal,
-  Trash,
-  Eye,
-} from "lucide-react"
+import { MoreHorizontal, Trash, Eye } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +24,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Spinner } from "@/components/ui/spinner"
 
 import { WebsiteReview } from "@/lib/generated/prisma/client"
 import { toast } from "sonner"
@@ -41,8 +40,10 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const review = row.original as WebsiteReview
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
+    setIsDeleting(true)
     try {
       const response = await fetch(`/api/website-review/${review.id}`, {
         method: "DELETE",
@@ -56,9 +57,9 @@ export function DataTableRowActions<TData>({
         toast.error(result.error || "Failed to delete review.")
       }
     } catch (error) {
-      toast.error(
-        "An unexpected error occurred while deleting the review."
-      )
+      toast.error("An unexpected error occurred while deleting the review.")
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -83,8 +84,11 @@ export function DataTableRowActions<TData>({
           View details
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogTrigger asChild>
+        <AlertDialog
+          open={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+        >
+          <AlertDialogTrigger asChild>
             <DropdownMenuItem
               variant="destructive"
               onSelect={(e) => e.preventDefault()}
@@ -93,28 +97,29 @@ export function DataTableRowActions<TData>({
               Delete
               <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
             </DropdownMenuItem>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Are you absolutely sure?</DialogTitle>
-              <DialogDescription>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete this
                 review.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel
                 onClick={() => setIsDeleteDialogOpen(false)}
-                variant="outline"
+                disabled={isDeleting}
               >
                 Cancel
-              </Button>
-              <Button onClick={handleDelete} variant="destructive">
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                {isDeleting && <Spinner className="mr-2 h-4 w-4" />}
+                {isDeleting ? "Deleting..." : "Delete"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </DropdownMenuContent>
     </DropdownMenu>
   )

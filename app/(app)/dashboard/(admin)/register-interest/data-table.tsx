@@ -34,12 +34,14 @@ interface DataTableProps<TData, TValue> {
   columns: (onRowClick: (row: TData) => void) => ColumnDef<TData, TValue>[]
   data: TData[]
   onRowClick?: (row: TData) => void
+  forceFetchApplications: () => Promise<void>
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onRowClick,
+  forceFetchApplications,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const columnVisibility = useRegisterInterestStore(
@@ -80,7 +82,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} forceFetchApplications={forceFetchApplications} />
       <ScrollArea className="rounded-md border">
         <Table>
           <TableHeader>

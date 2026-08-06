@@ -89,6 +89,7 @@ export default function TaskPage() {
           data={data}
           columns={getColumns}
           onRowClick={handleRowClick}
+          forceFetchApplications={actions.forceFetchUsers}
         />
       </div>
       <RegisterInterestDetails

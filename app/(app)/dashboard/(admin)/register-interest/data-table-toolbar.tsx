@@ -1,6 +1,6 @@
 "use client"
 
-import { Search, XCircle } from "lucide-react"
+import { RefreshCw, Search, XCircle } from "lucide-react"
 import { Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -12,10 +12,12 @@ import { DataTableViewOptions } from "./data-table-view-options"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
+  forceFetchApplications: () => Promise<void>
 }
 
 export function DataTableToolbar<TData>({
   table,
+  forceFetchApplications,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0 || !!table.getState().globalFilter
 
@@ -60,7 +62,18 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="ml-auto h-8"
+          onClick={() => forceFetchApplications()}
+        >
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Refresh
+        </Button>
+        <DataTableViewOptions table={table} />
+      </div>
     </div>
   )
 }

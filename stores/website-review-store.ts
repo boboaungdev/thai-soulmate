@@ -17,11 +17,17 @@ type WebsiteReviewState = {
 }
 
 const defaultColumnVisibility: VisibilityState = {
+  select: true,
   designRating: true,
   formEaseRating: true,
+  easeOfUseRating: false,
+  overallExperienceRating: false,
+  wouldRecommend: false,
+  serviceUnderstood: false,
   feltSafe: true,
   easyEnglish: true,
   createdAt: true,
+  actions: true,
 }
 
 export const useWebsiteReviewStore = create<WebsiteReviewState>()(

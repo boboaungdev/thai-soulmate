@@ -133,7 +133,7 @@ const formSchema = z.object({
     .object({
       isAnonymous: z.boolean().default(false),
       name: z.string().optional(),
-      email: z.email().optional(),
+      email: z.string().optional(),
     })
     .superRefine((data, ctx) => {
       if (!data.isAnonymous) {

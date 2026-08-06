@@ -5,19 +5,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import {
-  Sparkles,
-  MousePointerClick,
-  Palette,
-  Lightbulb,
-  ShieldCheck,
-  FileText,
-  UserPlus,
-  DollarSign,
-  Star,
-  Heart,
   User2,
   Mail,
-  UserCheck,
   CheckCircle2,
   Home,
   ChevronLeft,
@@ -51,8 +40,6 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
-
-
 
 type WebsiteReviewFormValues = {
   firstImpression: {
@@ -264,27 +251,15 @@ export default function WebsiteReviewPage() {
             <Accordion
               type="multiple"
               className="w-full"
-              defaultValue={[
-                "item-1",
-                "item-2",
-                "item-3",
-                "item-4",
-                "item-5",
-                "item-6",
-                "item-7",
-                "item-8",
-                "item-9",
-                "item-10",
-                "item-11",
-              ]}
+              defaultValue={["item-1"]}
             >
               {/* First Impression */}
               <Card className="mb-4">
                 <AccordionItem value="item-1">
                   <CardHeader className="p-0">
                     <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       1. First Impression (first
-                      30 seconds)
+                       1. First Impression
+                      (first 30 seconds)
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -299,7 +274,46 @@ export default function WebsiteReviewPage() {
                             </FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="Your answer here..."
+                                placeholder="e.g., A matchmaking service for..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="firstImpression.designedFor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Who do you think the website is designed for?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., Professionals, specific age groups..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="firstImpression.caughtAttention"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              What was the first thing that caught your
+                              attention?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., The main photo, the slogan, a specific section..."
                                 className="mt-1"
                                 {...field}
                               />
@@ -340,6 +354,26 @@ export default function WebsiteReviewPage() {
                                   </FormLabel>
                                 </FormItem>
                               </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="firstImpression.professionalTrustworthyReason"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Why or why not? (regarding feeling professional
+                              and trustworthy)
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., The design was modern, or the text had typos..."
+                                className="mt-1"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -397,6 +431,107 @@ export default function WebsiteReviewPage() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="easeOfUse.findRegistration"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Could you easily find the registration or contact
+                              button?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="easeOfUse.confusingPages"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Were any pages confusing or difficult to navigate?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="If yes, which pages and why?"
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="easeOfUse.mobileFriendly"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Did the website work well on your phone or
+                              tablet?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="did-not-test" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Didn&apos;t test
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -443,6 +578,99 @@ export default function WebsiteReviewPage() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="designBranding.suitableForPremium"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Do the colours, photos, and logo feel suitable for
+                              a premium matchmaking service?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="designBranding.visuallyAppealing"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Is the website visually appealing?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="designBranding.outdatedUnprofessional"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Did anything on the website look outdated or
+                              unprofessional?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="If yes, please describe what and where."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -470,7 +698,64 @@ export default function WebsiteReviewPage() {
                             </FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="Your answer here..."
+                                placeholder="Your understanding of the process..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="understandingService.matchmakingVsAppsClear"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Was the difference between matchmaking and
+                              ordinary dating apps clear?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="understandingService.missingInfo"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              What information was missing that you would want
+                              before joining?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., More details on pricing, success stories, member screening..."
                                 className="mt-1"
                                 {...field}
                               />
@@ -531,6 +816,62 @@ export default function WebsiteReviewPage() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="trustSafety.explainPrivacy"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Did the site clearly explain privacy,
+                              confidentiality, and member screening?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="trustSafety.increaseTrust"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              What would increase your trust in the company?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., Testimonials, certifications, clearer privacy policy..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -582,6 +923,96 @@ export default function WebsiteReviewPage() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="contentQuality.thaiNatural"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              (For Thai speakers) Was the Thai language natural
+                              and professional?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="not-applicable" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    N/A
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="contentQuality.serviceDescriptionLength"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Were the service descriptions too short, too long,
+                              or about right?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="too-short" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Too Short
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="about-right" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    About Right
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="too-long" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Too Long
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -592,8 +1023,8 @@ export default function WebsiteReviewPage() {
                 <AccordionItem value="item-7">
                   <CardHeader className="p-0">
                     <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       7. Registration / Inquiry
-                      Process
+                       7. Registration /
+                      Inquiry Process
                     </AccordionTrigger>
                   </CardHeader>
                   <AccordionContent className="p-6 pt-0">
@@ -630,6 +1061,46 @@ export default function WebsiteReviewPage() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="registrationProcess.unnecessaryQuestions"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Which questions in the form felt unnecessary or
+                              too personal?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Your feedback here..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="registrationProcess.stoppedAt"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Did you stop at any point during the form? If yes,
+                              where?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., 'I stopped when asked for my phone number...'"
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -652,6 +1123,88 @@ export default function WebsiteReviewPage() {
                           <FormItem>
                             <FormLabel className="mb-2 block">
                               Was pricing easy to find and understand?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="pricingValue.expectedServiceTier"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Based on the website, would you expect this
+                              service to be budget, standard, or luxury?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="budget" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Budget
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="standard" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Standard
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="luxury" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Luxury
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="pricingValue.worthThePriceExplained"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Does the website explain why the service is worth
+                              the price?
                             </FormLabel>
                             <FormControl>
                               <RadioGroup
@@ -715,29 +1268,51 @@ export default function WebsiteReviewPage() {
                           </FormItem>
                         )}
                       />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Card>
-
-              {/* Matchmaking Service Specific */}
-              <Card className="mb-4">
-                <AccordionItem value="item-10">
-                  <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
-                       10. Matchmaking Service Specific
-                    </AccordionTrigger>
-                  </CardHeader>
-                  <AccordionContent className="p-6 pt-0">
-                    <div className="space-y-4">
                       <FormField
                         control={form.control}
-                        name="matchmakingSpecific.considerJoiningService"
+                        name="overallExperience.leastLiked"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>What did you like least?</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Your answer here..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="overallExperience.oneChange"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              What is the one thing you would change before
+                              launch?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Your answer here..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="overallExperience.considerJoining"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="mb-2 block">
-                              Would you consider joining this matchmaking
-                              service?
+                              After visiting the website, would you consider
+                              joining or contacting us?
                             </FormLabel>
                             <FormControl>
                               <RadioGroup
@@ -767,6 +1342,196 @@ export default function WebsiteReviewPage() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="overallExperience.considerJoiningReason"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Why or why not?</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Your answer here..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Card>
+
+              {/* Matchmaking Service Specific */}
+              <Card className="mb-4">
+                <AccordionItem value="item-10">
+                  <CardHeader className="p-0">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       10. Matchmaking Service
+                      Specific
+                    </AccordionTrigger>
+                  </CardHeader>
+                  <AccordionContent className="p-6 pt-0">
+                    <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="matchmakingSpecific.considerJoiningService"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Would you consider joining this matchmaking
+                              service?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="maybe" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Maybe
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="matchmakingSpecific.concernsBeforeJoining"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              What concerns would you have before joining?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., Price, privacy, quality of matches..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="matchmakingSpecific.understandBenefits"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Do you understand the benefits of using a
+                              professional matchmaker rather than dating apps?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="matchmakingSpecific.processClearlyExplained"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="mb-2 block">
+                              Is the process for Thai ladies and foreign
+                              gentlemen clearly explained?
+                            </FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="yes" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Yes
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl>
+                                    <RadioGroupItem value="no" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="matchmakingSpecific.whatWouldEncourageSignUp"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              What would encourage you to sign up?
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="e.g., A discount, seeing more success stories, a free consultation..."
+                                className="mt-1"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -774,91 +1539,93 @@ export default function WebsiteReviewPage() {
 
               {/* Reviewer Information */}
               <Card className="mb-4">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-xl font-semibold text-gradient">
-                     11. Reviewer Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="reviewerInfo.isAnonymous"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-base">
-                              Submit Anonymously
-                            </FormLabel>
-                            <CardDescription>
-                              You can submit your review anonymously.
-                            </CardDescription>
-                          </div>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
+                <AccordionItem value="item-11">
+                  <CardHeader className="p-0">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold text-gradient">
+                       11. Reviewer Information
+                    </AccordionTrigger>
+                  </CardHeader>
+                  <CardContent className="p-6 pt-0">
+                    <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="reviewerInfo.isAnonymous"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-base">
+                                Submit Anonymously
+                              </FormLabel>
+                              <CardDescription>
+                                You can submit your review anonymously.
+                              </CardDescription>
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
 
-                    {!isAnonymous && (
-                      <Card>
-                        <CardHeader>
-                          <CardTitle>Your Details</CardTitle>
-                          <CardDescription>
-                            Please provide your name and email.
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <FormField
-                            control={form.control}
-                            name="reviewerInfo.name"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Name</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <User2 className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                      placeholder="Your name"
-                                      className="pl-10"
-                                      {...field}
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="reviewerInfo.email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                      type="email"
-                                      placeholder="you@example.com"
-                                      className="pl-10"
-                                      {...field}
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </CardContent>
-                      </Card>
-                    )}
-                  </div>
-                </CardContent>
+                      {!isAnonymous && (
+                        <Card>
+                          <CardHeader>
+                            <CardTitle>Your Details</CardTitle>
+                            <CardDescription>
+                              Please provide your name and email.
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <FormField
+                              control={form.control}
+                              name="reviewerInfo.name"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Name</FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <User2 className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                      <Input
+                                        placeholder="Your name"
+                                        className="pl-10"
+                                        {...field}
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="reviewerInfo.email"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Email</FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                      <Input
+                                        type="email"
+                                        placeholder="you@example.com"
+                                        className="pl-10"
+                                        {...field}
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  </CardContent>
+                </AccordionItem>
               </Card>
             </Accordion>
 

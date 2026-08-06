@@ -99,7 +99,7 @@ export function PricingPageContents({
   }
 
   return (
-    <section className="bg-muted/50 py-16 sm:py-20 dark:bg-muted/30">
+    <section className="bg-muted/50 py-20 sm:py-24 dark:bg-muted/30">
       <div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
@@ -108,7 +108,7 @@ export function PricingPageContents({
         >
           {!isEmbedded && !isFromApplicationForm && (
             <>
-              <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
+              <h1 className="text-gradient text-4xl font-bold md:text-5xl">
                 VIP Membership
               </h1>
               <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
@@ -118,7 +118,7 @@ export function PricingPageContents({
           )}
           {isFromApplicationForm && (
             <>
-              <h1 className="text-gradient text-3xl font-bold sm:text-4xl md:text-5xl">
+              <h1 className="text-gradient text-4xl font-bold md:text-5xl">
                 VIP Membership Details
               </h1>
               <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">

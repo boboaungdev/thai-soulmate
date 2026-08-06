@@ -23,6 +23,7 @@ import {
   UserKey,
   Code,
   Moon,
+  Star,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 
@@ -173,6 +174,14 @@ const securityItems = [
   },
 ]
 
+const feedbackItems = [
+  {
+    title: "Website Review",
+    url: "/dashboard/website-review",
+    icon: Star,
+  },
+]
+
 export function AppSidebar() {
   const { user, logout } = useAuthStore()
   const router = useRouter()
@@ -309,6 +318,34 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
+
+        {user?.role !== "MEMBER" && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+              Feedback
+            </SidebarGroupLabel>
+
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {feedbackItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pathname === item.url}
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
         {(user?.role === "ADMIN" || user?.role === "DEV") && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">

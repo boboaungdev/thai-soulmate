@@ -39,19 +39,19 @@ export async function POST(req: Request) {
       },
     })
 
-    const { data: adminData, error: adminError } = await resend.emails.send({
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
-      to: [CONTACT.email],
-      subject: `[Website Review] Someone submitted a new website review`,
-      react: WebsiteReviewNotificationEmail(),
-    })
+    // const { data: adminData, error: adminError } = await resend.emails.send({
+    //   from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+    //   to: [CONTACT.email],
+    //   subject: `[Website Review] Someone submitted a new website review`,
+    //   react: WebsiteReviewNotificationEmail(),
+    // })
 
-    if (adminError) {
-      console.error("Admin email failed:", adminError)
-      // Don't block the user, just log the error
-    } else {
-      console.log("Admin email sent:", adminData?.id)
-    }
+    // if (adminError) {
+    //   console.error("Admin email failed:", adminError)
+    //   // Don't block the user, just log the error
+    // } else {
+    //   console.log("Admin email sent:", adminData?.id)
+    // }
 
     return NextResponse.json({ message: "Review submitted successfully!" })
   } catch (error) {

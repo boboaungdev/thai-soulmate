@@ -61,7 +61,7 @@ const websiteReviewSchema = z
       findRegistration: z
         .string()
         .min(1, { message: "Please select an option." }),
-      confusingPages: z.string().optional(),
+      confusingPages: z.string().min(1, { message: "This field is required." }),
       mobileFriendly: z
         .string()
         .min(1, { message: "Please select an option." }),
@@ -78,7 +78,9 @@ const websiteReviewSchema = z
       visuallyAppealing: z
         .string()
         .min(1, { message: "Please select an option." }),
-      outdatedUnprofessional: z.string().optional(),
+      outdatedUnprofessional: z
+        .string()
+        .min(1, { message: "This field is required." }),
     }),
     understandingService: z.object({
       matchmakingProcess: z
@@ -87,14 +89,14 @@ const websiteReviewSchema = z
       matchmakingVsAppsClear: z
         .string()
         .min(1, { message: "Please select an option." }),
-      missingInfo: z.string().optional(),
+      missingInfo: z.string().min(1, { message: "This field is required." }),
     }),
     trustSafety: z.object({
       feelSafe: z.string().min(1, { message: "Please select an option." }),
       explainPrivacy: z
         .string()
         .min(1, { message: "Please select an option." }),
-      increaseTrust: z.string().optional(),
+      increaseTrust: z.string().min(1, { message: "This field is required." }),
     }),
     contentQuality: z.object({
       englishEasy: z.string().min(1, { message: "Please select an option." }),
@@ -109,8 +111,10 @@ const websiteReviewSchema = z
         .min(1, "Rating must be 1-10")
         .max(10, "Rating must be 1-10")
         .optional(),
-      unnecessaryQuestions: z.string().optional(),
-      stoppedAt: z.string().optional(),
+      unnecessaryQuestions: z
+        .string()
+        .min(1, { message: "This field is required." }),
+      stoppedAt: z.string().min(1, { message: "This field is required." }),
     }),
     pricingValue: z.object({
       pricingEasyToUnderstand: z
@@ -138,14 +142,18 @@ const websiteReviewSchema = z
       considerJoiningService: z
         .string()
         .min(1, { message: "Please select an option." }),
-      concernsBeforeJoining: z.string().optional(),
+      concernsBeforeJoining: z
+        .string()
+        .min(1, { message: "This field is required." }),
       understandBenefits: z
         .string()
         .min(1, { message: "Please select an option." }),
       processClearlyExplained: z
         .string()
         .min(1, { message: "Please select an option." }),
-      whatWouldEncourageSignUp: z.string().optional(),
+      whatWouldEncourageSignUp: z
+        .string()
+        .min(1, { message: "This field is required." }),
     }),
     reviewerInfo: z.object({
       isAnonymous: z.boolean(),

@@ -37,32 +37,84 @@ export const getColumns = (
     enableHiding: false,
   },
   {
-    accessorKey: "firstImpression",
+    accessorKey: "designRating",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="First Impression" />
+      <DataTableColumnHeader column={column} title="Design Rating" />
     ),
-    cell: ({ row }) => <div>{Number(row.getValue("firstImpression"))} / 5</div>,
+    accessorFn: row => {
+      const value = (row.designBranding as any)?.overallRating
+      return value ? `${value} / 10` : 'N/A'
+    },
   },
   {
-    accessorKey: "easeOfUse",
+    accessorKey: "formEaseRating",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ease of Use" />
+      <DataTableColumnHeader column={column} title="Form Ease Rating" />
     ),
-    cell: ({ row }) => <div>{Number(row.getValue("easeOfUse"))} / 5</div>,
+    accessorFn: row => {
+      const value = (row.registrationProcess as any)?.formEaseRating
+      return value ? `${value} / 10` : 'N/A'
+    },
   },
   {
-    accessorKey: "designBranding",
+    accessorKey: "easeOfUseRating",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Design" />
+      <DataTableColumnHeader column={column} title="Ease of Use Rating" />
     ),
-    cell: ({ row }) => <div>{Number(row.getValue("designBranding"))} / 5</div>,
+    accessorFn: row => {
+      const value = (row.easeOfUse as any)?.rating
+      return value ? `${value} / 10` : 'N/A'
+    },
   },
   {
-    accessorKey: "overallExperience",
+    accessorKey: "overallExperienceRating",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Overall" />
+      <DataTableColumnHeader column={column} title="Overall Experience Rating" />
     ),
-    cell: ({ row }) => <div>{Number(row.getValue("overallExperience"))} / 5</div>,
+    accessorFn: row => {
+      const value = (row.overallExperience as any)?.rating
+      return value ? `${value} / 10` : 'N/A'
+    },
+  },
+  {
+    accessorKey: "wouldRecommend",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Would Recommend" />
+    ),
+    accessorFn: row => {
+      const value = (row.overallExperience as any)?.wouldRecommend
+      return value ? (value === 'yes' ? 'Yes' : 'No') : 'N/A'
+    },
+  },
+  {
+    accessorKey: "serviceUnderstood",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Service Understood" />
+    ),
+    accessorFn: row => {
+      const value = (row.understandingService as any)?.understood
+      return value ? (value === 'yes' ? 'Yes' : 'No') : 'N/A'
+    },
+  },
+  {
+    accessorKey: "feltSafe",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Felt Safe" />
+    ),
+    accessorFn: row => {
+      const value = (row.trustSafety as any)?.feelSafe
+      return value ? (value === 'yes' ? 'Yes' : 'No') : 'N/A'
+    },
+  },
+  {
+    accessorKey: "easyEnglish",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Easy English" />
+    ),
+    accessorFn: row => {
+      const value = (row.contentQuality as any)?.englishEasy
+      return value ? (value === 'yes' ? 'Yes' : 'No') : 'N/A'
+    },
   },
   {
     accessorKey: "createdAt",

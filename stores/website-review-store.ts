@@ -17,17 +17,10 @@ type WebsiteReviewState = {
 }
 
 const defaultColumnVisibility: VisibilityState = {
-  firstImpression: true,
-  easeOfUse: true,
-  designBranding: true,
-  understandingService: false,
-  trustSafety: false,
-  contentQuality: false,
-  registrationProcess: false,
-  pricingValue: false,
-  overallExperience: true,
-  matchmakingSpecific: false,
-  reviewerInfo: false,
+  designRating: true,
+  formEaseRating: true,
+  feltSafe: true,
+  easyEnglish: true,
   createdAt: true,
 }
 

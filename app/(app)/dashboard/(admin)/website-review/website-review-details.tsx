@@ -8,11 +8,36 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { Prisma } from "@prisma/client"
 
 interface WebsiteReviewDetailsProps {
   item: WebsiteReview | null
   onClose: () => void
+}
+
+const DetailSection = ({ title, data }: { title: string, data: Prisma.JsonValue }) => {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return null
+  }
+
+  return (
+    <div className="space-y-2">
+      <h4 className="font-semibold">{title}</h4>
+      {Object.entries(data).map(([key, value]) => (
+        <div key={key} className="text-sm">
+          <span className="font-medium text-muted-foreground capitalize">
+            {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+          </span>{' '}
+          <span>
+            {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : String(value) || 'N/A'}
+          </span>
+        </div>
+      ))}
+      <Separator className="my-4" />
+    </div>
+  )
 }
 
 export function WebsiteReviewDetails({
@@ -32,46 +57,21 @@ export function WebsiteReviewDetails({
             Detailed information from the website review.
           </SheetDescription>
         </SheetHeader>
-        <div className="space-y-4 py-4">
-          <Separator />
-          <div className="space-y-2">
-            <h4 className="font-semibold">Ratings</h4>
-            <p>First Impression: {item.firstImpression} / 5</p>
-            <p>Ease of Use: {item.easeOfUse} / 5</p>
-            <p>Design & Branding: {item.designBranding} / 5</p>
-            <p>Understanding of Service: {item.understandingService} / 5</p>
-            <p>Trust & Safety: {item.trustSafety} / 5</p>
-            <p>Content Quality: {item.contentQuality} / 5</p>
-            <p>Registration Process: {item.registrationProcess} / 5</p>
-            <p>Pricing & Value: {item.pricingValue} / 5</p>
-            <p>Overall Experience: {item.overallExperience} / 5</p>
+        <ScrollArea className="h-[calc(100vh-8rem)] pr-4">
+          <div className="space-y-4 py-4">
+            <DetailSection title="First Impression" data={item.firstImpression} />
+            <DetailSection title="Ease of Use" data={item.easeOfUse} />
+            <DetailSection title="Design & Branding" data={item.designBranding} />
+            <DetailSection title="Understanding of Service" data={item.understandingService} />
+            <DetailSection title="Trust & Safety" data={item.trustSafety} />
+            <DetailSection title="Content Quality" data={item.contentQuality} />
+            <DetailSection title="Registration Process" data={item.registrationProcess} />
+            <DetailSection title="Pricing & Value" data={item.pricingValue} />
+            <DetailSection title="Overall Experience" data={item.overallExperience} />
+            <DetailSection title="Matchmaking Specific" data={item.matchmakingSpecific} />
+            <DetailSection title="Reviewer Info" data={item.reviewerInfo} />
           </div>
-          <Separator />
-          <div className="space-y-2">
-            <h4 className="font-semibold">Matchmaking Specific</h4>
-            {typeof item.matchmakingSpecific === 'object' && item.matchmakingSpecific !== null ? (
-              Object.entries(item.matchmakingSpecific).map(([key, value]) => (
-                <p key={key}>
-                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:{' '}
-                  {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : String(value)}
-                </p>
-              ))
-            ) : (
-              <p>{String(item.matchmakingSpecific)}</p>
-            )}
-          </div>
-          <Separator />
-          <div className="space-y-2">
-            <h4 className="font-semibold">Reviewer Info</h4>
-            <p>
-              {item.reviewerInfo === null
-                ? 'N/A'
-                : typeof item.reviewerInfo === 'object'
-                  ? JSON.stringify(item.reviewerInfo)
-                  : String(item.reviewerInfo)}
-            </p>
-          </div>
-        </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   )

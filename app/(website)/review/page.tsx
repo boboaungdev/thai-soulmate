@@ -62,13 +62,13 @@ const formSchema = z.object({
     }),
     designedFor: z.string().optional(),
     caughtAttention: z.string().optional(),
-    professionalTrustworthy: z.string({
+    professionalTrustworthy: z.string().min(1, {
       message: "Please select an option.",
     }),
     professionalTrustworthyReason: z.string().optional(),
   }),
   easeOfUse: z.object({
-    findServiceInfo: z.string({
+    findServiceInfo: z.string().min(1, {
       message: "Please select an option.",
     }),
     findRegistration: z.string().optional(),
@@ -76,7 +76,10 @@ const formSchema = z.object({
     mobileFriendly: z.string().optional(),
   }),
   designBranding: z.object({
-    overallRating: z.coerce.number().min(1, { message: "Rating must be between 1 and 10." }).max(10, { message: "Rating cannot exceed 10." }),
+    overallRating: z.coerce
+      .number()
+      .min(1, { message: "Rating must be between 1 and 10." })
+      .max(10, { message: "Rating cannot exceed 10." }),
     suitableForPremium: z.string().optional(),
     visuallyAppealing: z.string().optional(),
     outdatedUnprofessional: z.string().optional(),
@@ -90,26 +93,29 @@ const formSchema = z.object({
     missingInfo: z.string().optional(),
   }),
   trustSafety: z.object({
-    feelSafe: z.string({
+    feelSafe: z.string().min(1, {
       message: "Please select an option.",
     }),
     explainPrivacy: z.string().optional(),
     increaseTrust: z.string().optional(),
   }),
   contentQuality: z.object({
-    englishEasy: z.string({
+    englishEasy: z.string().min(1, {
       message: "Please select an option.",
     }),
     thaiNatural: z.string().optional(),
     serviceDescriptionLength: z.string().optional(),
   }),
   registrationProcess: z.object({
-    formEaseRating: z.coerce.number().min(1, { message: "Rating must be between 1 and 10." }).max(10, { message: "Rating cannot exceed 10." }),
+    formEaseRating: z.coerce
+      .number()
+      .min(1, { message: "Rating must be between 1 and 10." })
+      .max(10, { message: "Rating cannot exceed 10." }),
     unnecessaryQuestions: z.string().optional(),
     stoppedAt: z.string().optional(),
   }),
   pricingValue: z.object({
-    pricingEasyToUnderstand: z.string({
+    pricingEasyToUnderstand: z.string().min(1, {
       message: "Please select an option.",
     }),
     expectedServiceTier: z.string().optional(),
@@ -126,7 +132,7 @@ const formSchema = z.object({
     considerJoiningReason: z.string().optional(),
   }),
   matchmakingSpecific: z.object({
-    considerJoiningService: z.string({
+    considerJoiningService: z.string().min(1, {
       message: "Please select an option.",
     }),
     concernsBeforeJoining: z.string().optional(),
@@ -292,7 +298,7 @@ export default function ReviewPage() {
                 setIsSubmitted(false)
                 form.reset()
               }}
-              className="absolute left-4 top-4 flex items-center gap-2 text-muted-foreground hover:text-foreground"
+              className="absolute top-4 left-4 flex items-center gap-2 text-muted-foreground hover:text-foreground"
             >
               <ChevronLeft className="h-4 w-4" /> Back to Review
             </Button>
@@ -334,7 +340,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-1">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <Sparkles className="h-5 w-5" /> First Impression (first
                       30 seconds)
                     </AccordionTrigger>
@@ -406,7 +412,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-2">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <MousePointerClick className="h-5 w-5" /> Ease of Use
                     </AccordionTrigger>
                   </CardHeader>
@@ -458,7 +464,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-3">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <Palette className="h-5 w-5" /> Design & Branding
                     </AccordionTrigger>
                   </CardHeader>
@@ -504,7 +510,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-4">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <Lightbulb className="h-5 w-5" /> Understanding the
                       Service
                     </AccordionTrigger>
@@ -540,7 +546,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-5">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <ShieldCheck className="h-5 w-5" /> Trust & Safety
                     </AccordionTrigger>
                   </CardHeader>
@@ -592,7 +598,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-6">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <FileText className="h-5 w-5" /> Content Quality
                     </AccordionTrigger>
                   </CardHeader>
@@ -643,7 +649,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-7">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <UserPlus className="h-5 w-5" /> Registration / Inquiry
                       Process
                     </AccordionTrigger>
@@ -691,7 +697,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-8">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <DollarSign className="h-5 w-5" /> Pricing & Value
                     </AccordionTrigger>
                   </CardHeader>
@@ -742,7 +748,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-9">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <Star className="h-5 w-5" /> Overall Experience
                     </AccordionTrigger>
                   </CardHeader>
@@ -776,7 +782,7 @@ export default function ReviewPage() {
               <Card className="mb-4">
                 <AccordionItem value="item-10">
                   <CardHeader className="p-0">
-                    <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
+                    <AccordionTrigger className="flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
                       <Heart className="h-5 w-5" /> Matchmaking Service Specific
                     </AccordionTrigger>
                   </CardHeader>

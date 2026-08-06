@@ -1,28 +1,35 @@
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { type VisibilityState } from '@tanstack/react-table';
-import { WebsiteReview } from '@/lib/generated/prisma/client';
-
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import { type VisibilityState } from '@tanstack/react-table'
+import { WebsiteReview } from '@/lib/generated/prisma/client'
 
 type WebsiteReviewState = {
-  reviews: WebsiteReview[];
-  loading: boolean;
-  error: string | null;
-  columnVisibility: VisibilityState;
+  reviews: WebsiteReview[]
+  loading: boolean
+  error: string | null
+  columnVisibility: VisibilityState
   actions: {
-    fetchReviews: () => Promise<void>;
-    forceFetchReviews: () => Promise<void>;
-    setColumnVisibility: (updater: React.SetStateAction<VisibilityState>) => void;
-  };
-};
+    fetchReviews: () => Promise<void>
+    forceFetchReviews: () => Promise<void>
+    setColumnVisibility: (updater: React.SetStateAction<VisibilityState>) => void
+  }
+}
 
 const defaultColumnVisibility: VisibilityState = {
-  email: true,
-  name: true,
-  design: true,
-  registration: true,
-};
+  firstImpression: true,
+  easeOfUse: true,
+  designBranding: true,
+  understandingService: false,
+  trustSafety: false,
+  contentQuality: false,
+  registrationProcess: false,
+  pricingValue: false,
+  overallExperience: true,
+  matchmakingSpecific: false,
+  reviewerInfo: false,
+  createdAt: true,
+}
 
 export const useWebsiteReviewStore = create<WebsiteReviewState>()(
   persist(
@@ -34,51 +41,49 @@ export const useWebsiteReviewStore = create<WebsiteReviewState>()(
       actions: {
         fetchReviews: async () => {
           if (get().reviews.length > 0) {
-            return;
+            return
           }
-          set({ loading: true, error: null });
+          set({ loading: true, error: null })
           try {
-            const response = await fetch('/api/website-review');
+            const response = await fetch('/api/website-review')
             if (!response.ok) {
-              throw new Error('Failed to fetch reviews');
+              throw new Error('Failed to fetch reviews')
             }
-            const reviews = await response.json();
-            set({ reviews, loading: false });
+            const reviews = await response.json()
+            set({ reviews, loading: false })
           } catch (error) {
             set({
               error: error instanceof Error ? error.message : 'An unknown error occurred',
               loading: false,
-            });
+            })
           }
         },
         forceFetchReviews: async () => {
-          set({ loading: true, error: null, reviews: [] });
+          set({ loading: true, error: null, reviews: [] })
           try {
-            const response = await fetch('/api/website-review');
+            const response = await fetch('/api/website-review')
             if (!response.ok) {
-              throw new Error('Failed to fetch reviews');
+              throw new Error('Failed to fetch reviews')
             }
-            const reviews = await response.json();
-            set({ reviews, loading: false });
+            const reviews = await response.json()
+            set({ reviews, loading: false })
           } catch (error) {
             set({
               error: error instanceof Error ? error.message : 'An unknown error occurred',
               loading: false,
-            });
+            })
           }
         },
-        setColumnVisibility: (updater) => {
+        setColumnVisibility: updater => {
           const newVisibility =
-            typeof updater === 'function'
-              ? updater(get().columnVisibility)
-              : updater;
-          set({ columnVisibility: newVisibility });
+            typeof updater === 'function' ? updater(get().columnVisibility) : updater
+          set({ columnVisibility: newVisibility })
         },
       },
     }),
     {
       name: 'website-review-table-settings',
-      partialize: (state) => ({ columnVisibility: state.columnVisibility }),
+      partialize: state => ({ columnVisibility: state.columnVisibility }),
     },
   ),
-);
+)

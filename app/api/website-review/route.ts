@@ -48,19 +48,16 @@ export async function POST(req: Request) {
   }
 }
 
-
-
-
 export async function GET() {
   try {
     const reviews = await prisma.websiteReview.findMany({
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
-    });
-    return NextResponse.json(reviews);
+    })
+    return NextResponse.json(reviews)
   } catch (error) {
-    console.error('Error fetching reviews:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    console.error("Error fetching reviews:", error)
+    return new NextResponse("Internal Server Error", { status: 500 })
   }
 }

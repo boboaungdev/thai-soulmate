@@ -75,7 +75,7 @@ const formSchema = z.object({
     mobileFriendly: z.string().optional(),
   }),
   designBranding: z.object({
-    overallRating: z.string().min(1, { message: "Please provide a rating." }),
+    overallRating: z.coerce.number().min(1, { message: "Rating must be between 1 and 10." }).max(10, { message: "Rating cannot exceed 10." }),
     suitableForPremium: z.string().optional(),
     visuallyAppealing: z.string().optional(),
     outdatedUnprofessional: z.string().optional(),
@@ -103,7 +103,7 @@ const formSchema = z.object({
     serviceDescriptionLength: z.string().optional(),
   }),
   registrationProcess: z.object({
-    formEaseRating: z.string().min(1, { message: "Please provide a rating." }),
+    formEaseRating: z.coerce.number().min(1, { message: "Rating must be between 1 and 10." }).max(10, { message: "Rating cannot exceed 10." }),
     unnecessaryQuestions: z.string().optional(),
     stoppedAt: z.string().optional(),
   }),
@@ -181,35 +181,59 @@ export default function ReviewPage() {
         offer: "",
         designedFor: "",
         caughtAttention: "",
-        professionalTrustworthy: undefined,
+        professionalTrustworthy: "",
         professionalTrustworthyReason: "",
       },
       easeOfUse: {
-        findServiceInfo: undefined,
+        findServiceInfo: "",
+        findRegistration: "",
+        confusingPages: "",
+        mobileFriendly: "",
       },
       designBranding: {
-        overallRating: "",
+        overallRating: undefined,
+        suitableForPremium: "",
+        visuallyAppealing: "",
+        outdatedUnprofessional: "",
       },
       understandingService: {
         matchmakingProcess: "",
+        matchmakingVsAppsClear: "",
+        missingInfo: "",
       },
       trustSafety: {
-        feelSafe: undefined,
+        feelSafe: "",
+        explainPrivacy: "",
+        increaseTrust: "",
       },
       contentQuality: {
-        englishEasy: undefined,
+        englishEasy: "",
+        thaiNatural: "",
+        serviceDescriptionLength: "",
       },
       registrationProcess: {
-        formEaseRating: "",
+        formEaseRating: undefined,
+        unnecessaryQuestions: "",
+        stoppedAt: "",
       },
       pricingValue: {
-        pricingEasyToUnderstand: undefined,
+        pricingEasyToUnderstand: "",
+        expectedServiceTier: "",
+        worthThePriceExplained: "",
       },
       overallExperience: {
         mostLiked: "",
+        leastLiked: "",
+        oneChange: "",
+        considerJoining: "",
+        considerJoiningReason: "",
       },
       matchmakingSpecific: {
-        considerJoiningService: undefined,
+        considerJoiningService: "",
+        concernsBeforeJoining: "",
+        understandBenefits: "",
+        processClearlyExplained: "",
+        whatWouldEncourageSignUp: "",
       },
       reviewerInfo: {
         isAnonymous: false,
@@ -444,7 +468,16 @@ export default function ReviewPage() {
                                 max="10"
                                 placeholder="e.g., 8"
                                 className="mt-1"
+                                onKeyDown={(event) => {
+                                  if (
+                                    event.key === "0" &&
+                                    event.currentTarget.value === ""
+                                  ) {
+                                    event.preventDefault()
+                                  }
+                                }}
                                 {...field}
+                                value={field.value ?? ""}
                               />
                             </FormControl>
                             <FormMessage />
@@ -622,7 +655,16 @@ export default function ReviewPage() {
                                 max="10"
                                 placeholder="e.g., 7"
                                 className="mt-1"
+                                onKeyDown={(event) => {
+                                  if (
+                                    event.key === "0" &&
+                                    event.currentTarget.value === ""
+                                  ) {
+                                    event.preventDefault()
+                                  }
+                                }}
                                 {...field}
+                                value={field.value ?? ""}
                               />
                             </FormControl>
                             <FormMessage />

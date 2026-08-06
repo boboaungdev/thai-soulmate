@@ -177,7 +177,7 @@ const formSchema = z.object({
     }),
 })
 
-export default function ReviewPage() {
+export default function WebsiteReviewPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 

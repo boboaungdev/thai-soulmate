@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { resend } from "@/lib/resend"
+import { WebsiteReviewNotificationEmail } from "@/emails"
+import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 
 export async function POST(req: Request) {
   try {
@@ -36,7 +39,19 @@ export async function POST(req: Request) {
       },
     })
 
-    console.log("Review saved to database:", review)
+    const { data: adminData, error: adminError } = await resend.emails.send({
+      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+      to: ['boolean405@gmail.com'],
+      subject: `[Website Review] Someone submitted a new website review`,
+      react: WebsiteReviewNotificationEmail(),
+    })
+
+    if (adminError) {
+      console.error("Admin email failed:", adminError)
+      // Don't block the user, just log the error
+    } else {
+      console.log("Admin email sent:", adminData?.id)
+    }
 
     return NextResponse.json({ message: "Review submitted successfully!" })
   } catch (error) {

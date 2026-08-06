@@ -15,6 +15,9 @@ import {
   DollarSign,
   Star,
   Heart,
+  User,
+  Mail,
+  UserCheck,
 } from "lucide-react"
 
 import {
@@ -26,6 +29,7 @@ import {
 import { Button } from "@/components/ui/button"
 import {
   Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -41,6 +45,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 
@@ -124,6 +129,30 @@ const formSchema = z.object({
     processClearlyExplained: z.string().optional(),
     whatWouldEncourageSignUp: z.string().optional(),
   }),
+  reviewerInfo: z
+    .object({
+      isAnonymous: z.boolean().default(false),
+      name: z.string().optional(),
+      email: z.email({ message: "Please enter a valid email." }).optional(),
+    })
+    .superRefine((data, ctx) => {
+      if (!data.isAnonymous) {
+        if (!data.name || data.name.trim() === "") {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Name is required.",
+            path: ["name"],
+          })
+        }
+        if (!data.email || data.email.trim() === "") {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Email is required.",
+            path: ["email"],
+          })
+        }
+      }
+    }),
 })
 
 export default function ReviewPage() {
@@ -164,6 +193,11 @@ export default function ReviewPage() {
       matchmakingSpecific: {
         considerJoiningService: undefined,
       },
+      reviewerInfo: {
+        isAnonymous: false,
+        name: "",
+        email: "",
+      },
     },
   })
 
@@ -171,6 +205,8 @@ export default function ReviewPage() {
     console.log("Review Form Data:", values)
     toast.success("Thank you for your feedback!")
   }
+
+  const isAnonymous = form.watch("reviewerInfo.isAnonymous")
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
@@ -200,6 +236,7 @@ export default function ReviewPage() {
               "item-8",
               "item-9",
               "item-10",
+              "item-11",
             ]}
           >
             {/* First Impression */}
@@ -207,7 +244,8 @@ export default function ReviewPage() {
               <AccordionItem value="item-1">
                 <CardHeader className="p-0">
                   <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
-                    <Sparkles className="h-5 w-5" /> First Impression (first 30 seconds)
+                    <Sparkles className="h-5 w-5" /> First Impression (first 30
+                    seconds)
                   </AccordionTrigger>
                 </CardHeader>
                 <AccordionContent className="p-6 pt-0">
@@ -504,7 +542,8 @@ export default function ReviewPage() {
               <AccordionItem value="item-7">
                 <CardHeader className="p-0">
                   <AccordionTrigger className="flex items-center gap-2 p-6 text-xl font-semibold">
-                    <UserPlus className="h-5 w-5" /> Registration / Inquiry Process
+                    <UserPlus className="h-5 w-5" /> Registration / Inquiry
+                    Process
                   </AccordionTrigger>
                 </CardHeader>
                 <AccordionContent className="p-6 pt-0">
@@ -671,6 +710,96 @@ export default function ReviewPage() {
                   </div>
                 </AccordionContent>
               </AccordionItem>
+            </Card>
+
+            {/* Reviewer Information */}
+            <Card className="mb-4">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl font-semibold">
+                  <UserCheck className="h-5 w-5" /> Reviewer Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="reviewerInfo.isAnonymous"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">
+                            Submit Anonymously
+                          </FormLabel>
+                          <CardDescription>
+                            Your name and email will not be submitted with your
+                            feedback.
+                          </CardDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {!isAnonymous && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Your Details</CardTitle>
+                        <CardDescription>
+                          Please provide your name and email.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <FormField
+                          control={form.control}
+                          name="reviewerInfo.name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <User className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                  <Input
+                                    placeholder="Your name"
+                                    className="pl-10"
+                                    {...field}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="reviewerInfo.email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                  <Input
+                                    type="email"
+                                    placeholder="you@example.com"
+                                    className="pl-10"
+                                    {...field}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              </CardContent>
             </Card>
           </Accordion>
 

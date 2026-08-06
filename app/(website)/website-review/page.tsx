@@ -3,6 +3,8 @@
 import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
 import {
   User2,
@@ -41,77 +43,161 @@ import { Textarea } from "@/components/ui/textarea"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
 
-type WebsiteReviewFormValues = {
-  firstImpression: {
-    offer: string
-    designedFor: string
-    caughtAttention: string
-    professionalTrustworthy: string
-    professionalTrustworthyReason: string
-  }
-  easeOfUse: {
-    findServiceInfo: string
-    findRegistration: string
-    confusingPages: string
-    mobileFriendly: string
-  }
-  designBranding: {
-    overallRating: number | undefined
-    suitableForPremium: string
-    visuallyAppealing: string
-    outdatedUnprofessional: string
-  }
-  understandingService: {
-    matchmakingProcess: string
-    matchmakingVsAppsClear: string
-    missingInfo: string
-  }
-  trustSafety: {
-    feelSafe: string
-    explainPrivacy: string
-    increaseTrust: string
-  }
-  contentQuality: {
-    englishEasy: string
-    thaiNatural: string
-    serviceDescriptionLength: string
-  }
-  registrationProcess: {
-    formEaseRating: number | undefined
-    unnecessaryQuestions: string
-    stoppedAt: string
-  }
-  pricingValue: {
-    pricingEasyToUnderstand: string
-    expectedServiceTier: string
-    worthThePriceExplained: string
-  }
-  overallExperience: {
-    mostLiked: string
-    leastLiked: string
-    oneChange: string
-    considerJoining: string
-    considerJoiningReason: string
-  }
-  matchmakingSpecific: {
-    considerJoiningService: string
-    concernsBeforeJoining: string
-    understandBenefits: string
-    processClearlyExplained: string
-    whatWouldEncourageSignUp: string
-  }
-  reviewerInfo: {
-    isAnonymous: boolean
-    name: string
-    email: string
-  }
-}
+const websiteReviewSchema = z
+  .object({
+    firstImpression: z.object({
+      offer: z.string().min(1, { message: "This field is required." }),
+      designedFor: z.string().min(1, { message: "This field is required." }),
+      caughtAttention: z.string().min(1, { message: "This field is required." }),
+      professionalTrustworthy: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      professionalTrustworthyReason: z
+        .string()
+        .min(1, { message: "This field is required." }),
+    }),
+    easeOfUse: z.object({
+      findServiceInfo: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      findRegistration: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      confusingPages: z.string().optional(),
+      mobileFriendly: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+    }),
+    designBranding: z.object({
+      overallRating: z.preprocess(
+        (a) => (a === "" ? undefined : a),
+        z.coerce
+          .number()
+          .min(1, "Rating must be 1-10")
+          .max(10, "Rating must be 1-10")
+          .optional()
+      ),
+      suitableForPremium: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      visuallyAppealing: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      outdatedUnprofessional: z.string().optional(),
+    }),
+    understandingService: z.object({
+      matchmakingProcess: z
+        .string()
+        .min(1, { message: "This field is required." }),
+      matchmakingVsAppsClear: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      missingInfo: z.string().optional(),
+    }),
+    trustSafety: z.object({
+      feelSafe: z.string().min(1, { message: "Please select an option." }),
+      explainPrivacy: z.string().min(1, { message: "Please select an option." }),
+      increaseTrust: z.string().optional(),
+    }),
+    contentQuality: z.object({
+      englishEasy: z.string().min(1, { message: "Please select an option." }),
+      thaiNatural: z.string().min(1, { message: "Please select an option." }),
+      serviceDescriptionLength: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+    }),
+    registrationProcess: z.object({
+      formEaseRating: z.preprocess(
+        (a) => (a === "" ? undefined : a),
+        z.coerce
+          .number()
+          .min(1, "Rating must be 1-10")
+          .max(10, "Rating must be 1-10")
+          .optional()
+      ),
+      unnecessaryQuestions: z.string().optional(),
+      stoppedAt: z.string().optional(),
+    }),
+    pricingValue: z.object({
+      pricingEasyToUnderstand: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      expectedServiceTier: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      worthThePriceExplained: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+    }),
+    overallExperience: z.object({
+      mostLiked: z.string().min(1, { message: "This field is required." }),
+      leastLiked: z.string().min(1, { message: "This field is required." }),
+      oneChange: z.string().min(1, { message: "This field is required." }),
+      considerJoining: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      considerJoiningReason: z
+        .string()
+        .min(1, { message: "This field is required." }),
+    }),
+    matchmakingSpecific: z.object({
+      considerJoiningService: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      concernsBeforeJoining: z.string().optional(),
+      understandBenefits: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      processClearlyExplained: z
+        .string()
+        .min(1, { message: "Please select an option." }),
+      whatWouldEncourageSignUp: z.string().optional(),
+    }),
+    reviewerInfo: z.object({
+      isAnonymous: z.boolean(),
+      name: z.string(),
+      email: z.string(),
+    }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.reviewerInfo.isAnonymous === false) {
+      if (data.reviewerInfo.name.trim() === "") {
+        ctx.addIssue({
+          path: ["reviewerInfo.name"],
+          message: "Name is required.",
+          code: "custom",
+        })
+      }
+      if (data.reviewerInfo.email.trim() === "") {
+        ctx.addIssue({
+          path: ["reviewerInfo.email"],
+          message: "Email is required.",
+          code: "custom",
+        })
+      } else {
+        const emailValidation = z
+          .string()
+          .email()
+          .safeParse(data.reviewerInfo.email)
+        if (!emailValidation.success) {
+          ctx.addIssue({
+            path: ["reviewerInfo.email"],
+            message: "Invalid email format.",
+            code: "custom",
+          })
+        }
+      }
+    }
+  })
+
+type WebsiteReviewFormValues = z.infer<typeof websiteReviewSchema>
 
 export default function WebsiteReviewPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<WebsiteReviewFormValues>({
+    resolver: zodResolver(websiteReviewSchema),
     defaultValues: {
       firstImpression: {
         offer: "",

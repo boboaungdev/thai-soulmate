@@ -2,7 +2,7 @@
 import { z } from "zod"
 import { NextResponse } from "next/server"
 import { resend } from "@/lib/resend"
-import { APP_INFO, EMAIL } from "@/constants"
+import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 import { ContactFormNotificationEmail } from "@/emails"
 
 const contactFormSchema = z.object({
@@ -19,8 +19,8 @@ export async function POST(req: Request) {
 
     // Send email to admin
     const { data, error } = await resend.emails.send({
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
-      to: ["boolean405@gmail.com"],
+      from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
+      to: [CONTACT.email],
       replyTo: validatedData.email, // Reply to the user's email
       subject: `[Contact Form] New Message from ${validatedData.name}: ${validatedData.subject}`,
       react: ContactFormNotificationEmail({

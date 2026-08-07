@@ -76,6 +76,7 @@ export async function POST(req: Request) {
     const { data: userData, error: userError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
       to: validatedData.email,
+      replyTo: EMAIL.contact,
       subject: `[Register Interest] Thank you for your interest in ${APP_INFO.name}!`,
       react: RegisterInterestUserConfirmationEmail(validatedData),
     })
@@ -121,7 +122,7 @@ export async function POST(req: Request) {
 
     // Send admin notification last
     const { data: adminData, error: adminError } = await resend.emails.send({
-      from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
+      from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
       to: [CONTACT.email],
       replyTo: validatedData.email,
       subject: `[Register Interest] New Interest Registration: ${validatedData.name}`,

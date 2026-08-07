@@ -123,6 +123,7 @@ export async function POST(req: Request) {
     const { data: adminData, error: adminError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.noreply}>`,
       to: [CONTACT.email],
+      replyTo: validatedData.email,
       subject: `[Register Interest] New Interest Registration: ${validatedData.name}`,
       react: RegisterInterestAdminNotificationEmail({
         ...validatedData,

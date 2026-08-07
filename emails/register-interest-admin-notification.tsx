@@ -102,7 +102,7 @@ export const RegisterInterestAdminNotificationEmail = ({
         <Hr style={hr} />
 
         <Text style={autoMessage}>
-          This is an automated notification from your website.
+          This is an automated notification from your website. You can reply to this email directly to contact {details.name}.
         </Text>
 
         <Section style={copyrightSection}>

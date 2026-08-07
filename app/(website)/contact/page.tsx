@@ -1,6 +1,6 @@
 // app/(website)/contact/page.tsx
-import { CONTACT } from "@/constants";
-import { ContactForm } from "@/components/contact-form";
+import { CONTACT } from "@/constants"
+import { ContactForm } from "@/components/contact-form"
 // Changed to react-icons/fa
 import {
   FaFacebookF,
@@ -8,21 +8,21 @@ import {
   FaLine,
   FaTiktok,
   FaWhatsapp,
-} from "react-icons/fa";
-import { Mail, Phone, MapPin } from "lucide-react"; // Keeping Mail, Phone, MapPin from lucide-react for other cards
-import Link from "next/link";
+} from "react-icons/fa"
+import { Mail, Phone, MapPin } from "lucide-react" // Keeping Mail, Phone, MapPin from lucide-react for other cards
+import Link from "next/link"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { MotionDiv } from "@/components/motion";
+} from "@/components/ui/card"
+import { MotionDiv } from "@/components/motion"
 
 export default function ContactPage() {
   return (
-    <main className="mb-12 space-y-12">
+    <main className="mb-12">
       <section className="bg-animated-gradient flex min-h-[300px] py-12 md:py-24">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <MotionDiv
@@ -31,18 +31,18 @@ export default function ContactPage() {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="mb-8 text-4xl font-bold tracking-tighter md:text-5xl text-gradient">
+            <h1 className="text-gradient mb-8 text-4xl font-bold tracking-tighter md:text-5xl">
               Contact Us
             </h1>
             <p className="mx-auto max-w-3xl text-muted-foreground md:text-xl">
-              We&apos;d love to hear from you! Reach out to us through any of the
-              channels below, or send us a message using the form.
+              We&apos;d love to hear from you! Reach out to us through any of
+              the channels below, or send us a message using the form.
             </p>
           </MotionDiv>
         </div>
       </section>
 
-      <section className="py-16 ">
+      <section className="pb-16">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2">
             <div className="space-y-8">
@@ -103,7 +103,7 @@ export default function ContactPage() {
                   <div className="flex flex-wrap gap-4">
                     <Link
                       href={CONTACT.facebook}
-                      className="text-blue-600 dark:text-blue-500 flex items-center gap-2"
+                      className="flex items-center gap-2 text-blue-600 dark:text-blue-500"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -112,7 +112,7 @@ export default function ContactPage() {
                     </Link>
                     <Link
                       href={CONTACT.instagram}
-                      className="text-pink-500 dark:text-pink-400 flex items-center gap-2"
+                      className="flex items-center gap-2 text-pink-500 dark:text-pink-400"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -121,7 +121,7 @@ export default function ContactPage() {
                     </Link>
                     <Link
                       href={CONTACT.line}
-                      className="text-green-500 dark:text-green-400 flex items-center gap-2"
+                      className="flex items-center gap-2 text-green-500 dark:text-green-400"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -130,7 +130,7 @@ export default function ContactPage() {
                     </Link>
                     <Link
                       href={CONTACT.tiktok}
-                      className="text-black dark:text-white flex items-center gap-2"
+                      className="flex items-center gap-2 text-black dark:text-white"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -139,7 +139,7 @@ export default function ContactPage() {
                     </Link>
                     <Link
                       href={`https://wa.me/${CONTACT.whatsapp}`}
-                      className="text-green-500 dark:text-green-400 flex items-center gap-2"
+                      className="flex items-center gap-2 text-green-500 dark:text-green-400"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -158,5 +158,5 @@ export default function ContactPage() {
         </div>
       </section>
     </main>
-  );
+  )
 }

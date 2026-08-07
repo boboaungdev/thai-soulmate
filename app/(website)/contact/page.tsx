@@ -8,8 +8,6 @@ import {
   FaLine,
   FaTiktok,
   FaWhatsapp,
-  FaEnvelope,
-  FaPhoneAlt,
 } from "react-icons/fa";
 import { Mail, Phone, MapPin } from "lucide-react"; // Keeping Mail, Phone, MapPin from lucide-react for other cards
 import Link from "next/link";
@@ -37,14 +35,14 @@ export default function ContactPage() {
               Contact Us
             </h1>
             <p className="mx-auto max-w-3xl text-muted-foreground md:text-xl">
-              We'd love to hear from you! Reach out to us through any of the
+              We&apos;d love to hear from you! Reach out to us through any of the
               channels below, or send us a message using the form.
             </p>
           </MotionDiv>
         </div>
       </section>
 
-      <section className="py-16 sm:py-20">
+      <section className="py-16 ">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2">
             <div className="space-y-8">

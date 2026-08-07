@@ -42,10 +42,10 @@ export function Footer() {
               />
               <div className="min-w-0 text-center">
                 <AppName className="truncate text-base font-semibold" />
-                <p className="truncate bg-gradient-to-r from-[#cfa14f] via-[#cb5d7a] to-[#cb5d7a] bg-clip-text text-sm text-transparent">
+                <p className="truncate text-gradient text-sm">
                   {APP_INFO.tagline}
                 </p>
-                <p className="mt-2 bg-gradient-to-r from-[#cfa14f] via-[#cb5d7a] to-[#cb5d7a] bg-clip-text text-sm whitespace-pre-line text-transparent">
+                <p className="mt-2 text-gradient text-sm whitespace-pre-line">
                   {APP_INFO.secondaryTagline}
                 </p>
               </div>

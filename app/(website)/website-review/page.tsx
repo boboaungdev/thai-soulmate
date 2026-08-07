@@ -73,7 +73,7 @@ const websiteReviewSchema = z
         })
         .min(1, "Rating must be 1-10")
         .max(10, "Rating must be 1-10"),
-        
+
       suitableForPremium: z
         .string()
         .min(1, { message: "Please select an option." }),
@@ -330,7 +330,7 @@ export default function WebsiteReviewPage() {
         viewport={{ once: true, amount: 0.5 }}
         className="text-center"
       >
-        <h1 className=" text-gradient mb-8 text-4xl font-bold tracking-tighter md:text-5xl">
+        <h1 className="text-gradient mb-8 text-4xl font-bold tracking-tighter md:text-5xl">
           Website Review Questionnaire
         </h1>
       </MotionDiv>
@@ -339,7 +339,7 @@ export default function WebsiteReviewPage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.5 }}
-        className="mx-auto max-w-3xl space-y-4 text-center text-muted-foreground md:text-xl text-lg"
+        className="mx-auto max-w-3xl space-y-4 text-center text-lg text-muted-foreground md:text-xl"
       >
         <p className="pb-10">
           Please spare 15 minutes to review our new matchmaking website. Your

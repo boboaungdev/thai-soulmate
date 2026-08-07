@@ -1,10 +1,16 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, Row, Column } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Contact } from "@/lib/generated/prisma/client"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
+
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData extends unknown, TValue> {
+    forceFetchContacts?: () => void
+  }
+}
 
 export const columns: ColumnDef<Contact>[] = [
   {
@@ -80,6 +86,11 @@ export const columns: ColumnDef<Contact>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row, column }) => (
+      <DataTableRowActions
+        row={row}
+        forceFetchContacts={column.columnDef.meta?.forceFetchContacts}
+      />
+    ),
   },
 ]

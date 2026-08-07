@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Loader2, MoreHorizontal, Trash2 } from "lucide-react"
+import { Loader2, MoreHorizontal, Trash2, Eye } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,19 +23,19 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
-import { useContactStore } from "@/stores/contact-store"
 import { Contact } from "@/lib/generated/prisma/client"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
+  forceFetchContacts?: () => void
 }
 
 export function DataTableRowActions<TData>({
   row,
+  forceFetchContacts,
 }: DataTableRowActionsProps<TData>) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  const fetchContacts = useContactStore((state) => state.actions.fetchContacts)
   const contact = row.original as Contact
 
   const handleDelete = async () => {
@@ -49,7 +49,7 @@ export function DataTableRowActions<TData>({
 
       if (result.success) {
         toast.success("Contact submission deleted successfully.")
-        fetchContacts() // Refetch contacts to update the table
+        forceFetchContacts?.() // Refetch contacts to update the table
       } else {
         toast.error(result.error || "Failed to delete contact submission.")
       }
@@ -77,13 +77,17 @@ export function DataTableRowActions<TData>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuItem>View Details</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Eye className="mr-2 h-4 w-4" />
+            View Details
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="text-red-500"
+            variant="destructive"
+            disabled
             onClick={() => setShowDeleteDialog(true)}
           >
-           <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4" />
             <span>Delete</span>
             <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
           </DropdownMenuItem>

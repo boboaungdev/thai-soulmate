@@ -51,6 +51,14 @@ export function DataTable<TData, TValue>({
     (state) => state.actions.setColumnVisibility
   )
 
+  const columnsWithActions = React.useMemo(
+    () =>
+      columns.map((col) =>
+        col.id === "actions" ? { ...col, meta: { forceFetchContacts } } : col
+      ),
+    [forceFetchContacts]
+  )
+
   const table = useReactTable({
     data,
     columns,
@@ -75,7 +83,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} forceFetchContacts={forceFetchContacts}/>
+      <DataTableToolbar table={table} forceFetchContacts={forceFetchContacts} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

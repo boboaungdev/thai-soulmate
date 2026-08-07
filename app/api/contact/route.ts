@@ -6,6 +6,23 @@ import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 import { ContactFormNotificationEmail } from "@/emails"
 import { prisma } from "@/lib/prisma"
 
+export async function GET() {
+  try {
+    const contacts = await prisma.contact.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
+    return NextResponse.json(contacts)
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json(
+      { error: "Internal server error." },
+      { status: 500 }
+    )
+  }
+}
+
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name is required." }),
   email: z.string().email({ message: "A valid email is required." }),

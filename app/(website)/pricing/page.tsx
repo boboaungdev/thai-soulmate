@@ -1,6 +1,7 @@
 "use client"
 import clsx from "clsx"
 import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
 import { Flame } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { PLANS } from "@/constants"
@@ -242,9 +243,16 @@ export function PricingPageContents({
             </MotionDiv>
           ))}
         </div>
-        <p className="mx-auto mt-16 max-w-3xl text-base text-muted-foreground">
-          For more details about any of our subscriptions or plans, please feel
-          free to contact us .
+        <p className="mx-auto mt-16 flex max-w-3xl items-center justify-center gap-1 text-base text-muted-foreground">
+          For more details about any of our subscriptions, plans or membership fees, please feel
+          free to
+          <Button
+            asChild
+            variant="link"
+            className="text-gradient h-auto p-0 text-base font-semibold underline"
+          >
+            <Link href="/contact">Contact us</Link>
+          </Button>
         </p>
       </div>
     </section>

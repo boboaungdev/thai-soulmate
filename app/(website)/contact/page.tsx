@@ -54,7 +54,7 @@ export default function ContactPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Mail className="h-6 w-6 text-[var(--gold)]" />
+                      <Mail className="h-6 w-6" />
                       <span>Email</span>
                     </CardTitle>
                   </CardHeader>
@@ -78,7 +78,7 @@ export default function ContactPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Phone className="h-6 w-6 text-[var(--gold)]" />
+                      <Phone className="h-6 w-6" />
                       <span>Phone</span>
                     </CardTitle>
                   </CardHeader>
@@ -113,7 +113,7 @@ export default function ContactPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <MapPin className="h-6 w-6 text-[var(--gold)]" />
+                      <MapPin className="h-6 w-6" />
                       <span>Social Media</span>
                     </CardTitle>
                   </CardHeader>

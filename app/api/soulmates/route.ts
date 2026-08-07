@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
 
 export async function GET() {
   try {
@@ -21,14 +21,14 @@ export async function GET() {
       orderBy: {
         createdAt: "desc",
       },
-    });
+    })
 
     return NextResponse.json({
       success: true,
       soulmates,
-    });
+    })
   } catch (error) {
-    console.error("GET SOULMATES ERROR:", error);
+    console.error("GET SOULMATES ERROR:", error)
 
     return NextResponse.json(
       {
@@ -38,14 +38,14 @@ export async function GET() {
       {
         status: 500,
       }
-    );
+    )
   }
 }
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { maleId, femaleId } = body;
+    const body = await req.json()
+    const { maleId, femaleId } = body
 
     if (!maleId || !femaleId) {
       return NextResponse.json(
@@ -56,7 +56,30 @@ export async function POST(req: Request) {
         {
           status: 400,
         }
-      );
+      )
+    }
+
+    // Check if a soulmate connection already exists
+    const existingSoulmate = await prisma.soulmate.findFirst({
+      where: {
+        OR: [
+          {
+            maleId,
+            femaleId,
+          },
+          {
+            maleId: femaleId,
+            femaleId: maleId,
+          },
+        ],
+      },
+    })
+
+    if (existingSoulmate) {
+      return NextResponse.json(
+        { success: false, message: "These soulmates are already connected." },
+        { status: 409 }
+      )
     }
 
     const soulmate = await prisma.soulmate.create({
@@ -64,14 +87,14 @@ export async function POST(req: Request) {
         maleId,
         femaleId,
       },
-    });
+    })
 
     return NextResponse.json({
       success: true,
       soulmate,
-    });
+    })
   } catch (error) {
-    console.error("CREATE SOULMATE ERROR:", error);
+    console.error("CREATE SOULMATE ERROR:", error)
 
     return NextResponse.json(
       {
@@ -81,6 +104,6 @@ export async function POST(req: Request) {
       {
         status: 500,
       }
-    );
+    )
   }
 }

@@ -165,21 +165,21 @@ model Contact {
 }
 
 model WebsiteReview {
-  id                    String    @id @default(uuid())
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  firstImpression       Json
-  easeOfUse             Json
-  designBranding        Json
-  understandingService  Json
-  trustSafety           Json
-  contentQuality        Json
-  registrationProcess   Json
-  pricingValue          Json
-  overallExperience     Json
-  matchmakingSpecific   Json
-  reviewerInfo          Json?
+  firstImpression      Json
+  easeOfUse            Json
+  designBranding       Json
+  understandingService Json
+  trustSafety          Json
+  contentQuality       Json
+  registrationProcess  Json
+  pricingValue         Json
+  overallExperience    Json
+  matchmakingSpecific  Json
+  reviewerInfo         Json?
 }
 
 enum Role {
@@ -235,4 +235,6 @@ enum SoulmateStatus {
   FIRST_GOOGLE_MEET
   SECOND_GOOGLE_MEET
   FOLLOW_UP
+  CONNECTED
+  CLOSED
 }

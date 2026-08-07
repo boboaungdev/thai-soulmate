@@ -243,17 +243,15 @@ export function PricingPageContents({
             </MotionDiv>
           ))}
         </div>
-        <p className="mx-auto mt-16 flex max-w-3xl items-center justify-center gap-1 text-base text-muted-foreground">
-          For more details about any of our subscriptions, plans or membership fees, please feel
-          free to
-          <Button
-            asChild
-            variant="link"
-            className="text-gradient h-auto p-0 text-base font-semibold underline"
-          >
+        <p className="mx-auto mt-16 max-w-3xl text-base text-muted-foreground">
+          For more details about any of our subscriptions, plans or membership
+          fees, please contact us.
+        </p>
+        <div className="mt-4 flex justify-center">
+          <Button asChild className="btn-gradient">
             <Link href="/contact">Contact us</Link>
           </Button>
-        </p>
+        </div>
       </div>
     </section>
   )

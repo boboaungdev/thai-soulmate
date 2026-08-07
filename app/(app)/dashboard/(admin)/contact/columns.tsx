@@ -7,7 +7,8 @@ import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 
 declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends unknown, TValue> {
+  interface ColumnMeta<TData, TValue> {
+    onRowClick?: (row: TData) => void
     forceFetchContacts?: () => void
   }
 }
@@ -90,6 +91,7 @@ export const columns: ColumnDef<Contact>[] = [
       <DataTableRowActions
         row={row}
         forceFetchContacts={column.columnDef.meta?.forceFetchContacts}
+        onRowClick={column.columnDef.meta?.onRowClick}
       />
     ),
   },

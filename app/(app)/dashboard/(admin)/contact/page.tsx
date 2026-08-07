@@ -1,15 +1,26 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useContactStore } from "@/stores/contact-store"
+import { Contact } from "@/lib/generated/prisma/client"
+import { ContactDetailsSheet } from "./contact-details-sheet"
 
 export default function TaskPage() {
   const data = useContactStore((state) => state.contacts)
   const loading = useContactStore((state) => state.loading)
   const actions = useContactStore((state) => state.actions)
+  const [selectedItem, setSelectedItem] = useState<Contact | null>(null)
+
+  const handleRowClick = (item: Contact) => {
+    setSelectedItem(item)
+  }
+
+  const handleCloseDetails = () => {
+    setSelectedItem(null)
+  }
 
   useEffect(() => {
     actions.fetchContacts()
@@ -61,9 +72,11 @@ export default function TaskPage() {
         <DataTable
           data={data}
           columns={columns}
+          onRowClick={handleRowClick}
           forceFetchContacts={actions.forceFetchContacts}
         />
       </div>
+      <ContactDetailsSheet item={selectedItem} onClose={handleCloseDetails} />
     </>
   )
 }

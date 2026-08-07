@@ -32,12 +32,14 @@ import { useContactStore } from "@/stores/contact-store"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onRowClick?: (row: TData) => void
   forceFetchContacts: () => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onRowClick,
   forceFetchContacts,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
@@ -51,17 +53,22 @@ export function DataTable<TData, TValue>({
     (state) => state.actions.setColumnVisibility
   )
 
-  const columnsWithActions = React.useMemo(
-    () =>
-      columns.map((col) =>
-        col.id === "actions" ? { ...col, meta: { forceFetchContacts } } : col
-      ),
-    [forceFetchContacts]
-  )
+  const memoizedColumns = React.useMemo(() => {
+    return columns.map((col) => {
+      if (col.id === "actions") {
+        return {
+          ...col,
+          meta: { forceFetchContacts, onRowClick },
+        }
+      }
+      return col
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columns, forceFetchContacts, onRowClick])
 
   const table = useReactTable({
     data,
-    columns,
+    columns: memoizedColumns,
     state: {
       sorting,
       columnVisibility,
@@ -110,6 +117,20 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="cursor-pointer"
+                  onClick={(e) => {
+                    const target = e.target as HTMLElement
+                    if (
+                      target.closest('[role="menu"]') ||
+                      target.closest('[role="checkbox"]') ||
+                      target.closest('[role="dialog"]') ||
+                      target.closest('[data-slot="sheet-content"]') ||
+                      target.closest('[data-slot="sheet-overlay"]')
+                    ) {
+                      return
+                    }
+                    onRowClick?.(row.original)
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

@@ -27,12 +27,14 @@ import { Contact } from "@/lib/generated/prisma/client"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
+  onRowClick?: (row: TData) => void
   forceFetchContacts?: () => void
 }
 
 export function DataTableRowActions<TData>({
   row,
   forceFetchContacts,
+  onRowClick,
 }: DataTableRowActionsProps<TData>) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -71,13 +73,18 @@ export function DataTableRowActions<TData>({
           <Button
             variant="ghost"
             className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+            onClick={(e) => e.stopPropagation()}
           >
             <MoreHorizontal className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuItem>
+        <DropdownMenuContent
+          align="end"
+          className="w-[160px]"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <DropdownMenuItem onClick={() => onRowClick?.(row.original)}>
             <Eye className="mr-2 h-4 w-4" />
             View Details
           </DropdownMenuItem>
@@ -85,7 +92,10 @@ export function DataTableRowActions<TData>({
           <DropdownMenuItem
             variant="destructive"
             disabled
-            onClick={() => setShowDeleteDialog(true)}
+            onClick={(e) => {
+              e.stopPropagation() // Stop propagation here as well
+              setShowDeleteDialog(true)
+            }}
           >
             <Trash2 className="mr-2 h-4 w-4" />
             <span>Delete</span>
@@ -94,7 +104,7 @@ export function DataTableRowActions<TData>({
         </DropdownMenuContent>
       </DropdownMenu>
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent onClick={(e) => e.stopPropagation()}>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>

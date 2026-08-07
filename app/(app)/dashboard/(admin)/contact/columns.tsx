@@ -43,7 +43,9 @@ export const columns: ColumnDef<Contact>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">{row.getValue("name")}</div>
+    ),
     enableSorting: true,
     enableHiding: true,
   },
@@ -52,7 +54,9 @@ export const columns: ColumnDef<Contact>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Email" />
     ),
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[200px] truncate">{row.getValue("email")}</div>
+    ),
     enableSorting: true,
     enableHiding: true,
   },
@@ -61,7 +65,9 @@ export const columns: ColumnDef<Contact>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Subject" />
     ),
-    cell: ({ row }) => <div>{row.getValue("subject")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[200px] truncate">{row.getValue("subject")}</div>
+    ),
     enableSorting: true,
     enableHiding: true,
   },
@@ -70,7 +76,9 @@ export const columns: ColumnDef<Contact>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Message" />
     ),
-    cell: ({ row }) => <div>{row.getValue("message")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[200px] truncate">{row.getValue("message")}</div>
+    ),
     enableSorting: false,
     enableHiding: true,
   },

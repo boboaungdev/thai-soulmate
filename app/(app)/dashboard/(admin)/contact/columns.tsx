@@ -1,6 +1,6 @@
 "use client"
 
-import { ColumnDef, Row, Column } from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Contact } from "@/lib/generated/prisma/client"
 import { DataTableColumnHeader } from "./data-table-column-header"

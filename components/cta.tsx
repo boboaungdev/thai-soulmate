@@ -1,8 +1,12 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { MotionDiv } from "./motion"
+import { useAuthStore } from "@/stores/auth-store"
 
 export function Cta() {
+  const { user } = useAuthStore()
   return (
     <section className="py-16 sm:py-20">
       <MotionDiv
@@ -24,7 +28,9 @@ export function Cta() {
               <Link href="/#register-interest">Register Interest</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link href="">Login</Link>
+              <Link href={user ? "/dashboard" : "/auth"}>
+                {user ? "Dashboard" : "Login"}
+              </Link>
             </Button>
           </div>
         </div>

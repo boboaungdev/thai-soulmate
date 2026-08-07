@@ -31,6 +31,7 @@ const SITE_NAV_LINKS = [
   { label: "About", href: "/about" },
   { label: "Service", href: "/service" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
   { label: "Pricing", href: "/pricing" },
 ] as const
 
@@ -49,12 +50,12 @@ export function WebNavBar() {
       },
     },
   }
-
+  
   const navItemVariants = {
     hidden: { y: -20, opacity: 0 },
     show: { y: 0, opacity: 1 },
   }
-
+  
   useEffect(() => {
     setIsClient(true)
   }, [])

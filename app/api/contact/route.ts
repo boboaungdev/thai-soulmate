@@ -40,28 +40,28 @@ export async function POST(req: Request) {
     })
 
     // Send email to admin
-    // const { data, error } = await resend.emails.send({
-    //   from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
-    //   to: [CONTACT.email],
-    //   replyTo: validatedData.email, // Reply to the user's email
-    //   subject: `[Contact Form] New Message from ${validatedData.name}: ${validatedData.subject}`,
-    //   react: ContactFormNotificationEmail({
-    //     name: validatedData.name,
-    //     email: validatedData.email,
-    //     subject: validatedData.subject,
-    //     message: validatedData.message,
-    //   }),
-    // })
+    const { data, error } = await resend.emails.send({
+      from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
+      to: [CONTACT.email],
+      replyTo: validatedData.email, // Reply to the user's email
+      subject: `[Contact Form] New Message from ${validatedData.name}: ${validatedData.subject}`,
+      react: ContactFormNotificationEmail({
+        name: validatedData.name,
+        email: validatedData.email,
+        subject: validatedData.subject,
+        message: validatedData.message,
+      }),
+    })
 
-    // if (error) {
-    //   console.error("Resend email error:", error)
-    //   return NextResponse.json(
-    //     { success: false, error: error.message },
-    //     { status: 500 }
-    //   )
-    // }
+    if (error) {
+      console.error("Resend email error:", error)
+      return NextResponse.json(
+        { success: false, error: error.message },
+        { status: 500 }
+      )
+    }
 
-    // console.log("Contact form email sent:", data?.id)
+    console.log("Contact form email sent:", data?.id)
 
     return NextResponse.json({
       success: true,

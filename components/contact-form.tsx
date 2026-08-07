@@ -155,7 +155,7 @@ export function ContactForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" className="w-full btn-gradient" disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Send Message
         </Button>

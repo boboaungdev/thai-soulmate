@@ -24,6 +24,7 @@ import {
   Code,
   Moon,
   Star,
+  MessageCircle,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 
@@ -179,6 +180,11 @@ const feedbackItems = [
     title: "Website Review",
     url: "/dashboard/website-review",
     icon: Star,
+  },
+  {
+    title: "Contact",
+    url: "/dashboard/contact",
+    icon: MessageCircle,
   },
 ]
 

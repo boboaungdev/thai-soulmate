@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import { resend } from "@/lib/resend"
 import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 import { ContactFormNotificationEmail } from "@/emails"
+import { prisma } from "@/lib/prisma"
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name is required." }),
@@ -16,6 +17,10 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
     const validatedData = contactFormSchema.parse(body)
+
+    await prisma.contact.create({
+      data: validatedData,
+    })
 
     // Send email to admin
     const { data, error } = await resend.emails.send({

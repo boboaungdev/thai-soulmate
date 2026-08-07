@@ -20,7 +20,7 @@ function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="grid grid-cols-1 gap-1 sm:grid-cols-3 sm:gap-4">
       <span className="font-semibold text-muted-foreground">{label}</span>
-      <span className="break-all sm:col-span-2">{value}</span>
+      <span className="break-words sm:col-span-2">{value}</span>
     </div>
   )
 }
@@ -37,18 +37,27 @@ export function ContactDetailsSheet({
     <Sheet open={!!item} onOpenChange={(open) => !open && onClose()}>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader className="px-6 pt-6">
-          <SheetTitle className="text-xl">Contact from: {item.name}</SheetTitle>
+          <SheetTitle className="truncate text-xl">
+            Contact from: {item.name}
+          </SheetTitle>
           <SheetDescription>
             Full details of the contact submission.
           </SheetDescription>
         </SheetHeader>
 
         <ScrollArea className="h-[calc(100vh-80px)] px-6">
-          <div className="grid gap-6 py-6 pr-4">
+          <div className="grid gap-6 py-6 pr-4 pb-12">
             <DetailItem label="Name" value={item.name} />
             <DetailItem label="Email" value={item.email} />
             <DetailItem label="Subject" value={item.subject} />
-            <DetailItem label="Message" value={item.message} />
+            <div className="grid grid-cols-1 gap-1 sm:grid-cols-3 sm:gap-4">
+              <span className="font-semibold text-muted-foreground">
+                Message
+              </span>
+              <p className="break-words whitespace-pre-wrap sm:col-span-2">
+                {item.message}
+              </p>
+            </div>
             <DetailItem
               label="Submitted"
               value={formatDateTime(item.createdAt)}

@@ -31,9 +31,7 @@ export default function TaskPage() {
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Contact Submissions
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">Contact Form</h1>
             <p className="text-sm text-muted-foreground">
               Here are the latest submissions from the contact form.
             </p>
@@ -60,9 +58,7 @@ export default function TaskPage() {
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Contact Submissions
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">Contact Form</h1>
             <p className="text-sm text-muted-foreground">
               Here are the latest submissions from the contact form.
             </p>

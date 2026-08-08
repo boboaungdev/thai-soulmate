@@ -1299,7 +1299,7 @@ export default function WebsiteReviewPage() {
                               </FormLabel>
                               <FormControl>
                                 <Textarea
-                                  placeholder="e.g., 'I stopped when asked for my phone number...'"
+                                  placeholder="e.g., 'I stopped when ...'"
                                   className="mt-1"
                                   {...field}
                                 />

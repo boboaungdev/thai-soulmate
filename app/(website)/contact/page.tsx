@@ -120,6 +120,15 @@ export default function ContactPage() {
                   <CardContent>
                     <div className="flex flex-wrap gap-4">
                       <Link
+                        href={`https://wa.me/${CONTACT.whatsapp}`}
+                        className="flex items-center gap-2 text-green-500 dark:text-green-400"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FaWhatsapp className="h-6 w-6" />
+                        <span className="sr-only sm:not-sr-only">WhatsApp</span>
+                      </Link>
+                      <Link
                         href={CONTACT.facebook}
                         className="flex items-center gap-2 text-blue-600 dark:text-blue-500"
                         target="_blank"
@@ -140,15 +149,6 @@ export default function ContactPage() {
                         </span>
                       </Link>
                       <Link
-                        href={CONTACT.line}
-                        className="flex items-center gap-2 text-green-500 dark:text-green-400"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <FaLine className="h-6 w-6" />
-                        <span className="sr-only sm:not-sr-only">Line</span>
-                      </Link>
-                      <Link
                         href={CONTACT.tiktok}
                         className="flex items-center gap-2 text-black dark:text-white"
                         target="_blank"
@@ -158,13 +158,13 @@ export default function ContactPage() {
                         <span className="sr-only sm:not-sr-only">TikTok</span>
                       </Link>
                       <Link
-                        href={`https://wa.me/${CONTACT.whatsapp}`}
+                        href={CONTACT.line}
                         className="flex items-center gap-2 text-green-500 dark:text-green-400"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <FaWhatsapp className="h-6 w-6" />
-                        <span className="sr-only sm:not-sr-only">WhatsApp</span>
+                        <FaLine className="h-6 w-6" />
+                        <span className="sr-only sm:not-sr-only">Line</span>
                       </Link>
                     </div>
                   </CardContent>

@@ -259,7 +259,7 @@ export default function UserDetailPage() {
           throw new Error("Failed to fetch user data")
         }
         const data = await response.json()
-        setUser(data.application)
+        setUser(data.profile)
       } catch (error) {
         console.error(error)
       } finally {
@@ -327,7 +327,7 @@ export default function UserDetailPage() {
       <Button
         variant="link"
         onClick={() => router.back()}
-        className="mb-4 flex items-center gap-1 text-foreground hover:text-foreground"
+        className="mb-4 flex items-center gap-1 text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft className="h-4 w-4" />
         Back

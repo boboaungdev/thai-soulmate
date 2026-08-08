@@ -25,17 +25,20 @@ export async function GET(
   try {
     const { id } = await context.params
 
-    const application = await prisma.applicationForm.findUnique({
+    const profile = await prisma.profile.findUnique({
       where: {
         id,
       },
+      include: {
+        applicationForm: true,
+      },
     })
 
-    if (!application) {
+    if (!profile) {
       return NextResponse.json(
         {
           success: false,
-          message: "Application not found",
+          message: "Profile not found",
         },
         {
           status: 404,
@@ -43,22 +46,23 @@ export async function GET(
       )
     }
 
-    const parsedApplication = {
-      ...application,
-      personalDetails: parseJSONField(application.personalDetails),
-      career: parseJSONField(application.career),
-      appearance: parseJSONField(application.appearance),
-      personality: parseJSONField(application.personality),
-      lifestyle: parseJSONField(application.lifestyle),
-      relationshipGoals: parseJSONField(application.relationshipGoals),
-      idealPartner: parseJSONField(application.idealPartner),
-      financial: parseJSONField(application.financial),
-      photos: parseJSONField(application.photos),
+    const parsedProfile = {
+      ...profile,
+      customId: profile.applicationForm?.customId,
+      personalDetails: parseJSONField(profile.applicationForm?.personalDetails),
+      career: parseJSONField(profile.applicationForm?.career),
+      appearance: parseJSONField(profile.applicationForm?.appearance),
+      personality: parseJSONField(profile.applicationForm?.personality),
+      lifestyle: parseJSONField(profile.applicationForm?.lifestyle),
+      relationshipGoals: parseJSONField(profile.applicationForm?.relationshipGoals),
+      idealPartner: parseJSONField(profile.applicationForm?.idealPartner),
+      financial: parseJSONField(profile.applicationForm?.financial),
+      photos: parseJSONField(profile.applicationForm?.photos),
     }
 
     return NextResponse.json({
       success: true,
-      application: parsedApplication,
+      profile: parsedProfile,
     })
   } catch (error) {
     console.error("GET GALLERY APPLICATION ERROR:", error)

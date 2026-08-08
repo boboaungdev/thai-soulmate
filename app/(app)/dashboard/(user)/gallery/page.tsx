@@ -45,7 +45,7 @@ function UserCard({ profile }: { profile: Profile }) {
 
   return (
     <Link
-      href={`/dashboard/gallery/${profile.applicationForm.id}`}
+      href={`/dashboard/gallery/${profile.id}`}
       className="bg-gold block w-full rounded-lg p-[2px]"
     >
       <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">

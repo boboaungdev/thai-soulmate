@@ -22,15 +22,22 @@ import {
   Photos,
 } from "@/types/application-form"
 
-function UserCard({ user }: { user: ApplicationForm }) {
+interface Profile {
+  id: string
+  applicationForm: ApplicationForm
+}
+
+function UserCard({ profile }: { profile: Profile }) {
   const personalDetails: PersonalDetails =
-    user.personalDetails && typeof user.personalDetails === "string"
-      ? JSON.parse(user.personalDetails)
-      : user.personalDetails || {}
+    profile.applicationForm.personalDetails &&
+    typeof profile.applicationForm.personalDetails === "string"
+      ? JSON.parse(profile.applicationForm.personalDetails as string)
+      : profile.applicationForm.personalDetails || {}
   const photos: Photos =
-    user.photos && typeof user.photos === "string"
-      ? JSON.parse(user.photos)
-      : (user.photos as unknown as Photos) || {}
+    profile.applicationForm.photos &&
+    typeof profile.applicationForm.photos === "string"
+      ? JSON.parse(profile.applicationForm.photos as string)
+      : (profile.applicationForm.photos as unknown as Photos) || {}
 
   const age = personalDetails.dob
     ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
@@ -38,7 +45,7 @@ function UserCard({ user }: { user: ApplicationForm }) {
 
   return (
     <Link
-      href={`/dashboard/gallery/${user.id}`}
+      href={`/dashboard/gallery/${profile.applicationForm.id}`}
       className="bg-gold block w-full rounded-lg p-[2px]"
     >
       <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
@@ -59,8 +66,8 @@ function UserCard({ user }: { user: ApplicationForm }) {
         <div className="absolute inset-x-0 bottom-0 p-4 text-white">
           <p className="text-lg font-semibold">
             <span className="text-gold">
-              ID-{String(user.customId).padStart(4, "0")} (
-              {user.personalDetails?.nickname || user.personalDetails.name})
+              ID-{String(profile.applicationForm.customId).padStart(4, "0")} (
+              {personalDetails?.nickname || personalDetails.name})
             </span>
             , <span className="text-pink">{age}</span>
           </p>
@@ -75,7 +82,7 @@ function UserCard({ user }: { user: ApplicationForm }) {
 }
 
 export default function GalleryPage() {
-  const [users, setUsers] = useState<ApplicationForm[]>([])
+  const [profiles, setProfiles] = useState<Profile[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("") // State for search term
   const [gender, setGender] = useState("Female")
@@ -104,7 +111,7 @@ export default function GalleryPage() {
         }
 
         const data = await response.json()
-        setUsers(data.data)
+        setProfiles(data.data)
       } catch (error) {
         console.error(error)
       } finally {
@@ -113,18 +120,20 @@ export default function GalleryPage() {
     }
 
     fetchUsers()
-  }, [gender, sortBy, sortOrder, name, customId])
+  }, [gender, sortBy, sortOrder, nickname, customId])
 
-  const filteredUsers = users?.filter((user) => {
+  const filteredProfiles = profiles?.filter((profile) => {
     if (!searchTerm) return true
     const lowerCaseSearchTerm = searchTerm.toLowerCase()
 
-    const id = String(user.customId).padStart(4, "0")
-    const name = user.personalDetails?.name?.toLowerCase() || ""
-    const nickname = user.personalDetails?.nickname?.toLowerCase() || ""
-    const nationality = user.personalDetails?.nationality?.toLowerCase() || ""
+    const id = String(profile.applicationForm.customId).padStart(4, "0")
+    const name = profile.applicationForm.personalDetails?.name?.toLowerCase() || ""
+    const nickname =
+      profile.applicationForm.personalDetails?.nickname?.toLowerCase() || ""
+    const nationality =
+      profile.applicationForm.personalDetails?.nationality?.toLowerCase() || ""
     const currentLocation =
-      user.personalDetails?.currentLocation?.toLowerCase() || ""
+      profile.applicationForm.personalDetails?.currentLocation?.toLowerCase() || ""
     return (
       name.includes(lowerCaseSearchTerm) ||
       nickname.includes(lowerCaseSearchTerm) ||
@@ -134,11 +143,15 @@ export default function GalleryPage() {
     )
   })
 
-  const sortedUsers = filteredUsers?.slice().sort((a, b) => {
+  const sortedProfiles = filteredProfiles?.slice().sort((a, b) => {
     const aValue =
-      sortBy === "customId" ? a.customId : a.personalDetails?.name || ""
+      sortBy === "customId"
+        ? a.applicationForm.customId
+        : a.applicationForm.personalDetails?.name || ""
     const bValue =
-      sortBy === "customId" ? b.customId : b.personalDetails?.name || ""
+      sortBy === "customId"
+        ? b.applicationForm.customId
+        : b.applicationForm.personalDetails?.name || ""
 
     if (sortBy === "customId") {
       const valA = aValue as number
@@ -227,7 +240,9 @@ export default function GalleryPage() {
                 <Skeleton className="h-full w-full" />
               </Card>
             ))
-          : sortedUsers?.map((user) => <UserCard key={user.id} user={user} />)}
+          : sortedProfiles?.map((profile) => (
+              <UserCard key={profile.id} profile={profile} />
+            ))}
       </div>
     </div>
   )

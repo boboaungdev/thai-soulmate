@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -26,28 +25,14 @@ import {
   GraduationCap,
   Languages,
   Church,
-  Mail,
   Camera,
   Download,
-  Phone,
-  FileText,
-  MoreVertical,
-  Loader2,
-  Printer,
   Mars,
   Venus,
   Home,
-  Send,
-  StickyNote,
-  Pencil,
-  Trash2,
-  Shield,
-  Users2,
-  User2 as UserIcon,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import {
   Dialog,
@@ -56,7 +41,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 

@@ -50,7 +50,6 @@ import {
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import {
   DropdownMenu,
@@ -79,7 +78,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"

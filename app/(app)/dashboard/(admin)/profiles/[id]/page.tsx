@@ -1122,7 +1122,7 @@ export default function ProfilesDetailPage() {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/print/profile/${profile.applicationForm.id}?print=true`}
+                  href={`/print/profile/${profile.id}?print=true`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

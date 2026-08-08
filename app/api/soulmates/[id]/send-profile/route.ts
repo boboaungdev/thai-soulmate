@@ -1,13 +1,13 @@
-import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
-import { SendFemaleMatchEmail, SendMaleMatchEmail } from "@/emails"
-import { NextResponse } from "next/server"
 import puppeteer from "puppeteer"
+import { NextResponse } from "next/server"
+import { SendFemaleMatchEmail, SendMaleMatchEmail } from "@/emails"
+import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
 
 import { resend } from "@/lib/resend"
 
 export async function POST(req: Request) {
   try {
-    const { profile, to, profileId } = await req.json()
+    const { profile, to } = await req.json()
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const page = await browser.newPage()
 
-    const url = `${BASE_URL}/print/profile/${profileId}`
+    const url = `${BASE_URL}/print/profile/${profile.id}`
 
     await page.goto(url, {
       waitUntil: "networkidle2",
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     const reactEmail =
       to.gender.toUpperCase() === "FEMALE"
         ? SendFemaleMatchEmail({ to })
-        : SendMaleMatchEmail({ profileId, to })
+        : SendMaleMatchEmail({ profileId: profile.id, to })
 
     await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.contact}>`,
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       react: reactEmail,
       attachments: [
         {
-          filename: `Match profile - ${profile.prefix} ${profile.name}.pdf`,
+          filename: `Match profile - ID: ${profile.applicationForm.customId}.pdf`,
           content: pdfBuffer,
         },
       ],

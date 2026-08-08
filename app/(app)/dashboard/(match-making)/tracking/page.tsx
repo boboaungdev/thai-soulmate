@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { PersonalDetails, Photos } from "@/types/application-form"
@@ -158,19 +159,23 @@ const SoulmateStatusLine: React.FC<{ currentStatus: Soulmate["status"] }> = ({
           } else {
             // This is the "current" status that is not rejected.
             // The user wants blue for 'INITIAL_CONNECT' and a yellow spinning icon for 'REVIEW' and 'THINKING' statuses.
-            const isReviewStatus = group.statuses.some(status => status.startsWith("REVIEW_"));
-            const isThinkingStatus = group.statuses.includes(SoulmateStatus.FEMALE_THINKING) || group.statuses.includes(SoulmateStatus.MALE_THINKING);
+            const isReviewStatus = group.statuses.some((status) =>
+              status.startsWith("REVIEW_")
+            )
+            const isThinkingStatus =
+              group.statuses.includes(SoulmateStatus.FEMALE_THINKING) ||
+              group.statuses.includes(SoulmateStatus.MALE_THINKING)
 
             if (currentStatus === SoulmateStatus.INITIAL_CONNECT) {
-              textColorClass = "text-blue-700 font-semibold";
-              icon = <Circle className="size-4 fill-blue-500 text-blue-500" />;
+              textColorClass = "text-blue-700 font-semibold"
+              icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
             } else if (isReviewStatus || isThinkingStatus) {
-                textColorClass = "text-yellow-700 font-semibold"
-                icon = <Clock className="size-4 text-yellow-500 animate-spin" /> // Using Clock icon with spin for "thinking" and "review"
+              textColorClass = "text-yellow-700 font-semibold"
+              icon = <Clock className="size-4 animate-spin text-yellow-500" /> // Using Clock icon with spin for "thinking" and "review"
             } else {
-                // Default to blue circle for other non-rejected current statuses
-                textColorClass = "text-blue-700 font-semibold";
-                icon = <Circle className="size-4 fill-blue-500 text-blue-500" />;
+              // Default to blue circle for other non-rejected current statuses
+              textColorClass = "text-blue-700 font-semibold"
+              icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
             }
           }
         }
@@ -366,8 +371,46 @@ export default function TrackingPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <Spinner />
+      <div className="flex flex-col gap-4 p-4">
+        <h1 className="text-2xl font-bold">Soulmate Tracking</h1>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Card key={i} className="w-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="h-6 w-24" />
+                </div>
+                <span className="text-gray-400">&</span>
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="h-6 w-24" />
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-4">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="mt-2 h-6 w-48" />
+              </div>
+              <Separator className="my-4" />
+              <div className="flex items-center justify-between gap-1 text-xs">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <React.Fragment key={index}>
+                    <div className="flex min-w-0 flex-1 flex-col items-center">
+                      <Skeleton className="size-4 rounded-full" />
+                      <Skeleton className="mt-1 h-4 w-12" />
+                    </div>
+                    {index < 3 && <Skeleton className="mx-1 h-1 flex-1" />}
+                  </React.Fragment>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Skeleton className="h-10 w-48 rounded-md" />
+            </CardFooter>
+          </Card>
+        ))}
       </div>
     )
   }
@@ -381,8 +424,17 @@ export default function TrackingPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <h1 className="text-2xl font-bold">Soulmate Tracking</h1>
+    <div className="flex flex-1 flex-col gap-4 p-4">
+      <div className="flex items-center justify-between space-y-2">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Soulmate Tracking
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Track the progress of soulmate connections.
+          </p>
+        </div>
+      </div>
 
       {soulmates.map((soulmate) => (
         <Card key={soulmate.id} className="w-full">

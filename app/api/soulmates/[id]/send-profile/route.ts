@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       react: reactEmail,
       attachments: [
         {
-          filename: `Match profile - ID: ${profile.applicationForm.customId}.pdf`,
+          filename: `Match profile - ID: ${profile.customId}.pdf`,
           content: pdfBuffer,
         },
       ],

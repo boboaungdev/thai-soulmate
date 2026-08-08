@@ -1,11 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
 import { ApplicationForm } from "@/types/application-form"
+
 import { Button } from "@/components/ui/button"
 import {
   ChevronLeft,
@@ -19,13 +26,38 @@ import {
   GraduationCap,
   Languages,
   Church,
+  Mail,
+  Camera,
+  Download,
+  Phone,
+  FileText,
+  MoreVertical,
+  Loader2,
+  Printer,
   Mars,
   Venus,
   Home,
+  Send,
+  StickyNote,
+  Pencil,
+  Trash2,
+  Shield,
+  Users2,
+  User2 as UserIcon,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 
 const ProfileInfo = ({
@@ -243,12 +275,91 @@ const OverviewSection = ({ user }: { user: ApplicationForm }) => (
   </div>
 )
 
+function PhotoGrid({
+  photos,
+  onImageClick,
+  onDownloadClick,
+  downloading,
+}: {
+  photos: ApplicationForm["photos"]
+  onImageClick: (url: string, key: string) => void
+  onDownloadClick: (url: string, imgKey: string) => void
+  downloading: string | null
+}) {
+  const photoEntries = [
+    ["headshot", "Headshot", photos?.headshot],
+    ["fullLength", "Full Length", photos?.fullLength],
+    ["casualLifestyle", "Casual Lifestyle", photos?.casualLifestyle],
+  ].filter(([, , value]) => Boolean(value))
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center gap-3">
+        <div className="text-muted-foreground">
+          <Camera />
+        </div>
+        <CardTitle className="text-gradient">Photos</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-3">
+          {photoEntries.map(([key, label, value]) => (
+            <div key={key as string} className="flex flex-col gap-2">
+              <div
+                className="relative h-56 w-full cursor-pointer overflow-hidden rounded-md"
+                onClick={() => onImageClick(value as string, key as string)}
+              >
+                <Image
+                  src={value as string}
+                  alt={label as string}
+                  fill
+                  className="rounded-md object-cover transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+              <div className="flex items-center justify-center gap-10">
+                <span className="text-center text-sm text-muted-foreground">
+                  {label}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    onDownloadClick(value as string, key as string)
+                  }
+                  className="text-muted-foreground"
+                  disabled={!!downloading}
+                >
+                  {downloading === key ? (
+                    <>
+                      <Download className="mr-2 h-4 w-4 animate-bounce" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function UserDetailPage() {
   const params = useParams()
   const { id } = params as { id: string }
   const router = useRouter()
   const [user, setUser] = useState<ApplicationForm | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [viewingImage, setViewingImage] = useState<{
+    url: string
+    key: string
+  } | null>(null)
+  const [downloading, setDownloading] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchUser() {
@@ -270,9 +381,45 @@ export default function UserDetailPage() {
     fetchUser()
   }, [id])
 
+  const handleDownload = async (url: string, imgKey: string) => {
+    setDownloading(imgKey)
+
+    try {
+      const key = new URL(url).pathname.slice(1)
+
+      const response = await fetch(
+        `/api/download?key=${encodeURIComponent(key)}`
+      )
+
+      if (!response.ok) {
+        throw new Error("Download failed.")
+      }
+
+      const blob = await response.blob()
+      const objectUrl = URL.createObjectURL(blob)
+
+      const link = document.createElement("a")
+      link.href = objectUrl
+      link.download = key.split("/").pop() ?? "photo"
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+
+      URL.revokeObjectURL(objectUrl)
+
+      toast.success(`${imgKey.toUpperCase()} photo downloaded successfully.`)
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Could not download photo."
+      )
+    } finally {
+      setDownloading(null)
+    }
+  }
+
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-4xl py-8">
+      <div className="container mx-auto max-w-5xl py-8">
         <Skeleton className="mb-4 h-8 w-24" />
         <Card>
           <CardContent className="flex flex-col items-center pt-4">
@@ -306,9 +453,6 @@ export default function UserDetailPage() {
 
   const mainPhoto =
     photos?.headshot || Object.values(photos || {}).find((p) => p)
-  const galleryPhotos = Object.entries(photos || {})
-    .filter(([, url]) => url) // Filter out entries with null/undefined URLs
-    .map(([key, url]) => ({ key, url: url as string })) // Map to an array of objects
 
   const handleCopyId = () => {
     const idToCopy = String(user.customId).padStart(4, "0")
@@ -321,20 +465,73 @@ export default function UserDetailPage() {
         toast.error("Failed to copy ID.")
       })
   }
+  const photoLabels: Record<string, string> = {
+    headshot: "Headshot",
+    fullLength: "Full Length",
+    casualLifestyle: "Casual Lifestyle",
+  }
 
   return (
-    <div className="container mx-auto max-w-4xl py-8">
-      <Button
-        variant="link"
-        onClick={() => router.back()}
-        className="mb-4 flex items-center gap-1 text-muted-foreground hover:text-foreground"
+    <div className="container mx-auto max-w-5xl py-8">
+      <div className="mb-4 flex items-center justify-between">
+        <Button
+          variant="link"
+          onClick={() => router.back()}
+          className="flex items-center gap-1 p-0 text-muted-foreground hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Back
+        </Button>
+      </div>
+      <Dialog
+        open={!!viewingImage}
+        onOpenChange={(open) => !open && setViewingImage(null)}
       >
-        <ChevronLeft className="h-4 w-4" />
-        Back
-      </Button>
-
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Photo Preview</DialogTitle>
+            <DialogDescription>
+              {photoLabels[viewingImage?.key ?? ""] ?? viewingImage?.key}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative mt-4 h-[70vh] w-full">
+            {viewingImage?.url && (
+              <Image
+                src={viewingImage.url}
+                alt="Full size photo preview"
+                fill
+                className="object-contain"
+              />
+            )}
+          </div>
+          <DialogFooter className="sm:justify-between">
+            <Button variant="outline" onClick={() => setViewingImage(null)}>
+              Close
+            </Button>
+            {viewingImage && (
+              <Button
+                variant="default"
+                onClick={() =>
+                  handleDownload(viewingImage.url, viewingImage.key)
+                }
+                className="btn-gradient"
+                disabled={!!downloading}
+              >
+                {downloading === viewingImage.key ? (
+                  <>
+                    <Download className="mr-2 h-4 w-4 animate-bounce" />
+                    Downloading...
+                  </>
+                ) : (
+                  "Download"
+                )}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Card className="overflow-hidden">
-        <CardContent className="flex flex-col items-center">
+        <CardContent className="flex flex-col items-center pt-6">
           <Avatar className="mx-auto mb-4 h-32 w-32 border-4 border-background">
             <AvatarImage src={mainPhoto} alt="Profile photo" />
             <AvatarFallback>
@@ -384,26 +581,12 @@ export default function UserDetailPage() {
       </Card>
 
       <div className="mt-8">
-        <h2 className="text-gradient mb-4 text-2xl font-bold">Gallery</h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {galleryPhotos.length > 0 ? (
-            galleryPhotos.map(({ key, url }) => (
-              <div
-                key={key}
-                className="relative aspect-square w-full overflow-hidden rounded-lg"
-              >
-                <Image
-                  src={url}
-                  alt={`Gallery photo ${key}`}
-                  fill
-                  className="object-cover transition-transform hover:scale-105"
-                />
-              </div>
-            ))
-          ) : (
-            <p className="text-muted-foreground">No additional photos.</p>
-          )}
-        </div>
+        <PhotoGrid
+          photos={photos}
+          onImageClick={(url, key) => setViewingImage({ url, key })}
+          onDownloadClick={handleDownload}
+          downloading={downloading}
+        />
       </div>
     </div>
   )

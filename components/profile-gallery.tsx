@@ -11,13 +11,18 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { ApplicationForm } from "@/types/application-form"
 import { useAuthStore } from "@/stores/auth-store"
+import { Profile } from "@/lib/generated/prisma/client"
+
+interface ProfileWithApplicationForm extends Profile {
+  applicationForm: ApplicationForm
+}
 
 interface UserGalleryProps {
   layout?: "grid" | "scroll"
 }
 
 export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
-  const [users, setUsers] = useState<ApplicationForm[]>([])
+  const [users, setUsers] = useState<ProfileWithApplicationForm[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
@@ -111,10 +116,10 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                   >
                     <Card className="group relative h-[380px] w-[280px] shrink-0 overflow-hidden rounded-md border-0 bg-background">
                       <Image
-                        src={profile.photos.headshot}
+                        src={profile.applicationForm.photos.headshot}
                         alt={
-                          profile.personalDetails.nickname ||
-                          profile.personalDetails.name
+                          profile.applicationForm.personalDetails.nickname ||
+                          profile.applicationForm.personalDetails.name
                         }
                         fill
                         sizes="(max-width: 768px) 100vw, 280px"
@@ -124,16 +129,25 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                       <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                         <p className="text-lg font-semibold">
                           <span className="text-gold">
-                            ID-{String(profile.customId).padStart(4, "0")}
+                            ID-
+                            {String(profile.applicationForm.customId).padStart(
+                              4,
+                              "0"
+                            )}
                           </span>
                           ,{" "}
                           <span className="text-pink">
-                            {calculateAge(profile.personalDetails.dob)}
+                            {calculateAge(
+                              profile.applicationForm.personalDetails.dob
+                            )}
                           </span>
                         </p>
                         <p className="flex items-center gap-1 text-sm">
                           <MapPin className="size-3" />
-                          {profile.personalDetails.currentLocation}
+                          {
+                            profile.applicationForm.personalDetails
+                              .currentLocation
+                          }
                         </p>
                       </div>
                     </Card>
@@ -177,10 +191,10 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
             >
               <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
                 <Image
-                  src={profile.photos.headshot}
+                  src={profile.applicationForm.photos.headshot}
                   alt={
-                    profile.personalDetails.nickname ||
-                    profile.personalDetails.name
+                    profile.applicationForm.personalDetails.nickname ||
+                    profile.applicationForm.personalDetails.name
                   }
                   fill
                   sizes="280px"
@@ -190,16 +204,22 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                 <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                   <p className="text-lg font-semibold">
                     <span className="text-gold">
-                      ID-{String(profile.customId).padStart(4, "0")}
+                      ID-
+                      {String(profile.applicationForm.customId).padStart(
+                        4,
+                        "0"
+                      )}
                     </span>
                     ,{" "}
                     <span className="text-pink">
-                      {calculateAge(profile.personalDetails.dob)}
+                      {calculateAge(
+                        profile.applicationForm.personalDetails.dob
+                      )}
                     </span>
                   </p>
                   <p className="flex items-center gap-1 text-sm">
                     <MapPin className="size-3" />
-                    {profile.personalDetails.currentLocation}
+                    {profile.applicationForm.personalDetails.currentLocation}
                   </p>
                 </div>
               </Card>

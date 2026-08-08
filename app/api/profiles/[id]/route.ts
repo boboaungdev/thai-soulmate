@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { ProfileStatus } from "@/lib/generated/prisma/enums"
 
 // Helper function to safely parse JSON
 function parseJSONField(field: any): any {
@@ -133,7 +134,7 @@ export async function PATCH(
       )
     }
 
-    const profileUpdateData: { status?: any } = {}
+    const profileUpdateData: { status?: ProfileStatus } = {}
     if (status) {
       profileUpdateData.status = status
     }
@@ -146,6 +147,10 @@ export async function PATCH(
         where: { id: profile.applicationFormId },
         data: { personality },
       })
+
+      if (profile.status === ProfileStatus.PENDING) {
+        profileUpdateData.status = ProfileStatus.COMPLETED
+      }
     }
 
     if (Object.keys(profileUpdateData).length > 0) {

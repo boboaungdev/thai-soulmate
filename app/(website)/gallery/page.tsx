@@ -1,5 +1,5 @@
 import { Cta } from "@/components/cta"
-import { UserGallery } from "@/components/profile-gallery"
+import { ProfileGallery } from "@/components/profile-gallery"
 import { MotionDiv } from "@/components/motion"
 
 export default function GalleryPage() {
@@ -21,7 +21,7 @@ export default function GalleryPage() {
                 connection could be just a click away.
               </p>
             </div>
-            <UserGallery layout="grid" />
+            <ProfileGallery layout="grid" />
           </div>
         </section>
         <Cta />

@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { ApplicationForm } from "@/types/application-form"
+import { useAuthStore } from "@/stores/auth-store"
 
 interface UserGalleryProps {
   layout?: "grid" | "scroll"
@@ -20,6 +21,7 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
   const [isLoading, setIsLoading] = useState(true)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
+  const { user } = useAuthStore()
 
   useEffect(() => {
     async function fetchUsers() {
@@ -65,6 +67,16 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
     return age
   }
 
+  const getProfileLink = (profileId: string) => {
+    if (!user) {
+      return "/auth"
+    }
+    if (user.role === "MEMBER") {
+      return `/dashboard/gallery/${profileId}`
+    }
+    return `/dashboard/profiles/${profileId}`
+  }
+
   if (layout === "scroll") {
     return (
       <div className="relative">
@@ -91,18 +103,18 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                     <Skeleton className="size-full" />
                   </Card>
                 ))
-              : users.map((user) => (
+              : users.map((profile) => (
                   <Link
-                    href="/#register-interest"
-                    key={user.id}
+                    href={getProfileLink(profile.id)}
+                    key={profile.id}
                     className="bg-gold block rounded-lg p-[2px]"
                   >
                     <Card className="group relative h-[380px] w-[280px] shrink-0 overflow-hidden rounded-md border-0 bg-background">
                       <Image
-                        src={user.photos.headshot}
+                        src={profile.photos.headshot}
                         alt={
-                          user.personalDetails.nickname ||
-                          user.personalDetails.name
+                          profile.personalDetails.nickname ||
+                          profile.personalDetails.name
                         }
                         fill
                         sizes="(max-width: 768px) 100vw, 280px"
@@ -112,17 +124,16 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                       <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                         <p className="text-lg font-semibold">
                           <span className="text-gold">
-                            ID-
-                            {String(user.customId).padStart(4, "0")}
+                            ID-{String(profile.customId).padStart(4, "0")}
                           </span>
                           ,{" "}
                           <span className="text-pink">
-                            {calculateAge(user.personalDetails.dob)}
+                            {calculateAge(profile.personalDetails.dob)}
                           </span>
                         </p>
                         <p className="flex items-center gap-1 text-sm">
                           <MapPin className="size-3" />
-                          {user.personalDetails.currentLocation}
+                          {profile.personalDetails.currentLocation}
                         </p>
                       </div>
                     </Card>
@@ -158,17 +169,18 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
               <Skeleton className="size-full" />
             </Card>
           ))
-        : users.map((user) => (
+        : users.map((profile) => (
             <Link
-              href={`/gallery/${user.id}`}
-              key={user.id}
+              href={getProfileLink(profile.id)}
+              key={profile.id}
               className="bg-gold block w-[280px] rounded-lg p-[2px]"
             >
               <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
                 <Image
-                  src={user.photos.headshot}
+                  src={profile.photos.headshot}
                   alt={
-                    user.personalDetails.nickname || user.personalDetails.name
+                    profile.personalDetails.nickname ||
+                    profile.personalDetails.name
                   }
                   fill
                   sizes="280px"
@@ -178,16 +190,16 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                 <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                   <p className="text-lg font-semibold">
                     <span className="text-gold">
-                      ID-{String(user.customId).padStart(4, "0")}
+                      ID-{String(profile.customId).padStart(4, "0")}
                     </span>
                     ,{" "}
                     <span className="text-pink">
-                      {calculateAge(user.personalDetails.dob)}
+                      {calculateAge(profile.personalDetails.dob)}
                     </span>
                   </p>
                   <p className="flex items-center gap-1 text-sm">
                     <MapPin className="size-3" />
-                    {user.personalDetails.currentLocation}
+                    {profile.personalDetails.currentLocation}
                   </p>
                 </div>
               </Card>

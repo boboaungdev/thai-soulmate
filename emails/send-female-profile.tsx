@@ -24,7 +24,7 @@ interface SendMaleMatchEmailProps {
   profileId: string
 }
 
-export const SendMaleMatchEmail = ({
+export const SendFemaleProfile = ({
   to,
   profileId,
 }: SendMaleMatchEmailProps) => (
@@ -32,7 +32,8 @@ export const SendMaleMatchEmail = ({
     <Head />
 
     <Preview>
-      Your match has accepted. View her profile and reply within 24 hours.
+      [Soulmate] Your match has accepted. View her profile and reply within 24
+      hours.
     </Preview>
 
     <Body style={main}>
@@ -115,7 +116,7 @@ export const SendMaleMatchEmail = ({
   </Html>
 )
 
-export default SendMaleMatchEmail
+export default SendFemaleProfile
 
 const main = {
   backgroundColor: "#ffffff",

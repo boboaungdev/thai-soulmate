@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { PersonalDetails, Photos } from "@/types/application-form"
-import { CheckCircle2, Circle, XCircle } from "lucide-react"
+import { CheckCircle2, Circle, XCircle, Clock } from "lucide-react"
 import React, { useEffect, useState } from "react"
 
 enum SoulmateStatus {
@@ -91,13 +91,20 @@ const statusGroups = [
   },
 ]
 
+interface SoulmateProfile {
+  id: string
+  customId: number
+  personalDetails: PersonalDetails
+  photos: Photos
+}
+
 interface Soulmate {
   id: string
   maleId: string
   femaleId: string
   status: SoulmateStatus
-  male: { personalDetails: PersonalDetails; photos: Photos }
-  female: { personalDetails: PersonalDetails; photos: Photos }
+  male: SoulmateProfile
+  female: SoulmateProfile
 }
 
 const getInitials = (name?: string) => {
@@ -149,8 +156,22 @@ const SoulmateStatusLine: React.FC<{ currentStatus: Soulmate["status"] }> = ({
             textColorClass = "text-red-700 font-semibold"
             icon = <XCircle className="size-4 fill-red-500 text-red-500" />
           } else {
-            textColorClass = "text-blue-700 font-semibold"
-            icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
+            // This is the "current" status that is not rejected.
+            // The user wants blue for 'INITIAL_CONNECT' and a yellow spinning icon for 'REVIEW' and 'THINKING' statuses.
+            const isReviewStatus = group.statuses.some(status => status.startsWith("REVIEW_"));
+            const isThinkingStatus = group.statuses.includes(SoulmateStatus.FEMALE_THINKING) || group.statuses.includes(SoulmateStatus.MALE_THINKING);
+
+            if (currentStatus === SoulmateStatus.INITIAL_CONNECT) {
+              textColorClass = "text-blue-700 font-semibold";
+              icon = <Circle className="size-4 fill-blue-500 text-blue-500" />;
+            } else if (isReviewStatus || isThinkingStatus) {
+                textColorClass = "text-yellow-700 font-semibold"
+                icon = <Clock className="size-4 text-yellow-500 animate-spin" /> // Using Clock icon with spin for "thinking" and "review"
+            } else {
+                // Default to blue circle for other non-rejected current statuses
+                textColorClass = "text-blue-700 font-semibold";
+                icon = <Circle className="size-4 fill-blue-500 text-blue-500" />;
+            }
           }
         }
 
@@ -200,6 +221,7 @@ export default function TrackingPage() {
         }
       } catch (err) {
         setError("Failed to fetch soulmates.")
+        console.log(err)
       } finally {
         setIsLoading(false)
       }
@@ -246,6 +268,43 @@ export default function TrackingPage() {
     }
   }
 
+  const handleSendProfile = async (
+    soulmate: Soulmate,
+    profile: SoulmateProfile,
+    to: SoulmateProfile,
+    newStatus: SoulmateStatus
+  ) => {
+    setUpdatingId(soulmate.id)
+    try {
+      const response = await fetch(
+        `/api/soulmates/${soulmate.id}/send-profile`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            profile,
+            to: {
+              name: to.personalDetails.name,
+              email: to.personalDetails.email,
+              gender: to.personalDetails.gender,
+            },
+          }),
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error("Failed to send profile")
+      }
+
+      await handleUpdateStatus(soulmate.id, newStatus)
+    } catch (error) {
+      console.error(error)
+      setError("Failed to send profile.")
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
   const renderActionButton = (soulmate: Soulmate) => {
     const isUpdating = updatingId === soulmate.id
 
@@ -255,8 +314,10 @@ export default function TrackingPage() {
           <Button
             className="btn-gradient"
             onClick={() =>
-              handleUpdateStatus(
-                soulmate.id,
+              handleSendProfile(
+                soulmate,
+                soulmate.male,
+                soulmate.female,
                 SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE
               )
             }
@@ -278,8 +339,10 @@ export default function TrackingPage() {
           <Button
             className="btn-gradient"
             onClick={() =>
-              handleUpdateStatus(
-                soulmate.id,
+              handleSendProfile(
+                soulmate,
+                soulmate.female,
+                soulmate.male,
                 SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE
               )
             }

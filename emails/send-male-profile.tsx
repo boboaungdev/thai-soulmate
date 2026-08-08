@@ -22,11 +22,11 @@ interface SendFemaleMatchEmailProps {
   }
 }
 
-export const SendFemaleMatchEmail = ({ to }: SendFemaleMatchEmailProps) => (
+export const SendMaleProfile = ({ to }: SendFemaleMatchEmailProps) => (
   <Html>
     <Head />
 
-    <Preview>A carefully selected match is waiting for your review.</Preview>
+    <Preview>[Soulmate] A carefully selected match is waiting for your review.</Preview>
 
     <Body style={main}>
       <Container style={container}>
@@ -103,7 +103,7 @@ export const SendFemaleMatchEmail = ({ to }: SendFemaleMatchEmailProps) => (
   </Html>
 )
 
-export default SendFemaleMatchEmail
+export default SendMaleProfile
 
 const main = {
   backgroundColor: "#ffffff",

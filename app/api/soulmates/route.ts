@@ -7,12 +7,16 @@ export async function GET() {
       include: {
         male: {
           select: {
+            id: true,
+            customId: true,
             personalDetails: true,
             photos: true,
           },
         },
         female: {
           select: {
+            id: true,
+            customId: true,
             personalDetails: true,
             photos: true,
           },

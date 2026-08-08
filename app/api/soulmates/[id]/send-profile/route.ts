@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer"
 import { NextResponse } from "next/server"
-import { SendFemaleMatchEmail, SendMaleMatchEmail } from "@/emails"
+import { SendFemaleProfile, SendMaleProfile } from "@/emails"
 import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
 
 import { resend } from "@/lib/resend"
@@ -33,8 +33,8 @@ export async function POST(req: Request) {
 
     const reactEmail =
       to.gender.toUpperCase() === "FEMALE"
-        ? SendFemaleMatchEmail({ to })
-        : SendMaleMatchEmail({ profileId: profile.id, to })
+        ? SendMaleProfile({ to })
+        : SendFemaleProfile({ profileId: profile.id, to })
 
     await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.contact}>`,
@@ -42,8 +42,8 @@ export async function POST(req: Request) {
       to: ["boolean405@gmail.com"],
       subject:
         to.gender.toUpperCase() === "FEMALE"
-          ? "A Potential Match Has Been Selected for You"
-          : "Your Match Has Accepted – Please Review Her Profile",
+          ? "[Soulmate] A Potential Match Has Been Selected for You"
+          : "[Soulmate] Your Match Has Accepted – Please Review Her Profile",
       react: reactEmail,
       attachments: [
         {

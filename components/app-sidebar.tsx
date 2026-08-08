@@ -25,6 +25,7 @@ import {
   Moon,
   Star,
   MessageCircle,
+  Video,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 
@@ -140,6 +141,11 @@ const MatchmakingItems = [
     title: "Tracking",
     url: "/dashboard/tracking",
     icon: HeartPulse,
+  },
+  {
+    title: "Google Meet",
+    url: "/dashboard/google-meet",
+    icon: Video,
   },
 ]
 

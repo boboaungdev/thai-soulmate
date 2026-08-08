@@ -5,24 +5,84 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
-import {
-  PersonalDetails,
-  Photos,
-} from "@/types/application-form"
-import { CheckCircle2, Circle } from "lucide-react"
-import React, { useEffect, useState } from "react"
+import { PersonalDetails, Photos } from "@/types/application-form"
+import { CheckCircle2, Circle, XCircle } from "lucide-react"
+import React, {useEffect, useState } from "react"
 
 enum SoulmateStatus {
-  INITIAL_CONNECT = "Initial Connect",
-  MALE_PROFILE_SENT = "Male Profile Sent",
-  FEMALE_PROFILE_SENT = "Female Profile Sent",
-  PROFILES_ACCEPTED = "Profiles Accepted",
-  FIRST_GOOGLE_MEET = "First Google Meet",
-  SECOND_GOOGLE_MEET = "Second Google Meet",
-  FOLLOW_UP = "Follow Up",
-  MALE_REJECT = "Male Rejected",
-  FEMALE_REJECT = "Female Rejected",
+  INITIAL_CONNECT = "INITIAL_CONNECT",
+  MALE_PROFILE_SENT_TO_FEMALE = "MALE_PROFILE_SENT_TO_FEMALE",
+  FEMALE_THINKING = "FEMALE_THINKING",
+  FEMALE_REJECT = "FEMALE_REJECT",
+  FEMALE_ACCEPTED = "FEMALE_ACCEPTED",
+  FEMALE_PROFILE_SENT_TO_MALE = "FEMALE_PROFILE_SENT_TO_MALE",
+  MALE_THINKING = "MALE_THINKING",
+  MALE_REJECT = "MALE_REJECT",
+  MALE_ACCEPTED = "MALE_ACCEPTED",
+  FIRST_GOOGLE_MEET = "FIRST_GOOGLE_MEET",
+  REVIEW_FIRST_GOOGLE_MEET = "REVIEW_FIRST_GOOGLE_MEET",
+  SECOND_GOOGLE_MEET = "SECOND_GOOGLE_MEET",
+  REVIEW_SECOND_GOOGLE_MEET = "REVIEW_SECOND_GOOGLE_MEET",
+  THIRD_GOOGLE_MEET = "THIRD_GOOGLE_MEET",
+  REVIEW_THIRD_GOOGLE_MEET = "REVIEW_THIRD_GOOGLE_MEET",
+  FINAL_MATCH = "FINAL_MATCH",
+  CONNECTED = "CONNECTED",
+  CLOSED = "CLOSED",
 }
+
+const statusGroups = [
+  {
+    name: "Initial Connect",
+    statuses: [SoulmateStatus.INITIAL_CONNECT],
+  },
+  {
+    name: "Female's Review",
+    statuses: [
+      SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE,
+      SoulmateStatus.FEMALE_THINKING,
+      SoulmateStatus.FEMALE_REJECT,
+      SoulmateStatus.FEMALE_ACCEPTED,
+    ],
+  },
+  {
+    name: "Male's Review",
+    statuses: [
+      SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE,
+      SoulmateStatus.MALE_THINKING,
+      SoulmateStatus.MALE_REJECT,
+      SoulmateStatus.MALE_ACCEPTED,
+    ],
+  },
+  {
+    name: "First Meet",
+    statuses: [
+      SoulmateStatus.FIRST_GOOGLE_MEET,
+      SoulmateStatus.REVIEW_FIRST_GOOGLE_MEET,
+    ],
+  },
+  {
+    name: "Second Meet",
+    statuses: [
+      SoulmateStatus.SECOND_GOOGLE_MEET,
+      SoulmateStatus.REVIEW_SECOND_GOOGLE_MEET,
+    ],
+  },
+  {
+    name: "Third Meet",
+    statuses: [
+      SoulmateStatus.THIRD_GOOGLE_MEET,
+      SoulmateStatus.REVIEW_THIRD_GOOGLE_MEET,
+    ],
+  },
+  {
+    name: "Final Match",
+    statuses: [SoulmateStatus.FINAL_MATCH, SoulmateStatus.CONNECTED],
+  },
+  {
+    name: "Closed",
+    statuses: [SoulmateStatus.CLOSED],
+  },
+]
 
 interface Soulmate {
   id: string
@@ -32,16 +92,6 @@ interface Soulmate {
   male: { personalDetails: PersonalDetails; photos: Photos }
   female: { personalDetails: PersonalDetails; photos: Photos }
 }
-
-const allSoulmateStatuses = [
-  SoulmateStatus.INITIAL_CONNECT,
-  SoulmateStatus.MALE_PROFILE_SENT,
-  SoulmateStatus.FEMALE_PROFILE_SENT,
-  SoulmateStatus.PROFILES_ACCEPTED,
-  SoulmateStatus.FIRST_GOOGLE_MEET,
-  SoulmateStatus.SECOND_GOOGLE_MEET,
-  SoulmateStatus.FOLLOW_UP,
-]
 
 const getInitials = (name?: string) => {
   if (!name) return "TS"
@@ -53,41 +103,56 @@ const getInitials = (name?: string) => {
     .toUpperCase()
 }
 
+const formatStatus = (status: string) => {
+  return status
+    .replace(/_/g, " ")
+    .replace(
+      /\w\S*/g,
+      (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    )
+}
+
 const SoulmateStatusLine: React.FC<{ currentStatus: Soulmate["status"] }> = ({
   currentStatus,
 }) => {
-  const currentIndex = allSoulmateStatuses.indexOf(currentStatus)
+  const currentGroupIndex = statusGroups.findIndex((group) =>
+    group.statuses.includes(currentStatus)
+  )
+
+  const isRejected =
+    currentStatus === SoulmateStatus.FEMALE_REJECT ||
+    currentStatus === SoulmateStatus.MALE_REJECT
 
   return (
     <div className="flex items-center justify-between gap-1 text-xs">
-      {allSoulmateStatuses.map((status, index) => {
-        const isCompleted = index < currentIndex
-        const isCurrent = index === currentIndex
+      {statusGroups.map((group, index) => {
+        const isCompleted = currentGroupIndex > -1 && index < currentGroupIndex
+        const isCurrent = index === currentGroupIndex
 
         let textColorClass = "text-gray-500"
         let separatorColorClass = "bg-gray-300"
+        let icon = <Circle className="size-4 fill-gray-300 text-gray-300" />
 
         if (isCompleted) {
           textColorClass = "text-green-700"
           separatorColorClass = "bg-green-500"
+          icon = <CheckCircle2 className="size-4 text-green-500" />
         } else if (isCurrent) {
-          textColorClass = "text-blue-700 font-semibold"
+          if (isRejected) {
+            textColorClass = "text-red-700 font-semibold"
+            icon = <XCircle className="size-4 fill-red-500 text-red-500" />
+          } else {
+            textColorClass = "text-blue-700 font-semibold"
+            icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
+          }
         }
 
-        const shouldShowSeparator = index < allSoulmateStatuses.length - 1
+        const shouldShowSeparator = index < statusGroups.length - 1
 
         return (
-          <React.Fragment key={status}>
+          <React.Fragment key={group.name}>
             <div className="flex min-w-0 flex-1 flex-col items-center">
-              <span title={status}>
-                {isCompleted ? (
-                  <CheckCircle2 className="size-4 text-green-500" />
-                ) : isCurrent ? (
-                  <Circle className="size-4 fill-blue-500 text-blue-500" />
-                ) : (
-                  <Circle className="size-4 fill-gray-300 text-gray-300" />
-                )}
-              </span>
+              <span title={group.name}>{icon}</span>
               <span
                 className={cn(
                   "mt-1 truncate text-center",
@@ -95,7 +160,7 @@ const SoulmateStatusLine: React.FC<{ currentStatus: Soulmate["status"] }> = ({
                   "max-w-[70px] whitespace-normal"
                 )}
               >
-                {status}
+                {group.name}
               </span>
             </div>
             {shouldShowSeparator && (
@@ -183,7 +248,9 @@ export default function TrackingPage() {
           <CardContent>
             <div className="mb-4">
               <p className="text-sm text-gray-600">Current Status:</p>
-              <p className="text-lg font-medium">{soulmate.status}</p>
+              <p className="text-lg font-medium">
+                {formatStatus(soulmate.status)}
+              </p>
             </div>
             <Separator className="my-4" />
             <SoulmateStatusLine currentStatus={soulmate.status} />

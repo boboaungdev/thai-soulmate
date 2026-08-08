@@ -21,9 +21,8 @@ const allowedRoutes = {
     "/dashboard/profiles",
     "/dashboard/website-review",
     "/dashboard/contact",
-    "/dashboard/profile",
-    "/dashboard/settings",
     "/dashboard/login-user",
+    "/dashboard/google-meet",
   ],
   STAFF: [
     "/dashboard/staff-dashboard",
@@ -35,8 +34,7 @@ const allowedRoutes = {
     "/dashboard/profiles",
     "/dashboard/website-review",
     "/dashboard/contact",
-    "/dashboard/profile",
-    "/dashboard/settings",
+    "/dashboard/google-meet",
   ],
   MEMBER: [
     "/dashboard/user-dashboard",
@@ -44,8 +42,6 @@ const allowedRoutes = {
     "/dashboard/gallery",
     "/dashboard/my-soulmate",
     "/dashboard/my-tracking",
-    "/dashboard/profile",
-    "/dashboard/settings",
   ],
 } as const
 

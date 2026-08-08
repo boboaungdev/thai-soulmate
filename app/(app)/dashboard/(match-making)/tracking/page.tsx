@@ -371,8 +371,18 @@ export default function TrackingPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4 p-4">
-        <h1 className="text-2xl font-bold">Soulmate Tracking</h1>
+      <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <div className="flex items-center justify-between space-y-2">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Soulmate Tracking
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Track the progress of soulmate connections.
+            </p>
+          </div>
+        </div>
+
         {Array.from({ length: 3 }).map((_, i) => (
           <Card key={i} className="w-full">
             <CardHeader>
@@ -395,13 +405,13 @@ export default function TrackingPage() {
               </div>
               <Separator className="my-4" />
               <div className="flex items-center justify-between gap-1 text-xs">
-                {Array.from({ length: 4 }).map((_, index) => (
+                {Array.from({ length: 8 }).map((_, index) => (
                   <React.Fragment key={index}>
                     <div className="flex min-w-0 flex-1 flex-col items-center">
                       <Skeleton className="size-4 rounded-full" />
                       <Skeleton className="mt-1 h-4 w-12" />
                     </div>
-                    {index < 3 && <Skeleton className="mx-1 h-1 flex-1" />}
+                    {index < 7 && <Skeleton className="mx-1 h-1 flex-1" />}
                   </React.Fragment>
                 ))}
               </div>
@@ -411,7 +421,7 @@ export default function TrackingPage() {
             </CardFooter>
           </Card>
         ))}
-      </div>
+      </main>
     )
   }
 
@@ -424,7 +434,7 @@ export default function TrackingPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
+    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex items-center justify-between space-y-2">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
@@ -434,6 +444,7 @@ export default function TrackingPage() {
             Track the progress of soulmate connections.
           </p>
         </div>
+        <div className="flex items-center space-x-2"></div>
       </div>
 
       {soulmates.map((soulmate) => (
@@ -474,6 +485,6 @@ export default function TrackingPage() {
           <CardFooter>{renderActionButton(soulmate)}</CardFooter>
         </Card>
       ))}
-    </div>
+    </main>
   )
 }

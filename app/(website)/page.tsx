@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
-import { UserGallery } from "@/components/user-gallery"
+import { ProfileGallery } from "@/components/profile-gallery"
 import { Faq } from "@/components/faq"
 import { RegisterInterestForm } from "@/components/register-interest-form"
 import { MotionDiv } from "@/components/motion"
@@ -135,7 +135,7 @@ export default function HomePage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <UserGallery layout="scroll" />
+            <ProfileGallery layout="scroll" />
           </MotionDiv>
         </div>
       </section>

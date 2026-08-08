@@ -15,7 +15,7 @@ interface UserGalleryProps {
   layout?: "grid" | "scroll"
 }
 
-export function UserGallery({ layout = "grid" }: UserGalleryProps) {
+export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
   const [users, setUsers] = useState<ApplicationForm[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const scrollContainerRef = useRef<HTMLDivElement>(null)

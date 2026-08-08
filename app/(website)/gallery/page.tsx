@@ -1,5 +1,5 @@
 import { Cta } from "@/components/cta"
-import { UserGallery } from "@/components/user-gallery"
+import { UserGallery } from "@/components/profile-gallery"
 import { MotionDiv } from "@/components/motion"
 
 export default function GalleryPage() {
@@ -13,7 +13,7 @@ export default function GalleryPage() {
         <section className="py-12 md:py-24">
           <div className="mx-auto w-full max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
             <div className="space-y-4 text-center">
-              <h1 className="text-4xl font-bold tracking-tighter md:text-5xl text-gradient">
+              <h1 className="text-gradient text-4xl font-bold tracking-tighter md:text-5xl">
                 Meet Some of Our Members
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">

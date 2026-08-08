@@ -148,7 +148,7 @@ export default function ContactPage() {
                           Instagram
                         </span>
                       </Link>
-                      <Link 
+                      <Link
                         href={CONTACT.tiktok}
                         className="flex items-center gap-2 text-black dark:text-white"
                         target="_blank"

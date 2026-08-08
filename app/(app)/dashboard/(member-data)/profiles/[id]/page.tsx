@@ -41,7 +41,6 @@ import {
   Mars,
   Venus,
   Home,
-  Send,
   StickyNote,
   Pencil,
   Trash2,
@@ -82,20 +81,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
-import { Check, ChevronsUpDown } from "lucide-react"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
@@ -700,21 +685,11 @@ export default function ProfilesDetailPage() {
   const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isSendDialogOpen, setIsSendDialogOpen] = useState(false)
-  const [sendToUsers, setSendToUsers] = useState<ApplicationForm[]>([])
-  const [isFetchingSendToUsers, setIsFetchingSendToUsers] = useState(false)
-  const [selectedUserIdToSend, setSelectedUserIdToSend] = useState<
-    string | null
-  >(null)
-  const [selectedUserToSend, setSelectedUserToSend] =
-    useState<ApplicationForm | null>(null)
-  const [isSendingProfile, setIsSendingProfile] = useState(false)
   const [viewingImage, setViewingImage] = useState<{
     url: string
     key: string
   } | null>(null)
   const [downloading, setDownloading] = useState<string | null>(null)
-  const [isComboboxOpen, setIsComboboxOpen] = useState(false)
 
   useEffect(() => {
     async function fetchUser() {
@@ -735,68 +710,6 @@ export default function ProfilesDetailPage() {
 
     fetchUser()
   }, [id])
-
-  useEffect(() => {
-    if (!isSendDialogOpen || !profile) return
-
-    async function fetchSendToUsers() {
-      setIsFetchingSendToUsers(true)
-      try {
-        const targetGender =
-          profile?.applicationForm.personalDetails?.gender === "Male"
-            ? "Female"
-            : "Male"
-        const response = await fetch(`/api/profiles?gender=${targetGender}`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch users")
-        }
-        const data = await response.json()
-        setSendToUsers(data.data)
-      } catch (error) {
-        console.error(error)
-        toast.error("Could not fetch users to send profile to.")
-      } finally {
-        setIsFetchingSendToUsers(false)
-      }
-    }
-
-    fetchSendToUsers()
-  }, [isSendDialogOpen, profile])
-
-  const handleSendProfile = async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setIsSendingProfile(true)
-
-    try {
-      const res = await fetch("/api/profiles/send-profile-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          profileId: profile?.id,
-          profile: profile?.applicationForm.personalDetails,
-          to: selectedUserToSend?.personalDetails,
-        }),
-      })
-
-      const data = await res.json()
-
-      if (data.success) {
-        toast.success("Profile sent")
-        setIsSendDialogOpen(false)
-        setSelectedUserIdToSend(null)
-        setSelectedUserToSend(null)
-      }
-    } catch (error) {
-      toast.error("Failed to send")
-      console.log("SEND PROFILE ERROR:", error)
-    } finally {
-      setIsSendingProfile(false)
-      setSelectedUserIdToSend(null)
-      setSelectedUserToSend(null)
-    }
-  }
 
   const handleDownload = async (url: string, imgKey: string) => {
     setDownloading(imgKey)
@@ -994,164 +907,16 @@ export default function ProfilesDetailPage() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Dialog
-            open={isSendDialogOpen}
-            onOpenChange={(open) => {
-              setIsSendDialogOpen(open)
-              if (!open) {
-                setSelectedUserIdToSend(null)
-                setSelectedUserToSend(null)
-              }
-            }}
+          <Button
+            variant="outline"
+            onClick={() =>
+              router.push(
+                `/dashboard/application-form/${profile.applicationForm.id}`
+              )
+            }
           >
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <Send className="mr-2 h-4 w-4" />
-                Send Profile to{" "}
-                {personalDetails?.gender === "Male" ? "Female" : "Male"}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Send Profile</DialogTitle>
-                <DialogDescription>
-                  Select a user to send {personalDetails?.prefix}{" "}
-                  {personalDetails?.name}&apos;s profile to.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="user-select" className="text-right">
-                    To
-                  </Label>
-                  <Popover
-                    open={isComboboxOpen}
-                    onOpenChange={setIsComboboxOpen}
-                  >
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={isComboboxOpen}
-                        className="col-span-3 justify-between"
-                        disabled={isFetchingSendToUsers || isSendingProfile}
-                      >
-                        {isFetchingSendToUsers
-                          ? "Loading users..."
-                          : selectedUserIdToSend
-                            ? `${
-                                sendToUsers.find(
-                                  (u) => u.id === selectedUserIdToSend
-                                )?.personalDetails?.prefix
-                              } ${
-                                sendToUsers.find(
-                                  (u) => u.id === selectedUserIdToSend
-                                )?.personalDetails?.name
-                              }`
-                            : personalDetails?.gender === "Male"
-                              ? "Select a female"
-                              : personalDetails?.gender === "Female"
-                                ? "Select a male"
-                                : "Select a user"}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[300px] p-0">
-                      <Command>
-                        <CommandInput placeholder="Search user..." />
-                        <CommandList>
-                          <CommandEmpty>
-                            {isFetchingSendToUsers
-                              ? "Loading..."
-                              : "No users found."}
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {sendToUsers.map((u) =>
-                              (() => {
-                                const userAge =
-                                  u.personalDetails?.dob &&
-                                  !isNaN(
-                                    new Date(u.personalDetails.dob).getTime()
-                                  )
-                                    ? new Date().getFullYear() -
-                                      new Date(
-                                        u.personalDetails.dob
-                                      ).getFullYear()
-                                    : "N/A"
-                                return (
-                                  <CommandItem
-                                    key={u.id}
-                                    value={`${u.personalDetails?.prefix || ""} ${
-                                      u.personalDetails?.name || ""
-                                    } ${String(u.customId).padStart(4, "0")}`}
-                                    onSelect={() => {
-                                      setSelectedUserIdToSend(u.id)
-                                      setSelectedUserToSend(u)
-                                      setIsComboboxOpen(false)
-                                    }}
-                                    className="flex items-center gap-3"
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "h-4 w-4",
-                                        selectedUserIdToSend === u.id
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    <Avatar className="h-8 w-8">
-                                      <AvatarImage src={u.photos?.headshot} />
-                                      <AvatarFallback>
-                                        {u.personalDetails?.name?.charAt(0)}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex flex-col">
-                                      <span className="font-medium">
-                                        {u.personalDetails.prefix}{" "}
-                                        {u.personalDetails?.name}
-                                      </span>
-                                      <span className="text-xs text-muted-foreground">
-                                        ID:{" "}
-                                        {String(u.customId).padStart(4, "0")},{" "}
-                                        {userAge} years old
-                                      </span>
-                                    </div>
-                                  </CommandItem>
-                                )
-                              })()
-                            )}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isSendingProfile}
-                  onClick={() => {
-                    setIsSendDialogOpen(false)
-                    setSelectedUserIdToSend(null)
-                    setSelectedUserToSend(null)
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleSendProfile}
-                  disabled={isSendingProfile || !selectedUserIdToSend}
-                  className="btn-gradient"
-                >
-                  {isSendingProfile ? "Sending..." : "Send"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
+            <FileText className="mr-2 h-4 w-4" /> View Application
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
@@ -1159,15 +924,6 @@ export default function ProfilesDetailPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() =>
-                  router.push(
-                    `/dashboard/application-form/${profile.applicationForm.id}`
-                  )
-                }
-              >
-                <FileText className="mr-2 h-4 w-4" /> View Application
-              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
                   href={`/print/profile/${profile.id}?print=true`}

@@ -836,21 +836,69 @@ export default function ProfilesDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-4xl py-8">
-        <Skeleton className="mb-4 h-8 w-24" />
-        <Card>
-          <CardContent className="flex flex-col items-center pt-4">
-            <Skeleton className="mx-auto mb-4 h-24 w-24 rounded-full" />
-            <Skeleton className="mt-4 h-8 w-48" />
-            <Skeleton className="mt-2 h-4 w-32" />
-            <div className="mt-6 grid w-full max-w-md grid-cols-2 gap-4">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
+      <div className="container mx-auto max-w-5xl py-8">
+        <div className="mb-4 flex items-center justify-between">
+          <Skeleton className="h-6 w-20" />
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-10 w-10" />
+          </div>
+        </div>
+
+        <Card className="overflow-hidden">
+          <CardContent className="flex flex-col items-center pt-6">
+            <Skeleton className="mx-auto mb-4 h-32 w-32 rounded-full" />
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="mt-2 h-5 w-48" />
+            <Skeleton className="mt-2 h-5 w-56" />
+
+            <div className="mt-10 w-full space-y-6">
+              {/* Overview Section Skeleton */}
+              <Card>
+                <CardHeader>
+                  <Skeleton className="h-7 w-32" />
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                  <div className="grid grid-cols-2 gap-6 pt-4">
+                    {[...Array(8)].map((_, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                        <div className="space-y-1">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-5 w-24" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </CardContent>
         </Card>
+
+        {/* Photos Section Skeleton */}
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-7 w-24" />
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex flex-col gap-2">
+                    <Skeleton className="h-56 w-full" />
+                    <div className="flex items-center justify-center gap-10">
+                      <Skeleton className="h-5 w-20" />
+                      <Skeleton className="h-9 w-32" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     )
   }

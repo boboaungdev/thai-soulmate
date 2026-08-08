@@ -97,36 +97,6 @@ const staffItems = [
     url: "/dashboard/staff-dashboard",
     icon: LayoutDashboard,
   },
-  {
-    title: "Register Interest",
-    url: "/dashboard/register-interest",
-    icon: ClipboardPen,
-  },
-  {
-    title: "Application Form",
-    url: "/dashboard/application-form",
-    icon: Form,
-  },
-  {
-    title: "Payment",
-    url: "/dashboard/payment",
-    icon: DollarSign,
-  },
-  {
-    title: "Profiles",
-    url: "/dashboard/profiles",
-    icon: Users2,
-  },
-  {
-    title: "Matching",
-    url: "/dashboard/matching",
-    icon: HeartHandshake,
-  },
-  {
-    title: "Tracking",
-    url: "/dashboard/tracking",
-    icon: HeartPulse,
-  },
 ]
 
 const adminItems = [
@@ -135,6 +105,9 @@ const adminItems = [
     url: "/dashboard/admin-dashboard",
     icon: LayoutDashboard,
   },
+]
+
+const memberDataItems = [
   {
     title: "Register Interest",
     url: "/dashboard/register-interest",
@@ -155,6 +128,9 @@ const adminItems = [
     url: "/dashboard/profiles",
     icon: Users2,
   },
+]
+
+const MatchmakingItems = [
   {
     title: "Matching",
     url: "/dashboard/matching",
@@ -248,7 +224,7 @@ export function AppSidebar() {
         {(user.role === "MEMBER" || user.role === "DEV") && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
-              User Menu
+              Member Menu
             </SidebarGroupLabel>
 
             <SidebarGroupContent>
@@ -307,6 +283,60 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {adminItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pathname === item.url}
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {user?.role !== "MEMBER" && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+              Member Data
+            </SidebarGroupLabel>
+
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {memberDataItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pathname === item.url}
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {user?.role !== "MEMBER" && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+              Matchmaking
+            </SidebarGroupLabel>
+
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {MatchmakingItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild

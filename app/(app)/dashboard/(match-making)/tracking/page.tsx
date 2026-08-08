@@ -253,6 +253,7 @@ export default function TrackingPage() {
       case SoulmateStatus.INITIAL_CONNECT:
         return (
           <Button
+            className="btn-gradient"
             onClick={() =>
               handleUpdateStatus(
                 soulmate.id,
@@ -267,10 +268,15 @@ export default function TrackingPage() {
       case SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE:
       case SoulmateStatus.FEMALE_THINKING:
       case SoulmateStatus.FEMALE_REJECT:
-        return <Button disabled>{formatStatus(soulmate.status)}</Button>
+        return (
+          <Button disabled className="btn-gradient">
+            {formatStatus(soulmate.status)}
+          </Button>
+        )
       case SoulmateStatus.FEMALE_ACCEPTED:
         return (
           <Button
+            className="btn-gradient"
             onClick={() =>
               handleUpdateStatus(
                 soulmate.id,
@@ -285,7 +291,11 @@ export default function TrackingPage() {
       case SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE:
       case SoulmateStatus.MALE_THINKING:
       case SoulmateStatus.MALE_REJECT:
-        return <Button disabled>{formatStatus(soulmate.status)}</Button>
+        return (
+          <Button disabled className="btn-gradient">
+            {formatStatus(soulmate.status)}
+          </Button>
+        )
       default:
         return null
     }

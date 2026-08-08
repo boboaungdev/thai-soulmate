@@ -480,7 +480,7 @@ export function AppSidebar() {
             <DropdownMenuSeparator />
 
             <DropdownMenuItem asChild>
-              <Link href="/dashboard/profile">
+              <Link href="#">
                 <User2 className="mr-2 size-4" />
                 <span>Profile</span>
               </Link>
@@ -498,7 +498,7 @@ export function AppSidebar() {
             </DropdownMenuItem>
 
             <DropdownMenuItem asChild>
-              <Link href="/dashboard/settings">
+              <Link href="#">
                 <Settings2 className="mr-2 size-4" />
                 <span>Settings</span>
               </Link>

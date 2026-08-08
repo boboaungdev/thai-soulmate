@@ -1,13 +1,20 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { PersonalDetails, Photos } from "@/types/application-form"
 import { CheckCircle2, Circle, XCircle } from "lucide-react"
-import React, {useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 enum SoulmateStatus {
   INITIAL_CONNECT = "INITIAL_CONNECT",
@@ -179,6 +186,7 @@ export default function TrackingPage() {
   const [soulmates, setSoulmates] = useState<Soulmate[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchSoulmates = async () => {
@@ -199,6 +207,89 @@ export default function TrackingPage() {
 
     fetchSoulmates()
   }, [])
+
+  const handleUpdateStatus = async (
+    soulmateId: string,
+    newStatus: SoulmateStatus
+  ) => {
+    setUpdatingId(soulmateId)
+    const originalSoulmates = [...soulmates]
+
+    const optimisticUpdate = soulmates.map((s) =>
+      s.id === soulmateId ? { ...s, status: newStatus } : s
+    )
+    setSoulmates(optimisticUpdate)
+
+    try {
+      const response = await fetch(`/api/soulmates/${soulmateId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update status")
+      }
+
+      const updatedSoulmate = await response.json()
+      setSoulmates((currentSoulmates) =>
+        currentSoulmates.map((s) =>
+          s.id === updatedSoulmate.id ? { ...s, ...updatedSoulmate } : s
+        )
+      )
+    } catch (error) {
+      console.error(error)
+      setSoulmates(originalSoulmates)
+      setError("Failed to update soulmate status.")
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
+  const renderActionButton = (soulmate: Soulmate) => {
+    const isUpdating = updatingId === soulmate.id
+
+    switch (soulmate.status) {
+      case SoulmateStatus.INITIAL_CONNECT:
+        return (
+          <Button
+            onClick={() =>
+              handleUpdateStatus(
+                soulmate.id,
+                SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE
+              )
+            }
+            disabled={isUpdating}
+          >
+            {isUpdating ? <Spinner /> : "Send Male Profile to Female"}
+          </Button>
+        )
+      case SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE:
+      case SoulmateStatus.FEMALE_THINKING:
+      case SoulmateStatus.FEMALE_REJECT:
+        return <Button disabled>{formatStatus(soulmate.status)}</Button>
+      case SoulmateStatus.FEMALE_ACCEPTED:
+        return (
+          <Button
+            onClick={() =>
+              handleUpdateStatus(
+                soulmate.id,
+                SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE
+              )
+            }
+            disabled={isUpdating}
+          >
+            {isUpdating ? <Spinner /> : "Send Female Profile to Male"}
+          </Button>
+        )
+      case SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE:
+      case SoulmateStatus.MALE_THINKING:
+      case SoulmateStatus.MALE_REJECT:
+        return <Button disabled>{formatStatus(soulmate.status)}</Button>
+      default:
+        return null
+    }
+  }
 
   if (isLoading) {
     return (
@@ -255,6 +346,7 @@ export default function TrackingPage() {
             <Separator className="my-4" />
             <SoulmateStatusLine currentStatus={soulmate.status} />
           </CardContent>
+          <CardFooter>{renderActionButton(soulmate)}</CardFooter>
         </Card>
       ))}
     </div>

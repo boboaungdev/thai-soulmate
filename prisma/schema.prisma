@@ -149,8 +149,6 @@ model Soulmate {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([maleId, femaleId])
 }
 
 model SoulmateNote {

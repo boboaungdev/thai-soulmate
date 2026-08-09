@@ -74,6 +74,7 @@ export async function POST(req: Request) {
     }
 
     // Check if a soulmate connection already exists
+    // Check if an active soulmate connection already exists
     const existingSoulmate = await prisma.soulmate.findFirst({
       where: {
         OR: [
@@ -86,12 +87,18 @@ export async function POST(req: Request) {
             femaleId: maleId,
           },
         ],
+        status: {
+          not: "CLOSED",
+        },
       },
     })
 
     if (existingSoulmate) {
       return NextResponse.json(
-        { success: false, message: "These soulmates are already connected." },
+        {
+          success: false,
+          message: "These soulmates are already actively connected.",
+        },
         { status: 409 }
       )
     }

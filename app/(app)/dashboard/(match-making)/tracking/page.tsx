@@ -123,6 +123,7 @@ interface Soulmate {
   male: SoulmateApplication
   female: SoulmateApplication
   notes: SoulmateNote[]
+  closedFromStatus?: SoulmateStatus
 }
 
 interface SoulmateNote {
@@ -251,9 +252,64 @@ const SoulmateActions: React.FC<{
   )
 }
 
-const SoulmateStatusLine: React.FC<{ currentStatus: Soulmate["status"] }> = ({
-  currentStatus,
-}) => {
+const SoulmateStatusLine: React.FC<{
+  currentStatus: Soulmate["status"]
+  closedFromStatus?: Soulmate["status"]
+}> = ({ currentStatus, closedFromStatus }) => {
+  if (currentStatus === SoulmateStatus.CLOSED) {
+    const closedAtGroupIndex = closedFromStatus
+      ? statusGroups.findIndex((group) => group.statuses.includes(closedFromStatus))
+      : -1
+
+    return (
+      <div className="flex items-center justify-between gap-1 text-xs">
+        {statusGroups.map((group, index) => {
+          const isClosedGroup = group.statuses.includes(SoulmateStatus.CLOSED)
+
+          let textColorClass = "text-gray-500"
+          let separatorColorClass = "bg-gray-300"
+          let icon = <XCircle className="size-4 text-red-500" />
+
+          if (isClosedGroup) {
+            textColorClass = "text-blue-700 font-semibold"
+            icon = <CheckCircle2 className="size-4 text-blue-500" />
+          } else {
+            const wasCompletedBeforeClose =
+              closedAtGroupIndex > -1 && index < closedAtGroupIndex
+            if (wasCompletedBeforeClose) {
+              textColorClass = "text-green-700"
+              separatorColorClass = "bg-green-500"
+              icon = <CheckCircle2 className="size-4 text-green-500" />
+            }
+          }
+
+          const shouldShowSeparator = index < statusGroups.length - 1
+
+          return (
+            <React.Fragment key={group.name}>
+              <div className="flex min-w-0 flex-1 flex-col items-center">
+                <span title={group.name}>{icon}</span>
+                <span
+                  className={cn(
+                    "mt-1 truncate text-center",
+                    textColorClass,
+                    "max-w-[70px] whitespace-normal"
+                  )}
+                >
+                  {group.name}
+                </span>
+              </div>
+              {shouldShowSeparator && (
+                <div
+                  className={cn("h-1 flex-1", separatorColorClass, "mx-1")}
+                ></div>
+              )}
+            </React.Fragment>
+          )
+        })}
+      </div>
+    )
+  }
   const currentGroupIndex = statusGroups.findIndex((group) =>
     group.statuses.includes(currentStatus)
   )
@@ -366,9 +422,18 @@ export default function TrackingPage() {
     setUpdatingId(soulmateId)
     const originalSoulmates = [...soulmates]
 
-    const optimisticUpdate = soulmates.map((s) =>
-      s.id === soulmateId ? { ...s, status: newStatus } : s
-    )
+    const soulmateToUpdate = soulmates.find((s) => s.id === soulmateId)
+
+    const optimisticUpdate = soulmates.map((s) => {
+      if (s.id === soulmateId) {
+        const updated = { ...s, status: newStatus }
+        if (newStatus === SoulmateStatus.CLOSED && soulmateToUpdate) {
+          updated.closedFromStatus = soulmateToUpdate.status
+        }
+        return updated
+      }
+      return s
+    })
     setSoulmates(optimisticUpdate)
 
     try {
@@ -545,7 +610,10 @@ export default function TrackingPage() {
             />
           </CardHeader>
           <CardContent>
-            <SoulmateStatusLine currentStatus={soulmate.status} />
+            <SoulmateStatusLine
+              currentStatus={soulmate.status}
+              closedFromStatus={soulmate.closedFromStatus}
+            />
             <div className="mt-4">
               <h4 className="text-sm font-medium">Notes</h4>
               <CardDescription>

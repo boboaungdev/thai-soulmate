@@ -18,25 +18,35 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid status" }, { status: 400 })
     }
 
-    const data: Partial<{ status: SoulmateStatus; closedFromStatus: SoulmateStatus | null }> = { status };
+    const currentSoulmate = await prisma.soulmate.findUnique({
+      where: { id },
+    })
+
+    if (!currentSoulmate) {
+      return NextResponse.json({ error: "Soulmate not found" }, { status: 404 })
+    }
+
+    const data: Partial<{
+      status: SoulmateStatus
+      closedFromStatus: SoulmateStatus | null
+    }> = { status }
 
     if (status === SoulmateStatus.CLOSED) {
-      const currentSoulmate = await prisma.soulmate.findUnique({
-        where: { id },
-      });
-
-      if (!currentSoulmate) {
-        return NextResponse.json({ error: "Soulmate not found" }, { status: 404 });
+      if (currentSoulmate.status === SoulmateStatus.CLOSED) {
+        return NextResponse.json(
+          { error: "Soulmate is already closed" },
+          { status: 400 }
+        )
       }
-      data.closedFromStatus = currentSoulmate.status;
+      data.closedFromStatus = currentSoulmate.status
     }
 
     const updatedSoulmate = await prisma.soulmate.update({
       where: { id },
       data,
-    });
+    })
 
-    return NextResponse.json(updatedSoulmate, { status: 200 });
+    return NextResponse.json(updatedSoulmate, { status: 200 })
   } catch (error) {
     console.error("Error updating soulmate status:", error)
     return NextResponse.json(

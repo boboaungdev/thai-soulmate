@@ -42,7 +42,7 @@ export function ConnectButton({
 
       if (response.ok) {
         toast.success("Soulmates connected successfully!")
-        router.push("/dashboard/tracking")
+        router.push("/dashboard/soulmates")
       } else {
         toast.error(`Failed to connect soulmates: ${result.message}`)
       }

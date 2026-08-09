@@ -236,16 +236,21 @@ const SoulmateActions: React.FC<{
             <NotebookPen className="mr-2 h-4 w-4 shrink-0" />
             <span className="whitespace-nowrap">Add Note</span>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() =>
-              handleUpdateStatus(soulmate.id, SoulmateStatus.CLOSED)
-            }
-            variant="destructive"
-          >
-            <CircleX className="mr-2 h-4 w-4 shrink-0" />
-            <span className="whitespace-nowrap">Close Connection</span>
-          </DropdownMenuItem>
+          {soulmate.status !== SoulmateStatus.CLOSED && (
+            <>
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem
+                onClick={() =>
+                  handleUpdateStatus(soulmate.id, SoulmateStatus.CLOSED)
+                }
+                variant="destructive"
+              >
+                <CircleX className="mr-2 h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">Close Connection</span>
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -258,7 +263,9 @@ const SoulmateStatusLine: React.FC<{
 }> = ({ currentStatus, closedFromStatus }) => {
   if (currentStatus === SoulmateStatus.CLOSED) {
     const closedAtGroupIndex = closedFromStatus
-      ? statusGroups.findIndex((group) => group.statuses.includes(closedFromStatus))
+      ? statusGroups.findIndex((group) =>
+          group.statuses.includes(closedFromStatus)
+        )
       : -1
 
     return (

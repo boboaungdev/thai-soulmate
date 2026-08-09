@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import { formatDateTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
 import { PersonalDetails, Photos } from "@/types/application-form"
 import {
@@ -124,6 +125,7 @@ interface Soulmate {
   male: SoulmateApplication
   female: SoulmateApplication
   notes: SoulmateNote[]
+  createdAt: string
   closedFromStatus?: SoulmateStatus
 }
 
@@ -590,32 +592,37 @@ export default function SoulmateTrackingPage() {
 
       {soulmates.map((soulmate) => (
         <Card key={soulmate.id} className="w-full">
-          <CardHeader className="flex items-start justify-between">
-            <CardTitle className="flex items-center gap-4 text-xl">
-              <div className="flex items-center gap-2">
-                <Avatar>
-                  <AvatarImage src={soulmate.male.photos?.headshot} />
-                  <AvatarFallback>
-                    {getInitials(soulmate.male.personalDetails?.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="font-semibold">
-                  {soulmate.male.personalDetails?.name}
-                </span>
-              </div>
-              <span className="mx-2 font-bold text-gray-600">&</span>
-              <div className="flex items-center gap-2">
-                <Avatar>
-                  <AvatarImage src={soulmate.female.photos?.headshot} />
-                  <AvatarFallback>
-                    {getInitials(soulmate.female.personalDetails?.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="font-semibold">
-                  {soulmate.female.personalDetails?.name}
-                </span>
-              </div>
-            </CardTitle>
+          <CardHeader className="flex flex-row items-start justify-between">
+            <div className="space-y-1.5">
+              <CardTitle className="flex items-center gap-4 text-xl">
+                <div className="flex items-center gap-2">
+                  <Avatar>
+                    <AvatarImage src={soulmate.male.photos?.headshot} />
+                    <AvatarFallback>
+                      {getInitials(soulmate.male.personalDetails?.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-semibold">
+                    {soulmate.male.personalDetails?.name}
+                  </span>
+                </div>
+                <span className="mx-2 font-bold text-gray-600">&</span>
+                <div className="flex items-center gap-2">
+                  <Avatar>
+                    <AvatarImage src={soulmate.female.photos?.headshot} />
+                    <AvatarFallback>
+                      {getInitials(soulmate.female.personalDetails?.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-semibold">
+                    {soulmate.female.personalDetails?.name}
+                  </span>
+                </div>
+              </CardTitle>
+              <CardDescription>
+                Connected: {formatDateTime(soulmate.createdAt)}
+              </CardDescription>
+            </div>
             <SoulmateActions
               soulmate={soulmate}
               isUpdating={updatingId === soulmate.id}

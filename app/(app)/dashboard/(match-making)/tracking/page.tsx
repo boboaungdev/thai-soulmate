@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
@@ -26,6 +27,9 @@ import {
   Clock,
   MoreHorizontal,
   Loader2,
+  NotebookPen,
+  CircleX,
+  Eye,
 } from "lucide-react"
 import React, { useEffect, useState } from "react"
 
@@ -212,6 +216,7 @@ const SoulmateActions: React.FC<{
   return (
     <div className="flex items-center gap-2">
       {sendProfileButton}
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="h-8 w-8 p-0">
@@ -219,16 +224,26 @@ const SoulmateActions: React.FC<{
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => alert("Add Note Clicked!")}>
-            Add Note
+
+        <DropdownMenuContent align="end" className="w-max">
+          <DropdownMenuItem onClick={() => alert("View Clicked!")}>
+            <Eye className="mr-2 h-4 w-4 shrink-0" />
+            <span className="whitespace-nowrap">View details</span>
           </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={() => alert("Add Note Clicked!")}>
+            <NotebookPen className="mr-2 h-4 w-4 shrink-0" />
+            <span className="whitespace-nowrap">Add Note</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() =>
               handleUpdateStatus(soulmate.id, SoulmateStatus.CLOSED)
             }
+            variant="destructive"
           >
-            Close Connection
+            <CircleX className="mr-2 h-4 w-4 shrink-0" />
+            <span className="whitespace-nowrap">Close Connection</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

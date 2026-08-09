@@ -388,7 +388,7 @@ const SoulmateStatusLine: React.FC<{
   )
 }
 
-export default function TrackingPage() {
+export default function SoulmateTrackingPage() {
   const [soulmates, setSoulmates] = useState<Soulmate[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

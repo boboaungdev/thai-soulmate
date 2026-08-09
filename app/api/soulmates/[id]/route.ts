@@ -1,56 +1,84 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { SoulmateStatus } from "@/lib/generated/prisma/client"
 
-export async function PATCH(
-  req: NextRequest,
+export async function GET(
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    const { status } = (await req.json()) as { status: SoulmateStatus }
 
-    if (!status) {
-      return NextResponse.json({ error: "Status is required" }, { status: 400 })
+    const soulmate = await prisma.soulmate.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        male: true,
+        female: true,
+        notes: {
+          include: {
+            user: true,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    })
+
+    if (!soulmate) {
+      return NextResponse.json(
+        { success: false, message: "Soulmate not found" },
+        { status: 404 }
+      )
     }
 
-    if (!Object.values(SoulmateStatus).includes(status)) {
-      return NextResponse.json({ error: "Invalid status" }, { status: 400 })
-    }
+    return NextResponse.json({ success: true, soulmate })
+  } catch (error) {
+    console.error("Error fetching soulmate:", error)
+    return NextResponse.json(
+      { success: false, message: "Error fetching soulmate" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    const { status } = await req.json()
 
     const currentSoulmate = await prisma.soulmate.findUnique({
       where: { id },
     })
 
     if (!currentSoulmate) {
-      return NextResponse.json({ error: "Soulmate not found" }, { status: 404 })
-    }
-
-    const data: Partial<{
-      status: SoulmateStatus
-      closedFromStatus: SoulmateStatus | null
-    }> = { status }
-
-    if (status === SoulmateStatus.CLOSED) {
-      if (currentSoulmate.status === SoulmateStatus.CLOSED) {
-        return NextResponse.json(
-          { error: "Soulmate is already closed" },
-          { status: 400 }
-        )
-      }
-      data.closedFromStatus = currentSoulmate.status
+      return NextResponse.json(
+        { success: false, message: "Soulmate not found" },
+        { status: 404 }
+      )
     }
 
     const updatedSoulmate = await prisma.soulmate.update({
-      where: { id },
-      data,
+      where: {
+        id,
+      },
+      data: {
+        status: status,
+        ...(status === "CLOSED" && {
+          closedFromStatus: currentSoulmate.status,
+        }),
+      },
     })
 
-    return NextResponse.json(updatedSoulmate, { status: 200 })
+    return NextResponse.json({ success: true, soulmate: updatedSoulmate })
   } catch (error) {
-    console.error("Error updating soulmate status:", error)
+    console.error("Error updating soulmate:", error)
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { success: false, message: "Error updating soulmate" },
       { status: 500 }
     )
   }

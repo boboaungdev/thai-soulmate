@@ -16,9 +16,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import { formatDateTime } from "@/lib/date"
+import { calculateAge, formatDateTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
 import { PersonalDetails, Photos } from "@/types/application-form"
 import {
@@ -32,9 +31,12 @@ import {
   CircleX,
   Eye,
   Send,
+  ArrowLeft,
 } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
+import { useParams } from "next/navigation"
+import { Badge } from "@/components/ui/badge"
 
 enum SoulmateStatus {
   INITIAL_CONNECT = "INITIAL_CONNECT",
@@ -127,6 +129,7 @@ interface Soulmate {
   female: SoulmateApplication
   notes: SoulmateNote[]
   createdAt: string
+  updatedAt: string
   closedFromStatus?: SoulmateStatus
 }
 
@@ -237,13 +240,6 @@ const SoulmateActions: React.FC<{
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-max">
-          <DropdownMenuItem asChild>
-            <Link href={`/dashboard/soulmates/${soulmate.id}`}>
-              <Eye className="mr-2 h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">View details</span>
-            </Link>
-          </DropdownMenuItem>
-
           <DropdownMenuItem onClick={() => alert("Add Note Clicked!")}>
             <NotebookPen className="mr-2 h-4 w-4 shrink-0" />
             <span className="whitespace-nowrap">Add Note</span>
@@ -356,8 +352,6 @@ const SoulmateStatusLine: React.FC<{
             textColorClass = "text-red-700 font-semibold"
             icon = <XCircle className="size-4 fill-red-500 text-red-500" />
           } else {
-            // This is the "current" status that is not rejected.
-            // The user wants blue for 'INITIAL_CONNECT' and a yellow spinning icon for 'REVIEW' and 'THINKING' statuses.
             const isReviewStatus = group.statuses.some((status) =>
               status.startsWith("REVIEW_")
             )
@@ -370,9 +364,8 @@ const SoulmateStatusLine: React.FC<{
               icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
             } else if (isReviewStatus || isThinkingStatus) {
               textColorClass = "text-yellow-700 font-semibold"
-              icon = <Clock className="size-4 animate-spin text-yellow-500" /> // Using Clock icon with spin for "thinking" and "review"
+              icon = <Clock className="size-4 animate-spin text-yellow-500" />
             } else {
-              // Default to blue circle for other non-rejected current statuses
               textColorClass = "text-blue-700 font-semibold"
               icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
             }
@@ -407,53 +400,85 @@ const SoulmateStatusLine: React.FC<{
   )
 }
 
-export default function SoulmateTrackingPage() {
-  const [soulmates, setSoulmates] = useState<Soulmate[]>([])
+const ProfileCard: React.FC<{ application: SoulmateApplication }> = ({
+  application,
+}) => {
+  const personalDetails = application.personalDetails as PersonalDetails
+  const photos = application.photos as Photos
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center gap-4">
+        <Avatar className="h-16 w-16">
+          <AvatarImage src={photos?.headshot} alt={personalDetails.name} />
+          <AvatarFallback>{getInitials(personalDetails.name)}</AvatarFallback>
+        </Avatar>
+        <div>
+          <CardTitle className="text-xl">{personalDetails.name}</CardTitle>
+          <CardDescription>
+            {personalDetails.gender}, {calculateAge(personalDetails.dob)} years
+            old
+          </CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <p>
+            <strong>Nationality:</strong> {personalDetails.nationality}
+          </p>
+          <p>
+            <strong>Current Location:</strong> {personalDetails.currentLocation}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+export default function SoulmateDetailPage() {
+  const params = useParams()
+  const id = params.id as string
+  const [soulmate, setSoulmate] = useState<Soulmate | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchSoulmates = async () => {
+    if (!id) return
+    const fetchSoulmate = async () => {
       try {
-        const response = await fetch("/api/soulmates")
+        const response = await fetch(`/api/soulmates/${id}`)
         const data = await response.json()
         if (data.success) {
-          setSoulmates(data.soulmates)
+          setSoulmate(data.soulmate)
         } else {
           setError(data.message)
         }
       } catch (err) {
-        setError("Failed to fetch soulmates.")
+        setError("Failed to fetch soulmate details.")
         console.log(err)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchSoulmates()
-  }, [])
+    fetchSoulmate()
+  }, [id])
 
   const handleUpdateStatus = async (
     soulmateId: string,
     newStatus: SoulmateStatus
   ) => {
     setUpdatingId(soulmateId)
-    const originalSoulmates = [...soulmates]
+    const originalSoulmate = soulmate
 
-    const soulmateToUpdate = soulmates.find((s) => s.id === soulmateId)
-
-    const optimisticUpdate = soulmates.map((s) => {
-      if (s.id === soulmateId) {
-        const updated = { ...s, status: newStatus }
-        if (newStatus === SoulmateStatus.CLOSED && soulmateToUpdate) {
-          updated.closedFromStatus = soulmateToUpdate.status
-        }
-        return updated
+    if (soulmate) {
+      const optimisticUpdate = { ...soulmate, status: newStatus }
+      if (newStatus === SoulmateStatus.CLOSED) {
+        optimisticUpdate.closedFromStatus = soulmate.status
       }
-      return s
-    })
-    setSoulmates(optimisticUpdate)
+      setSoulmate(optimisticUpdate)
+    }
 
     try {
       const response = await fetch(`/api/soulmates/${soulmateId}`, {
@@ -467,16 +492,14 @@ export default function SoulmateTrackingPage() {
       }
 
       const updatedSoulmate = await response.json()
-      setSoulmates((currentSoulmates) =>
-        currentSoulmates.map((s) =>
-          s.id === updatedSoulmate.soulmate.id
-            ? { ...s, ...updatedSoulmate.soulmate }
-            : s
-        )
-      )
+      if (soulmate) {
+        setSoulmate({ ...soulmate, ...updatedSoulmate.soulmate })
+      }
     } catch (error) {
       console.error(error)
-      setSoulmates(originalSoulmates)
+      if (originalSoulmate) {
+        setSoulmate(originalSoulmate)
+      }
       setError("Failed to update soulmate status.")
     } finally {
       setUpdatingId(null)
@@ -523,60 +546,57 @@ export default function SoulmateTrackingPage() {
   if (isLoading) {
     return (
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-        <div className="flex items-center justify-between space-y-2">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Soulmate Tracking
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Track the progress of soulmate connections.
-            </p>
-          </div>
-        </div>
-
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Card key={i} className="w-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <Skeleton className="h-6 w-24" />
-                </div>
-                <span className="text-gray-400">&</span>
-                <div className="flex items-center gap-2">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <Skeleton className="h-6 w-24" />
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-4">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="mt-2 h-6 w-48" />
-              </div>
-              <Separator className="my-4" />
-              <div className="flex items-center justify-between gap-1 text-xs">
-                {Array.from({ length: 8 }).map((_, index) => (
-                  <React.Fragment key={index}>
-                    <div className="flex min-w-0 flex-1 flex-col items-center">
-                      <Skeleton className="size-4 rounded-full" />
-                      <Skeleton className="mt-1 h-4 w-12" />
-                    </div>
-                    {index < 7 && <Skeleton className="mx-1 h-1 flex-1" />}
-                  </React.Fragment>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-64" />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-1/2" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-6 w-full" />
+            <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <Skeleton className="h-48" />
+              <Skeleton className="h-48" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-32" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </CardContent>
+        </Card>
       </main>
     )
   }
 
   if (error) {
     return (
-      <div className="flex h-full items-center justify-center text-red-500">
-        {error}
+      <div className="flex h-full flex-col items-center justify-center text-red-500">
+        <p>{error}</p>
+        <Link href="/dashboard/soulmates">
+          <Button variant="link">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Soulmates
+          </Button>
+        </Link>
+      </div>
+    )
+  }
+
+  if (!soulmate) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center">
+        <p>Soulmate not found.</p>
+        <Link href="/dashboard/soulmates">
+          <Button variant="link">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Soulmates
+          </Button>
+        </Link>
       </div>
     )
   }
@@ -585,80 +605,84 @@ export default function SoulmateTrackingPage() {
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex items-center justify-between space-y-2">
         <div>
+          <Link
+            href="/dashboard/soulmates"
+            className="flex items-center text-sm text-muted-foreground hover:underline"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Soulmates
+          </Link>
           <h1 className="text-2xl font-bold tracking-tight">
-            Soulmate Tracking
+            Soulmate Connection Details
           </h1>
           <p className="text-sm text-muted-foreground">
-            Track the progress of soulmate connections.
+            Connected: {formatDateTime(soulmate.createdAt)} | Last updated:{" "}
+            {formatDateTime(soulmate.updatedAt)}
           </p>
         </div>
-        <div className="flex items-center space-x-2"></div>
+        <SoulmateActions
+          soulmate={soulmate}
+          isUpdating={updatingId === soulmate.id}
+          handleSendProfile={handleSendProfile}
+          handleUpdateStatus={handleUpdateStatus}
+        />
       </div>
 
-      {soulmates.map((soulmate) => (
-        <Card key={soulmate.id} className="w-full">
-          <CardHeader className="flex flex-row items-start justify-between">
-            <div className="space-y-1.5">
-              <CardTitle className="flex items-center gap-4 text-xl">
-                <div className="flex items-center gap-2">
-                  <Avatar>
-                    <AvatarImage src={soulmate.male.photos?.headshot} />
-                    <AvatarFallback>
-                      {getInitials(soulmate.male.personalDetails?.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="font-semibold">
-                    {soulmate.male.personalDetails?.name}
-                  </span>
-                </div>
-                <span className="mx-2 font-bold text-gray-600">&</span>
-                <div className="flex items-center gap-2">
-                  <Avatar>
-                    <AvatarImage src={soulmate.female.photos?.headshot} />
-                    <AvatarFallback>
-                      {getInitials(soulmate.female.personalDetails?.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="font-semibold">
-                    {soulmate.female.personalDetails?.name}
-                  </span>
-                </div>
-              </CardTitle>
-              <CardDescription>
-                Connected: {formatDateTime(soulmate.createdAt)}
-              </CardDescription>
-            </div>
-            <SoulmateActions
-              soulmate={soulmate}
-              isUpdating={updatingId === soulmate.id}
-              handleSendProfile={handleSendProfile}
-              handleUpdateStatus={handleUpdateStatus}
-            />
-          </CardHeader>
-          <CardContent>
-            <SoulmateStatusLine
-              currentStatus={soulmate.status}
-              closedFromStatus={soulmate.closedFromStatus}
-            />
-            <div className="mt-4">
-              <h4 className="text-sm font-medium">Notes</h4>
-              <CardDescription>
-                Latest notes for this connection.
-              </CardDescription>
-              <div className="mt-2 space-y-2">
-                {soulmate.notes.slice(0, 3).map((note) => (
-                  <div key={note.id} className="text-sm text-muted-foreground">
-                    <p className="font-semibold">
-                      {note.user.name}:{" "}
-                      <span className="font-normal">{note.message}</span>
+      <Card>
+        <CardHeader>
+          <CardTitle>Connection Status</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SoulmateStatusLine
+            currentStatus={soulmate.status}
+            closedFromStatus={soulmate.closedFromStatus}
+          />
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <ProfileCard application={soulmate.male} />
+        <ProfileCard application={soulmate.female} />
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Status History & Notes</CardTitle>
+          <CardDescription>
+            All notes and status changes for this connection.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {soulmate.notes.map((note) => (
+              <div key={note.id} className="flex gap-4">
+                <Avatar>
+                  <AvatarFallback>{getInitials(note.user.name)}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold">{note.user.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDateTime(note.createdAt)}
                     </p>
                   </div>
-                ))}
+                  <p className="text-sm text-muted-foreground">
+                    {note.message}
+                  </p>
+                  <Badge variant="outline" className="mt-1">
+                    {note.type}
+                  </Badge>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            ))}
+            {soulmate.notes.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No notes for this connection yet.
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </main>
   )
 }

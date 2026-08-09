@@ -6,16 +6,27 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { PersonalDetails, Photos } from "@/types/application-form"
-import { CheckCircle2, Circle, XCircle, Clock } from "lucide-react"
+import {
+  CheckCircle2,
+  Circle,
+  XCircle,
+  Clock,
+  MoreHorizontal,
+  Loader2,
+} from "lucide-react"
 import React, { useEffect, useState } from "react"
 
 enum SoulmateStatus {
@@ -135,6 +146,103 @@ const formatStatus = (status: string) => {
       /\w\S*/g,
       (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
     )
+}
+
+interface HandleSendProfileProps {
+  soulmate: Soulmate
+  application: SoulmateApplication
+  to: SoulmateApplication
+  newStatus: SoulmateStatus
+}
+
+const SoulmateActions: React.FC<{
+  soulmate: Soulmate
+  isUpdating: boolean
+  handleSendProfile: (props: HandleSendProfileProps) => Promise<void>
+  handleUpdateStatus: (
+    soulmateId: string,
+    newStatus: SoulmateStatus
+  ) => Promise<void>
+}> = ({ soulmate, isUpdating, handleSendProfile, handleUpdateStatus }) => {
+  const canSendMaleProfileToFemale =
+    soulmate.status === SoulmateStatus.INITIAL_CONNECT
+  const canSendFemaleProfileToMale =
+    soulmate.status === SoulmateStatus.FEMALE_ACCEPTED
+
+  let sendProfileButton = null
+  if (canSendMaleProfileToFemale) {
+    sendProfileButton = (
+      <Button
+        className="btn-gradient h-8 px-3 text-sm"
+        onClick={() =>
+          handleSendProfile({
+            soulmate,
+            application: soulmate.male,
+            to: soulmate.female,
+            newStatus: SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE,
+          })
+        }
+        disabled={isUpdating}
+      >
+        {isUpdating ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+          </>
+        ) : (
+          "Send Male Profile"
+        )}
+      </Button>
+    )
+  } else if (canSendFemaleProfileToMale) {
+    sendProfileButton = (
+      <Button
+        className="btn-gradient h-8 px-3 text-sm"
+        onClick={() =>
+          handleSendProfile({
+            soulmate,
+            application: soulmate.female,
+            to: soulmate.male,
+            newStatus: SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE,
+          })
+        }
+        disabled={isUpdating}
+      >
+        {isUpdating ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+          </>
+        ) : (
+          "Send Female Profile"
+        )}
+      </Button>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      {sendProfileButton}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => alert("Add Note Clicked!")}>
+            Add Note
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              handleUpdateStatus(soulmate.id, SoulmateStatus.CLOSED)
+            }
+          >
+            Close Connection
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  )
 }
 
 const SoulmateStatusLine: React.FC<{ currentStatus: Soulmate["status"] }> = ({
@@ -283,13 +391,6 @@ export default function TrackingPage() {
     }
   }
 
-  interface HandleSendProfileProps {
-    soulmate: Soulmate
-    application: SoulmateApplication
-    to: SoulmateApplication
-    newStatus: SoulmateStatus
-  }
-
   const handleSendProfile = async ({
     soulmate,
     application,
@@ -324,65 +425,6 @@ export default function TrackingPage() {
       setError("Failed to send profile.")
     } finally {
       setUpdatingId(null)
-    }
-  }
-
-  const renderActionButton = (soulmate: Soulmate) => {
-    const isUpdating = updatingId === soulmate.id
-
-    switch (soulmate.status) {
-      case SoulmateStatus.INITIAL_CONNECT:
-        return (
-          <Button
-            className="btn-gradient"
-            onClick={() =>
-              handleSendProfile({
-                soulmate,
-                application: soulmate.male,
-                to: soulmate.female,
-                newStatus: SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE,
-              })
-            }
-            disabled={isUpdating}
-          >
-            {isUpdating ? <Spinner /> : "Send Male Profile to Female"}
-          </Button>
-        )
-      case SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE:
-      case SoulmateStatus.FEMALE_THINKING:
-      case SoulmateStatus.FEMALE_REJECT:
-        return (
-          <Button disabled className="btn-gradient">
-            {formatStatus(soulmate.status)}
-          </Button>
-        )
-      case SoulmateStatus.FEMALE_ACCEPTED:
-        return (
-          <Button
-            className="btn-gradient"
-            onClick={() =>
-              handleSendProfile({
-                soulmate,
-                application: soulmate.female,
-                to: soulmate.male,
-                newStatus: SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE,
-              })
-            }
-            disabled={isUpdating}
-          >
-            {isUpdating ? <Spinner /> : "Send Female Profile to Male"}
-          </Button>
-        )
-      case SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE:
-      case SoulmateStatus.MALE_THINKING:
-      case SoulmateStatus.MALE_REJECT:
-        return (
-          <Button disabled className="btn-gradient">
-            {formatStatus(soulmate.status)}
-          </Button>
-        )
-      default:
-        return null
     }
   }
 
@@ -433,9 +475,6 @@ export default function TrackingPage() {
                 ))}
               </div>
             </CardContent>
-            <CardFooter>
-              <Skeleton className="h-10 w-48 rounded-md" />
-            </CardFooter>
           </Card>
         ))}
       </main>
@@ -466,8 +505,8 @@ export default function TrackingPage() {
 
       {soulmates.map((soulmate) => (
         <Card key={soulmate.id} className="w-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-4">
+          <CardHeader className="flex items-start justify-between">
+            <CardTitle className="flex items-center gap-4 text-xl">
               <div className="flex items-center gap-2">
                 <Avatar>
                   <AvatarImage src={soulmate.male.photos?.headshot} />
@@ -475,9 +514,11 @@ export default function TrackingPage() {
                     {getInitials(soulmate.male.personalDetails?.name)}
                   </AvatarFallback>
                 </Avatar>
-                <span>{soulmate.male.personalDetails?.name}</span>
+                <span className="font-semibold">
+                  {soulmate.male.personalDetails?.name}
+                </span>
               </div>
-              <span className="text-gray-400">&</span>
+              <span className="mx-2 font-bold text-gray-600">&</span>
               <div className="flex items-center gap-2">
                 <Avatar>
                   <AvatarImage src={soulmate.female.photos?.headshot} />
@@ -485,18 +526,19 @@ export default function TrackingPage() {
                     {getInitials(soulmate.female.personalDetails?.name)}
                   </AvatarFallback>
                 </Avatar>
-                <span>{soulmate.female.personalDetails?.name}</span>
+                <span className="font-semibold">
+                  {soulmate.female.personalDetails?.name}
+                </span>
               </div>
             </CardTitle>
+            <SoulmateActions
+              soulmate={soulmate}
+              isUpdating={updatingId === soulmate.id}
+              handleSendProfile={handleSendProfile}
+              handleUpdateStatus={handleUpdateStatus}
+            />
           </CardHeader>
           <CardContent>
-            <div className="mb-4">
-              <p className="text-sm text-gray-600">Current Status:</p>
-              <p className="text-lg font-medium">
-                {formatStatus(soulmate.status)}
-              </p>
-            </div>
-            <Separator className="my-4" />
             <SoulmateStatusLine currentStatus={soulmate.status} />
             <div className="mt-4">
               <h4 className="text-sm font-medium">Notes</h4>
@@ -515,7 +557,6 @@ export default function TrackingPage() {
               </div>
             </div>
           </CardContent>
-          <CardFooter>{renderActionButton(soulmate)}</CardFooter>
         </Card>
       ))}
     </main>

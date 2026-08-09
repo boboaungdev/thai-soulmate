@@ -139,15 +139,6 @@ const getInitials = (name?: string) => {
     .toUpperCase()
 }
 
-const formatStatus = (status: string) => {
-  return status
-    .replace(/_/g, " ")
-    .replace(
-      /\w\S*/g,
-      (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-    )
-}
-
 interface HandleSendProfileProps {
   soulmate: Soulmate
   application: SoulmateApplication

@@ -68,7 +68,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter()
-  const user = row.original as ProfileRow
+  const profile = row.original as ProfileRow
   const { user: authUser } = useAuthStore()
   const [message, setMessage] = useState("")
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
@@ -78,18 +78,18 @@ export function DataTableRowActions<TData>({
 
   const handleCopyId = (e: React.MouseEvent) => {
     e.stopPropagation()
-    const idToCopy = String(user.customId).padStart(4, "0")
+    const idToCopy = String(profile.customId).padStart(4, "0")
     navigator.clipboard.writeText(idToCopy)
     toast.success(`Copied ID: ${idToCopy}`)
   }
 
   const handleViewProfile = () => {
-    router.push(`/dashboard/profiles/${user.id}`)
+    router.push(`/dashboard/profiles/${profile.id}`)
   }
 
   const handleStatusChange = async (status: ProfileStatus) => {
     setIsUpdatingStatus(true)
-    const promise = fetch(`/api/profiles/${user.id}`, {
+    const promise = fetch(`/api/profiles/${profile.id}`, {
       method: "PATCH",
       body: JSON.stringify({ status }),
     })
@@ -121,7 +121,7 @@ export function DataTableRowActions<TData>({
 
     setIsLoading(true)
     try {
-      const res = await fetch(`/api/notes/${user.id}/profile`, {
+      const res = await fetch(`/api/notes/${profile.id}/profile`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message, userId: authUser.id }),
@@ -234,15 +234,15 @@ export function DataTableRowActions<TData>({
                 <DropdownMenuItem
                   key={status.value}
                   onClick={() => handleStatusChange(status.value)}
-                  disabled={isUpdatingStatus || user.status === status.value}
+                  disabled={isUpdatingStatus || profile.status === status.value}
                   className={cn(status.color)}
                 >
-                  {isUpdatingStatus && user.status !== status.value ? (
+                  {isUpdatingStatus && profile.status !== status.value ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
                     <status.icon
                       className={cn("mr-2 h-4 w-4", {
-                        "opacity-40": user.status === status.value,
+                        "opacity-40": profile.status === status.value,
                       })}
                     />
                   )}
@@ -258,7 +258,7 @@ export function DataTableRowActions<TData>({
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
-              href={`/print/profile/${user.id}?print=true`}
+              href={`/print/profile/${profile.id}?print=true`}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
@@ -278,7 +278,7 @@ export function DataTableRowActions<TData>({
       <EditProfileSheet
         isOpen={isEditSheetOpen}
         onOpenChange={setIsEditSheetOpen}
-        profile={user}
+        profile={profile}
       />
     </>
   )

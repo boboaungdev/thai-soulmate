@@ -17,6 +17,7 @@ export async function POST(req: Request) {
     const page = await browser.newPage()
 
     const url = `${BASE_URL}/print/profile/${profile.id}`
+    console.log("url", url)
 
     await page.goto(url, {
       waitUntil: "networkidle2",
@@ -26,8 +27,10 @@ export async function POST(req: Request) {
       format: "A4",
       printBackground: true,
     })
+    console.log("pdf", pdf)
 
     const pdfBuffer = Buffer.from(pdf)
+    console.log("pdfBuffer", pdfBuffer)
 
     await browser.close()
 
@@ -36,22 +39,22 @@ export async function POST(req: Request) {
         ? SendMaleProfile({ to })
         : SendFemaleProfile({ profileId: profile.id, to })
 
-    await resend.emails.send({
-      from: `${APP_INFO.name} <${EMAIL.contact}>`,
-      // to: [to.email],
-      to: ["boolean405@gmail.com"],
-      subject:
-        to.gender.toUpperCase() === "FEMALE"
-          ? "[Soulmate] A Potential Match Has Been Selected for You"
-          : "[Soulmate] Your Match Has Accepted – Please Review Her Profile",
-      react: reactEmail,
-      attachments: [
-        {
-          filename: `Match profile - ID: ${profile.customId}.pdf`,
-          content: pdfBuffer,
-        },
-      ],
-    })
+    // await resend.emails.send({
+    //   from: `${APP_INFO.name} <${EMAIL.contact}>`,
+    //   // to: [to.email],
+    //   to: ["boolean405@gmail.com"],
+    //   subject:
+    //     to.gender.toUpperCase() === "FEMALE"
+    //       ? "[Soulmate] A Potential Match Has Been Selected for You"
+    //       : "[Soulmate] Your Match Has Accepted – Please Review Her Profile",
+    //   react: reactEmail,
+    //   attachments: [
+    //     {
+    //       filename: `Match profile - ID: ${profile.customId}.pdf`,
+    //       content: pdfBuffer,
+    //     },
+    //   ],
+    // })
 
     return NextResponse.json({
       success: true,

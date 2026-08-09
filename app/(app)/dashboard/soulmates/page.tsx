@@ -30,6 +30,7 @@ import {
   NotebookPen,
   CircleX,
   Eye,
+  Send,
 } from "lucide-react"
 import React, { useEffect, useState } from "react"
 
@@ -185,7 +186,10 @@ const SoulmateActions: React.FC<{
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
           </>
         ) : (
-          "Send Male Profile"
+          <>
+            <Send className="mr-2 h-4 w-4" />
+            Send Male Profile
+          </>
         )}
       </Button>
     )
@@ -208,7 +212,10 @@ const SoulmateActions: React.FC<{
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
           </>
         ) : (
-          "Send Female Profile"
+          <>
+            <Send className="mr-2 h-4 w-4" />
+            Send Female Profile
+          </>
         )}
       </Button>
     )

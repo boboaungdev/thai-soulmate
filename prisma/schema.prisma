@@ -18,6 +18,7 @@ model User {
 
   registerInterest RegisterInterest?
   notes            Note[]
+  soulmateNotes    SoulmateNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,9 +64,6 @@ model Note {
 
   profileId String?
   profile   Profile? @relation(fields: [profileId], references: [id])
-
-  soulmateId String?
-  soulmate   Soulmate? @relation(fields: [soulmateId], references: [id])
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -146,12 +144,27 @@ model Soulmate {
 
   status SoulmateStatus @default(INITIAL_CONNECT)
 
-  notes Note[]
+  notes SoulmateNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([maleId, femaleId])
+}
+
+model SoulmateNote {
+  id      String           @id @default(cuid())
+  message String
+  type    SoulmateNoteType
+
+  soulmateId String
+  soulmate   Soulmate @relation(fields: [soulmateId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Contact {
@@ -193,7 +206,6 @@ enum NoteType {
   REGISTER_INTEREST
   APPLICATION_FORM
   PROFILE
-  SOULMATE
 }
 
 enum RegisterInterestStatus {
@@ -244,4 +256,14 @@ enum SoulmateStatus {
   FINAL_MATCH
   CONNECTED
   CLOSED
+}
+
+enum SoulmateNoteType {
+  INITIAL_CONNECT
+  MALE_PROFILE_SENT_TO_FEMALE
+  FEMALE_PROFILE_SENT_TO_MALE
+  FIRST_GOOGLE_MEET
+  SECOND_GOOGLE_MEET
+  THIRD_GOOGLE_MEET
+  FINAL_MATCH
 }

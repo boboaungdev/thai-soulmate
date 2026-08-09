@@ -23,6 +23,14 @@ export async function GET() {
             profile: true,
           },
         },
+        notes: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            user: { select: { name: true } },
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",

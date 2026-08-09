@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -106,6 +107,15 @@ interface Soulmate {
   status: SoulmateStatus
   male: SoulmateApplication
   female: SoulmateApplication
+  notes: SoulmateNote[]
+}
+
+interface SoulmateNote {
+  id: string
+  message: string
+  type: string // SoulmateNoteType
+  createdAt: string
+  user: { name: string }
 }
 
 const getInitials = (name?: string) => {
@@ -488,6 +498,22 @@ export default function TrackingPage() {
             </div>
             <Separator className="my-4" />
             <SoulmateStatusLine currentStatus={soulmate.status} />
+            <div className="mt-4">
+              <h4 className="text-sm font-medium">Notes</h4>
+              <CardDescription>
+                Latest notes for this connection.
+              </CardDescription>
+              <div className="mt-2 space-y-2">
+                {soulmate.notes.slice(0, 3).map((note) => (
+                  <div key={note.id} className="text-sm text-muted-foreground">
+                    <p className="font-semibold">
+                      {note.user.name}:{" "}
+                      <span className="font-normal">{note.message}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </CardContent>
           <CardFooter>{renderActionButton(soulmate)}</CardFooter>
         </Card>

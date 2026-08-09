@@ -7,7 +7,7 @@ import { resend } from "@/lib/resend"
 
 export async function POST(req: Request) {
   try {
-    const { profile, to } = await req.json()
+    const { application, to } = await req.json()
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -16,8 +16,7 @@ export async function POST(req: Request) {
 
     const page = await browser.newPage()
 
-    const url = `${BASE_URL}/print/profile/${profile.id}`
-    console.log("url", url)
+    const url = `${BASE_URL}/print/profile/${application.profile.id}`
 
     await page.goto(url, {
       waitUntil: "networkidle2",
@@ -27,34 +26,32 @@ export async function POST(req: Request) {
       format: "A4",
       printBackground: true,
     })
-    console.log("pdf", pdf)
 
     const pdfBuffer = Buffer.from(pdf)
-    console.log("pdfBuffer", pdfBuffer)
 
     await browser.close()
 
     const reactEmail =
       to.gender.toUpperCase() === "FEMALE"
         ? SendMaleProfile({ to })
-        : SendFemaleProfile({ profileId: profile.id, to })
+        : SendFemaleProfile({ profileId: application.id, to })
 
-    // await resend.emails.send({
-    //   from: `${APP_INFO.name} <${EMAIL.contact}>`,
-    //   // to: [to.email],
-    //   to: ["boolean405@gmail.com"],
-    //   subject:
-    //     to.gender.toUpperCase() === "FEMALE"
-    //       ? "[Soulmate] A Potential Match Has Been Selected for You"
-    //       : "[Soulmate] Your Match Has Accepted – Please Review Her Profile",
-    //   react: reactEmail,
-    //   attachments: [
-    //     {
-    //       filename: `Match profile - ID: ${profile.customId}.pdf`,
-    //       content: pdfBuffer,
-    //     },
-    //   ],
-    // })
+    await resend.emails.send({
+      from: `${APP_INFO.name} <${EMAIL.contact}>`,
+      // to: [to.email],
+      to: ["boolean405@gmail.com"],
+      subject:
+        to.gender.toUpperCase() === "FEMALE"
+          ? "[Soulmate] A Potential Match Has Been Selected for You"
+          : "[Soulmate] Your Match Has Accepted – Please Review Her Profile",
+      react: reactEmail,
+      attachments: [
+        {
+          filename: `Match profile - ID: ${application.customId}.pdf`,
+          content: pdfBuffer,
+        },
+      ],
+    })
 
     return NextResponse.json({
       success: true,

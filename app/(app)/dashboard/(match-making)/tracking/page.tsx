@@ -92,7 +92,7 @@ const statusGroups = [
   },
 ]
 
-interface SoulmateProfile {
+interface SoulmateApplication {
   id: string
   customId: number
   personalDetails: PersonalDetails
@@ -104,8 +104,8 @@ interface Soulmate {
   maleId: string
   femaleId: string
   status: SoulmateStatus
-  male: SoulmateProfile
-  female: SoulmateProfile
+  male: SoulmateApplication
+  female: SoulmateApplication
 }
 
 const getInitials = (name?: string) => {
@@ -273,12 +273,19 @@ export default function TrackingPage() {
     }
   }
 
-  const handleSendProfile = async (
-    soulmate: Soulmate,
-    profile: SoulmateProfile,
-    to: SoulmateProfile,
+  interface HandleSendProfileProps {
+    soulmate: Soulmate
+    application: SoulmateApplication
+    to: SoulmateApplication
     newStatus: SoulmateStatus
-  ) => {
+  }
+
+  const handleSendProfile = async ({
+    soulmate,
+    application,
+    to,
+    newStatus,
+  }: HandleSendProfileProps) => {
     setUpdatingId(soulmate.id)
     try {
       const response = await fetch(
@@ -287,7 +294,7 @@ export default function TrackingPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            profile,
+            application,
             to: {
               name: to.personalDetails.name,
               email: to.personalDetails.email,
@@ -319,12 +326,12 @@ export default function TrackingPage() {
           <Button
             className="btn-gradient"
             onClick={() =>
-              handleSendProfile(
+              handleSendProfile({
                 soulmate,
-                soulmate.male,
-                soulmate.female,
-                SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE
-              )
+                application: soulmate.male,
+                to: soulmate.female,
+                newStatus: SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE,
+              })
             }
             disabled={isUpdating}
           >
@@ -344,12 +351,12 @@ export default function TrackingPage() {
           <Button
             className="btn-gradient"
             onClick={() =>
-              handleSendProfile(
+              handleSendProfile({
                 soulmate,
-                soulmate.female,
-                soulmate.male,
-                SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE
-              )
+                application: soulmate.female,
+                to: soulmate.male,
+                newStatus: SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE,
+              })
             }
             disabled={isUpdating}
           >

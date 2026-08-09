@@ -11,6 +11,7 @@ export async function GET() {
             customId: true,
             personalDetails: true,
             photos: true,
+            profile: true,
           },
         },
         female: {
@@ -19,6 +20,7 @@ export async function GET() {
             customId: true,
             personalDetails: true,
             photos: true,
+            profile: true,
           },
         },
       },

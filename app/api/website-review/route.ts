@@ -40,9 +40,11 @@ export async function POST(req: Request) {
 
     const { data: adminData, error: adminError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
-      to: ['boboaungdev@gmail.com'],
-      subject: `[Website Review] Someone submitted a new website review`,
-      react: WebsiteReviewNotificationEmail(),
+      to: ["boboaungdev@gmail.com"],
+      subject: `[Website Review] New review submitted by ${
+        reviewerInfo?.name || "Anonymous"
+      }`,
+      react: WebsiteReviewNotificationEmail({ reviewerInfo }),
     })
 
     if (adminError) {

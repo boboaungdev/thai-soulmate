@@ -10,17 +10,25 @@ import {
   Section,
   Text,
 } from "react-email"
-import * as React from "react"
 
 import { APP_INFO, BASE_URL } from "@/constants"
 
 const currentYear = new Date().getFullYear()
 
-export const WebsiteReviewNotificationEmail = () => (
+interface WebsiteReviewNotificationEmailProps {
+  reviewerInfo?: {
+    name: string
+    email: string
+  }
+}
+
+export const WebsiteReviewNotificationEmail = ({
+  reviewerInfo,
+}: WebsiteReviewNotificationEmailProps) => (
   <Html>
     <Head />
 
-    <Preview>[Website Review] Someone submitted a new website review</Preview>
+    <Preview>{`[Website Review] New review from ${reviewerInfo?.name || "Anonymous"}`}</Preview>
 
     <Body style={main}>
       <Container style={container}>
@@ -38,11 +46,20 @@ export const WebsiteReviewNotificationEmail = () => (
           </Container>
         </Section>
 
+        <Text style={paragraph}>A new website review has been received.</Text>
+
+        {reviewerInfo && (
+          <Section style={detailsSection}>
+            <Text style={detailItem}>
+              <strong>Name:</strong> {reviewerInfo.name}
+            </Text>
+            <Text style={detailItem}>
+              <strong>Email:</strong> {reviewerInfo.email}
+            </Text>
+          </Section>
+        )}
         <Text style={paragraph}>
-          Someone has submitted a new website review.
-        </Text>
-        <Text style={paragraph}>
-          Please log in to the admin dashboard to view the full details.
+          Full details are available on the admin dashboard.
         </Text>
 
         <Section style={buttonContainer}>
@@ -153,4 +170,16 @@ const button = {
   textAlign: "center" as const,
   display: "inline-block",
   padding: "10px 20px",
+}
+
+const detailsSection = {
+  border: "1px solid #cccccc",
+  borderRadius: "5px",
+  padding: "10px 20px",
+  margin: "20px 0",
+}
+
+const detailItem = {
+  fontSize: "14px",
+  lineHeight: "22px",
 }

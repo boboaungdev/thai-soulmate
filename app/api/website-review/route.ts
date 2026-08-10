@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
     const { data: adminData, error: adminError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
-      to: [CONTACT.email],
+      to: ['boboaungdev@gmail.com'],
       subject: `[Website Review] Someone submitted a new website review`,
       react: WebsiteReviewNotificationEmail(),
     })

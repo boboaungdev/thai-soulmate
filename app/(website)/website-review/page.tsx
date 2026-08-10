@@ -39,161 +39,119 @@ import { Textarea } from "@/components/ui/textarea"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
 
-const websiteReviewSchema = z
-  .object({
-    firstImpression: z.object({
-      offer: z.string().min(1, { message: "This field is required." }),
-      designedFor: z.string().min(1, { message: "This field is required." }),
-      caughtAttention: z
-        .string()
-        .min(1, { message: "This field is required." }),
-      professionalTrustworthy: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      professionalTrustworthyReason: z
-        .string()
-        .min(1, { message: "This field is required." }),
-    }),
-    easeOfUse: z.object({
-      findServiceInfo: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      findRegistration: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      confusingPages: z.string().min(1, { message: "This field is required." }),
-      mobileFriendly: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-    }),
-    designBranding: z.object({
-      overallRating: z.coerce
-        .number({
-          error: "Please rate the overall design and branding.",
-        })
-        .min(1, "Rating must be 1-10")
-        .max(10, "Rating must be 1-10"),
+const websiteReviewSchema = z.object({
+  firstImpression: z.object({
+    offer: z.string().min(1, { message: "This field is required." }),
+    designedFor: z.string().min(1, { message: "This field is required." }),
+    caughtAttention: z.string().min(1, { message: "This field is required." }),
+    professionalTrustworthy: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    professionalTrustworthyReason: z
+      .string()
+      .min(1, { message: "This field is required." }),
+  }),
+  easeOfUse: z.object({
+    findServiceInfo: z.string().min(1, { message: "Please select an option." }),
+    findRegistration: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    confusingPages: z.string().min(1, { message: "This field is required." }),
+    mobileFriendly: z.string().min(1, { message: "Please select an option." }),
+  }),
+  designBranding: z.object({
+    overallRating: z.coerce
+      .number({
+        error: "Please rate the overall design and branding.",
+      })
+      .min(1, "Rating must be 1-10")
+      .max(10, "Rating must be 1-10"),
 
-      suitableForPremium: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      visuallyAppealing: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      outdatedUnprofessional: z
-        .string()
-        .min(1, { message: "This field is required." }),
-    }),
-    understandingService: z.object({
-      matchmakingProcess: z
-        .string()
-        .min(1, { message: "This field is required." }),
-      matchmakingVsAppsClear: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      missingInfo: z.string().min(1, { message: "This field is required." }),
-    }),
-    trustSafety: z.object({
-      feelSafe: z.string().min(1, { message: "Please select an option." }),
-      explainPrivacy: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      increaseTrust: z.string().min(1, { message: "This field is required." }),
-    }),
-    contentQuality: z.object({
-      englishEasy: z.string().min(1, { message: "Please select an option." }),
-      thaiNatural: z.string().min(1, { message: "Please select an option." }),
-      serviceDescriptionLength: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-    }),
-    registrationProcess: z.object({
-      formEaseRating: z.coerce
-        .number({
-          error: "Please rate the form ease.",
-        })
-        .min(1, "Rating must be 1-10")
-        .max(10, "Rating must be 1-10"),
-      unnecessaryQuestions: z
-        .string()
-        .min(1, { message: "This field is required." }),
-      stoppedAt: z.string().min(1, { message: "This field is required." }),
-    }),
-    pricingValue: z.object({
-      pricingEasyToUnderstand: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      expectedServiceTier: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      worthThePriceExplained: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-    }),
-    overallExperience: z.object({
-      mostLiked: z.string().min(1, { message: "This field is required." }),
-      leastLiked: z.string().min(1, { message: "This field is required." }),
-      oneChange: z.string().min(1, { message: "This field is required." }),
-      considerJoining: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      considerJoiningReason: z
-        .string()
-        .min(1, { message: "This field is required." }),
-    }),
-    matchmakingSpecific: z.object({
-      considerJoiningService: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      concernsBeforeJoining: z
-        .string()
-        .min(1, { message: "This field is required." }),
-      understandBenefits: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      processClearlyExplained: z
-        .string()
-        .min(1, { message: "Please select an option." }),
-      whatWouldEncourageSignUp: z
-        .string()
-        .min(1, { message: "This field is required." }),
-    }),
-    reviewerInfo: z.object({
-      isAnonymous: z.boolean(),
-      name: z.string(),
-      email: z.string(),
-    }),
-  })
-  .superRefine((data, ctx) => {
-    if (data.reviewerInfo.isAnonymous === false) {
-      if (data.reviewerInfo.name.trim() === "") {
-        ctx.addIssue({
-          path: ["reviewerInfo.name"],
-          message: "Name is required.",
-          code: "custom",
-        })
-      }
-      if (data.reviewerInfo.email.trim() === "") {
-        ctx.addIssue({
-          path: ["reviewerInfo.email"],
-          message: "Email is required.",
-          code: "custom",
-        })
-      } else {
-        const emailValidation = z
-          .string()
-          .email()
-          .safeParse(data.reviewerInfo.email)
-        if (!emailValidation.success) {
-          ctx.addIssue({
-            path: ["reviewerInfo.email"],
-            message: "Invalid email format.",
-            code: "custom",
-          })
-        }
-      }
-    }
-  })
+    suitableForPremium: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    visuallyAppealing: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    outdatedUnprofessional: z
+      .string()
+      .min(1, { message: "This field is required." }),
+  }),
+  understandingService: z.object({
+    matchmakingProcess: z
+      .string()
+      .min(1, { message: "This field is required." }),
+    matchmakingVsAppsClear: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    missingInfo: z.string().min(1, { message: "This field is required." }),
+  }),
+  trustSafety: z.object({
+    feelSafe: z.string().min(1, { message: "Please select an option." }),
+    explainPrivacy: z.string().min(1, { message: "Please select an option." }),
+    increaseTrust: z.string().min(1, { message: "This field is required." }),
+  }),
+  contentQuality: z.object({
+    englishEasy: z.string().min(1, { message: "Please select an option." }),
+    thaiNatural: z.string().min(1, { message: "Please select an option." }),
+    serviceDescriptionLength: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+  }),
+  registrationProcess: z.object({
+    formEaseRating: z.coerce
+      .number({
+        error: "Please rate the form ease.",
+      })
+      .min(1, "Rating must be 1-10")
+      .max(10, "Rating must be 1-10"),
+    unnecessaryQuestions: z
+      .string()
+      .min(1, { message: "This field is required." }),
+    stoppedAt: z.string().min(1, { message: "This field is required." }),
+  }),
+  pricingValue: z.object({
+    pricingEasyToUnderstand: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    expectedServiceTier: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    worthThePriceExplained: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+  }),
+  overallExperience: z.object({
+    mostLiked: z.string().min(1, { message: "This field is required." }),
+    leastLiked: z.string().min(1, { message: "This field is required." }),
+    oneChange: z.string().min(1, { message: "This field is required." }),
+    considerJoining: z.string().min(1, { message: "Please select an option." }),
+    considerJoiningReason: z
+      .string()
+      .min(1, { message: "This field is required." }),
+  }),
+  matchmakingSpecific: z.object({
+    considerJoiningService: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    concernsBeforeJoining: z
+      .string()
+      .min(1, { message: "This field is required." }),
+    understandBenefits: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    processClearlyExplained: z
+      .string()
+      .min(1, { message: "Please select an option." }),
+    whatWouldEncourageSignUp: z
+      .string()
+      .min(1, { message: "This field is required." }),
+  }),
+  reviewerInfo: z.object({
+    name: z.string().min(1, "Name is required."),
+    email: z.email("Invalid email format."),
+  }),
+})
 
 type WebsiteReviewFormInput = z.input<typeof websiteReviewSchema>
 type WebsiteReviewFormOutput = z.output<typeof websiteReviewSchema>
@@ -279,7 +237,6 @@ export default function WebsiteReviewPage() {
         whatWouldEncourageSignUp: "",
       },
       reviewerInfo: {
-        isAnonymous: true,
         name: "",
         email: "",
       },
@@ -310,8 +267,6 @@ export default function WebsiteReviewPage() {
       setIsLoading(false)
     }
   }
-
-  const isAnonymous = form.watch("reviewerInfo.isAnonymous")
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -1781,89 +1736,64 @@ export default function WebsiteReviewPage() {
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
                       <div className="space-y-4">
-                        <FormField
-                          control={form.control}
-                          name="reviewerInfo.isAnonymous"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                              <div className="space-y-0.5">
-                                <FormLabel className="text-base">
-                                  Submit Anonymously
-                                </FormLabel>
-                                <CardDescription>
-                                  You can submit your review anonymously.
-                                </CardDescription>
-                              </div>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        {!isAnonymous && (
-                          <MotionDiv
-                            variants={itemVariants}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, amount: 0.5 }}
-                          >
-                            <Card>
-                              <CardHeader>
-                                <CardTitle>Your Details</CardTitle>
-                                <CardDescription>
-                                  Please provide your name and email.
-                                </CardDescription>
-                              </CardHeader>
-                              <CardContent className="space-y-4">
-                                <FormField
-                                  control={form.control}
-                                  name="reviewerInfo.name"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Name</FormLabel>
-                                      <FormControl>
-                                        <div className="relative">
-                                          <User2 className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                                          <Input
-                                            placeholder="Your name"
-                                            className="pl-10"
-                                            {...field}
-                                          />
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name="reviewerInfo.email"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Email</FormLabel>
-                                      <FormControl>
-                                        <div className="relative">
-                                          <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                                          <Input
-                                            type="email"
-                                            placeholder="you@example.com"
-                                            className="pl-10"
-                                            {...field}
-                                          />
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </CardContent>
-                            </Card>
-                          </MotionDiv>
-                        )}
+                        <MotionDiv
+                          variants={itemVariants}
+                          initial="hidden"
+                          whileInView="visible"
+                          viewport={{ once: true, amount: 0.5 }}
+                        >
+                          <Card>
+                            <CardHeader>
+                              <CardTitle>Your Details</CardTitle>
+                              <CardDescription>
+                                Please provide your name and email.
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                              <FormField
+                                control={form.control}
+                                name="reviewerInfo.name"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Name</FormLabel>
+                                    <FormControl>
+                                      <div className="relative">
+                                        <User2 className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                        <Input
+                                          placeholder="Your name"
+                                          className="pl-10"
+                                          {...field}
+                                        />
+                                      </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="reviewerInfo.email"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                      <div className="relative">
+                                        <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                        <Input
+                                          type="email"
+                                          placeholder="you@example.com"
+                                          className="pl-10"
+                                          {...field}
+                                        />
+                                      </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </CardContent>
+                          </Card>
+                        </MotionDiv>
                       </div>
                     </CardContent>
                   </AccordionItem>

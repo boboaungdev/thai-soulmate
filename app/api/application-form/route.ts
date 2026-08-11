@@ -145,8 +145,8 @@ export async function POST(req: Request) {
     // Send email to admin
     const { data, error } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
-      // to: [CONTACT.email],
-      to: ['boolean405@gmail.com'],
+      to: [CONTACT.email],
+      // to: ['boolean405@gmail.com'],
       replyTo: personalDetails.email,
       subject: `[New Application Form] New application received from ${personalDetails.name}`,
       react: ApplicationFormAdminNotificationEmail({

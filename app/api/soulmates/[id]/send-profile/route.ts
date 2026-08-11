@@ -41,9 +41,7 @@ export async function POST(req: Request) {
       // to: [to.email],
       to: ["boolean405@gmail.com"],
       subject:
-        to.gender.toUpperCase() === "FEMALE"
-          ? "[Soulmate] A Potential Match Has Been Selected for You"
-          : "[Soulmate] Your Match Has Accepted – Please Review Her Profile",
+        "[Soulmate] A carefully selected match is waiting for your review.",
       react: reactEmail,
       attachments: [
         {

@@ -36,7 +36,9 @@ export const RegisterInterestAdminNotificationEmail = ({
   <Html>
     <Head />
 
-    <Preview>[Register Interest] A new user has registered their interest on the website.</Preview>
+    <Preview>
+      [Register Interest] New user registration from {details.name}
+    </Preview>
 
     <Body style={main}>
       <Container style={container}>
@@ -102,7 +104,8 @@ export const RegisterInterestAdminNotificationEmail = ({
         <Hr style={hr} />
 
         <Text style={autoMessage}>
-          This is an automated notification from your website. You can reply to this email directly to contact {details.name}.
+          This is an automated notification from your website. You can reply to
+          this email directly to contact {details.name}.
         </Text>
 
         <Section style={copyrightSection}>

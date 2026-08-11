@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { resend } from "@/lib/resend"
+import { APP_INFO, CONTACT, EMAIL } from "@/constants"
+import { ApplicationFormAdminNotificationEmail } from "@/emails"
+import { PersonalDetails } from "@/types/application-form"
 
 // GET all applications
 export async function GET() {
@@ -135,6 +139,30 @@ export async function POST(req: Request) {
 
       return application
     })
+
+    const personalDetails = application.personalDetails as unknown as PersonalDetails
+
+    // Send email to admin
+    const { data, error } = await resend.emails.send({
+      from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
+      // to: [CONTACT.email],
+      to: ['boolean405@gmail.com'],
+      replyTo: personalDetails.email,
+      subject: `[New Application Form] New application received from ${personalDetails.name}`,
+      react: ApplicationFormAdminNotificationEmail({
+        nickname: personalDetails.nickname ?? "", // Provide default for optional
+        name: personalDetails.name,
+        gender: personalDetails.gender,
+        email: personalDetails.email,
+        phone: personalDetails.phone,
+      }),
+    })
+
+    if (error) {
+      console.error("Resend email error:", error)
+    } else {
+      console.log("Application form email sent:", data?.id)
+    }
 
     return NextResponse.json({
       success: true,

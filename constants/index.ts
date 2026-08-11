@@ -20,7 +20,6 @@ export const CONTACT = {
 } as const
 
 export const EMAIL = {
-  noreply: "noreply@thaisoulmate.org",
   contact: "contact@thaisoulmate.org",
   notify: "notify@thaisoulmate.org",
 } as const

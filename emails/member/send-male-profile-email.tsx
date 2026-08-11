@@ -44,8 +44,7 @@ export const SendMaleProfileEmail = ({ to }: SendFemaleMatchEmailProps) => (
         </Text>
 
         <Text style={paragraph}>
-          If you would like to proceed, please reply to this email within{" "}
-          <b>24 hours</b>.
+          If you would like to proceed, please reply to this email.
         </Text>
 
         <Text style={paragraph}>

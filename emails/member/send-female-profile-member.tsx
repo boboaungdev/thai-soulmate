@@ -31,8 +31,7 @@ export const SendFemaleProfileMemberEmail = ({
     <Head />
 
     <Preview>
-      [Soulmate] Your match has accepted. View her profile and reply within 24
-      hours.
+      [Soulmate] A carefully selected match is waiting for your review.
     </Preview>
 
     <Body style={main}>
@@ -42,8 +41,8 @@ export const SendFemaleProfileMemberEmail = ({
         </Text>
 
         <Text style={paragraph}>
-          We are pleased to let you know that the lady we recently introduced
-          has accepted your match.
+          We are pleased to let you know that our matchmaking team has carefully
+          selected a potential match for you.
         </Text>
 
         <Text style={paragraph}>

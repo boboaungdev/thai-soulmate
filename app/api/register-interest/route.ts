@@ -6,7 +6,7 @@ import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 import { resend } from "@/lib/resend"
 import {
   RegisterInterestAdminNotificationEmail,
-  RegisterInterestUserConfirmationEmail,
+  RegisterInterestMemberConfirmationEmail,
 } from "@/emails"
 import { calculateAge } from "@/lib/date"
 
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
       to: validatedData.email,
       replyTo: EMAIL.contact,
       subject: `[Register Interest] Thank you for your interest in ${APP_INFO.name}!`,
-      react: RegisterInterestUserConfirmationEmail(validatedData),
+      react: RegisterInterestMemberConfirmationEmail(validatedData),
     })
 
     if (userError) {

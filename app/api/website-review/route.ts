@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
-import { WebsiteReviewNotificationEmail } from "@/emails"
+import { WebsiteReviewAdminNotificationEmail } from "@/emails"
 import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 
 export async function POST(req: Request) {
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       subject: `[Website Review] New review submitted by - ${
         reviewerInfo?.name || "Anonymous"
       }`,
-      react: WebsiteReviewNotificationEmail({ reviewerInfo }),
+      react: WebsiteReviewAdminNotificationEmail({ reviewerInfo }),
     })
 
     if (adminError) {

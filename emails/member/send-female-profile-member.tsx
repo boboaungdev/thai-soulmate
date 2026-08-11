@@ -1,5 +1,6 @@
 import {
   Body,
+  Button,
   Container,
   Head,
   Hr,
@@ -15,18 +16,25 @@ import { APP_INFO, BASE_URL, CONTACT } from "@/constants"
 
 const currentYear = new Date().getFullYear()
 
-interface SendFemaleMatchEmailProps {
+interface SendMaleMatchEmailProps {
   to: {
     prefix: string
     name: string
   }
+  profileId: string
 }
 
-export const SendMaleProfile = ({ to }: SendFemaleMatchEmailProps) => (
+export const SendFemaleProfileMemberEmail = ({
+  to,
+  profileId,
+}: SendMaleMatchEmailProps) => (
   <Html>
     <Head />
 
-    <Preview>[Soulmate] A carefully selected match is waiting for your review.</Preview>
+    <Preview>
+      [Soulmate] Your match has accepted. View her profile and reply within 24
+      hours.
+    </Preview>
 
     <Body style={main}>
       <Container style={container}>
@@ -35,22 +43,27 @@ export const SendMaleProfile = ({ to }: SendFemaleMatchEmailProps) => (
         </Text>
 
         <Text style={paragraph}>
-          We are pleased to let you know that our matchmaking team has carefully
-          selected a potential match for you.
+          We are pleased to let you know that the lady we recently introduced
+          has accepted your match.
         </Text>
 
         <Text style={paragraph}>
-          His profile is attached to this email as a PDF for your review.
+          Her profile is attached to this email as a PDF. You can also securely
+          view it online by clicking the button below.
         </Text>
 
-        <Text style={paragraph}>
-          If you would like to proceed, please reply to this email within{" "}
-          <b>24 hours</b>.
-        </Text>
+        <Section style={buttonSection}>
+          <Button
+            href={`${BASE_URL}/dashboard/gallery/${profileId}`}
+            style={button}
+          >
+            View Matched Profile
+          </Button>
+        </Section>
 
         <Text style={paragraph}>
-          Once we receive your confirmation, we will notify him and continue
-          with the next step of the introduction.
+          If you would like to proceed, please reply to this email or confirm
+          your interest through your account within <b>24 hours</b>.
         </Text>
 
         <Text style={paragraph}>
@@ -89,8 +102,8 @@ export const SendMaleProfile = ({ to }: SendFemaleMatchEmailProps) => (
         </Text>
 
         <Text style={replyMessage}>
-          Simply reply to this email to let us know your decision or if you have
-          any questions. We look forward to hearing from you.
+          Simply reply to this email to confirm your interest or ask any
+          questions. We look forward to hearing from you.
         </Text>
 
         <Section style={copyrightSection}>
@@ -103,7 +116,7 @@ export const SendMaleProfile = ({ to }: SendFemaleMatchEmailProps) => (
   </Html>
 )
 
-export default SendMaleProfile
+export default SendFemaleProfileMemberEmail
 
 const main = {
   backgroundColor: "#ffffff",
@@ -121,6 +134,21 @@ const paragraph = {
   fontSize: "16px",
   lineHeight: "28px",
   color: "#333333",
+}
+
+const buttonSection = {
+  textAlign: "center" as const,
+  margin: "32px 0",
+}
+
+const button = {
+  backgroundColor: "#cfa14f",
+  color: "#ffffff",
+  padding: "14px 32px",
+  borderRadius: "8px",
+  textDecoration: "none",
+  fontWeight: "600",
+  fontSize: "16px",
 }
 
 const hr = {

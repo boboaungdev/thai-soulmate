@@ -3,7 +3,7 @@ import { z } from "zod"
 import { NextResponse } from "next/server"
 import { resend } from "@/lib/resend"
 import { APP_INFO, CONTACT, EMAIL } from "@/constants"
-import { ContactFormNotificationEmail } from "@/emails"
+import { ContactFormAdminNotificationEmail } from "@/emails"
 import { prisma } from "@/lib/prisma"
 
 export async function GET() {
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       to: [CONTACT.email],
       replyTo: validatedData.email, // Reply to the user's email
       subject: `[Contact Form] New Message from ${validatedData.name}: ${validatedData.subject}`,
-      react: ContactFormNotificationEmail({
+      react: ContactFormAdminNotificationEmail({
         name: validatedData.name,
         email: validatedData.email,
         subject: validatedData.subject,

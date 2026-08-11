@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer"
 import { NextResponse } from "next/server"
-import { SendFemaleProfile, SendMaleProfile } from "@/emails"
+import { SendFemaleProfileMemberEmail, SendMaleProfileEmail } from "@/emails"
 import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
 
 import { resend } from "@/lib/resend"
@@ -33,8 +33,8 @@ export async function POST(req: Request) {
 
     const reactEmail =
       to.gender.toUpperCase() === "FEMALE"
-        ? SendMaleProfile({ to })
-        : SendFemaleProfile({ profileId: application.id, to })
+        ? SendMaleProfileEmail({ to })
+        : SendFemaleProfileMemberEmail({ profileId: application.id, to })
 
     await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.contact}>`,

@@ -10,70 +10,60 @@ import {
   Section,
   Text,
 } from "react-email"
-import * as React from "react"
 
 import { APP_INFO, BASE_URL, CONTACT } from "@/constants"
+import { User } from "@/types"
 
 const currentYear = new Date().getFullYear()
 
-interface SendMaleMatchEmailProps {
-  to: {
-    prefix: string
-    name: string
-  }
-  profileId: string
-}
-
-export const SendFemaleProfile = ({
-  to,
-  profileId,
-}: SendMaleMatchEmailProps) => (
+export const RegisterInterestMemberConfirmationEmail = ({ ...userDetails }: User) => (
   <Html>
     <Head />
 
     <Preview>
-      [Soulmate] Your match has accepted. View her profile and reply within 24
-      hours.
+      [Register Interest] Thank you for registering your interest with us.
+      Welcome to {APP_INFO.name}.
     </Preview>
 
     <Body style={main}>
       <Container style={container}>
         <Text style={paragraph}>
-          Dear {to.prefix} {to.name},
+          Dear {userDetails.prefix} {userDetails.name},
         </Text>
 
         <Text style={paragraph}>
-          We are pleased to let you know that the lady we recently introduced
-          has accepted your match.
+          Thank you for registering your interest with us. We have successfully
+          received your details.
         </Text>
 
         <Text style={paragraph}>
-          Her profile is attached to this email as a PDF. You can also securely
-          view it online by clicking the button below.
+          Our matchmaking team will carefully review your information and
+          contact you soon to discuss the next steps.
         </Text>
 
-        <Section style={buttonSection}>
+        <Text style={paragraph}>
+          In the meantime, please complete your profile application form by
+          clicking the button below. This will help us understand your
+          preferences and create the best possible match for you.
+        </Text>
+
+        <Section style={btnContainer}>
           <Button
-            href={`${BASE_URL}/dashboard/gallery/${profileId}`}
             style={button}
+            href={`${BASE_URL}/application-form?email=${userDetails.email}`}
           >
-            View Matched Profile
+            Complete Application Form
           </Button>
         </Section>
 
         <Text style={paragraph}>
-          If you would like to proceed, please reply to this email or confirm
-          your interest through your account within <b>24 hours</b>.
+          If you have any questions or need assistance, simply reply to this
+          email or contact our team. We will be happy to help you.
         </Text>
 
         <Text style={paragraph}>
-          To protect the privacy of all members, please keep the attached
-          profile confidential and do not share it with anyone.
-        </Text>
-
-        <Text style={paragraph}>
-          If you have any questions, simply reply to this email. Our matchmaking
-          team will be happy to assist you.
+          We look forward to helping you find a meaningful and lasting
+          relationship.
         </Text>
 
         <Text style={paragraph}>Warm regards,</Text>
@@ -102,8 +92,8 @@ export const SendFemaleProfile = ({
         </Text>
 
         <Text style={replyMessage}>
-          Simply reply to this email to confirm your interest or ask any
-          questions. We look forward to hearing from you.
+          You can reply directly to this email if you have any questions. Our
+          matchmaking team will be happy to assist you.
         </Text>
 
         <Section style={copyrightSection}>
@@ -116,7 +106,7 @@ export const SendFemaleProfile = ({
   </Html>
 )
 
-export default SendFemaleProfile
+export default RegisterInterestMemberConfirmationEmail
 
 const main = {
   backgroundColor: "#ffffff",
@@ -132,27 +122,29 @@ const container = {
 
 const paragraph = {
   fontSize: "16px",
-  lineHeight: "28px",
+  lineHeight: "26px",
   color: "#333333",
 }
 
-const buttonSection = {
+const btnContainer = {
   textAlign: "center" as const,
   margin: "32px 0",
 }
 
 const button = {
   backgroundColor: "#cfa14f",
+  borderRadius: "6px",
   color: "#ffffff",
-  padding: "14px 32px",
-  borderRadius: "8px",
-  textDecoration: "none",
-  fontWeight: "600",
   fontSize: "16px",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  display: "block",
+  padding: "12px 24px",
+  fontWeight: "600",
 }
 
 const hr = {
-  borderColor: "#dddddd",
+  borderColor: "#cccccc",
   margin: "30px 0",
 }
 

@@ -22,7 +22,7 @@ type ContactFormNotificationDetails = {
 
 const currentYear = new Date().getFullYear()
 
-export const ContactFormNotificationEmail = ({
+export const ContactFormAdminNotificationEmail = ({
   ...details
 }: ContactFormNotificationDetails) => (
   <Html>
@@ -48,7 +48,9 @@ export const ContactFormNotificationEmail = ({
           </Container>
         </Section>
 
-        <Text style={paragraph}>A new message has been submitted via the contact form.</Text>
+        <Text style={paragraph}>
+          A new message has been submitted via the contact form.
+        </Text>
 
         <Section>
           <Text style={paragraph}>
@@ -73,8 +75,8 @@ export const ContactFormNotificationEmail = ({
         <Hr style={hr} />
 
         <Text style={autoMessage}>
-          This is an automated notification from your website. You can reply to this
-          email directly to contact {details.name}.
+          This is an automated notification from your website. You can reply to
+          this email directly to contact {details.name}.
         </Text>
 
         <Section style={copyrightSection}>
@@ -87,7 +89,7 @@ export const ContactFormNotificationEmail = ({
   </Html>
 )
 
-export default ContactFormNotificationEmail
+export default ContactFormAdminNotificationEmail
 
 const main = {
   backgroundColor: "#ffffff",

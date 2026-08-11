@@ -15,16 +15,16 @@ import { APP_INFO, BASE_URL } from "@/constants"
 
 const currentYear = new Date().getFullYear()
 
-interface WebsiteReviewNotificationEmailProps {
+interface WebsiteReviewAdminNotificationEmailProps {
   reviewerInfo?: {
     name: string
     email: string
   }
 }
 
-export const WebsiteReviewNotificationEmail = ({
+export const WebsiteReviewAdminNotificationEmail = ({
   reviewerInfo,
-}: WebsiteReviewNotificationEmailProps) => (
+}: WebsiteReviewAdminNotificationEmailProps) => (
   <Html>
     <Head />
 
@@ -84,7 +84,7 @@ export const WebsiteReviewNotificationEmail = ({
   </Html>
 )
 
-export default WebsiteReviewNotificationEmail
+export default WebsiteReviewAdminNotificationEmail
 
 const main = {
   backgroundColor: "#ffffff",

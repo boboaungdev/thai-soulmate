@@ -24,7 +24,8 @@ export const EMAIL = {
   notify: "notify@thaisoulmate.org",
 } as const
 
-export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
 export const DATABASE = {
   DATABASE_URL: process.env.DATABASE_URL,

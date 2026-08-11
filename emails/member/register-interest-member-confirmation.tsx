@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   Head,
-  Hr,
   Html,
   Img,
   Preview,
@@ -11,12 +10,14 @@ import {
   Text,
 } from "react-email"
 
-import { APP_INFO, BASE_URL, CONTACT } from "@/constants"
+import { APP_INFO, BASE_URL } from "@/constants"
 import { User } from "@/types"
 
 const currentYear = new Date().getFullYear()
 
-export const RegisterInterestMemberConfirmationEmail = ({ ...userDetails }: User) => (
+export const RegisterInterestMemberConfirmationEmail = ({
+  ...userDetails
+}: User) => (
   <Html>
     <Head />
 
@@ -131,17 +132,6 @@ const button = {
   fontWeight: "600",
 }
 
-const hr = {
-  borderColor: "#cccccc",
-  margin: "30px 0",
-}
-
-const footer = {
-  color: "#6b7280",
-  fontSize: "13px",
-  lineHeight: "22px",
-}
-
 const replyMessage = {
   color: "#6b7280",
   fontSize: "13px",
@@ -174,5 +164,3 @@ const signatureLogo = {
   display: "block",
   margin: "0 auto 16px",
 }
-
-

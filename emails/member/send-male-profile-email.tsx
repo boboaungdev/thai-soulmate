@@ -2,16 +2,14 @@ import {
   Body,
   Container,
   Head,
-  Hr,
   Html,
   Img,
   Preview,
   Section,
   Text,
 } from "react-email"
-import * as React from "react"
 
-import { APP_INFO, BASE_URL, CONTACT } from "@/constants"
+import { APP_INFO, BASE_URL } from "@/constants"
 
 const currentYear = new Date().getFullYear()
 
@@ -70,25 +68,13 @@ export const SendMaleProfileEmail = ({ to }: SendFemaleMatchEmailProps) => (
         <Section style={signature}>
           <Container style={signatureContainer}>
             <Img
-              src={`${BASE_URL}/logo.png`}
-              width="70"
+              src={`${BASE_URL}/email/3.png`}
+              width="150"
               alt={APP_INFO.name}
               style={signatureLogo}
             />
-
-            <Text style={appName}>{APP_INFO.name}</Text>
-
-            <Text style={tagline}>{APP_INFO.tagline}</Text>
           </Container>
         </Section>
-
-        <Hr style={hr} />
-
-        <Text style={footer}>
-          Email: {CONTACT.email}
-          <br />
-          Phone: {CONTACT.primaryPhone}
-        </Text>
 
         <Text style={replyMessage}>
           Simply reply to this email to let us know your decision or if you have
@@ -125,17 +111,6 @@ const paragraph = {
   color: "#333333",
 }
 
-const hr = {
-  borderColor: "#dddddd",
-  margin: "30px 0",
-}
-
-const footer = {
-  color: "#6b7280",
-  fontSize: "13px",
-  lineHeight: "22px",
-}
-
 const replyMessage = {
   color: "#6b7280",
   fontSize: "13px",
@@ -167,21 +142,4 @@ const signatureContainer = {
 const signatureLogo = {
   display: "block",
   margin: "0 auto 16px",
-}
-
-const appName = {
-  fontSize: "20px",
-  fontWeight: "700",
-  color: "#222222",
-  lineHeight: "30px",
-  margin: "0",
-  textAlign: "center" as const,
-}
-
-const tagline = {
-  fontSize: "14px",
-  color: "#666666",
-  lineHeight: "22px",
-  margin: "4px 0 0",
-  textAlign: "center" as const,
 }

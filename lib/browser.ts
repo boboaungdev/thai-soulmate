@@ -1,5 +1,5 @@
-import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium"
+import puppeteer from "puppeteer-core"
 
 export async function launchBrowser() {
   return puppeteer.launch({
@@ -9,5 +9,5 @@ export async function launchBrowser() {
     }),
     executablePath: await chromium.executablePath(),
     headless: "shell",
-  });
+  })
 }

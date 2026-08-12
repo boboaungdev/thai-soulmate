@@ -5,6 +5,7 @@ import { SendFemaleProfileMemberEmail } from "@/emails/member/send-female-profil
 import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { SoulmateStatus } from "@/lib/generated/prisma/enums"
+import { generateProfilePdf } from "@/lib/generate-profile-pdf"
 
 type PersonalDetails = {
   email: string
@@ -125,7 +126,12 @@ export async function GET(
     if (newStatus === SoulmateStatus.FEMALE_ACCEPTED) {
       // Send email to male
       const maleDetails = soulmate.male.personalDetails as PersonalDetails
-      const femaleDetails = soulmate.female.personalDetails as PersonalDetails
+
+      const profileUrl = new URL(
+        `/print/profile/${soulmate.female.profile!.id}`,
+        request.url
+      )
+      const pdf = await generateProfilePdf(profileUrl.toString())
 
       await resend.emails.send({
         from: `${APP_INFO.name} <${EMAIL.contact}>`,
@@ -139,6 +145,12 @@ export async function GET(
           },
           profileId: soulmate.female.profile!.id,
         }),
+        attachments: [
+          {
+            filename: `Profile-ID-${soulmate.female.customId}.pdf`,
+            content: pdf,
+          },
+        ],
       })
 
       // Update soulmate status to FEMALE_PROFILE_SENT_TO_MALE
@@ -252,7 +264,12 @@ export async function PATCH(
 
     if (status === SoulmateStatus.FEMALE_ACCEPTED) {
       const maleDetails = soulmate.male.personalDetails as PersonalDetails
-      const femaleDetails = soulmate.female.personalDetails as PersonalDetails
+
+      const profileUrl = new URL(
+        `/print/profile/${soulmate.female.profile!.id}`,
+        request.url
+      )
+      const pdf = await generateProfilePdf(profileUrl.toString())
 
       await resend.emails.send({
         from: `${APP_INFO.name} <${EMAIL.contact}>`,
@@ -266,6 +283,12 @@ export async function PATCH(
           },
           profileId: soulmate.female.profile!.id,
         }),
+        attachments: [
+          {
+            filename: `Profile-ID-${soulmate.female.customId}.pdf`,
+            content: pdf,
+          },
+        ],
       })
 
       updatedSoulmate = await prisma.soulmate.update({

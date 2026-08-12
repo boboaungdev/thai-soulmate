@@ -6,11 +6,15 @@ import { BASE_URL } from "@/constants"
 export async function generateProfilePdf(profileId: string) {
   const url = `${BASE_URL}/print/profile/${profileId}`
 
-  console.log("Generating profile PDF:", url)
+  console.log("PDF URL:", url)
+
+  const executablePath = await chromium.executablePath()
+
+  console.log("Chromium executable:", executablePath)
 
   const browser = await puppeteer.launch({
     args: chromium.args,
-    executablePath: await chromium.executablePath(),
+    executablePath,
     headless: true,
   })
 
@@ -28,12 +32,10 @@ export async function generateProfilePdf(profileId: string) {
       timeout: 30_000,
     })
 
-    // Make sure fonts are loaded
     await page.evaluate(async () => {
       await document.fonts.ready
     })
 
-    // Make sure profile images are loaded
     await page.evaluate(async () => {
       await Promise.all(
         Array.from(document.images).map((img) => {

@@ -10,6 +10,7 @@ import { resend } from "@/lib/resend"
 import { generateProfilePdf } from "@/lib/generate-profile-pdf"
 
 export const runtime = "nodejs"
+export const maxDuration = 60
 
 export async function POST(
   req: Request,
@@ -22,10 +23,6 @@ export async function POST(
     console.log("Sending profile:", id)
     console.log("Recipient:", to.email)
 
-    // --------------------------------------------------
-    // Create email
-    // --------------------------------------------------
-
     const reactEmail =
       to.gender.toUpperCase() === "FEMALE"
         ? SendMaleProfileEmail({
@@ -37,25 +34,15 @@ export async function POST(
             to,
           })
 
-    // --------------------------------------------------
-    // Generate PDF
-    // --------------------------------------------------
-
+    // Generate profile PDF
     const pdf = await generateProfilePdf(id)
 
     console.log("PDF generated:", pdf.length, "bytes")
 
-    // --------------------------------------------------
     // Send email
-    // --------------------------------------------------
-
     const result = await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.contact}>`,
-
-      // Testing:
-      to: ["boolean405@gmail.com"],
-
-      // Production:
+      to: ['boolean405@gmail.com'],
       // to: [to.email],
 
       subject:

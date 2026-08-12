@@ -28,9 +28,10 @@ export async function POST(
             to,
           })
 
-    const profileUrl = new URL(`/print/profile/${id}`, req.url)
-    console.log(profileUrl,"url");
-    
+    const profileUrl = new URL(
+      `/print/profile/${application.profile.id}`,
+      req.url
+    )
 
     const pdf = await generateProfilePdf(profileUrl.toString())
 

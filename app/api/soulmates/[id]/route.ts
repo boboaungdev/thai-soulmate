@@ -72,8 +72,8 @@ export async function GET(
       await resend.emails.send({
         from: `${APP_INFO.name} <${EMAIL.contact}>`,
         // to: [maleDetails.email`,
-        to: ['boolean405@gmail.com'],
-        subject: `[Soulmate] Your match has accepted!`,
+        to: ["boolean405@gmail.com"],
+        subject: `[Soulmate] Good news from your potential soulmate!`,
         react: SendFemaleProfileMemberEmail({
           to: {
             prefix: maleDetails.prefix,
@@ -191,8 +191,8 @@ export async function PATCH(
       await resend.emails.send({
         from: `${APP_INFO.name} <${EMAIL.contact}>`,
         // to: [maleDetails.email],
-        to: ['boolean405@gmail.com'],
-        subject: `[Soulmate] Your match has accepted!`,
+        to: ["boolean405@gmail.com"],
+        subject: `[Soulmate] Good news from your potential soulmate!`,
         react: SendFemaleProfileMemberEmail({
           to: {
             prefix: maleDetails.prefix,

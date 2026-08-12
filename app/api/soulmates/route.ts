@@ -110,6 +110,82 @@ export async function POST(req: Request) {
       },
     })
 
+    // --- NEW LOGIC: Send male profile to female after soulmate creation ---
+    const maleApplicationForm = await prisma.applicationForm.findUnique({
+      where: { id: maleId },
+      select: {
+        id: true,
+        customId: true,
+        personalDetails: true,
+        profile: { select: { id: true } }, // Need profile.id for print URL
+      },
+    })
+
+    const femaleApplicationForm = await prisma.applicationForm.findUnique({
+      where: { id: femaleId },
+      select: {
+        personalDetails: true,
+      },
+    })
+
+    if (!maleApplicationForm || !femaleApplicationForm) {
+      console.error(
+        "Application forms not found for maleId or femaleId after soulmate creation."
+      )
+      // Potentially revert soulmate creation or just log and proceed with existing response
+      // For now, we'll log and return success without sending profile.
+      return NextResponse.json({
+        success: true,
+        soulmate,
+        message:
+          "Soulmate created, but failed to find application forms for profile sending.",
+      })
+    }
+
+    type PersonalDetails = {
+      email: string
+      prefix: string
+      name: string
+      gender: string
+    }
+
+    const toFemale = femaleApplicationForm.personalDetails as PersonalDetails
+    const maleAppForSend = maleApplicationForm // This is the application whose profile we are sending
+
+    // Call the internal API route to send the profile
+    const sendProfileResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/soulmates/${soulmate.id}/send-profile`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          application: maleAppForSend,
+          to: toFemale,
+        }),
+      }
+    )
+
+    if (sendProfileResponse.ok) {
+      console.log(
+        `Male profile for soulmate ${soulmate.id} successfully sent to female.`
+      )
+      // Update soulmate status to indicate male profile has been sent to female
+      await prisma.soulmate.update({
+        where: { id: soulmate.id },
+        data: { status: "MALE_PROFILE_SENT_TO_FEMALE" },
+      })
+    } else {
+      console.error(
+        `Failed to send male profile for soulmate ${
+          soulmate.id
+        }: ${await sendProfileResponse.text()}`
+      )
+      // Log the error but still return success for soulmate creation
+    }
+    // --- END NEW LOGIC ---
+
     return NextResponse.json({
       success: true,
       soulmate,

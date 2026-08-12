@@ -5,9 +5,13 @@ import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
 
 import { resend } from "@/lib/resend"
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { application, to } = await req.json()
+    const { id } = await params
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -33,8 +37,11 @@ export async function POST(req: Request) {
 
     const reactEmail =
       to.gender.toUpperCase() === "FEMALE"
-        ? SendMaleProfileEmail({ to })
-        : SendFemaleProfileMemberEmail({ profileId: application.id, to })
+        ? SendMaleProfileEmail({ to, soulmateId: id })
+        : SendFemaleProfileMemberEmail({
+            profileId: application.profile.id,
+            to,
+          })
 
     await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.contact}>`,

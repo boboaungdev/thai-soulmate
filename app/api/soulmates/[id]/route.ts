@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 
 import { resend } from "@/lib/resend"
 import { SendFemaleProfileMemberEmail } from "@/emails/member/send-female-profile-member"
-import { BASE_URL } from "@/constants"
+import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { SoulmateStatus } from "@/lib/generated/prisma/enums"
 
@@ -70,8 +70,9 @@ export async function GET(
       const femaleDetails = soulmate.female.personalDetails as PersonalDetails
 
       await resend.emails.send({
-        from: "Thai Soulmate <noreply@thai-soulmate.com>",
-        to: [maleDetails.email],
+        from: `${APP_INFO.name} <${EMAIL.contact}>`,
+        // to: [maleDetails.email`,
+        to: ['boolean405@gmail.com'],
         subject: `[Soulmate] Your match has accepted!`,
         react: SendFemaleProfileMemberEmail({
           to: {
@@ -122,11 +123,15 @@ export async function PATCH(
       )
     }
 
-    const soulmateToUpdate = await prisma.soulmate.findUnique({
+    const soulmate = await prisma.soulmate.findUnique({
       where: { id: soulmateId },
+      include: {
+        male: true,
+        female: true,
+      },
     })
 
-    if (!soulmateToUpdate) {
+    if (!soulmate) {
       return NextResponse.json(
         { success: false, message: "Soulmate not found" },
         { status: 404 }
@@ -141,10 +146,10 @@ export async function PATCH(
     }
 
     if (status === SoulmateStatus.CLOSED) {
-      dataToUpdate.closedFromStatus = soulmateToUpdate.status
+      dataToUpdate.closedFromStatus = soulmate.status
     }
 
-    const updatedSoulmate = await prisma.soulmate.update({
+    let updatedSoulmate = await prisma.soulmate.update({
       where: { id: soulmateId },
       data: dataToUpdate,
       include: {
@@ -178,6 +183,60 @@ export async function PATCH(
         },
       },
     })
+
+    if (status === SoulmateStatus.FEMALE_ACCEPTED) {
+      const maleDetails = soulmate.male.personalDetails as PersonalDetails
+      const femaleDetails = soulmate.female.personalDetails as PersonalDetails
+
+      await resend.emails.send({
+        from: `${APP_INFO.name} <${EMAIL.contact}>`,
+        // to: [maleDetails.email],
+        to: ['boolean405@gmail.com'],
+        subject: `[Soulmate] Your match has accepted!`,
+        react: SendFemaleProfileMemberEmail({
+          to: {
+            prefix: maleDetails.prefix,
+            name: maleDetails.name,
+          },
+          profileId: soulmate.female.id,
+        }),
+      })
+
+      updatedSoulmate = await prisma.soulmate.update({
+        where: { id: soulmateId },
+        data: { status: SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE },
+        include: {
+          male: {
+            select: {
+              id: true,
+              customId: true,
+              personalDetails: true,
+              photos: true,
+            },
+          },
+          female: {
+            select: {
+              id: true,
+              customId: true,
+              personalDetails: true,
+              photos: true,
+            },
+          },
+          notes: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+        },
+      })
+    }
 
     return NextResponse.json({ success: true, soulmate: updatedSoulmate })
   } catch (error) {

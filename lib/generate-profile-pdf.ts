@@ -1,31 +1,39 @@
-import { chromium } from "playwright"
+import puppeteer from "puppeteer-core"
+import chromium from "@sparticuz/chromium"
+
 import { BASE_URL } from "@/constants"
 
 export async function generateProfilePdf(profileId: string) {
-  const browser = await chromium.launch({
+  const url = `${BASE_URL}/print/profile/${profileId}`
+
+  console.log("Generating profile PDF:", url)
+
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    executablePath: await chromium.executablePath(),
     headless: true,
   })
 
   try {
-    const page = await browser.newPage({
-      viewport: {
-        width: 1200,
-        height: 1600,
-      },
+    const page = await browser.newPage()
+
+    await page.setViewport({
+      width: 1200,
+      height: 1600,
+      deviceScaleFactor: 1,
     })
-
-    const url = `${BASE_URL}/print/profile/${profileId}`
-
-    console.log("Generating PDF:", url)
 
     await page.goto(url, {
-      waitUntil: "networkidle",
+      waitUntil: "networkidle0",
+      timeout: 30_000,
     })
 
-    // Wait for fonts
-    await page.evaluate(() => document.fonts.ready)
+    // Make sure fonts are loaded
+    await page.evaluate(async () => {
+      await document.fonts.ready
+    })
 
-    // Wait for images
+    // Make sure profile images are loaded
     await page.evaluate(async () => {
       await Promise.all(
         Array.from(document.images).map((img) => {
@@ -54,7 +62,7 @@ export async function generateProfilePdf(profileId: string) {
       },
     })
 
-    return pdf
+    return Buffer.from(pdf)
   } finally {
     await browser.close()
   }

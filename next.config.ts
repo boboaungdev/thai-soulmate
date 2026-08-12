@@ -3,13 +3,7 @@ import type { NextConfig } from "next"
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["10.51.202.20"],
 
-  serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
-
-  outputFileTracingIncludes: {
-    "/api/soulmates/*/send-profile": [
-      "node_modules/@sparticuz/chromium/bin/**/*",
-    ],
-  },
+  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium-min"],
 
   images: {
     remotePatterns: [

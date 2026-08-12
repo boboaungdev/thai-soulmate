@@ -99,3 +99,92 @@ export async function GET(
     )
   }
 }
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: soulmateId } = await params
+    const { status } = await request.json()
+
+    if (!status) {
+      return NextResponse.json(
+        { success: false, message: "Missing status" },
+        { status: 400 }
+      )
+    }
+
+    if (!Object.values(SoulmateStatus).includes(status)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid status value" },
+        { status: 400 }
+      )
+    }
+
+    const soulmateToUpdate = await prisma.soulmate.findUnique({
+      where: { id: soulmateId },
+    })
+
+    if (!soulmateToUpdate) {
+      return NextResponse.json(
+        { success: false, message: "Soulmate not found" },
+        { status: 404 }
+      )
+    }
+
+    const dataToUpdate: {
+      status: SoulmateStatus
+      closedFromStatus?: SoulmateStatus
+    } = {
+      status: status,
+    }
+
+    if (status === SoulmateStatus.CLOSED) {
+      dataToUpdate.closedFromStatus = soulmateToUpdate.status
+    }
+
+    const updatedSoulmate = await prisma.soulmate.update({
+      where: { id: soulmateId },
+      data: dataToUpdate,
+      include: {
+        male: {
+          select: {
+            id: true,
+            customId: true,
+            personalDetails: true,
+            photos: true,
+          },
+        },
+        female: {
+          select: {
+            id: true,
+            customId: true,
+            personalDetails: true,
+            photos: true,
+          },
+        },
+        notes: {
+          include: {
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    })
+
+    return NextResponse.json({ success: true, soulmate: updatedSoulmate })
+  } catch (error) {
+    console.error("Error updating soulmate status:", error)
+    return NextResponse.json(
+      { success: false, message: "An unexpected error occurred." },
+      { status: 500 }
+    )
+  }
+}

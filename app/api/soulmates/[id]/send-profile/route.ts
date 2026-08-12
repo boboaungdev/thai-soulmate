@@ -13,27 +13,27 @@ export async function POST(
     const { application, to } = await req.json()
     const { id } = await params
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    })
+    // const browser = await puppeteer.launch({
+    //   headless: true,
+    //   args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    // })
 
-    const page = await browser.newPage()
+    // const page = await browser.newPage()
 
-    const url = `${BASE_URL}/print/profile/${application.profile.id}`
+    // const url = `${BASE_URL}/print/profile/${application.profile.id}`
 
-    await page.goto(url, {
-      waitUntil: "networkidle2",
-    })
+    // await page.goto(url, {
+    //   waitUntil: "networkidle2",
+    // })
 
-    const pdf = await page.pdf({
-      format: "A4",
-      printBackground: true,
-    })
+    // const pdf = await page.pdf({
+    //   format: "A4",
+    //   printBackground: true,
+    // })
 
-    const pdfBuffer = Buffer.from(pdf)
+    // const pdfBuffer = Buffer.from(pdf)
 
-    await browser.close()
+    // await browser.close()
 
     const reactEmail =
       to.gender.toUpperCase() === "FEMALE"
@@ -50,12 +50,12 @@ export async function POST(
       subject:
         "[Soulmate] A carefully selected match is waiting for your review.",
       react: reactEmail,
-      attachments: [
-        {
-          filename: `Match profile - ID: ${application.customId}.pdf`,
-          content: pdfBuffer,
-        },
-      ],
+      // attachments: [
+      //   {
+      //     filename: `Match profile - ID: ${application.customId}.pdf`,
+      //     content: pdfBuffer,
+      //   },
+      // ],
     })
 
     return NextResponse.json({

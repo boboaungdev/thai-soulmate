@@ -64,10 +64,10 @@ const roleIcons: Record<string, React.ElementType> = {
   MEMBER: User2,
 }
 
-const userItems = [
+const memberItems = [
   {
-    title: "User Dashboard",
-    url: "/dashboard/user-dashboard",
+    title: "Member Dashboard",
+    url: "/dashboard/member-dashboard",
     icon: LayoutDashboard,
   },
   {
@@ -79,11 +79,6 @@ const userItems = [
     title: "My Soulmate",
     url: "/dashboard/my-soulmate",
     icon: Heart,
-  },
-  {
-    title: "My Tracking",
-    url: "/dashboard/my-tracking",
-    icon: HeartPulse,
   },
   {
     title: "Billing",
@@ -235,7 +230,7 @@ export function AppSidebar() {
 
             <SidebarGroupContent>
               <SidebarMenu>
-                {userItems.map((item) => (
+                {memberItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild

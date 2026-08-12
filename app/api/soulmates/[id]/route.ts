@@ -36,8 +36,16 @@ export async function GET(
     const soulmate = await prisma.soulmate.findUnique({
       where: { id: soulmateId },
       include: {
-        male: true,
-        female: true,
+        male: {
+          include: {
+            profile: true,
+          },
+        },
+        female: {
+          include: {
+            profile: true,
+          },
+        },
       },
     })
 
@@ -79,7 +87,7 @@ export async function GET(
             prefix: maleDetails.prefix,
             name: maleDetails.name,
           },
-          profileId: soulmate.female.id, // This is ApplicationForm ID
+          profileId: soulmate.female.profile!.id,
         }),
       })
 
@@ -126,8 +134,16 @@ export async function PATCH(
     const soulmate = await prisma.soulmate.findUnique({
       where: { id: soulmateId },
       include: {
-        male: true,
-        female: true,
+        male: {
+          include: {
+            profile: true,
+          },
+        },
+        female: {
+          include: {
+            profile: true,
+          },
+        },
       },
     })
 
@@ -198,7 +214,7 @@ export async function PATCH(
             prefix: maleDetails.prefix,
             name: maleDetails.name,
           },
-          profileId: soulmate.female.id,
+          profileId: soulmate.female.profile!.id,
         }),
       })
 

@@ -54,7 +54,9 @@ export async function GET(
       appearance: parseJSONField(profile.applicationForm?.appearance),
       personality: parseJSONField(profile.applicationForm?.personality),
       lifestyle: parseJSONField(profile.applicationForm?.lifestyle),
-      relationshipGoals: parseJSONField(profile.applicationForm?.relationshipGoals),
+      relationshipGoals: parseJSONField(
+        profile.applicationForm?.relationshipGoals
+      ),
       idealPartner: parseJSONField(profile.applicationForm?.idealPartner),
       financial: parseJSONField(profile.applicationForm?.financial),
       photos: parseJSONField(profile.applicationForm?.photos),

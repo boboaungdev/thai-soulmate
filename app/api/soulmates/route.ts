@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { BASE_URL } from "@/constants"
 
 export async function GET() {
   try {
@@ -154,7 +155,7 @@ export async function POST(req: Request) {
 
     // Call the internal API route to send the profile
     const sendProfileResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/soulmates/${soulmate.id}/send-profile`,
+      `${BASE_URL}/api/soulmates/${soulmate.id}/send-profile`,
       {
         method: "POST",
         headers: {

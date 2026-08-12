@@ -37,11 +37,10 @@ const allowedRoutes = {
     "/dashboard/google-meet",
   ],
   MEMBER: [
-    "/dashboard/user-dashboard",
+    "/dashboard/member-dashboard",
     "/dashboard/billing",
     "/dashboard/gallery",
     "/dashboard/my-soulmate",
-    "/dashboard/my-tracking",
   ],
 } as const
 
@@ -49,7 +48,7 @@ const dashboardHome = {
   DEV: "/dashboard/admin-dashboard",
   ADMIN: "/dashboard/admin-dashboard",
   STAFF: "/dashboard/staff-dashboard",
-  MEMBER: "/dashboard/user-dashboard",
+  MEMBER: "/dashboard/member-dashboard",
 } as const
 
 function isAllowedRoute(role: keyof typeof allowedRoutes, pathname: string) {

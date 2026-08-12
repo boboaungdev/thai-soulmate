@@ -20,12 +20,62 @@ export async function GET(
   const { id: soulmateId } = await params
   const status = searchParams.get("status")
 
-  if (!soulmateId || !status) {
-    return NextResponse.redirect(
-      `${BASE_URL}/action-feedback?error=Missing soulmateId or status`
+  if (!soulmateId) {
+    return NextResponse.json(
+      { success: false, message: "Missing soulmateId" },
+      { status: 400 }
     )
   }
 
+  if (!status) {
+    // If no status is provided, return the soulmate data
+    try {
+      const soulmate = await prisma.soulmate.findUnique({
+        where: { id: soulmateId },
+        include: {
+          male: {
+            include: {
+              profile: true,
+            },
+          },
+          female: {
+            include: {
+              profile: true,
+            },
+          },
+          notes: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+        },
+      })
+
+      if (!soulmate) {
+        return NextResponse.json(
+          { success: false, message: "Soulmate not found" },
+          { status: 404 }
+        )
+      }
+
+      return NextResponse.json({ success: true, soulmate })
+    } catch (error) {
+      console.error("Error fetching soulmate:", error)
+      return NextResponse.json(
+        { success: false, message: "An unexpected error occurred." },
+        { status: 500 }
+      )
+    }
+  }
+
+  // Existing logic for status updates (accepted/rejected)
   if (status !== "accepted" && status !== "rejected") {
     return NextResponse.redirect(
       `${BASE_URL}/action-feedback?error=Invalid status value`

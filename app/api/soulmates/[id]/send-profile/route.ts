@@ -28,10 +28,11 @@ export async function POST(
             to,
           })
 
-    // Generate PDF
-    const pdf = await generateProfilePdf(id)
+    const profileUrl = new URL(`/print/profile/${id}`, req.url)
+    console.log(profileUrl,"url");
+    
 
-    console.log(`Generated PDF: ${pdf.length} bytes`)
+    const pdf = await generateProfilePdf(profileUrl.toString())
 
     // Send email
     const result = await resend.emails.send({
@@ -48,7 +49,6 @@ export async function POST(
         {
           filename: `Profile-ID-${application.customId}.pdf`,
           content: pdf,
-          contentType: "application/pdf",
         },
       ],
     })

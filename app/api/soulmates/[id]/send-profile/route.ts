@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server"
 
-import {
-  SendFemaleProfileMemberEmail,
-  SendMaleProfileEmail,
-} from "@/emails"
+import { SendFemaleProfileMemberEmail, SendMaleProfileEmail } from "@/emails"
 
 import { APP_INFO, EMAIL } from "@/constants"
 import { resend } from "@/lib/resend"
 import { generateProfilePdf } from "@/lib/generate-profile-pdf"
 
 export const runtime = "nodejs"
-export const maxDuration = 60
+export const maxDuration = 30
 
 export async function POST(
   req: Request,
@@ -19,9 +16,6 @@ export async function POST(
   try {
     const { application, to } = await req.json()
     const { id } = await params
-
-    console.log("Sending profile:", id)
-    console.log("Recipient:", to.email)
 
     const reactEmail =
       to.gender.toUpperCase() === "FEMALE"
@@ -34,15 +28,15 @@ export async function POST(
             to,
           })
 
-    // Generate profile PDF
+    // Generate PDF
     const pdf = await generateProfilePdf(id)
 
-    console.log("PDF generated:", pdf.length, "bytes")
+    console.log(`Generated PDF: ${pdf.length} bytes`)
 
     // Send email
     const result = await resend.emails.send({
       from: `${APP_INFO.name} <${EMAIL.contact}>`,
-      to: ['boolean405@gmail.com'],
+      to: ["boolean405@gmail.com"],
       // to: [to.email],
 
       subject:
@@ -52,13 +46,14 @@ export async function POST(
 
       attachments: [
         {
-          filename: `profile-${id}.pdf`,
-          content: pdf.toString("base64"),
+          filename: `Profile-ID-${application.customId}.pdf`,
+          content: pdf,
+          contentType: "application/pdf",
         },
       ],
     })
 
-    console.log("Resend result:", result)
+    console.log("Email sent:", result)
 
     return NextResponse.json({
       success: true,

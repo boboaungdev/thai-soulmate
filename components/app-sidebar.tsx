@@ -133,7 +133,7 @@ const MatchmakingItems = [
     icon: HeartHandshake,
   },
   {
-    title: "Soulmates Tracking",
+    title: "Tracking",
     url: "/dashboard/soulmates",
     icon: HeartPulse,
   },

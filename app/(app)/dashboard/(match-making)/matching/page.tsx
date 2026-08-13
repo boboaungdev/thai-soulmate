@@ -148,16 +148,11 @@ const sortOrderLabels: Record<string, string> = {
 
 const matchRangeLabels: Record<string, string> = {
   all: "All Ranges",
-  "90-100": "100% - 90%",
-  "80-90": "90% - 80%",
-  "70-80": "80% - 70%",
-  "60-70": "70% - 60%",
-  "50-60": "60% - 50%",
-  "40-50": "50% - 40%",
-  "30-40": "40% - 30%",
-  "20-30": "30% - 20%",
-  "10-20": "20% - 10%",
-  "0-10": "10% - 0%",
+  "80-100": "100% - 80%",
+  "60-80": "80% - 60%",
+  "40-60": "60% - 40%",
+  "20-40": "40% - 20%",
+  "0-20": "20% - 0%",
 }
 // Safely parse JSON properties
 const parseApplicantData = (applicant: any) => {

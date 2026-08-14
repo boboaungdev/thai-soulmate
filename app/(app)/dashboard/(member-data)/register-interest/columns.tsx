@@ -5,8 +5,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef } from "@tanstack/react-table"
 import { ThumbsUp, ThumbsDown } from "lucide-react"
 import {
-  CircleCheck,
-  CircleX,
   CircleDot,
   Clock,
   MailCheck,
@@ -164,6 +162,9 @@ export const getColumns = (
     cell: ({ row }) => {
       const gender = row.getValue("gender") as string
       return <div className={`min-[80px]`}>{gender}</div>
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
     },
   },
   {

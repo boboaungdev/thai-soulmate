@@ -43,7 +43,12 @@ export default function ApplicationsPage() {
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold tracking-tight">Application</h1>
+              <span className="text-sm font-semibold text-muted-foreground">
+                ({applications.length})
+              </span>
+            </div>
             <p className="text-sm text-muted-foreground">
               Matchmaking profile applications
             </p>
@@ -68,7 +73,12 @@ export default function ApplicationsPage() {
     <main className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight">Application</h1>
+            <span className="text-sm font-semibold text-muted-foreground">
+              ({applications.length})
+            </span>
+          </div>
           <p className="text-sm text-muted-foreground">
             Matchmaking profile applications
           </p>

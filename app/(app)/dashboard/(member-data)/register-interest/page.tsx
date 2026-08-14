@@ -47,9 +47,14 @@ export default function TaskPage() {
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Register Interest
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold tracking-tight">
+                Register Interest
+              </h1>
+              <span className="text-sm font-semibold text-muted-foreground">
+                ({data.length})
+              </span>
+            </div>
             <p className="text-sm text-muted-foreground">
               Users who submitted matchmaking interest forms
             </p>
@@ -76,9 +81,14 @@ export default function TaskPage() {
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Register Interest
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold tracking-tight">
+                Register Interest
+              </h1>
+              <span className="text-sm font-semibold text-muted-foreground">
+                ({data.length})
+              </span>
+            </div>
             <p className="text-sm text-muted-foreground">
               Users who submitted matchmaking interest forms
             </p>

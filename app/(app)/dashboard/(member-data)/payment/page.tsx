@@ -113,7 +113,12 @@ export default function PaymentPage() {
       <main className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Payments</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold tracking-tight">Payment</h1>
+              <span className="text-sm font-semibold text-muted-foreground">
+                ({payments.length})
+              </span>
+            </div>
             <p className="text-sm text-muted-foreground">
               Manage customer payments.
             </p>

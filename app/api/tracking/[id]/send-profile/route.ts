@@ -21,7 +21,7 @@ export async function POST(
       to.gender.toUpperCase() === "FEMALE"
         ? SendMaleProfileEmail({
             to,
-            soulmateId: id,
+            trackingId: id,
           })
         : SendFemaleProfileMemberEmail({
             profileId: application.profile.id,

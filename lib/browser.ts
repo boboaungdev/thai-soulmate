@@ -7,14 +7,14 @@ export async function launchBrowser() {
   const isDevelopment = process.env.NODE_ENV === "development"
 
   // Local Mac development
-  if (isDevelopment) {
-    return puppeteer.launch({
-      executablePath:
-        process.env.CHROME_EXECUTABLE_PATH ??
-        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-      headless: true,
-    })
-  }
+  // if (isDevelopment) {
+  //   return puppeteer.launch({
+  //     executablePath:
+  //       process.env.CHROME_EXECUTABLE_PATH ??
+  //       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  //     headless: true,
+  //   })
+  // }
 
   // Vercel / production
   const chromiumPackUrl = process.env.CHROMIUM_PACK_URL

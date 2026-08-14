@@ -4,7 +4,7 @@ import { BASE_URL } from "@/constants"
 
 export async function GET() {
   try {
-    const soulmates = await prisma.soulmate.findMany({
+    const trackings = await prisma.tracking.findMany({
       include: {
         male: {
           select: {
@@ -40,7 +40,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      soulmates,
+      trackings,
     })
   } catch (error) {
     console.error("GET SOULMATES ERROR:", error)
@@ -48,7 +48,7 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to fetch soulmates",
+        message: "Failed to fetch trackings",
       },
       {
         status: 500,
@@ -74,9 +74,9 @@ export async function POST(req: Request) {
       )
     }
 
-    // Check if a soulmate connection already exists
-    // Check if an active soulmate connection already exists
-    const existingSoulmate = await prisma.soulmate.findFirst({
+    // Check if a tracking connection already exists
+    // Check if an active tracking connection already exists
+    const existingSoulmate = await prisma.tracking.findFirst({
       where: {
         OR: [
           {
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const soulmate = await prisma.soulmate.create({
+    const tracking = await prisma.tracking.create({
       data: {
         maleId,
         femaleId,
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
       },
     })
 
-    // --- NEW LOGIC: Send male profile to female after soulmate creation ---
+    // --- NEW LOGIC: Send male profile to female after tracking creation ---
     const maleApplicationForm = await prisma.applicationForm.findUnique({
       where: { id: maleId },
       select: {
@@ -132,13 +132,13 @@ export async function POST(req: Request) {
 
     if (!maleApplicationForm || !femaleApplicationForm) {
       console.error(
-        "Application forms not found for maleId or femaleId after soulmate creation."
+        "Application forms not found for maleId or femaleId after tracking creation."
       )
-      // Potentially revert soulmate creation or just log and proceed with existing response
+      // Potentially revert tracking creation or just log and proceed with existing response
       // For now, we'll log and return success without sending profile.
       return NextResponse.json({
         success: true,
-        soulmate,
+        tracking,
         message:
           "Soulmate created, but failed to find application forms for profile sending.",
       })
@@ -156,7 +156,7 @@ export async function POST(req: Request) {
 
     // Call the internal API route to send the profile
     const sendProfileResponse = await fetch(
-      `${BASE_URL}/api/soulmates/${soulmate.id}/send-profile`,
+      `${BASE_URL}/api/tracking/${tracking.id}/send-profile`,
       {
         method: "POST",
         headers: {
@@ -171,26 +171,26 @@ export async function POST(req: Request) {
 
     if (sendProfileResponse.ok) {
       console.log(
-        `Male profile for soulmate ${soulmate.id} successfully sent to female.`
+        `Male profile for tracking ${tracking.id} successfully sent to female.`
       )
-      // Update soulmate status to indicate male profile has been sent to female
-      await prisma.soulmate.update({
-        where: { id: soulmate.id },
+      // Update tracking status to indicate male profile has been sent to female
+      await prisma.tracking.update({
+        where: { id: tracking.id },
         data: { status: "MALE_PROFILE_SENT_TO_FEMALE" },
       })
     } else {
       console.error(
-        `Failed to send male profile for soulmate ${
-          soulmate.id
+        `Failed to send male profile for tracking ${
+          tracking.id
         }: ${await sendProfileResponse.text()}`
       )
-      // Log the error but still return success for soulmate creation
+      // Log the error but still return success for tracking creation
     }
     // --- END NEW LOGIC ---
 
     return NextResponse.json({
       success: true,
-      soulmate,
+      tracking,
     })
   } catch (error) {
     console.error("CREATE SOULMATE ERROR:", error)
@@ -198,7 +198,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to create soulmate",
+        message: "Failed to create tracking",
       },
       {
         status: 500,

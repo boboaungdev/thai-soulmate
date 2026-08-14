@@ -36,7 +36,7 @@ import {
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
 
-enum SoulmateStatus {
+enum TrackingStatus {
   INITIAL_CONNECT = "INITIAL_CONNECT",
   MALE_PROFILE_SENT_TO_FEMALE = "MALE_PROFILE_SENT_TO_FEMALE",
   FEMALE_THINKING = "FEMALE_THINKING",
@@ -60,77 +60,77 @@ enum SoulmateStatus {
 const statusGroups = [
   {
     name: "Initial Connect",
-    statuses: [SoulmateStatus.INITIAL_CONNECT],
+    statuses: [TrackingStatus.INITIAL_CONNECT],
   },
   {
     name: "Female's Review",
     statuses: [
-      SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE,
-      SoulmateStatus.FEMALE_THINKING,
-      SoulmateStatus.FEMALE_REJECT,
-      SoulmateStatus.FEMALE_ACCEPTED,
+      TrackingStatus.MALE_PROFILE_SENT_TO_FEMALE,
+      TrackingStatus.FEMALE_THINKING,
+      TrackingStatus.FEMALE_REJECT,
+      TrackingStatus.FEMALE_ACCEPTED,
     ],
   },
   {
     name: "Male's Review",
     statuses: [
-      SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE,
-      SoulmateStatus.MALE_THINKING,
-      SoulmateStatus.MALE_REJECT,
-      SoulmateStatus.MALE_ACCEPTED,
+      TrackingStatus.FEMALE_PROFILE_SENT_TO_MALE,
+      TrackingStatus.MALE_THINKING,
+      TrackingStatus.MALE_REJECT,
+      TrackingStatus.MALE_ACCEPTED,
     ],
   },
   {
     name: "First Meet",
     statuses: [
-      SoulmateStatus.FIRST_GOOGLE_MEET,
-      SoulmateStatus.REVIEW_FIRST_GOOGLE_MEET,
+      TrackingStatus.FIRST_GOOGLE_MEET,
+      TrackingStatus.REVIEW_FIRST_GOOGLE_MEET,
     ],
   },
   {
     name: "Second Meet",
     statuses: [
-      SoulmateStatus.SECOND_GOOGLE_MEET,
-      SoulmateStatus.REVIEW_SECOND_GOOGLE_MEET,
+      TrackingStatus.SECOND_GOOGLE_MEET,
+      TrackingStatus.REVIEW_SECOND_GOOGLE_MEET,
     ],
   },
   {
     name: "Third Meet",
     statuses: [
-      SoulmateStatus.THIRD_GOOGLE_MEET,
-      SoulmateStatus.REVIEW_THIRD_GOOGLE_MEET,
+      TrackingStatus.THIRD_GOOGLE_MEET,
+      TrackingStatus.REVIEW_THIRD_GOOGLE_MEET,
     ],
   },
   {
     name: "Final Match",
-    statuses: [SoulmateStatus.FINAL_MATCH, SoulmateStatus.CONNECTED],
+    statuses: [TrackingStatus.FINAL_MATCH, TrackingStatus.CONNECTED],
   },
   {
     name: "Closed",
-    statuses: [SoulmateStatus.CLOSED],
+    statuses: [TrackingStatus.CLOSED],
   },
 ]
 
-interface SoulmateApplication {
+interface TrackingApplication {
   id: string
   customId: number
   personalDetails: PersonalDetails
   photos: Photos
 }
 
-interface Soulmate {
+interface Tracking {
   id: string
   maleId: string
   femaleId: string
-  status: SoulmateStatus
-  male: SoulmateApplication
-  female: SoulmateApplication
-  notes: SoulmateNote[]
+  status: TrackingStatus
+  male: TrackingApplication
+  female: TrackingApplication
+  notes: TrackingNote[]
   createdAt: string
-  closedFromStatus?: SoulmateStatus
+  closedFromStatus?: TrackingStatus
 }
 
-interface SoulmateNote {
+interface TrackingNote {
   id: string
   message: string
   type: string // SoulmateNoteType
@@ -149,25 +149,25 @@ const getInitials = (name?: string) => {
 }
 
 interface HandleSendProfileProps {
-  soulmate: Soulmate
-  application: SoulmateApplication
-  to: SoulmateApplication
-  newStatus: SoulmateStatus
+  tracking: Tracking
+  application: TrackingApplication
+  to: TrackingApplication
+  newStatus: TrackingStatus
 }
 
 const SoulmateActions: React.FC<{
-  soulmate: Soulmate
+  tracking: Tracking
   isUpdating: boolean
   handleSendProfile: (props: HandleSendProfileProps) => Promise<void>
   handleUpdateStatus: (
-    soulmateId: string,
-    newStatus: SoulmateStatus
+    trackingId: string,
+    newStatus: TrackingStatus
   ) => Promise<void>
-}> = ({ soulmate, isUpdating, handleSendProfile, handleUpdateStatus }) => {
+}> = ({ tracking, isUpdating, handleSendProfile, handleUpdateStatus }) => {
   const canSendMaleProfileToFemale =
-    soulmate.status === SoulmateStatus.INITIAL_CONNECT
+    tracking.status === TrackingStatus.INITIAL_CONNECT
   const canSendFemaleProfileToMale =
-    soulmate.status === SoulmateStatus.FEMALE_ACCEPTED
+    tracking.status === TrackingStatus.FEMALE_ACCEPTED
 
   let sendProfileButton = null
   if (canSendMaleProfileToFemale) {
@@ -176,10 +176,10 @@ const SoulmateActions: React.FC<{
         className="btn-gradient h-8 px-3 text-sm"
         onClick={() =>
           handleSendProfile({
-            soulmate,
-            application: soulmate.male,
-            to: soulmate.female,
-            newStatus: SoulmateStatus.MALE_PROFILE_SENT_TO_FEMALE,
+            tracking,
+            application: tracking.male,
+            to: tracking.female,
+            newStatus: TrackingStatus.MALE_PROFILE_SENT_TO_FEMALE,
           })
         }
         disabled={isUpdating}
@@ -202,10 +202,10 @@ const SoulmateActions: React.FC<{
         className="btn-gradient h-8 px-3 text-sm"
         onClick={() =>
           handleSendProfile({
-            soulmate,
-            application: soulmate.female,
-            to: soulmate.male,
-            newStatus: SoulmateStatus.FEMALE_PROFILE_SENT_TO_MALE,
+            tracking,
+            application: tracking.female,
+            to: tracking.male,
+            newStatus: TrackingStatus.FEMALE_PROFILE_SENT_TO_MALE,
           })
         }
         disabled={isUpdating}
@@ -238,7 +238,7 @@ const SoulmateActions: React.FC<{
 
         <DropdownMenuContent align="end" className="w-max">
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/soulmates/${soulmate.id}`}>
+            <Link href={`/dashboard/tracking/${tracking.id}`}>
               <Eye className="mr-2 h-4 w-4 shrink-0" />
               <span className="whitespace-nowrap">View details</span>
             </Link>
@@ -248,13 +248,13 @@ const SoulmateActions: React.FC<{
             <NotebookPen className="mr-2 h-4 w-4 shrink-0" />
             <span className="whitespace-nowrap">Add Note</span>
           </DropdownMenuItem>
-          {soulmate.status !== SoulmateStatus.CLOSED && (
+          {tracking.status !== TrackingStatus.CLOSED && (
             <>
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
                 onClick={() =>
-                  handleUpdateStatus(soulmate.id, SoulmateStatus.CLOSED)
+                  handleUpdateStatus(tracking.id, TrackingStatus.CLOSED)
                 }
                 variant="destructive"
               >
@@ -270,10 +270,10 @@ const SoulmateActions: React.FC<{
 }
 
 const SoulmateStatusLine: React.FC<{
-  currentStatus: Soulmate["status"]
-  closedFromStatus?: Soulmate["status"]
+  currentStatus: Tracking["status"]
+  closedFromStatus?: Tracking["status"]
 }> = ({ currentStatus, closedFromStatus }) => {
-  if (currentStatus === SoulmateStatus.CLOSED) {
+  if (currentStatus === TrackingStatus.CLOSED) {
     const closedAtGroupIndex = closedFromStatus
       ? statusGroups.findIndex((group) =>
           group.statuses.includes(closedFromStatus)
@@ -283,7 +283,7 @@ const SoulmateStatusLine: React.FC<{
     return (
       <div className="flex items-center justify-between gap-1 text-xs">
         {statusGroups.map((group, index) => {
-          const isClosedGroup = group.statuses.includes(SoulmateStatus.CLOSED)
+          const isClosedGroup = group.statuses.includes(TrackingStatus.CLOSED)
 
           let textColorClass = "text-gray-500"
           let separatorColorClass = "bg-gray-300"
@@ -334,8 +334,8 @@ const SoulmateStatusLine: React.FC<{
   )
 
   const isRejected =
-    currentStatus === SoulmateStatus.FEMALE_REJECT ||
-    currentStatus === SoulmateStatus.MALE_REJECT
+    currentStatus === TrackingStatus.FEMALE_REJECT ||
+    currentStatus === TrackingStatus.MALE_REJECT
 
   return (
     <div className="flex items-center justify-between gap-1 text-xs">
@@ -362,10 +362,10 @@ const SoulmateStatusLine: React.FC<{
               status.startsWith("REVIEW_")
             )
             const isThinkingStatus =
-              group.statuses.includes(SoulmateStatus.FEMALE_THINKING) ||
-              group.statuses.includes(SoulmateStatus.MALE_THINKING)
+              group.statuses.includes(TrackingStatus.FEMALE_THINKING) ||
+              group.statuses.includes(TrackingStatus.MALE_THINKING)
 
-            if (currentStatus === SoulmateStatus.INITIAL_CONNECT) {
+            if (currentStatus === TrackingStatus.INITIAL_CONNECT) {
               textColorClass = "text-blue-700 font-semibold"
               icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
             } else if (isReviewStatus || isThinkingStatus) {
@@ -408,7 +408,7 @@ const SoulmateStatusLine: React.FC<{
 }
 
 export default function SoulmateTrackingPage() {
-  const [soulmates, setSoulmates] = useState<Soulmate[]>([])
+  const [trackings, setTrackings] = useState<Tracking[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
@@ -419,12 +419,12 @@ export default function SoulmateTrackingPage() {
         const response = await fetch("/api/tracking")
         const data = await response.json()
         if (data.success) {
-          setSoulmates(data.soulmates)
+          setTrackings(data.trackings)
         } else {
           setError(data.message)
         }
       } catch (err) {
-        setError("Failed to fetch soulmates.")
+        setError("Failed to fetch trackings.")
         console.log(err)
       } finally {
         setIsLoading(false)
@@ -435,28 +435,28 @@ export default function SoulmateTrackingPage() {
   }, [])
 
   const handleUpdateStatus = async (
-    soulmateId: string,
-    newStatus: SoulmateStatus
+    trackingId: string,
+    newStatus: TrackingStatus
   ) => {
-    setUpdatingId(soulmateId)
-    const originalSoulmates = [...soulmates]
+    setUpdatingId(trackingId)
+    const originalSoulmates = [...trackings]
 
-    const soulmateToUpdate = soulmates.find((s) => s.id === soulmateId)
+    const soulmateToUpdate = trackings.find((s) => s.id === trackingId)
 
-    const optimisticUpdate = soulmates.map((s) => {
-      if (s.id === soulmateId) {
+    const optimisticUpdate = trackings.map((s) => {
+      if (s.id === trackingId) {
         const updated = { ...s, status: newStatus }
-        if (newStatus === SoulmateStatus.CLOSED && soulmateToUpdate) {
+        if (newStatus === TrackingStatus.CLOSED && soulmateToUpdate) {
           updated.closedFromStatus = soulmateToUpdate.status
         }
         return updated
       }
       return s
     })
-    setSoulmates(optimisticUpdate)
+    setTrackings(optimisticUpdate)
 
     try {
-      const response = await fetch(`/api/tracking/${soulmateId}`, {
+      const response = await fetch(`/api/tracking/${trackingId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -467,32 +467,32 @@ export default function SoulmateTrackingPage() {
       }
 
       const updatedSoulmate = await response.json()
-      setSoulmates((currentSoulmates) =>
+      setTrackings((currentSoulmates) =>
         currentSoulmates.map((s) =>
-          s.id === updatedSoulmate.soulmate.id
-            ? { ...s, ...updatedSoulmate.soulmate }
+          s.id === updatedSoulmate.tracking.id
+            ? { ...s, ...updatedSoulmate.tracking }
             : s
         )
       )
     } catch (error) {
       console.error(error)
-      setSoulmates(originalSoulmates)
-      setError("Failed to update soulmate status.")
+      setTrackings(originalSoulmates)
+      setError("Failed to update tracking status.")
     } finally {
       setUpdatingId(null)
     }
   }
 
   const handleSendProfile = async ({
-    soulmate,
+    tracking,
     application,
     to,
     newStatus,
   }: HandleSendProfileProps) => {
-    setUpdatingId(soulmate.id)
+    setUpdatingId(tracking.id)
     try {
       const response = await fetch(
-        `/api/tracking/${soulmate.id}/send-profile`,
+        `/api/tracking/${tracking.id}/send-profile`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -511,7 +511,7 @@ export default function SoulmateTrackingPage() {
         throw new Error("Failed to send profile")
       }
 
-      await handleUpdateStatus(soulmate.id, newStatus)
+      await handleUpdateStatus(tracking.id, newStatus)
     } catch (error) {
       console.error(error)
       setError("Failed to send profile.")
@@ -527,7 +527,7 @@ export default function SoulmateTrackingPage() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Tracking</h1>
             <p className="text-sm text-muted-foreground">
-              Track the progress of soulmate connections.
+              Track the progress of tracking connections.
             </p>
           </div>
         </div>
@@ -585,56 +585,56 @@ export default function SoulmateTrackingPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Tracking</h1>
           <p className="text-sm text-muted-foreground">
-            Track the progress of soulmate connections.
+            Track the progress of tracking connections.
           </p>
         </div>
         <div className="flex items-center space-x-2"></div>
       </div>
 
-      {soulmates.map((soulmate) => (
-        <Card key={soulmate.id} className="w-full">
+      {trackings.map((tracking) => (
+        <Card key={tracking.id} className="w-full">
           <CardHeader className="flex flex-row items-start justify-between">
             <div className="space-y-1.5">
               <CardTitle className="flex items-center gap-4 text-xl">
                 <div className="flex items-center gap-2">
                   <Avatar>
-                    <AvatarImage src={soulmate.male.photos?.headshot} />
+                    <AvatarImage src={tracking.male.photos?.headshot} />
                     <AvatarFallback>
-                      {getInitials(soulmate.male.personalDetails?.name)}
+                      {getInitials(tracking.male.personalDetails?.name)}
                     </AvatarFallback>
                   </Avatar>
                   <span className="font-semibold">
-                    {soulmate.male.personalDetails?.name}
+                    {tracking.male.personalDetails?.name}
                   </span>
                 </div>
                 <span className="mx-2 font-bold text-gray-600">&</span>
                 <div className="flex items-center gap-2">
                   <Avatar>
-                    <AvatarImage src={soulmate.female.photos?.headshot} />
+                    <AvatarImage src={tracking.female.photos?.headshot} />
                     <AvatarFallback>
-                      {getInitials(soulmate.female.personalDetails?.name)}
+                      {getInitials(tracking.female.personalDetails?.name)}
                     </AvatarFallback>
                   </Avatar>
                   <span className="font-semibold">
-                    {soulmate.female.personalDetails?.name}
+                    {tracking.female.personalDetails?.name}
                   </span>
                 </div>
               </CardTitle>
               <CardDescription>
-                Connected: {formatDateTime(soulmate.createdAt)}
+                Connected: {formatDateTime(tracking.createdAt)}
               </CardDescription>
             </div>
             <SoulmateActions
-              soulmate={soulmate}
-              isUpdating={updatingId === soulmate.id}
+              tracking={tracking}
+              isUpdating={updatingId === tracking.id}
               handleSendProfile={handleSendProfile}
               handleUpdateStatus={handleUpdateStatus}
             />
           </CardHeader>
           <CardContent>
             <SoulmateStatusLine
-              currentStatus={soulmate.status}
-              closedFromStatus={soulmate.closedFromStatus}
+              currentStatus={tracking.status}
+              closedFromStatus={tracking.closedFromStatus}
             />
             <div className="mt-4">
               <h4 className="text-sm font-medium">Notes</h4>
@@ -642,7 +642,7 @@ export default function SoulmateTrackingPage() {
                 Latest notes for this connection.
               </CardDescription>
               <div className="mt-2 space-y-2">
-                {soulmate.notes.slice(0, 3).map((note) => (
+                {tracking.notes.slice(0, 3).map((note) => (
                   <div key={note.id} className="text-sm text-muted-foreground">
                     <p className="font-semibold">
                       {note.user.name}:{" "}

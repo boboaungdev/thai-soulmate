@@ -21,12 +21,12 @@ interface SendFemaleMatchEmailProps {
     prefix: string
     name: string
   }
-  soulmateId: string
+  trackingId: string
 }
 
 export const SendMaleProfileEmail = ({
   to,
-  soulmateId,
+  trackingId,
 }: SendFemaleMatchEmailProps) => (
   <Html>
     <Head />
@@ -60,7 +60,7 @@ export const SendMaleProfileEmail = ({
             <Column align="right" style={{ width: "50%", paddingRight: "8px" }}>
               <Button
                 style={{ ...button, backgroundColor: "#28a745" }}
-                href={`${BASE_URL}/api/soulmates/${soulmateId}?status=accepted`}
+                href={`${BASE_URL}/api/tracking/${trackingId}?status=accepted`}
               >
                 Accept
               </Button>
@@ -68,7 +68,7 @@ export const SendMaleProfileEmail = ({
             <Column align="left" style={{ width: "50%", paddingLeft: "8px" }}>
               <Button
                 style={{ ...button, backgroundColor: "#dc3545" }}
-                href={`${BASE_URL}/api/soulmates/${soulmateId}?status=rejected`}
+                href={`${BASE_URL}/api/tracking/${trackingId}?status=rejected`}
               >
                 Reject
               </Button>

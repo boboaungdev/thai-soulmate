@@ -32,7 +32,7 @@ export function ConnectButton({
   const handleConnect = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch("/api/soulmates", {
+      const response = await fetch("/api/tracking", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ export function ConnectButton({
 
       if (response.ok) {
         toast.success("Soulmates connected successfully!")
-        router.push("/dashboard/soulmates")
+        router.push("/dashboard/tracking")
       } else {
         toast.error(`Failed to connect soulmates: ${result.message}`)
       }

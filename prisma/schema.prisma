@@ -142,7 +142,9 @@ model Soulmate {
   female   ApplicationForm @relation("FemaleSoulmate", fields: [femaleId], references: [id])
   femaleId String
 
-  status           SoulmateStatus @default(INITIAL_CONNECT)
+  matchPercentage Int @default(0)
+
+  status           SoulmateStatus  @default(INITIAL_CONNECT)
   closedFromStatus SoulmateStatus?
 
   notes SoulmateNote[]

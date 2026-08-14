@@ -637,7 +637,7 @@ export default async function MatchComparisonPage({
           </Link>
         </Button>
 
-        <ConnectButton maleId={maleId} femaleId={femaleId} />
+        <ConnectButton maleId={maleId} femaleId={femaleId} matchPercentage={matchPercentage}/>
       </div>
 
       <div className="mb-6 rounded-lg border bg-card p-4">

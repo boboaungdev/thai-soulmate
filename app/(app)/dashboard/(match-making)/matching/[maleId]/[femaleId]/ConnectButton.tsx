@@ -20,9 +20,11 @@ import { toast } from "sonner"
 export function ConnectButton({
   maleId,
   femaleId,
+  matchPercentage,
 }: {
   maleId: string
   femaleId: string
+  matchPercentage: number
 }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -35,7 +37,7 @@ export function ConnectButton({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ maleId, femaleId }),
+        body: JSON.stringify({ maleId, femaleId, matchPercentage }),
       })
 
       const result = await response.json()

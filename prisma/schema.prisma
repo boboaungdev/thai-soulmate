@@ -18,7 +18,7 @@ model User {
 
   registerInterest RegisterInterest?
   notes            Note[]
-  soulmateNotes    SoulmateNote[]
+  soulmateNotes    TrackingNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,8 +94,8 @@ model ApplicationForm {
 
   notes Note[]
 
-  asMale   Soulmate[] @relation("MaleSoulmate")
-  asFemale Soulmate[] @relation("FemaleSoulmate")
+  asMale   Tracking[] @relation("MaleTracking")
+  asFemale Tracking[] @relation("FemaleTracking")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -134,32 +134,32 @@ model Membership {
   updatedAt DateTime @updatedAt
 }
 
-model Soulmate {
+model Tracking {
   id     String          @id @default(cuid())
-  male   ApplicationForm @relation("MaleSoulmate", fields: [maleId], references: [id])
+  male   ApplicationForm @relation("MaleTracking", fields: [maleId], references: [id])
   maleId String
 
-  female   ApplicationForm @relation("FemaleSoulmate", fields: [femaleId], references: [id])
+  female   ApplicationForm @relation("FemaleTracking", fields: [femaleId], references: [id])
   femaleId String
 
   matchPercentage Int
 
-  status           SoulmateStatus  @default(INITIAL_CONNECT)
-  closedFromStatus SoulmateStatus?
+  status           TrackingStatus  @default(INITIAL_CONNECT)
+  closedFromStatus TrackingStatus?
 
-  notes SoulmateNote[]
+  notes TrackingNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model SoulmateNote {
+model TrackingNote {
   id      String           @id @default(cuid())
   message String
-  type    SoulmateNoteType
+  type    TrackingNoteType
 
-  soulmateId String
-  soulmate   Soulmate @relation(fields: [soulmateId], references: [id])
+  trackingId String
+  tracking   Tracking @relation(fields: [trackingId], references: [id])
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -238,7 +238,7 @@ enum MembershipPlan {
   MALE_SIX_MONTHS
 }
 
-enum SoulmateStatus {
+enum TrackingStatus {
   INITIAL_CONNECT
   MALE_PROFILE_SENT_TO_FEMALE
   FEMALE_THINKING
@@ -259,7 +259,7 @@ enum SoulmateStatus {
   CLOSED
 }
 
-enum SoulmateNoteType {
+enum TrackingNoteType {
   INITIAL_CONNECT
   MALE_PROFILE_SENT_TO_FEMALE
   FEMALE_PROFILE_SENT_TO_MALE

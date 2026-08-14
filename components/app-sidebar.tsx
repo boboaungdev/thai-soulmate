@@ -134,7 +134,7 @@ const MatchmakingItems = [
   },
   {
     title: "Tracking",
-    url: "/dashboard/soulmates",
+    url: "/dashboard/tracking",
     icon: HeartPulse,
   },
   {

@@ -29,9 +29,8 @@ import {
   Loader2,
   NotebookPen,
   CircleX,
-  Eye,
   Send,
-  ArrowLeft,
+  ChevronLeft,
 } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
@@ -131,6 +130,7 @@ interface Tracking {
   createdAt: string
   updatedAt: string
   closedFromStatus?: SoulmateStatus
+  matchPercentage: number
 }
 
 interface SoulmateNote {
@@ -400,16 +400,16 @@ const SoulmateStatusLine: React.FC<{
   )
 }
 
-const ProfileCard: React.FC<{ application: SoulmateApplication }> = ({
-  application,
-}) => {
+const ProfileCard: React.FC<{
+  application: SoulmateApplication
+}> = ({ application }) => {
   const personalDetails = application.personalDetails as PersonalDetails
   const photos = application.photos as Photos
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center gap-4">
-        <Avatar className="h-16 w-16">
+        <Avatar className="h-24 w-24">
           <AvatarImage src={photos?.headshot} alt={personalDetails.name} />
           <AvatarFallback>{getInitials(personalDetails.name)}</AvatarFallback>
         </Avatar>
@@ -578,8 +578,11 @@ export default function SoulmateDetailPage() {
       <div className="flex h-full flex-col items-center justify-center text-red-500">
         <p>{error}</p>
         <Link href="/dashboard/tracking">
-          <Button variant="link">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+          <Button
+            variant="link"
+            className="text-muted-foreground hover:text-foreground hover:underline"
+          >
+            <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Tracking
           </Button>
         </Link>
@@ -592,8 +595,11 @@ export default function SoulmateDetailPage() {
       <div className="flex h-full flex-col items-center justify-center">
         <p>Tracking not found.</p>
         <Link href="/dashboard/tracking">
-          <Button variant="link">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+          <Button
+            variant="link"
+            className="text-muted-foreground hover:text-foreground hover:underline"
+          >
+            <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Tracking
           </Button>
         </Link>
@@ -603,15 +609,23 @@ export default function SoulmateDetailPage() {
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-      <div className="flex items-center justify-between space-y-2">
-        <div>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
           <Link
             href="/dashboard/tracking"
-            className="flex items-center text-sm text-muted-foreground hover:underline"
+            className="flex items-center text-sm text-muted-foreground hover:text-foreground hover:underline"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Tracking
           </Link>
+          <SoulmateActions
+            tracking={tracking}
+            isUpdating={updatingId === tracking.id}
+            handleSendProfile={handleSendProfile}
+            handleUpdateStatus={handleUpdateStatus}
+          />
+        </div>
+        <div>
           <h1 className="text-2xl font-bold tracking-tight">
             Tracking Connection Details
           </h1>
@@ -619,17 +633,23 @@ export default function SoulmateDetailPage() {
             Connected: {formatDateTime(tracking.createdAt)} | Last updated:{" "}
             {formatDateTime(tracking.updatedAt)}
           </p>
+          <Badge
+            className={cn(
+              "mt-2 text-base",
+              tracking.matchPercentage < 50 && "bg-red-100 text-red-800",
+              tracking.matchPercentage >= 50 &&
+                tracking.matchPercentage < 75 &&
+                "bg-yellow-100 text-yellow-800",
+              tracking.matchPercentage >= 75 && "bg-green-100 text-green-800"
+            )}
+          >
+            Match Score: {tracking.matchPercentage}%
+          </Badge>
         </div>
-        <SoulmateActions
-          tracking={tracking}
-          isUpdating={updatingId === tracking.id}
-          handleSendProfile={handleSendProfile}
-          handleUpdateStatus={handleUpdateStatus}
-        />
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Connection Status</CardTitle>
         </CardHeader>
         <CardContent>
@@ -640,7 +660,7 @@ export default function SoulmateDetailPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
         <ProfileCard application={tracking.male} />
         <ProfileCard application={tracking.female} />
       </div>

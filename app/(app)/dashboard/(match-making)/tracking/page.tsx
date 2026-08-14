@@ -1,6 +1,6 @@
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 enum TrackingStatus {
   INITIAL_CONNECT = "INITIAL_CONNECT",
@@ -128,6 +129,7 @@ interface Tracking {
   notes: TrackingNote[]
   createdAt: string
   closedFromStatus?: TrackingStatus
+  matchPercentage: number
 }
 
 interface TrackingNote {
@@ -146,6 +148,19 @@ const getInitials = (name?: string) => {
     .slice(0, 2)
     .join("")
     .toUpperCase()
+}
+
+const getMatchPercentageVariant = (percentage: number) => {
+  if (percentage >= 80) {
+    return "success"
+  }
+  if (percentage >= 60) {
+    return "pending"
+  }
+  if (percentage >= 40) {
+    return "destructive"
+  }
+  return "error"
 }
 
 interface HandleSendProfileProps {
@@ -607,7 +622,15 @@ export default function SoulmateTrackingPage() {
                     {tracking.male.personalDetails?.name}
                   </span>
                 </div>
-                <span className="mx-2 font-bold text-gray-600">&</span>
+                <div className="flex items-center text-gray-600">
+                  <Badge
+                    variant={getMatchPercentageVariant(
+                      tracking.matchPercentage
+                    )}
+                  >
+                    {tracking.matchPercentage}%
+                  </Badge>
+                </div>
                 <div className="flex items-center gap-2">
                   <Avatar>
                     <AvatarImage src={tracking.female.photos?.headshot} />

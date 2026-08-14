@@ -1,4 +1,5 @@
 import { Plan } from "@/types"
+import { env } from "@/lib/env"
 
 export const APP_INFO = {
   name: "Thai Soulmate",
@@ -24,51 +25,13 @@ export const EMAIL = {
   notify: "notify@thaisoulmate.org",
 } as const
 
-export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-
-export const DATABASE = {
-  DATABASE_URL: process.env.DATABASE_URL,
-} as const
-
-export const RESEND = {
-  RESEND_API_KEY: process.env.RESEND_API_KEY,
-}
-
-export const R2 = {
-  R2_BUCKET: process.env.R2_BUCKET,
-  R2_ENDPOINT: process.env.R2_ENDPOINT,
-  R2_PUBLIC_URL: process.env.R2_PUBLIC_URL,
-  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
-  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
-} as const
-
-export const STRIPE = {
-  PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-  SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-  PLANS: {
-    priceIds: {
-      subscription: {
-        oneMonth: "price_1Trd7hRGO2DKoZ4YKjKdPnAL",
-        threeMonth: "price_1Trd5gRGO2DKoZ4Ykj426kku",
-        sixMonth: "price_1Trd8nRGO2DKoZ4YWTw2mAKh",
-      },
-      oneTime: {
-        oneMonth: "price_1Trd7iRGO2DKoZ4YgovfP0md",
-        threeMonth: "price_1Trcq0RGO2DKoZ4YyYezqShF",
-        sixMonth: "price_1Trd8nRGO2DKoZ4YIxDirV8C",
-      },
-    },
-  },
-} as const
-
 export const PLANS: Plan[] = [
   {
     id: "1-month",
     name: "1 Month",
     priceIds: {
-      subscription: STRIPE.PLANS.priceIds.subscription.oneMonth,
-      oneTime: STRIPE.PLANS.priceIds.oneTime.oneMonth,
+      subscription: env.STRIPE.priceIds.subscription.oneMonth,
+      oneTime: env.STRIPE.priceIds.oneTime.oneMonth,
     },
     price: "฿29,999",
     duration: { paid: "1 month", total: "2 months" },
@@ -86,8 +49,8 @@ export const PLANS: Plan[] = [
     id: "3-months",
     name: "3 Months",
     priceIds: {
-      subscription: STRIPE.PLANS.priceIds.subscription.threeMonth,
-      oneTime: STRIPE.PLANS.priceIds.oneTime.threeMonth,
+      subscription: env.STRIPE.priceIds.subscription.threeMonth,
+      oneTime: env.STRIPE.priceIds.oneTime.threeMonth,
     },
     price: "฿34,999",
     duration: { paid: "3 months", total: "6 months" },
@@ -106,8 +69,8 @@ export const PLANS: Plan[] = [
     id: "6-months",
     name: "6 Months",
     priceIds: {
-      subscription: STRIPE.PLANS.priceIds.subscription.sixMonth,
-      oneTime: STRIPE.PLANS.priceIds.oneTime.sixMonth,
+      subscription: env.STRIPE.priceIds.subscription.sixMonth,
+      oneTime: env.STRIPE.priceIds.oneTime.sixMonth,
     },
     price: "฿49,999",
     duration: { paid: "6 months", total: "12 months" },

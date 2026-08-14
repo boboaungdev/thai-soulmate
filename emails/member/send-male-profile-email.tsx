@@ -12,7 +12,8 @@ import {
   Text,
 } from "react-email"
 
-import { APP_INFO, BASE_URL } from "@/constants"
+import { APP_INFO } from "@/constants"
+import { env } from "@/lib/env"
 
 const currentYear = new Date().getFullYear()
 
@@ -60,7 +61,7 @@ export const SendMaleProfileEmail = ({
             <Column align="right" style={{ width: "50%", paddingRight: "8px" }}>
               <Button
                 style={{ ...button, backgroundColor: "#28a745" }}
-                href={`${BASE_URL}/api/tracking/${trackingId}?status=accepted`}
+                href={`${env.BASE_URL}/api/tracking/${trackingId}?status=accepted`}
               >
                 Accept
               </Button>
@@ -68,7 +69,7 @@ export const SendMaleProfileEmail = ({
             <Column align="left" style={{ width: "50%", paddingLeft: "8px" }}>
               <Button
                 style={{ ...button, backgroundColor: "#dc3545" }}
-                href={`${BASE_URL}/api/tracking/${trackingId}?status=rejected`}
+                href={`${env.BASE_URL}/api/tracking/${trackingId}?status=rejected`}
               >
                 Reject
               </Button>
@@ -96,7 +97,7 @@ export const SendMaleProfileEmail = ({
         <Section style={signature}>
           <Container style={signatureContainer}>
             <Img
-              src={`${BASE_URL}/email/3.png`}
+              src={`${env.BASE_URL}/email/3.png`}
               width="150"
               alt={APP_INFO.name}
               style={signatureLogo}

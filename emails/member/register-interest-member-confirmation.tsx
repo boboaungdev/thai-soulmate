@@ -10,7 +10,8 @@ import {
   Text,
 } from "react-email"
 
-import { APP_INFO, BASE_URL } from "@/constants"
+import { APP_INFO } from "@/constants"
+import { env } from "@/lib/env"
 import { User } from "@/types"
 
 const currentYear = new Date().getFullYear()
@@ -51,7 +52,7 @@ export const RegisterInterestMemberConfirmationEmail = ({
         <Section style={btnContainer}>
           <Button
             style={button}
-            href={`${BASE_URL}/application-form?email=${userDetails.email}`}
+            href={`${env.BASE_URL}/application-form?email=${userDetails.email}`}
           >
             Complete Application Form
           </Button>
@@ -72,7 +73,7 @@ export const RegisterInterestMemberConfirmationEmail = ({
         <Section style={signature}>
           <Container style={signatureContainer}>
             <Img
-              src={`${BASE_URL}/email/3.png`}
+              src={`${env.BASE_URL}/email/3.png`}
               width="150"
               alt={APP_INFO.name}
               style={signatureLogo}

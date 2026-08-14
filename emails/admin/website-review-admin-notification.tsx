@@ -11,7 +11,8 @@ import {
   Text,
 } from "react-email"
 
-import { APP_INFO, BASE_URL } from "@/constants"
+import { APP_INFO } from "@/constants"
+import { env } from "@/lib/env"
 
 const currentYear = new Date().getFullYear()
 
@@ -35,7 +36,7 @@ export const WebsiteReviewAdminNotificationEmail = ({
         <Section style={signature}>
           <Container style={signatureContainer}>
             <Img
-              src={`${BASE_URL}/logo.png`}
+              src={`${env.BASE_URL}/logo.png`}
               width="70"
               alt={APP_INFO.name}
               style={signatureLogo}
@@ -63,7 +64,10 @@ export const WebsiteReviewAdminNotificationEmail = ({
         </Text>
 
         <Section style={buttonContainer}>
-          <Button style={button} href={`${BASE_URL}/dashboard/website-review`}>
+          <Button
+            style={button}
+            href={`${env.BASE_URL}/dashboard/website-review`}
+          >
             View Website Reviews
           </Button>
         </Section>

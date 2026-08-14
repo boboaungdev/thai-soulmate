@@ -11,7 +11,8 @@ import {
 } from "react-email"
 import * as React from "react"
 
-import { APP_INFO, BASE_URL } from "@/constants"
+import { APP_INFO } from "@/constants"
+import { env } from "@/lib/env"
 
 const currentYear = new Date().getFullYear()
 
@@ -52,7 +53,7 @@ export const SendFemaleProfileMemberEmail = ({
 
         <Section style={buttonSection}>
           <Button
-            href={`${BASE_URL}/dashboard/gallery/${profileId}`}
+            href={`${env.BASE_URL}/dashboard/gallery/${profileId}`}
             style={button}
           >
             View Matched Profile
@@ -79,7 +80,7 @@ export const SendFemaleProfileMemberEmail = ({
         <Section style={signature}>
           <Container style={signatureContainer}>
             <Img
-              src={`${BASE_URL}/email/3.png`}
+              src={`${env.BASE_URL}/email/3.png`}
               width="150"
               alt={APP_INFO.name}
               style={signatureLogo}

@@ -10,7 +10,8 @@ import {
   Text,
 } from "react-email"
 import * as React from "react"
-import { APP_INFO, BASE_URL } from "@/constants"
+import { APP_INFO } from "@/constants"
+import { env } from "@/lib/env"
 
 type AdminNotificationDetails = {
   nickname: string
@@ -35,7 +36,7 @@ export const ApplicationFormAdminNotificationEmail = ({
         <Section style={signature}>
           <Container style={signatureContainer}>
             <Img
-              src={`${BASE_URL}/logo.png`}
+              src={`${env.BASE_URL}/logo.png`}
               width="70"
               alt={APP_INFO.name}
               style={signatureLogo}

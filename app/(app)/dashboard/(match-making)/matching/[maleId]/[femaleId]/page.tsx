@@ -53,7 +53,7 @@ import {
 import { ApplicationForm } from "@/types/application-form"
 import React from "react"
 import { FaSmoking } from "react-icons/fa"
-import { BASE_URL } from "@/constants"
+import { env } from "@/lib/env"
 
 import Image from "next/image" // Import next/image
 import { ApplicantHeader } from "./applicant-header"
@@ -584,7 +584,7 @@ export default async function MatchComparisonPage({
 }: MatchComparisonPageProps) {
   const { maleId, femaleId } = await params;
 
-  const res = await fetch(`${BASE_URL}/api/matching/${maleId}/${femaleId}`, {
+  const res = await fetch(`${env.BASE_URL}/api/matching/${maleId}/${femaleId}`, {
     cache: "no-store",
   });
 

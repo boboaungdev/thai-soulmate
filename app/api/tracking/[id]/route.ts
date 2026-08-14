@@ -2,7 +2,8 @@ import { NextResponse } from "next/server"
 
 import { resend } from "@/lib/resend"
 import { SendFemaleProfileMemberEmail } from "@/emails/member/send-female-profile-member"
-import { APP_INFO, BASE_URL, EMAIL } from "@/constants"
+import { env } from "@/lib/env"
+import { APP_INFO, EMAIL } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { TrackingStatus } from "@/lib/generated/prisma/enums"
 import { generateProfilePdf } from "@/lib/generate-profile-pdf"
@@ -79,7 +80,7 @@ export async function GET(
   // Existing logic for status updates (accepted/rejected)
   if (status !== "accepted" && status !== "rejected") {
     return NextResponse.redirect(
-      `${BASE_URL}/action-feedback?error=Invalid status value`
+      `${env.BASE_URL}/action-feedback?error=Invalid status value`
     )
   }
 
@@ -102,14 +103,14 @@ export async function GET(
 
     if (!tracking) {
       return NextResponse.redirect(
-        `${BASE_URL}/action-feedback?error=Tracking not found`
+        `${env.BASE_URL}/action-feedback?error=Tracking not found`
       )
     }
 
     // Assuming the flow is MALE_PROFILE_SENT_TO_FEMALE -> FEMALE_ACCEPTED/FEMALE_REJECT
     if (tracking.status !== TrackingStatus.MALE_PROFILE_SENT_TO_FEMALE) {
       return NextResponse.redirect(
-        `${BASE_URL}/action-feedback?error=This action has already been processed or is not applicable at this stage.`
+        `${env.BASE_URL}/action-feedback?error=This action has already been processed or is not applicable at this stage.`
       )
     }
 
@@ -161,12 +162,12 @@ export async function GET(
     }
 
     return NextResponse.redirect(
-      `${BASE_URL}/action-feedback?message=Your response has been recorded. Thank you!`
+      `${env.BASE_URL}/action-feedback?message=Your response has been recorded. Thank you!`
     )
   } catch (error) {
     console.error("Error processing tracking status:", error)
     return NextResponse.redirect(
-      `${BASE_URL}/action-feedback?error=An unexpected error occurred.`
+      `${env.BASE_URL}/action-feedback?error=An unexpected error occurred.`
     )
   }
 }

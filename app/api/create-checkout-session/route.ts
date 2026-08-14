@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
-import { BASE_URL } from "@/constants"
+import { env } from "@/lib/env"
 
 export async function POST(req: Request) {
   try {
@@ -24,8 +24,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: mode,
-      success_url: `${BASE_URL}/application-form?success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
-      cancel_url: `${BASE_URL}/application-form?canceled=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
+      success_url: `${env.BASE_URL}/application-form?success=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
+      cancel_url: `${env.BASE_URL}/application-form?canceled=true&session_id={CHECKOUT_SESSION_ID}&plan=${plan}&autoRenew=${autoRenew}`,
     })
 
     return NextResponse.json({ url: checkoutSession.url })

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
 
 import { r2 } from "@/lib/r2"
-import { R2 } from "@/constants"
+import { env } from "@/lib/env"
 
 export async function POST(req: Request) {
   try {
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
 
     await r2.send(
       new PutObjectCommand({
-        Bucket: R2.R2_BUCKET,
+        Bucket: env.R2.BUCKET,
         Key: fileName,
         Body: buffer,
         ContentType: file.type,
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      url: `${R2.R2_PUBLIC_URL}/${fileName}`,
+      url: `${env.R2.PUBLIC_URL}/${fileName}`,
     })
   } catch (error) {
     console.error("UPLOAD ERROR:", error)

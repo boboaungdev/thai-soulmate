@@ -1,11 +1,11 @@
-import { R2 } from "@/constants"
 import { S3Client } from "@aws-sdk/client-s3"
+import { env } from "./env"
 
 export const r2 = new S3Client({
   region: "auto",
-  endpoint: R2.R2_ENDPOINT,
+  endpoint: env.R2.ENDPOINT,
   credentials: {
-    accessKeyId: R2.R2_ACCESS_KEY_ID!,
-    secretAccessKey: R2.R2_SECRET_ACCESS_KEY!,
+    accessKeyId: env.R2.ACCESS_KEY_ID!,
+    secretAccessKey: env.R2.SECRET_ACCESS_KEY!,
   },
 })

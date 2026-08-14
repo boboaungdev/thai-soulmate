@@ -1,11 +1,10 @@
 import puppeteer from "puppeteer-core"
 import chromium from "@sparticuz/chromium-min"
-import { env } from "@/lib/env"
+import { env } from "./env"
 
 let cachedExecutablePath: string | null = null
 
 export async function launchBrowser() {
-  // Vercel / production
   const chromiumPackUrl = env.CHROMIUM_PACK_URL
 
   if (!chromiumPackUrl) {

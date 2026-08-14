@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { GetObjectCommand } from "@aws-sdk/client-s3"
 
 import { r2 } from "@/lib/r2"
-import { R2 } from "@/constants"
+import { env } from "@/lib/env"
 
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get("key")
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   try {
     const result = await r2.send(
       new GetObjectCommand({
-        Bucket: R2.R2_BUCKET,
+        Bucket: env.R2.BUCKET,
         Key: key,
       })
     )

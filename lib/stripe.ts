@@ -1,4 +1,4 @@
 import Stripe from "stripe"
-import { STRIPE } from "@/constants"
+import { env } from "./env"
 
-export const stripe = new Stripe(STRIPE.SECRET_KEY!)
+export const stripe = new Stripe(env.STRIPE.SECRET_KEY!)

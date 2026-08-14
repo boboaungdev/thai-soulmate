@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { BASE_URL } from "@/constants"
+import { env } from "@/lib/env"
 
 export async function GET() {
   try {
@@ -156,7 +156,7 @@ export async function POST(req: Request) {
 
     // Call the internal API route to send the profile
     const sendProfileResponse = await fetch(
-      `${BASE_URL}/api/tracking/${tracking.id}/send-profile`,
+      `${env.BASE_URL}/api/tracking/${tracking.id}/send-profile`,
       {
         method: "POST",
         headers: {

@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
 
   name     String
   avatar   String?
@@ -25,7 +25,7 @@ model User {
 }
 
 model RegisterInterest {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
 
   prefix          String
   name            String
@@ -52,7 +52,7 @@ model RegisterInterest {
 }
 
 model Note {
-  id      String   @id @default(cuid())
+  id      String   @id @default(uuid())
   message String
   type    NoteType
 
@@ -73,7 +73,7 @@ model Note {
 }
 
 model ApplicationForm {
-  id       String @id @default(cuid())
+  id       String @id @default(uuid())
   customId Int    @unique @default(autoincrement())
 
   status ApplicationFormStatus @default(RECEIVED)
@@ -102,7 +102,7 @@ model ApplicationForm {
 }
 
 model Profile {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
 
   applicationFormId String          @unique
   applicationForm   ApplicationForm @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
@@ -120,7 +120,7 @@ enum ProfileStatus {
 }
 
 model Membership {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
 
   applicationFormId String?          @unique
   applicationForm   ApplicationForm? @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
@@ -135,7 +135,7 @@ model Membership {
 }
 
 model Tracking {
-  id     String          @id @default(cuid())
+  id     String          @id @default(uuid())
   male   ApplicationForm @relation("MaleTracking", fields: [maleId], references: [id])
   maleId String
 
@@ -154,7 +154,7 @@ model Tracking {
 }
 
 model TrackingNote {
-  id      String           @id @default(cuid())
+  id      String           @id @default(uuid())
   message String
   type    TrackingNoteType
 
@@ -169,7 +169,7 @@ model TrackingNote {
 }
 
 model Contact {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   name      String
   email     String
   subject   String

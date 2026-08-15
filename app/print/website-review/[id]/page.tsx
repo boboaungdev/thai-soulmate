@@ -1,10 +1,17 @@
 import { notFound } from "next/navigation"
 import { Prisma } from "@/lib/generated/prisma/client"
-import { Separator } from "@/components/ui/separator"
 import { formatDateTime } from "@/lib/date"
 import { prisma } from "@/lib/prisma"
+import Image from "next/image"
+import { APP_INFO } from "@/constants"
 
 import { PrintTrigger } from "./print-trigger"
+
+const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex items-center">
+    <h2 className="text-gradient text-lg font-bold">{children}</h2>
+  </div>
+)
 
 const DetailSection = ({
   title,
@@ -21,29 +28,27 @@ const DetailSection = ({
   if (entries.length === 0) return null
 
   return (
-    <div className="break-inside-avoid space-y-2">
-      <h2 className="mb-2 text-lg font-semibold">{title}</h2>
-      <div className="grid grid-cols-1 gap-x-8 gap-y-2 md:grid-cols-2">
+    <section className="break-inside-avoid">
+      <SectionTitle>{title}</SectionTitle>
+      <div className="mt-3 grid grid-cols-1 gap-x-8 gap-y-3 md:grid-cols-2">
         {entries.map(([key, value]) => (
-          <div key={key} className="text-sm">
-            <span className="font-medium text-gray-600 capitalize">
+          <div key={key} className="flex flex-col">
+            <p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
               {key
                 .replace(/([A-Z])/g, " $1")
                 .replace(/^./, (str) => str.toUpperCase())}
-              :
-            </span>{" "}
-            <span className="text-gray-800">
+            </p>
+            <p className="text-sm font-semibold text-gray-800">
               {typeof value === "boolean"
                 ? value
                   ? "Yes"
                   : "No"
                 : String(value) || "N/A"}
-            </span>
+            </p>
           </div>
         ))}
       </div>
-      <Separator className="my-4" />
-    </div>
+    </section>
   )
 }
 
@@ -63,46 +68,78 @@ export default async function PrintWebsiteReviewPage({
   }
 
   return (
-    <div className="bg-white p-8 font-sans" id="printable-area">
+    <div className="bg-white text-black" id="printable-area">
       <PrintTrigger />
       <style>{`
         @media print {
           body { -webkit-print-color-adjust: exact; }
           .no-print { display: none; }
+          .text-gradient {
+            background: linear-gradient(to right, #f2b854, #f07797);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+          }
         }
       `}</style>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Website Review Details</h1>
-        <p className="text-sm text-gray-500">
-          Submitted on: {formatDateTime(review.createdAt)}
-        </p>
-      </div>
+      <main className="mx-auto max-w-4xl p-8">
+        <header className="mb-6 flex items-center justify-between border-b-2 border-gray-100 pb-5">
+          <div className="flex items-center gap-4">
+            <Image src="/logo.png" alt="Logo" width={56} height={56} />
+            <div className="text-center">
+              <h1 className="text-gradient text-xl font-bold">
+                {APP_INFO.name}
+              </h1>
+              <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-semibold text-gray-500 uppercase">
+              Website Review
+            </p>
+            <p className="mt-1 text-xs text-gray-400">
+              Submitted: {formatDateTime(review.createdAt)}
+            </p>
+          </div>
+        </header>
 
-      <div className="space-y-6">
-        <DetailSection title="First Impression" data={review.firstImpression} />
-        <DetailSection title="Ease of Use" data={review.easeOfUse} />
-        <DetailSection title="Design & Branding" data={review.designBranding} />
-        <DetailSection
-          title="Understanding of Service"
-          data={review.understandingService}
-        />
-        <DetailSection title="Trust & Safety" data={review.trustSafety} />
-        <DetailSection title="Content Quality" data={review.contentQuality} />
-        <DetailSection
-          title="Registration Process"
-          data={review.registrationProcess}
-        />
-        <DetailSection title="Pricing & Value" data={review.pricingValue} />
-        <DetailSection
-          title="Overall Experience"
-          data={review.overallExperience}
-        />
-        <DetailSection
-          title="Matchmaking Specific"
-          data={review.matchmakingSpecific}
-        />
-        <DetailSection title="Reviewer Info" data={review.reviewerInfo} />
-      </div>
+        <div className="rounded-lg bg-amber-50/30 p-8">
+          <div className="space-y-8">
+            <DetailSection
+              title="First Impression"
+              data={review.firstImpression}
+            />
+            <DetailSection title="Ease of Use" data={review.easeOfUse} />
+            <DetailSection
+              title="Design & Branding"
+              data={review.designBranding}
+            />
+            <DetailSection
+              title="Understanding of Service"
+              data={review.understandingService}
+            />
+            <DetailSection title="Trust & Safety" data={review.trustSafety} />
+            <DetailSection
+              title="Content Quality"
+              data={review.contentQuality}
+            />
+            <DetailSection
+              title="Registration Process"
+              data={review.registrationProcess}
+            />
+            <DetailSection title="Pricing & Value" data={review.pricingValue} />
+            <DetailSection
+              title="Overall Experience"
+              data={review.overallExperience}
+            />
+            <DetailSection
+              title="Matchmaking Specific"
+              data={review.matchmakingSpecific}
+            />
+            <DetailSection title="Reviewer Info" data={review.reviewerInfo} />
+          </div>
+        </div>
+      </main>
     </div>
   )
 }

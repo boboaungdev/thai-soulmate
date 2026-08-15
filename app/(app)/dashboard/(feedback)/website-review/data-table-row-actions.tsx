@@ -1,8 +1,9 @@
 "use client"
 
-import { MoreHorizontal, Trash, Eye } from "lucide-react"
+import { MoreHorizontal, Trash2, Eye, Printer } from "lucide-react"
 import { Row } from "@tanstack/react-table"
 import { useState } from "react"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -83,6 +84,16 @@ export function DataTableRowActions<TData>({
           <Eye className="mr-2 h-4 w-4" />
           View details
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href={`/print/website-review/${review.id}?print=true`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Printer className="mr-2 h-4 w-4" />
+            Print
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <AlertDialog
           open={isDeleteDialogOpen}
@@ -91,10 +102,11 @@ export function DataTableRowActions<TData>({
           <AlertDialogTrigger asChild>
             <DropdownMenuItem
               variant="destructive"
+              disabled
               onSelect={(e) => e.preventDefault()}
             >
-              <Trash className="mr-2 h-4 w-4" />
-              Delete
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Delete</span>
               <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
             </DropdownMenuItem>
           </AlertDialogTrigger>

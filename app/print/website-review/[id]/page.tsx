@@ -82,7 +82,7 @@ export default async function PrintWebsiteReviewPage({
           }
         }
       `}</style>
-      <main className="mx-auto max-w-4xl p-8">
+      <main className="mx-auto max-w-4xl">
         <header className="mb-6 flex items-center justify-between border-b-2 border-gray-100 pb-5">
           <div className="flex items-center gap-4">
             <Image src="/logo.png" alt="Logo" width={56} height={56} />
@@ -103,7 +103,7 @@ export default async function PrintWebsiteReviewPage({
           </div>
         </header>
 
-        <div className="rounded-lg bg-amber-50/30 p-8">
+        <div className="rounded-lg bg-amber-50/30 p-6">
           <div className="space-y-8">
             <DetailSection
               title="First Impression"

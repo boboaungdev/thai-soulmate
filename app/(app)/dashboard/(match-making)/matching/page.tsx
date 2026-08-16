@@ -26,17 +26,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Switch } from "@/components/ui/switch"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,7 +41,6 @@ import {
   Venus,
   Home,
   MapPin,
-  Settings,
   XCircle,
   Loader2,
 } from "lucide-react"
@@ -89,50 +77,7 @@ const getMatchScoreBadgeClass = (score: number) => {
   return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
 }
 
-const matchingCriteria = {
-  "Ideal Partner Age Range": true,
-  "Ideal Partner Height": true,
-  "Ideal Partner Nationality": true,
-  "Ideal Partner Location": true,
-  "Ideal Partner Education": true,
-  "Ideal Partner Qualities": true,
-  "Ideal Partner Personality": true,
-  "Deal Breakers": true,
-  "Relocation Preference": true,
-  "Smoking Preference": true,
-  "Drinking Preference": true,
-  "Children Preference": true,
-  Hobbies: true,
-  "Languages Spoken %": true,
-}
 
-// Matching criteria settings component
-function MatchingCriteriaFormV2({
-  criteriaState,
-  onCriteriaChange,
-}: {
-  criteriaState: Record<string, boolean>
-  onCriteriaChange: (title: string, value: boolean) => void
-}) {
-  return (
-    <ScrollArea className="h-[calc(100vh-150px)]">
-      <div className="space-y-6 p-1 pr-6">
-        {Object.keys(criteriaState).map((title) => (
-          <div key={title} className="flex items-center justify-between">
-            <Label htmlFor={`criteria-${title}`} className="font-medium">
-              {title}
-            </Label>
-            <Switch
-              id={`criteria-${title}`}
-              checked={criteriaState[title]}
-              onCheckedChange={(value) => onCriteriaChange(title, value)}
-            />
-          </div>
-        ))}
-      </div>
-    </ScrollArea>
-  )
-}
 
 const sortLabels: Record<string, string> = {
   score: "Match %",
@@ -154,6 +99,7 @@ const matchRangeLabels: Record<string, string> = {
   "20-40": "40% - 20%",
   "0-20": "20% - 0%",
 }
+
 // Safely parse JSON properties
 const parseApplicantData = (applicant: any) => {
   const safeParse = (json: string | object) => {
@@ -206,8 +152,8 @@ export default function MatchingPage() {
   const [filterOption, setFilterOption] = useState("all")
   const [matchRange, setMatchRange] = useState("all")
 
-  const [criteriaState, setCriteriaState] =
-    useState<Record<string, boolean>>(matchingCriteria)
+
+
 
   const selectedMale = useMemo(() => {
     if (!selectedMaleId) return null
@@ -246,7 +192,6 @@ export default function MatchingPage() {
       setError(null)
       try {
         const url = new URL(`/api/matching`, window.location.origin)
-        url.searchParams.set("criteria", JSON.stringify(criteriaState))
         url.searchParams.set("filter", filterOption)
         url.searchParams.set("sortKey", sortKey)
         url.searchParams.set("sortOrder", sortOrder)
@@ -282,7 +227,6 @@ export default function MatchingPage() {
     fetchMatches()
   }, [
     selectedMale,
-    criteriaState,
     filterOption,
     sortKey,
     sortOrder,
@@ -299,18 +243,18 @@ export default function MatchingPage() {
         },
       })),
     [matches]
-  )
+    )
 
-  const handleSortChange = (newSortKey: string) => {
+    const handleSortChange = (newSortKey: string) => {
     setSortKey(newSortKey)
     if (newSortKey === "score") {
       setSortOrder("desc")
     } else {
       setSortOrder("asc")
     }
-  }
+    }
 
-  return (
+    return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-lg font-semibold md:text-2xl">Matching</h1>
@@ -573,30 +517,7 @@ export default function MatchingPage() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              {/* commanded setting for now */}
-              {/* <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </Button>
-                </SheetTrigger>
-                <SheetContent className="p-4">
-                  <SheetHeader>
-                    <SheetTitle>Matching Settings</SheetTitle>
-                    <SheetDescription>
-                      Enable or disable criteria for matching. This will be sent
-                      to the matching API.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <MatchingCriteriaFormV2
-                    criteriaState={criteriaState}
-                    onCriteriaChange={(title, value) =>
-                      setCriteriaState((prev) => ({ ...prev, [title]: value }))
-                    }
-                  />
-                </SheetContent>
-              </Sheet> */}
+
             </div>
           </div>
         </div>

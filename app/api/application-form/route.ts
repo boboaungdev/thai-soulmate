@@ -111,6 +111,7 @@ export async function POST(req: Request) {
             nationality: body.profile.idealPartnerNationality,
             location: body.profile.idealPartnerLocation,
             height: body.profile.idealPartnerHeight,
+            // weight: body.profile.idealPartnerWeight,
             education: body.profile.idealPartnerEducation,
             personality: body.profile.idealPartnerPersonality,
             qualities: body.profile.idealPartnerQualities,

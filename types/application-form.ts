@@ -93,6 +93,7 @@ export interface IdealPartner {
   nationality: string
   location: string
   height: string
+  weight: string
   education: string
   personality: string[]
   qualities: string[]

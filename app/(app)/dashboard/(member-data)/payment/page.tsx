@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 
 import { columns, Payment } from "./columns"
 import { DataTable } from "./data-table"
 import { PaymentDetails } from "./payment-details"
+import { paymentStatuses } from "./statuses"
 
 const payments: Payment[] = [
   {
@@ -108,20 +110,36 @@ export default function PaymentPage() {
     setSelectedPayment(null)
   }
 
+  const statusCounts = useMemo(() => {
+    return paymentStatuses.map((status) => ({
+      ...status,
+      count: payments.filter((user) => user.status === status.value).length,
+    }))
+  }, [payments])
+
   return (
     <>
       <main className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight">Payment</h1>
-              <span className="text-sm font-semibold text-muted-foreground">
-                ({payments.length})
-              </span>
-            </div>
+            <h1 className="text-2xl font-bold tracking-tight">Payment</h1>
             <p className="text-sm text-muted-foreground">
               Manage customer payments.
             </p>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="text-sm font-semibold">
+                Total: {payments.length}
+              </Badge>
+              {statusCounts.map((status) => (
+                <Badge
+                  key={status.value}
+                  variant="outline"
+                  className={status.badgeClassName}
+                >
+                  {status.label}: {status.count}
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
 

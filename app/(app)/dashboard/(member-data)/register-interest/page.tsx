@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { getColumns } from "./columns"
+import { useEffect, useMemo, useState } from "react"
+import { getColumns, statuses } from "./columns"
 import { DataTable } from "./data-table"
 import { RegisterInterestDetails } from "./register-interest-details"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
 import { useRegisterInterestStore } from "@/stores/register-interest-store"
 
@@ -21,6 +22,13 @@ export default function TaskPage() {
 
   const [selectedItem, setSelectedItem] =
     useState<RegisterInterestWithNotesCount | null>(null)
+
+  const statusCounts = useMemo(() => {
+    return statuses.map((status) => ({
+      ...status,
+      count: data.filter((user) => user.status === status.value).length,
+    }))
+  }, [data])
 
   useEffect(() => {
     actions.fetchUsers()
@@ -47,17 +55,26 @@ export default function TaskPage() {
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight">
-                Register Interest
-              </h1>
-              <span className="text-sm font-semibold text-muted-foreground">
-                ({data.length})
-              </span>
-            </div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Register Interest
+            </h1>
             <p className="text-sm text-muted-foreground">
               Users who submitted matchmaking interest forms
             </p>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="text-sm font-semibold">
+                Total: {data.length}
+              </Badge>
+              {statusCounts.map((status) => (
+                <Badge
+                  key={status.value}
+                  variant="outline"
+                  className={status.badgeClassName}
+                >
+                  {status.label}: {status.count}
+                </Badge>
+              ))}
+            </div>
           </div>
           <div className="flex items-center space-x-2"></div>
         </div>
@@ -81,17 +98,26 @@ export default function TaskPage() {
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight">
-                Register Interest
-              </h1>
-              <span className="text-sm font-semibold text-muted-foreground">
-                ({data.length})
-              </span>
-            </div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Register Interest
+            </h1>
             <p className="text-sm text-muted-foreground">
               Users who submitted matchmaking interest forms
             </p>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="text-sm font-semibold">
+                Total: {data.length}
+              </Badge>
+              {statusCounts.map((status) => (
+                <Badge
+                  key={status.value}
+                  variant="outline"
+                  className={status.badgeClassName}
+                >
+                  {status.label}: {status.count}
+                </Badge>
+              ))}
+            </div>
           </div>
           <div className="flex items-center space-x-2"></div>
         </div>

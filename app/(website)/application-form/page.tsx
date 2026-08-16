@@ -259,6 +259,37 @@ const idealPartnerMaxHeightOptions = [
   ),
 ]
 
+const idealPartnerWeightRanges = [
+  "40-45",
+  "46-50",
+  "51-55",
+  "56-60",
+  "61-65",
+  "66-70",
+  "71-75",
+  "76-80",
+  "81-85",
+  "86-90",
+  "91-95",
+  "96-100",
+  "100+",
+]
+
+const idealPartnerMinWeightOptions = [
+  ...new Set(idealPartnerWeightRanges.map((range) => range.split("-")[0])),
+]
+
+const idealPartnerMaxWeightOptions = [
+  ...new Set(
+    idealPartnerWeightRanges
+      .map((range) => {
+        const parts = range.split("-")
+        return parts.length > 1 ? parts[1] : null
+      })
+      .filter((v): v is string => v !== null)
+  ),
+]
+
 const cmToFeetInches = (cm: number | string): string => {
   if (typeof cm === "string" && cm.includes("+")) {
     const numValue = parseInt(cm.replace("+", ""), 10)
@@ -495,6 +526,7 @@ function AuthPageContents() {
     idealPartnerNationality: "",
     idealPartnerLocation: "",
     idealPartnerHeight: "",
+    idealPartnerWeight: "",
     idealPartnerEducation: "",
     idealPartnerPersonality: [] as string[],
     idealPartnerOtherPersonality: "",
@@ -505,6 +537,8 @@ function AuthPageContents() {
   const [idealPartnerMaxAge, setIdealPartnerMaxAge] = useState("")
   const [idealPartnerMinHeight, setIdealPartnerMinHeight] = useState("")
   const [idealPartnerMaxHeight, setIdealPartnerMaxHeight] = useState("")
+  const [idealPartnerMinWeight, setIdealPartnerMinWeight] = useState("")
+  const [idealPartnerMaxWeight, setIdealPartnerMaxWeight] = useState("")
   const [financialForm, setFinancialForm] = useState({
     ownProperty: "",
     ownBusiness: "",
@@ -926,6 +960,7 @@ function AuthPageContents() {
         .string()
         .min(1, "Please select a preferred location."),
       idealPartnerHeight: z.string().min(1, "Please select a height range."),
+      idealPartnerWeight: z.string().min(1, "Please select a weight range."),
       idealPartnerEducation: z
         .string()
         .min(1, "Please select an education preference."),
@@ -1419,6 +1454,18 @@ function AuthPageContents() {
     femaleProfileForm.idealPartnerHeight,
     registrationStep,
     formErrors.idealPartnerHeight,
+  ])
+
+  useEffect(() => {
+    if (registrationStep === "ideal-partner" && formErrors.idealPartnerWeight) {
+      if (femaleProfileForm.idealPartnerWeight) {
+        clearFormError("idealPartnerWeight")
+      }
+    }
+  }, [
+    femaleProfileForm.idealPartnerWeight,
+    registrationStep,
+    formErrors.idealPartnerWeight,
   ])
 
   useEffect(() => {
@@ -3922,6 +3969,81 @@ function AuthPageContents() {
                       {formErrors.idealPartnerHeight && (
                         <p className="text-sm text-destructive">
                           {formErrors.idealPartnerHeight}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Preferred Weight (kg)</Label>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1">
+                          <Select
+                            onValueChange={(value) => {
+                              setIdealPartnerMinWeight(value)
+                              setIdealPartnerMaxWeight("") // Reset max weight on min weight change
+                              if (value === "100+") {
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerWeight: "100+",
+                                }))
+                              } else {
+                                setFemaleProfileForm((prev) => ({
+                                  ...prev,
+                                  idealPartnerWeight: "", // Clear range until max is selected
+                                }))
+                              }
+                            }}
+                            value={idealPartnerMinWeight}
+                          >
+                            <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                              <SelectValue placeholder="Min" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-56 overflow-y-auto">
+                              {idealPartnerMinWeightOptions.map((weight) => (
+                                <SelectItem key={weight} value={weight}>
+                                  {weight}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <span className="text-muted-foreground">-</span>
+                        <div className="flex-1">
+                          <Select
+                            onValueChange={(value) => {
+                              setIdealPartnerMaxWeight(value)
+                              setFemaleProfileForm((prev) => ({
+                                ...prev,
+                                idealPartnerWeight: `${idealPartnerMinWeight}-${value}`,
+                              }))
+                            }}
+                            value={idealPartnerMaxWeight}
+                            disabled={
+                              !idealPartnerMinWeight ||
+                              idealPartnerMinWeight === "100+"
+                            }
+                          >
+                            <SelectTrigger className="h-8 bg-background dark:bg-input/30">
+                              <SelectValue placeholder="Max" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-56 overflow-y-auto">
+                              {idealPartnerMaxWeightOptions
+                                .filter(
+                                  (weight) =>
+                                    parseInt(weight) >=
+                                    parseInt(idealPartnerMinWeight)
+                                )
+                                .map((weight) => (
+                                  <SelectItem key={weight} value={weight}>
+                                    {weight}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      {formErrors.idealPartnerWeight && (
+                        <p className="text-sm text-destructive">
+                          {formErrors.idealPartnerWeight}
                         </p>
                       )}
                     </div>

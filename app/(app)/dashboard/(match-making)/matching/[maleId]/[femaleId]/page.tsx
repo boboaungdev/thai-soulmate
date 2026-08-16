@@ -205,10 +205,12 @@ function MatchBreakdown({
             <div key={item.key} className="rounded-lg border bg-card p-4">
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
                     {item.category}
                   </p>
-                  <h3 className="text-lg font-semibold">{item.label}</h3>
+                  <h3 className="text-gradient text-lg font-semibold">
+                    {item.label}
+                  </h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Score point: {item.weight}
@@ -616,19 +618,22 @@ type MatchComparisonPageProps = {
   }
 }
 
-import { ConnectButton } from "./ConnectButton";
+import { ConnectButton } from "./ConnectButton"
 
 export default async function MatchComparisonPage({
   params,
 }: MatchComparisonPageProps) {
-  const { maleId, femaleId } = await params;
+  const { maleId, femaleId } = await params
 
-  const res = await fetch(`${env.BASE_URL}/api/matching/${maleId}/${femaleId}`, {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${env.BASE_URL}/api/matching/${maleId}/${femaleId}`,
+    {
+      cache: "no-store",
+    }
+  )
 
   if (!res.ok) {
-    const errorText = await res.text();
+    const errorText = await res.text()
     return (
       <div className="flex h-full items-center justify-center p-6 text-center text-red-500">
         Error: Failed to fetch match details.
@@ -638,21 +643,21 @@ export default async function MatchComparisonPage({
           <pre className="mt-4 whitespace-pre-wrap">{errorText}</pre>
         )}
       </div>
-    );
+    )
   }
 
-  const data = await res.json();
+  const data = await res.json()
 
   if (data.error) {
     return (
       <div className="flex h-full items-center justify-center text-red-500">
         Error from API: {data.error}
       </div>
-    );
+    )
   }
 
   if (!data.male || !data.female) {
-    return notFound();
+    return notFound()
   }
 
   const {

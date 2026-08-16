@@ -108,7 +108,7 @@ export function DataTableRowActions<TData>({
   }
 
   const handlePrint = () => {
-    window.open(`/print/register-interest/${task.id}?print=true`, "_blank")
+    window.open(`/print/${task.id}/register-interest?print=true`, "_blank")
   }
 
   const handleAddNote = async () => {

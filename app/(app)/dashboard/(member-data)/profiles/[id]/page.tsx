@@ -924,7 +924,7 @@ export default function ProfilesDetailPage() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/print/profile/${profile.id}?print=true`}
+                  href={`/print/${profile.id}/profile?print=true`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

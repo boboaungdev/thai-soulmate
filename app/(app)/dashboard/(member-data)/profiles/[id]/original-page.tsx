@@ -429,7 +429,7 @@
 //               </DropdownMenuItem>
 //               <DropdownMenuItem asChild>
 //                 <Link
-//                   href={`/print/profile/${user.id}?print=true`}
+//                   href={`/print/${user.id}/profile?print=true`}
 //                   target="_blank"
 //                   rel="noopener noreferrer"
 //                 >

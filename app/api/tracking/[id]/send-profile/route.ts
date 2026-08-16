@@ -29,7 +29,7 @@ export async function POST(
           })
 
     const profileUrl = new URL(
-      `/print/profile/${application.profile.id}`,
+      `/print/${application.profile.id}/profile`,
       req.url
     )
 

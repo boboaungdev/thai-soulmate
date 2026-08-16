@@ -129,7 +129,7 @@ export async function GET(
       const maleDetails = tracking.male.personalDetails as PersonalDetails
 
       const profileUrl = new URL(
-        `/print/profile/${tracking.female.profile!.id}`,
+        `/print/${tracking.female.profile!.id}/profile`,
         request.url
       )
       const pdf = await generateProfilePdf(profileUrl.toString())
@@ -267,7 +267,7 @@ export async function PATCH(
       const maleDetails = tracking.male.personalDetails as PersonalDetails
 
       const profileUrl = new URL(
-        `/print/profile/${tracking.female.profile!.id}`,
+        `/print/${tracking.female.profile!.id}/profile`,
         request.url
       )
       const pdf = await generateProfilePdf(profileUrl.toString())

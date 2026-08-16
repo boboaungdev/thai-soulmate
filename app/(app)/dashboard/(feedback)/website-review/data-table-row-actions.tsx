@@ -86,7 +86,7 @@ export function DataTableRowActions<TData>({
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
-            href={`/print/website-review/${review.id}?print=true`}
+            href={`/print/${review.id}/website-review?print=true`}
             target="_blank"
             rel="noopener noreferrer"
           >

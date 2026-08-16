@@ -88,8 +88,9 @@
     },
     "idealPartner": {
       "height": "5'8\"+",
+      "weight": "40-50",
       "ageRange": "30-38",
-      "location": "Asia",
+      "location": "Oceania",
       "education": "Bachelor's Degree",
       "qualities": [
         "Honest",
@@ -213,6 +214,7 @@
     },
     "idealPartner": {
       "height": "5'8\"+",
+      "weight": "40-60",
       "ageRange": "30-38",
       "location": "Asia",
       "education": "Bachelor's Degree",
@@ -223,7 +225,7 @@
         "Easy Going",
         "Financially Stable"
       ],
-      "nationality": "Asian",
+      "nationality": "British",
       "personality": [
         "Kind",
         "Ambitious",
@@ -336,6 +338,7 @@
     },
     "idealPartner": {
       "height": "5'10\"+",
+      "weight": "40-60",
       "ageRange": "32-40",
       "location": "Europe",
       "education": "Bachelor's Degree",
@@ -462,6 +465,7 @@
     },
     "idealPartner": {
       "height": "5'9\"+",
+      "weight": "40-45",
       "ageRange": "32-42",
       "location": "Any",
       "education": "Bachelor's Degree",
@@ -472,7 +476,7 @@
         "Financially Stable",
         "Romantic"
       ],
-      "nationality": "Any",
+      "nationality": "American",
       "personality": [
         "Kind",
         "Confident",
@@ -590,6 +594,7 @@
     },
     "idealPartner": {
       "height": "5'9\"+",
+      "weight": "61-70",
       "ageRange": "30-38",
       "location": "Asia",
       "education": "Bachelor's Degree",
@@ -600,7 +605,7 @@
         "Family-Oriented",
         "Easy Going"
       ],
-      "nationality": "Asian",
+      "nationality": "American",
       "personality": [
         "Kind",
         "Confident",
@@ -717,6 +722,7 @@
     },
     "idealPartner": {
       "height": "5'9\"+",
+      "weight": "51-60",
       "ageRange": "31-40",
       "location": "Asia",
       "education": "Bachelor's Degree",
@@ -727,7 +733,7 @@
         "Financially Stable",
         "Easy Going"
       ],
-      "nationality": "Asian",
+      "nationality": "European",
       "personality": [
         "Kind",
         "Confident",
@@ -844,8 +850,9 @@
     },
     "idealPartner": {
       "height": "5'10\"+",
+      "weight": "40-45",
       "ageRange": "32-42",
-      "location": "Worldwide",
+      "location": "Any",
       "education": "Master's Degree",
       "qualities": [
         "Honest",
@@ -854,7 +861,7 @@
         "Kind",
         "Financially Stable"
       ],
-      "nationality": "Any",
+      "nationality": "Other",
       "personality": [
         "Confident",
         "Easy Going",
@@ -971,8 +978,9 @@
     },
     "idealPartner": {
       "height": "5'8\"+",
+      "weight": "40-55",
       "ageRange": "33-45",
-      "location": "Worldwide",
+      "location": "Other",
       "education": "Bachelor's Degree",
       "qualities": [
         "Honest",
@@ -981,7 +989,7 @@
         "Financially Stable",
         "Romantic"
       ],
-      "nationality": "Any",
+      "nationality": "European",
       "personality": [
         "Kind",
         "Ambitious",
@@ -1098,8 +1106,9 @@
     },
     "idealPartner": {
       "height": "5'9\"+",
+      "weight": "40-80",
       "ageRange": "30-40",
-      "location": "Asia",
+      "location": "Australia",
       "education": "Bachelor's Degree",
       "qualities": [
         "Honest",
@@ -1108,7 +1117,7 @@
         "Easy Going",
         "Family-Oriented"
       ],
-      "nationality": "Any",
+      "nationality": "British",
       "personality": [
         "Confident",
         "Kind",
@@ -1225,6 +1234,7 @@
     },
     "idealPartner": {
       "height": "5'9\"+",
+      "weight": "40-55",
       "ageRange": "33-42",
       "location": "Asia",
       "education": "Bachelor's Degree",
@@ -1235,7 +1245,7 @@
         "Financially Stable",
         "Romantic"
       ],
-      "nationality": "Any",
+      "nationality": "Australian",
       "personality": [
         "Kind",
         "Confident",
@@ -1354,8 +1364,9 @@
     },
     "idealPartner": {
       "height": "5'10\"+",
+      "weight": "61-70",
       "ageRange": "34-45",
-      "location": "Worldwide",
+      "location": "UK",
       "education": "Bachelor's Degree",
       "qualities": [
         "Honest",
@@ -1364,7 +1375,7 @@
         "Romantic",
         "Easy Going"
       ],
-      "nationality": "Any",
+      "nationality": "Australian",
       "personality": [
         "Confident",
         "Kind",
@@ -1481,8 +1492,9 @@
     },
     "idealPartner": {
       "height": "6'0\"+",
+      "weight": "40-50",
       "ageRange": "35-46",
-      "location": "Worldwide",
+      "location": "Asia",
       "education": "Master's Degree",
       "qualities": [
         "Honest",
@@ -1491,7 +1503,7 @@
         "Romantic",
         "Kind"
       ],
-      "nationality": "Any",
+      "nationality": "American",
       "personality": [
         "Confident",
         "Easy Going",
@@ -1610,8 +1622,9 @@
     },
     "idealPartner": {
       "height": "5'10\"+",
+      "weight": "40-55",
       "ageRange": "30-40",
-      "location": "Worldwide",
+      "location": "Oceania",
       "education": "Bachelor's Degree",
       "qualities": [
         "Honest",

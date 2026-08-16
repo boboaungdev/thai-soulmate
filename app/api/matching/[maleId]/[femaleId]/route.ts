@@ -117,7 +117,10 @@ type MatchBreakdownItem = {
   label: string
   malePreference: string
   femaleValue: string
-  matched: boolean
+  malePrefMatch: boolean
+  femalePreference: string
+  maleValue: string
+  femalePrefMatch: boolean
   weight: number
 }
 
@@ -127,7 +130,10 @@ const createBreakdownItem = ({
   label,
   malePreference,
   femaleValue,
-  matched,
+  malePrefMatch,
+  femalePreference,
+  maleValue,
+  femalePrefMatch,
   weight,
 }: {
   key: string
@@ -135,7 +141,10 @@ const createBreakdownItem = ({
   label: string
   malePreference: unknown
   femaleValue: unknown
-  matched: boolean
+  malePrefMatch: boolean
+  femalePreference: unknown
+  maleValue: unknown
+  femalePrefMatch: boolean
   weight: number
 }): MatchBreakdownItem => ({
   key,
@@ -143,14 +152,23 @@ const createBreakdownItem = ({
   label,
   malePreference: displayValue(malePreference),
   femaleValue: displayValue(femaleValue),
-  matched,
+  malePrefMatch,
+  femalePreference: displayValue(femalePreference),
+  maleValue: displayValue(maleValue),
+  femalePrefMatch,
   weight,
 })
 
 const calculateMatchDetails = (male: any, female: any) => {
+  const maleAge = calculateAge(male.personalDetails?.dob)
   const femaleAge = calculateAge(female.personalDetails?.dob)
-  const ageRange = parseAgeRange(male.idealPartner?.ageRange)
-  const dealBreakers = toArray(male.idealPartner?.dealBreakers)
+  const maleAgeRange = parseAgeRange(male.idealPartner?.ageRange)
+  const femaleAgeRange = parseAgeRange(female.idealPartner?.ageRange)
+
+  const maleDealBreakers = toArray(male.idealPartner?.dealBreakers)
+    .map(normalize)
+    .join(" ")
+  const femaleDealBreakers = toArray(female.idealPartner?.dealBreakers)
     .map(normalize)
     .join(" ")
 
@@ -160,9 +178,14 @@ const calculateMatchDetails = (male: any, female: any) => {
       category: "Ideal Partner",
       label: "Age Range",
       malePreference: male.idealPartner?.ageRange,
-      femaleValue: femaleAge ? `${femaleAge} years old` : undefined,
-      matched: Boolean(
-        ageRange && femaleAge >= ageRange[0] && femaleAge <= ageRange[1]
+      femaleValue: femaleAge ? `${femaleAge} years old` : "Not provided",
+      malePrefMatch: Boolean(
+        maleAgeRange && femaleAge >= maleAgeRange[0] && femaleAge <= maleAgeRange[1]
+      ),
+      femalePreference: female.idealPartner?.ageRange,
+      maleValue: maleAge ? `${maleAge} years old` : "Not provided",
+      femalePrefMatch: Boolean(
+        femaleAgeRange && maleAge >= femaleAgeRange[0] && maleAge <= femaleAgeRange[1]
       ),
       weight: 16,
     }),
@@ -171,12 +194,24 @@ const calculateMatchDetails = (male: any, female: any) => {
       category: "Ideal Partner",
       label: "Height",
       malePreference: male.idealPartner?.height,
-      femaleValue: female.appearance?.height //
-        ? `${female.appearance.height} cm ${cmToFeetAndInches(female.appearance.height)}`
-        : undefined,
-      matched: matchesHeightRange(
+      femaleValue: female.appearance?.height
+        ? `${female.appearance.height} cm ${cmToFeetAndInches(
+            female.appearance.height
+          )}`
+        : "Not provided",
+      malePrefMatch: matchesHeightRange(
         male.idealPartner?.height,
         female.appearance?.height
+      ),
+      femalePreference: female.idealPartner?.height,
+      maleValue: male.appearance?.height
+        ? `${male.appearance.height} cm ${cmToFeetAndInches(
+            male.appearance.height
+          )}`
+        : "Not provided",
+      femalePrefMatch: matchesHeightRange(
+        female.idealPartner?.height,
+        male.appearance?.height
       ),
       weight: 8,
     }),
@@ -186,12 +221,21 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Nationality",
       malePreference: male.idealPartner?.nationality,
       femaleValue: female.personalDetails?.nationality,
-      matched:
+      malePrefMatch:
         normalize(male.idealPartner?.nationality) === "asian"
           ? hasValue(female.personalDetails?.nationality)
           : matchExact(
               male.idealPartner?.nationality,
               female.personalDetails?.nationality
+            ),
+      femalePreference: female.idealPartner?.nationality,
+      maleValue: male.personalDetails?.nationality,
+      femalePrefMatch:
+        normalize(female.idealPartner?.nationality) === "asian"
+          ? hasValue(male.personalDetails?.nationality)
+          : matchExact(
+              female.idealPartner?.nationality,
+              male.personalDetails?.nationality
             ),
       weight: 10,
     }),
@@ -201,9 +245,15 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Location",
       malePreference: male.idealPartner?.location,
       femaleValue: female.personalDetails?.currentLocation,
-      matched: matchExact(
+      malePrefMatch: matchExact(
         male.idealPartner?.location,
         female.personalDetails?.currentLocation
+      ),
+      femalePreference: female.idealPartner?.location,
+      maleValue: male.personalDetails?.currentLocation,
+      femalePrefMatch: matchExact(
+        female.idealPartner?.location,
+        male.personalDetails?.currentLocation
       ),
       weight: 8,
     }),
@@ -213,9 +263,15 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Education",
       malePreference: male.idealPartner?.education,
       femaleValue: female.career?.education,
-      matched: matchExact(
+      malePrefMatch: matchExact(
         male.idealPartner?.education,
         female.career?.education
+      ),
+      femalePreference: female.idealPartner?.education,
+      maleValue: male.career?.education,
+      femalePrefMatch: matchExact(
+        female.idealPartner?.education,
+        male.career?.education
       ),
       weight: 8,
     }),
@@ -225,9 +281,15 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Personality",
       malePreference: male.idealPartner?.personality,
       femaleValue: female.personality?.personality,
-      matched: hasIntersection(
+      malePrefMatch: hasIntersection(
         male.idealPartner?.personality,
         female.personality?.personality
+      ),
+      femalePreference: female.idealPartner?.personality,
+      maleValue: male.personality?.personality,
+      femalePrefMatch: hasIntersection(
+        female.idealPartner?.personality,
+        male.personality?.personality
       ),
       weight: 10,
     }),
@@ -237,9 +299,15 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Qualities",
       malePreference: male.idealPartner?.qualities,
       femaleValue: female.personality?.bestQualities,
-      matched: hasIntersection(
+      malePrefMatch: hasIntersection(
         male.idealPartner?.qualities,
         female.personality?.bestQualities
+      ),
+      femalePreference: female.idealPartner?.qualities,
+      maleValue: male.personality?.bestQualities,
+      femalePrefMatch: hasIntersection(
+        female.idealPartner?.qualities,
+        male.personality?.bestQualities
       ),
       weight: 10,
     }),
@@ -249,8 +317,13 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Relocation",
       malePreference: "Yes or Maybe",
       femaleValue: female.relationshipGoals?.relocate,
-      matched: ["yes", "maybe"].includes(
+      malePrefMatch: ["yes", "maybe"].includes(
         normalize(female.relationshipGoals?.relocate)
+      ),
+      femalePreference: "Yes or Maybe",
+      maleValue: male.relationshipGoals?.relocate,
+      femalePrefMatch: ["yes", "maybe"].includes(
+        normalize(male.relationshipGoals?.relocate)
       ),
       weight: 6,
     }),
@@ -260,8 +333,13 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Smoking",
       malePreference: "Never or Occasionally",
       femaleValue: female.lifestyle?.smoking,
-      matched: ["never", "occasionally"].includes(
+      malePrefMatch: ["never", "occasionally"].includes(
         normalize(female.lifestyle?.smoking)
+      ),
+      femalePreference: "Never or Occasionally",
+      maleValue: male.lifestyle?.smoking,
+      femalePrefMatch: ["never", "occasionally"].includes(
+        normalize(male.lifestyle?.smoking)
       ),
       weight: 5,
     }),
@@ -271,7 +349,10 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Drinking",
       malePreference: "Not frequently",
       femaleValue: female.lifestyle?.drinking,
-      matched: normalize(female.lifestyle?.drinking) !== "frequently",
+      malePrefMatch: normalize(female.lifestyle?.drinking) !== "frequently",
+      femalePreference: "Not frequently",
+      maleValue: male.lifestyle?.drinking,
+      femalePrefMatch: normalize(male.lifestyle?.drinking) !== "frequently",
       weight: 5,
     }),
     createBreakdownItem({
@@ -283,9 +364,17 @@ const calculateMatchDetails = (male: any, female: any) => {
         female.personality?.hasChildren === "Yes"
           ? `Has children (${female.personality?.childrenCount ?? 0})`
           : female.lifestyle?.futureChildren,
-      matched:
+      malePrefMatch:
         normalize(female.personality?.hasChildren) === "no" ||
         normalize(female.lifestyle?.futureChildren) !== "no",
+      femalePreference: "No children or open to future children",
+      maleValue:
+        male.personality?.hasChildren === "Yes"
+          ? `Has children (${male.personality?.childrenCount ?? 0})`
+          : male.lifestyle?.futureChildren,
+      femalePrefMatch:
+        normalize(male.personality?.hasChildren) === "no" ||
+        normalize(male.lifestyle?.futureChildren) !== "no",
       weight: 5,
     }),
     createBreakdownItem({
@@ -294,9 +383,15 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Hobbies",
       malePreference: male.lifestyle?.interests,
       femaleValue: female.lifestyle?.interests,
-      matched: hasIntersection(
+      malePrefMatch: hasIntersection(
         male.lifestyle?.interests,
         female.lifestyle?.interests
+      ),
+      femalePreference: female.lifestyle?.interests,
+      maleValue: male.lifestyle?.interests,
+      femalePrefMatch: hasIntersection(
+        female.lifestyle?.interests,
+        male.lifestyle?.interests
       ),
       weight: 5,
     }),
@@ -307,53 +402,96 @@ const calculateMatchDetails = (male: any, female: any) => {
       malePreference: `English ${male.appearance?.englishFluency?.[0] ?? 0}%, Thai ${
         male.appearance?.thaiFluency?.[0] ?? 0
       }%`,
-      femaleValue: `English ${female.appearance?.englishFluency?.[0] ?? 90}%, Thai ${
-        female.appearance?.thaiFluency?.[0] ?? 60
-      }%`,
-      matched:
+      femaleValue: `English ${
+        female.appearance?.englishFluency?.[0] ?? 90
+      }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 60}%`,
+      malePrefMatch:
         (Number(male.appearance?.englishFluency?.[0] ?? 0) >= 50 &&
           Number(female.appearance?.englishFluency?.[0] ?? 90) >= 50) ||
         (Number(male.appearance?.thaiFluency?.[0] ?? 0) >= 50 &&
           Number(female.appearance?.thaiFluency?.[0] ?? 60) >= 50),
+      femalePreference: `English ${
+        female.appearance?.englishFluency?.[0] ?? 0
+      }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 0}%`,
+      maleValue: `English ${male.appearance?.englishFluency?.[0] ?? 90}%, Thai ${
+        male.appearance?.thaiFluency?.[0] ?? 60
+      }%`,
+      femalePrefMatch:
+        (Number(female.appearance?.englishFluency?.[0] ?? 0) >= 50 &&
+          Number(male.appearance?.englishFluency?.[0] ?? 90) >= 50) ||
+        (Number(female.appearance?.thaiFluency?.[0] ?? 0) >= 50 &&
+          Number(male.appearance?.thaiFluency?.[0] ?? 60) >= 50),
       weight: 4,
     }),
   ]
 
-  let score = breakdown.reduce(
-    (total, item) => total + (item.matched ? item.weight : 0),
-    0
-  )
+  let score = breakdown.reduce((total, item) => {
+    let itemScore = 0
+    if (item.malePrefMatch) itemScore += item.weight / 2
+    if (item.femalePrefMatch) itemScore += item.weight / 2
+    return total + itemScore
+  }, 0)
+
   const totalPossibleScore = breakdown.reduce(
     (total, item) => total + item.weight,
     0
   )
 
-  const penalties = [
+  const malePenalties = [
     {
       key: "dealBreakerSmoking",
-      label: "Smoking deal breaker",
+      label: "Male's smoking deal breaker",
       matched:
-        dealBreakers.includes("smok") && female.lifestyle?.smoking !== "Never",
+        maleDealBreakers.includes("smok") &&
+        female.lifestyle?.smoking !== "Never",
       penalty: 40,
     },
     {
       key: "dealBreakerDrinking",
-      label: "Drinking deal breaker",
+      label: "Male's drinking deal breaker",
       matched:
-        dealBreakers.includes("drink") &&
+        maleDealBreakers.includes("drink") &&
         normalize(female.lifestyle?.drinking) === "frequently",
       penalty: 30,
     },
     {
       key: "dealBreakerChildren",
-      label: "Children deal breaker",
+      label: "Male's children deal breaker",
       matched:
-        dealBreakers.includes("children") &&
+        maleDealBreakers.includes("children") &&
         normalize(female.personality?.hasChildren) === "yes",
       penalty: 30,
     },
   ].filter((item) => item.matched)
 
+  const femalePenalties = [
+    {
+      key: "dealBreakerSmoking",
+      label: "Female's smoking deal breaker",
+      matched:
+        femaleDealBreakers.includes("smok") &&
+        male.lifestyle?.smoking !== "Never",
+      penalty: 40,
+    },
+    {
+      key: "dealBreakerDrinking",
+      label: "Female's drinking deal breaker",
+      matched:
+        femaleDealBreakers.includes("drink") &&
+        normalize(male.lifestyle?.drinking) === "frequently",
+      penalty: 30,
+    },
+    {
+      key: "dealBreakerChildren",
+      label: "Female's children deal breaker",
+      matched:
+        femaleDealBreakers.includes("children") &&
+        normalize(male.personality?.hasChildren) === "yes",
+      penalty: 30,
+    },
+  ].filter((item) => item.matched)
+
+  const penalties = [...malePenalties, ...femalePenalties]
   score -= penalties.reduce((total, item) => total + item.penalty, 0)
 
   return {

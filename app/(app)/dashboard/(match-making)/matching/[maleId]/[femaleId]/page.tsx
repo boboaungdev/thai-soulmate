@@ -63,7 +63,10 @@ type MatchBreakdownItem = {
   label: string
   malePreference: string
   femaleValue: string
-  matched: boolean
+  malePrefMatch: boolean
+  femalePreference: string
+  maleValue: string
+  femalePrefMatch: boolean
   weight: number
 }
 
@@ -164,65 +167,95 @@ function MatchBreakdown({
 }) {
   if (!items.length) return null
 
+  const MatchStatus = ({ matched }: { matched: boolean }) => (
+    <Badge
+      variant={matched ? "outline" : "destructive"}
+      className={`flex shrink-0 items-center gap-1 text-xs ${
+        matched
+          ? "border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400"
+          : ""
+      }`}
+    >
+      {matched ? (
+        <>
+          <CheckCircle2 className="h-3 w-3" />
+          <span>Match</span>
+        </>
+      ) : (
+        <>
+          <XCircle className="h-3 w-3" />
+          <span>No Match</span>
+        </>
+      )}
+    </Badge>
+  )
+
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle>Male Preference Match</CardTitle>
+        <CardTitle>Bidirectional Match Breakdown</CardTitle>
         <CardDescription>
-          The male application is the main profile. Each row compares his
-          preference or matching signal against the female application.
+          Each card shows how both applicants preferences match up against each
+          other s attributes.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {items.map((item) => (
-            <div key={item.key} className="rounded-md border p-4">
-              <div className="flex items-start justify-between gap-3">
+            <div key={item.key} className="rounded-lg border bg-card p-4">
+              <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase">
+                  <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                     {item.category}
                   </p>
-                  <h3 className="font-semibold">{item.label}</h3>
+                  <h3 className="text-lg font-semibold">{item.label}</h3>
                 </div>
-                <Badge
-                  variant={item.matched ? "outline" : "destructive"}
-                  className={`flex shrink-0 items-center gap-1 ${
-                    item.matched
-                      ? "border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400"
-                      : "border-red"
-                  }`}
-                >
-                  {item.matched ? (
-                    <>
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      <span>Match</span>
-                    </>
-                  ) : (
-                    <>
-                      <XCircle className="h-3.5 w-3.5" />
-                      <span>No Match</span>
-                    </>
-                  )}
-                </Badge>
+                <p className="text-sm text-muted-foreground">
+                  Weight: {item.weight}
+                </p>
               </div>
-              <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-                <div className="break-words">
-                  <p className="text-xs text-muted-foreground">
-                    Male preference
-                  </p>
-                  <p>{item.malePreference}</p>
+
+              <div className="space-y-4">
+                {/* Male Preference vs Female Value */}
+                <div className="rounded-md bg-background/50 p-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">Male s Preference</p>
+                    <MatchStatus matched={item.malePrefMatch} />
+                  </div>
+                  <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
+                    <div className="break-words">
+                      <p className="text-muted-foreground">Preference</p>
+                      <p className="font-medium">{item.malePreference}</p>
+                    </div>
+                    <div className="break-words">
+                      <p className="text-muted-foreground">Female s Value</p>
+                      <p className="font-medium">{item.femaleValue}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="break-words">
-                  <p className="text-xs text-muted-foreground">Female value</p>
-                  <p className="font-medium">{item.femaleValue}</p>
+
+                {/* Female Preference vs Male Value */}
+                <div className="rounded-md bg-background/50 p-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">Female s Preference</p>
+                    <MatchStatus matched={item.femalePrefMatch} />
+                  </div>
+                  <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
+                    <div className="break-words">
+                      <p className="text-muted-foreground">Preference</p>
+                      <p className="font-medium">{item.femalePreference}</p>
+                    </div>
+                    <div className="break-words">
+                      <p className="text-muted-foreground">Male s Value</p>
+                      <p className="font-medium">{item.maleValue}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Weight: {item.weight}
-              </p>
             </div>
           ))}
         </div>
+
         {penalties.length > 0 && (
           <div className="rounded-md border border-destructive/30 bg-destructive/5 p-4">
             <h3 className="font-semibold text-destructive">
@@ -622,22 +655,43 @@ export default async function MatchComparisonPage({
     matchPercentage,
     matchBreakdown = [],
     dealBreakerPenalties = [],
-  } = data;
-  const matchByKey = Object.fromEntries(
-    matchBreakdown.map((item: MatchBreakdownItem) => [item.key, item.matched])
-  );
+  } = data
+
+  // For the female column: shows if her attributes match the male's preferences
+  const femaleMatchByKey = Object.fromEntries(
+    matchBreakdown.map((item: MatchBreakdownItem) => [
+      item.key,
+      item.malePrefMatch,
+    ])
+  )
+
+  // For the male column: shows if his attributes match the female's preferences
+  const maleMatchByKey = Object.fromEntries(
+    matchBreakdown.map((item: MatchBreakdownItem) => [
+      item.key,
+      item.femalePrefMatch,
+    ])
+  )
 
   return (
     <main className="p-4 md:p-6">
       <div className="mb-4 flex items-center justify-between">
-        <Button asChild variant="link" className="p-0 text-muted-foreground hover:text-foreground">
+        <Button
+          asChild
+          variant="link"
+          className="p-0 text-muted-foreground hover:text-foreground"
+        >
           <Link href="/dashboard/matching">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Matching
           </Link>
         </Button>
 
-        <ConnectButton maleId={maleId} femaleId={femaleId} matchPercentage={matchPercentage}/>
+        <ConnectButton
+          maleId={maleId}
+          femaleId={femaleId}
+          matchPercentage={matchPercentage}
+        />
       </div>
 
       <div className="mb-6 rounded-lg border bg-card p-4">
@@ -661,13 +715,18 @@ export default async function MatchComparisonPage({
 
       <div className="mb-8 grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
         {/* Male Column */}
-        <ApplicantColumn applicant={male} />
+        <ApplicantColumn
+          applicant={male}
+          comparison={{
+            matchByKey: maleMatchByKey,
+          }}
+        />
 
         {/* Female Column */}
         <ApplicantColumn
           applicant={female}
           comparison={{
-            matchByKey,
+            matchByKey: femaleMatchByKey,
           }}
         />
       </div>

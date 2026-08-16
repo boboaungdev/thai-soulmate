@@ -39,6 +39,7 @@ const safeParse = (json: unknown): any => {
 const defaultCriteria: Record<string, boolean> = {
   "Ideal Partner Age Range": true,
   "Ideal Partner Height": true,
+  "Ideal Partner Weight": true,
   "Ideal Partner Nationality": true,
   "Ideal Partner Location": true,
   "Ideal Partner Education": true,
@@ -109,6 +110,18 @@ const matchesHeightRange = (preferredRange: unknown, actualHeight: unknown) => {
     return height >= 152 && height <= 167
   }
   if (range.includes("6")) return height >= 183
+  return false
+}
+
+const matchesWeightRange = (preferredRange: unknown, actualWeight: unknown) => {
+  const weight = Number.parseFloat(String(actualWeight ?? "").replace(/[^\d.]/g, ""))
+  const range = normalize(preferredRange)
+  if (!weight || !range) return false
+
+  if (range.includes("under 50")) return weight < 50
+  if (range.includes("50-60")) return weight >= 50 && weight <= 60
+  if (range.includes("60-70")) return weight >= 60 && weight <= 70
+  if (range.includes("over 70")) return weight > 70
   return false
 }
 
@@ -359,6 +372,18 @@ export async function GET(request: Request) {
         matched: matchesHeightRange(
           maleIdealPartner.height,
           femaleAppearance.height
+        ),
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      // Ideal Partner Weight match
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Ideal Partner Weight"],
+        weight: 6, // Assigning a weight, consistent with the other route.
+        matched: matchesWeightRange(
+          maleIdealPartner.weight,
+          femaleAppearance.weight
         ),
         score,
         possibleScore: totalPossibleScore,

@@ -100,6 +100,18 @@ const matchesHeightRange = (preferredRange: unknown, actualHeight: unknown) => {
   return false
 }
 
+const matchesWeightRange = (preferredRange: unknown, actualWeight: unknown) => {
+  const weight = Number.parseFloat(String(actualWeight ?? "").replace(/[^\d.]/g, ""))
+  const range = normalize(preferredRange)
+  if (!weight || !range) return false
+
+  if (range.includes("under 50")) return weight < 50
+  if (range.includes("50-60")) return weight >= 50 && weight <= 60
+  if (range.includes("60-70")) return weight >= 60 && weight <= 70
+  if (range.includes("over 70")) return weight > 70
+  return false
+}
+
 const cmToFeetAndInches = (cm: number | string | null | undefined): string => {
   const cmValue = Number(cm)
   if (!cmValue || Number.isNaN(cmValue)) {
@@ -214,6 +226,24 @@ const calculateMatchDetails = (male: any, female: any) => {
         male.appearance?.height
       ),
       weight: 8,
+    }),
+    createBreakdownItem({
+      key: "weight",
+      category: "Ideal Partner",
+      label: "Weight",
+      malePreference: male.idealPartner?.weight,
+      femaleValue: female.appearance?.weight ? `${female.appearance.weight} kg` : "Not provided",
+      malePrefMatch: matchesWeightRange(
+        male.idealPartner?.weight,
+        female.appearance?.weight
+      ),
+      femalePreference: female.idealPartner?.weight,
+      maleValue: male.appearance?.weight ? `${male.appearance.weight} kg` : "Not provided",
+      femalePrefMatch: matchesWeightRange(
+        female.idealPartner?.weight,
+        male.appearance?.weight
+      ),
+      weight: 6,
     }),
     createBreakdownItem({
       key: "nationality",

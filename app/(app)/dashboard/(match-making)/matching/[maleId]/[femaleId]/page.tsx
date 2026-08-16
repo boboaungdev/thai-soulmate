@@ -524,6 +524,12 @@ function ApplicantColumn({
           value={applicant.idealPartner?.height}
         />
         <DetailRow
+          icon={<Scale />}
+          label="Weight"
+          value={applicant.idealPartner?.weight}
+          isMatch={getMatch("weight")}
+        />
+        <DetailRow
           icon={<Cake />}
           label="Age Range"
           value={applicant.idealPartner?.ageRange}

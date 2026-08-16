@@ -4,14 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ColumnDef } from "@tanstack/react-table"
 import { ThumbsUp, ThumbsDown } from "lucide-react"
-import {
-  CircleDot,
-  Clock,
-  MailCheck,
-  PhoneOutgoing,
-  StickyNote,
-} from "lucide-react"
-import { FaWhatsapp } from "react-icons/fa"
+import { CircleDot, Clock, StickyNote } from "lucide-react"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
@@ -47,30 +40,6 @@ export const statuses: {
     color: "text-yellow-500",
     badgeClassName:
       "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-300",
-  },
-  {
-    value: "CONTACTED_EMAIL",
-    label: "Contacted Email",
-    icon: MailCheck,
-    color: "text-blue-500",
-    badgeClassName:
-      "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300",
-  },
-  {
-    value: "CONTACTED_PHONE",
-    label: "Contacted Phone",
-    icon: PhoneOutgoing,
-    color: "text-indigo-500",
-    badgeClassName:
-      "border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950 dark:text-indigo-300",
-  },
-  {
-    value: "CONTACTED_WHATSAPP",
-    label: "Contacted WhatsApp",
-    icon: FaWhatsapp,
-    color: "text-green-600",
-    badgeClassName:
-      "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300",
   },
   {
     value: "ACCEPTED",

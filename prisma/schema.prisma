@@ -214,9 +214,6 @@ enum RegisterInterestStatus {
   PENDING
   ACCEPTED
   DECLINED
-  CONTACTED_EMAIL
-  CONTACTED_PHONE
-  CONTACTED_WHATSAPP
 }
 
 enum ApplicationFormStatus {

@@ -211,7 +211,7 @@ function MatchBreakdown({
                   <h3 className="text-lg font-semibold">{item.label}</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Weight: {item.weight}
+                  Score point: {item.weight}
                 </p>
               </div>
 

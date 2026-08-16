@@ -218,16 +218,34 @@ const idealPartnerMaxAgeOptions = [
   ),
 ]
 
-const idealPartnerNationalities = [
+const idealPartnerLocations = [
   "USA",
   "UK",
-  "AUS",
-  "EUROPEAN",
-  "FRANCE", // Added France
-  "ASIAN",
-  "INDIAN",
-  "AFRICAN",
-  "OTHER",
+  "Australia",
+  "Europe",
+  "Asia",
+  "Africa",
+  "Middle East",
+  "North America",
+  "South America",
+  "Oceania",
+  "Any",
+  "Other",
+]
+
+const idealPartnerNationalities = [
+  "American",
+  "British",
+  "Australian",
+  "European",
+  "Asian",
+  "African",
+  "Middle Eastern",
+  "North American",
+  "South American",
+  "Oceanian",
+  "Any",
+  "Other",
 ]
 
 const idealPartnerHeightRanges = [
@@ -4101,7 +4119,7 @@ function AuthPageContents() {
                             <SelectValue placeholder="Select location" />
                           </SelectTrigger>
                           <SelectContent className="max-h-56 overflow-y-auto">
-                            {idealPartnerNationalities.map((loc) => (
+                            {idealPartnerLocations.map((loc) => (
                               <SelectItem key={loc} value={loc}>
                                 {loc}
                               </SelectItem>

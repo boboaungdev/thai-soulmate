@@ -10,15 +10,9 @@ import {
   InputGroupText,
 } from "@/components/ui/input-group"
 
-import { applicationStatuses } from "./statuses"
+import { applicationStatuses, genders } from "./statuses"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { DataTableViewOptions } from "./data-table-view-options"
-import { MembershipPlan } from "@/lib/generated/prisma/enums"
-
-const membershipPlans = Object.values(MembershipPlan).map(plan => ({
-  label: plan.replace(/_/g, " "), // Replace underscores with spaces for readability
-  value: plan,
-}))
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -30,19 +24,20 @@ export function DataTableToolbar<TData>({
   forceFetchApplications,
 }: DataTableToolbarProps<TData>) {
   const isFiltered =
-    table.getState().columnFilters.length > 0 || !!table.getState().globalFilter
+    table.getState().columnFilters.length > 0 ||
+    !!table.getState().globalFilter
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <InputGroup className="h-8 w-[150px] lg:w-[250px]">
           <InputGroupText>
-            <Search className="ml-2 h-4 w-4" />
+            <Search className="h-4 w-4 ml-2" />
           </InputGroupText>
           <InputGroupInput
-            placeholder="Search applications"
+            placeholder="Search"
             value={table.getState().globalFilter ?? ""}
-            onChange={event => table.setGlobalFilter(event.target.value)}
+            onChange={(event) => table.setGlobalFilter(event.target.value)}
           />
         </InputGroup>
         {table.getColumn("status") && (
@@ -56,17 +51,7 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("gender")}
             title="Gender"
-            options={[
-              { value: "Male", label: "Male" },
-              { value: "Female", label: "Female" },
-            ]}
-          />
-        )}
-        {table.getColumn("plan") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("plan")}
-            title="Plan"
-            options={membershipPlans}
+            options={genders}
           />
         )}
         {isFiltered && (
@@ -98,4 +83,3 @@ export function DataTableToolbar<TData>({
     </div>
   )
 }
-

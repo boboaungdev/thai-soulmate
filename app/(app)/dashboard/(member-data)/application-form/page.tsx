@@ -1,14 +1,16 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 
 import { useApplicationFormStore } from "@/stores/application-form-store"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { columns, ApplicationRow } from "./columns"
 import { DataTable } from "./data-table"
+import { applicationStatuses } from "./statuses"
 
 export default function ApplicationsPage() {
   const router = useRouter()
@@ -18,6 +20,13 @@ export default function ApplicationsPage() {
     columnVisibility,
     actions: { fetchApplications, forceFetchApplications, setColumnVisibility },
   } = useApplicationFormStore()
+
+  const statusCounts = useMemo(() => {
+    return applicationStatuses.map((status) => ({
+      ...status,
+      count: applications.filter((user) => user.status === status.value).length,
+    }))
+  }, [applications])
 
   useEffect(() => {
     void fetchApplications()
@@ -43,15 +52,24 @@ export default function ApplicationsPage() {
       <div className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight">Application</h1>
-              <span className="text-sm font-semibold text-muted-foreground">
-                ({applications.length})
-              </span>
-            </div>
+            <h1 className="text-2xl font-bold tracking-tight">Application</h1>
             <p className="text-sm text-muted-foreground">
               Matchmaking profile applications
             </p>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="text-sm font-semibold">
+                Total: {applications.length}
+              </Badge>
+              {statusCounts.map((status) => (
+                <Badge
+                  key={status.value}
+                  variant="outline"
+                  className={status.badgeClassName}
+                >
+                  {status.label}: {status.count}
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
         <div className="rounded-md border">
@@ -73,15 +91,24 @@ export default function ApplicationsPage() {
     <main className="h-full flex-1 flex-col space-y-4 p-6 md:flex">
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">Application</h1>
-            <span className="text-sm font-semibold text-muted-foreground">
-              ({applications.length})
-            </span>
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight">Application</h1>
           <p className="text-sm text-muted-foreground">
             Matchmaking profile applications
           </p>
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant="outline" className="text-sm font-semibold">
+              Total: {applications.length}
+            </Badge>
+            {statusCounts.map((status) => (
+              <Badge
+                key={status.value}
+                variant="outline"
+                className={status.badgeClassName}
+              >
+                {status.label}: {status.count}
+              </Badge>
+            ))}
+          </div>
         </div>
       </div>
 

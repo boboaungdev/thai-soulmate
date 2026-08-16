@@ -1,6 +1,13 @@
 "use client"
 
-import { CircleCheck, CircleX, CircleDot, HeartHandshake } from "lucide-react"
+import {
+  CircleCheck,
+  CircleX,
+  CircleDot,
+  HeartHandshake,
+  Archive,
+  Clock,
+} from "lucide-react"
 import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
 
 export const applicationStatuses: {
@@ -21,8 +28,8 @@ export const applicationStatuses: {
   {
     value: "PENDING",
     label: "Pending",
-    icon: HeartHandshake,
-    color: "text-yellow-600",
+    icon: Clock,
+    color: "text-yellow-500",
     badgeClassName:
       "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-300",
   },
@@ -30,7 +37,7 @@ export const applicationStatuses: {
     value: "COMPLETED",
     label: "Completed",
     icon: CircleCheck,
-    color: "text-green-600",
+    color: "text-green-500",
     badgeClassName:
       "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300",
   },
@@ -38,17 +45,17 @@ export const applicationStatuses: {
     value: "MATCHED",
     label: "Matched",
     icon: CircleCheck,
-    color: "text-blue-600",
+    color: "text-blue-500",
     badgeClassName:
       "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300",
   },
   {
     value: "CLOSED",
-    label: "Rejected",
-    icon: CircleX,
+    label: "Closed",
+    icon: Archive,
     color: "text-red-500",
     badgeClassName:
-      "border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300",
+      "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300",
   },
 ]
 
@@ -58,3 +65,17 @@ export function getApplicationStatusMeta(status?: string) {
     applicationStatuses[0]
   )
 }
+
+export const genders: {
+  value: string
+  label: string
+}[] = [
+  {
+    value: "Male",
+    label: "Male",
+  },
+  {
+    value: "Female",
+    label: "Female",
+  },
+]

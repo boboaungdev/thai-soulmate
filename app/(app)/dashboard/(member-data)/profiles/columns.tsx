@@ -13,7 +13,7 @@ import { ApplicationForm } from "@/types/application-form"
 import { calculateAge, formatDateTime } from "@/lib/date"
 import { Profile } from "@/lib/generated/prisma/client"
 
-const profileStatuses = [
+export const profileStatuses = [
   {
     value: ProfileStatus.PENDING,
     label: "Pending",

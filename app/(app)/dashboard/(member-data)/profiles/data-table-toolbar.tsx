@@ -12,20 +12,29 @@ import {
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { DataTableViewOptions } from "./data-table-view-options"
-import {
-  MembershipPlan,
-  ProfileStatus,
-} from "@/lib/generated/prisma/enums"
+import { MembershipPlan } from "@/lib/generated/prisma/enums"
+import { profileStatuses } from "./columns"
 
 const membershipPlans = Object.values(MembershipPlan).map(plan => ({
   label: plan.replace(/_/g, " "), // Replace underscores with spaces for readability
   value: plan,
 }))
 
-const statuses = Object.values(ProfileStatus).map(status => ({
-  label: status.replace(/_/g, " "),
-  value: status,
-}))
+const statuses = profileStatuses.map(status => {
+  let badgeClassName = ""
+  if (status.value === "COMPLETED") {
+    badgeClassName = "border-green-500/80 text-green-500 dark:text-green-400"
+  } else if (status.value === "PENDING") {
+    badgeClassName = "border-yellow-500/80 text-yellow-500 dark:text-yellow-400"
+  }
+
+  return {
+    label: status.label,
+    value: status.value,
+    icon: status.icon,
+    badgeClassName: badgeClassName,
+  }
+})
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>

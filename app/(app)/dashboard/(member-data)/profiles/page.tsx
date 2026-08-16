@@ -1,13 +1,14 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 
 import { useProfileStore } from "@/stores/profile-store"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { columns, ProfileRow } from "./columns"
+import { columns, ProfileRow, profileStatuses } from "./columns"
 import { DataTable } from "./data-table"
 
 export default function ProfilesPage() {
@@ -18,6 +19,17 @@ export default function ProfilesPage() {
     columnVisibility,
     actions: { fetchProfiles, forceFetchProfiles, setColumnVisibility },
   } = useProfileStore()
+
+  const statusCounts = useMemo(() => {
+    return profileStatuses.map((status) => ({
+      ...status,
+      count: profiles.filter((user) => user.status === status.value).length,
+      badgeClassName:
+        status.value === "COMPLETED"
+          ? "border-green-500/80 text-green-500 dark:text-green-400"
+          : "border-yellow-500/80 text-yellow-500 dark:text-yellow-400",
+    }))
+  }, [profiles])
 
   useEffect(() => {
     void fetchProfiles()
@@ -42,13 +54,24 @@ export default function ProfilesPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold tracking-tight">Profiles</h1>
-              <span className="text-sm font-semibold text-muted-foreground">
-                ({profiles.length})
-              </span>
             </div>
             <p className="text-sm text-muted-foreground">
               Browse all our members profiles.
             </p>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="text-sm font-semibold">
+                Total: {profiles.length}
+              </Badge>
+              {statusCounts.map((status) => (
+                <Badge
+                  key={status.value}
+                  variant="outline"
+                  className={status.badgeClassName}
+                >
+                  {status.label}: {status.count}
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
         <div className="rounded-md border">
@@ -72,13 +95,24 @@ export default function ProfilesPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight">Profiles</h1>
-            <span className="text-sm font-semibold text-muted-foreground">
-              ({profiles.length})
-            </span>
           </div>
           <p className="text-sm text-muted-foreground">
             Browse all our members profiles.
           </p>
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant="outline" className="text-sm font-semibold">
+              Total: {profiles.length}
+            </Badge>
+            {statusCounts.map((status) => (
+              <Badge
+                key={status.value}
+                variant="outline"
+                className={status.badgeClassName}
+              >
+                {status.label}: {status.count}
+              </Badge>
+            ))}
+          </div>
         </div>
       </div>
 

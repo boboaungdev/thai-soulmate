@@ -43,7 +43,7 @@ export default async function PrintRegisterInterestPage({
 
   return (
     <div className="bg-white text-black" id="printable-area">
-      <PrintTrigger />
+      <PrintTrigger id={id} />
       <style>{`
         @media print {
           body { -webkit-print-color-adjust: exact; }

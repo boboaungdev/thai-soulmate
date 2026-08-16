@@ -121,7 +121,7 @@ export default async function ProfilePrintPage({
 
   return (
     <>
-      <PrintTrigger />
+      <PrintTrigger id={id} />
       {/* PRINT ONLY THIS */}
       <div>
         <main

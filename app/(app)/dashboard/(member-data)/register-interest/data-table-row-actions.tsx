@@ -78,6 +78,7 @@ export function DataTableRowActions<TData>({
         toast.error(result.error || "Failed to delete interest record.")
       }
     } catch (error) {
+      console.log(error)
       toast.error(
         "An unexpected error occurred while deleting the interest record."
       )

@@ -123,8 +123,6 @@ export default function ApplicationsPage() {
           data={applications}
           columns={columns}
           onRowClick={handleRowClick}
-          columnVisibility={columnVisibility}
-          setColumnVisibility={setColumnVisibility}
           forceFetchApplications={forceFetchApplications}
         />
       )}

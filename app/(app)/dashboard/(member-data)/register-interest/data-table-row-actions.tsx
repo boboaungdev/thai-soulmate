@@ -42,7 +42,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 
 import { statuses } from "./columns"
-import { useRouter } from "next/navigation"
 import { APP_INFO } from "@/constants"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
 import { toast } from "sonner"
@@ -58,7 +57,6 @@ export function DataTableRowActions<TData>({
   row,
   onViewDetails,
 }: DataTableRowActionsProps<TData>) {
-  const router = useRouter()
   const task = row.original as RegisterInterest
   const [message, setMessage] = useState("")
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
@@ -110,7 +108,7 @@ export function DataTableRowActions<TData>({
   }
 
   const handlePrint = () => {
-    router.push(`/dashboard/register-interest/${task.id}/print`)
+    window.open(`/print/register-interest/${task.id}?print=true`, "_blank")
   }
 
   const handleAddNote = async () => {

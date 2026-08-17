@@ -219,33 +219,27 @@ const idealPartnerMaxAgeOptions = [
 ]
 
 const idealPartnerLocations = [
-  "USA",
-  "UK",
-  "Australia",
-  "Europe",
   "Asia",
+  "Europe",
   "Africa",
-  "Middle East",
-  "North America",
-  "South America",
   "Oceania",
+  "Americas",
+  "Polar",
+  "Antarctic Ocean",
+  "Antarctic",
   "Any",
-  "Other",
 ]
 
 const idealPartnerNationalities = [
-  "American",
-  "British",
-  "Australian",
-  "European",
-  "Asian",
-  "African",
-  "Middle Eastern",
-  "North American",
-  "South American",
-  "Oceanian",
+  "Asia",
+  "Europe",
+  "Africa",
+  "Oceania",
+  "Americas",
+  "Polar",
+  "Antarctic Ocean",
+  "Antarctic",
   "Any",
-  "Other",
 ]
 
 const idealPartnerHeightRanges = [
@@ -597,6 +591,7 @@ function AuthPageContents() {
       code: string
       nationality: string
       callCode: string
+      region: string
     }[]
   >([])
   const [loadingCountries, setLoadingCountries] = useState(true)
@@ -1638,6 +1633,13 @@ function AuthPageContents() {
       }
 
       // 2. Consolidate all user data from different steps
+      const selectedNationalityCountry = countries.find(
+        (country) => country.nationality === locationForm.nationality
+      )
+      const selectedCurrentLocationCountry = countries.find(
+        (country) => country.name === locationForm.currentLocation
+      )
+
       const fullUserData = {
         details: {
           prefix,
@@ -1648,6 +1650,8 @@ function AuthPageContents() {
           phone: fullPhoneNumber,
           nationality: locationForm.nationality,
           currentLocation: locationForm.currentLocation,
+          nationalityRegion: selectedNationalityCountry?.region,
+          currentLocationRegion: selectedCurrentLocationCountry?.region,
         },
         password: passwordForm.password,
         // Include profile and financial data for both genders
@@ -1739,6 +1743,13 @@ function AuthPageContents() {
         ])
 
       // The initial user data is now in state, no need to read from URL
+      const selectedNationalityCountry = countries.find(
+        (country) => country.nationality === locationForm.nationality
+      )
+      const selectedCurrentLocationCountry = countries.find(
+        (country) => country.name === locationForm.currentLocation
+      )
+
       const detailsData = {
         ...initialUserData, // Keep any other properties from the initial step
         prefix: detailsForm.prefix,
@@ -1749,6 +1760,8 @@ function AuthPageContents() {
         phone: fullPhoneNumber,
         nationality: locationForm.nationality,
         currentLocation: locationForm.currentLocation,
+        nationalityRegion: selectedNationalityCountry?.region,
+        currentLocationRegion: selectedCurrentLocationCountry?.region,
       }
 
       const profileData = {

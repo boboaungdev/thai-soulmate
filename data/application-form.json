@@ -1,6 +1,131 @@
 [
   {
     "personalDetails": {
+      "dob": "1999-04-28T00:00:00.000Z",
+      "name": "John Doe",
+      "gender": "Male",
+      "prefix": "Mr.",
+      "email": "johndoe@gmail.com",
+      "phone": "+66901234567",
+      "nationality": "British",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Europe",
+      "currentLocationRegion": "Asia"
+    },
+    "career": {
+      "company": "Phuket Hospital",
+      "education": "Bachelor's Degree",
+      "occupation": "Doctor"
+    },
+    "appearance": {
+      "height": "170",
+      "weight": "60",
+      "religion": "Buddhism",
+      "englishFluency": [
+        100
+      ],
+      "thaiFluency": [
+        0
+      ]
+    },
+    "personality": {
+      "about": "I like traveling, cooking, and spending time with family.",
+      "hasChildren": "No",
+      "personality": [
+        "Kind",
+        "Confident",
+        "Family-Oriented"
+      ],
+      "bestQualities": [
+        "Honest",
+        "Kind",
+        "Funny"
+      ],
+      "childrenCount": 0,
+      "maritalStatus": "Never Married",
+      "lookingForQualities": [
+        "Loyal",
+        "Supportive",
+        "Kind"
+      ]
+    },
+    "lifestyle": {
+      "values": [
+        "Honesty",
+        "Financial Stability",
+        "Kindness",
+        "Adventure",
+        "Communication"
+      ],
+      "smoking": "Never",
+      "drinking": "Never",
+      "exercise": "Daily",
+      "interests": [
+        "Travel",
+        "Cooking",
+        "Movies",
+        "Golf",
+        "Yoga"
+      ],
+      "lifestyle": [
+        "Relaxed"
+      ],
+      "otherInterest": "",
+      "futureChildren": "Yes",
+      "weekendActivity": "Cafe hopping and golfing",
+      "familyImportance": "Very Important",
+      "travelDestinations": [
+        "Paris",
+        "Tokyo",
+        "New York"
+      ]
+    },
+    "relationshipGoals": {
+      "relocate": "Yes",
+      "lookingFor": [
+        "Long-Term Relationship"
+      ],
+      "settleDown": "Within 1 Year"
+    },
+    "idealPartner": {
+      "height": "5'8\"+",
+      "weight": "40-60",
+      "ageRange": "30-38",
+      "location": "Asia",
+      "education": "Bachelor's Degree",
+      "qualities": [
+        "Honest",
+        "Family-Oriented",
+        "Romantic",
+        "Easy Going",
+        "Financially Stable"
+      ],
+      "nationality": "Asian",
+      "personality": [
+        "Kind",
+        "Ambitious",
+        "Confident",
+        "Spiritual",
+        "Easy Going"
+      ],
+      "dealBreakers": [
+        "Smoker",
+        "Dishonest",
+        "Disrespectful"
+      ]
+    },
+    "financial": {
+      "ownBusiness": "Yes",
+      "ownProperty": "No"
+    },
+    "photos": {
+      "headshot": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg",
+      "fullLength": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg",
+      "casualLifestyle": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg"
+    }
+  },
+  {
+    "personalDetails": {
       "dob": "1998-04-18T00:00:00.000Z",
       "name": "Araya Suksom",
       "nickname": "Ploy",
@@ -10,7 +135,8 @@
       "phone": "+66901234567",
       "nationality": "Thai",
       "currentLocation": "Thailand",
-      "region": "Asia"
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Bangkok Hospital",
@@ -129,129 +255,6 @@
   },
   {
     "personalDetails": {
-      "dob": "1999-04-28T00:00:00.000Z",
-      "name": "John Doe",
-      "gender": "Male",
-      "prefix": "Mr.",
-      "email": "johndoe@gmail.com",
-      "phone": "+66901234567",
-      "nationality": "British",
-      "currentLocation": "Thailand"
-    },
-    "career": {
-      "company": "Phuket Hospital",
-      "education": "Bachelor's Degree",
-      "occupation": "Doctor"
-    },
-    "appearance": {
-      "height": "170",
-      "weight": "60",
-      "religion": "Buddhism",
-      "englishFluency": [
-        100
-      ],
-      "thaiFluency": [
-        0
-      ]
-    },
-    "personality": {
-      "about": "I like traveling, cooking, and spending time with family.",
-      "hasChildren": "No",
-      "personality": [
-        "Kind",
-        "Confident",
-        "Family-Oriented"
-      ],
-      "bestQualities": [
-        "Honest",
-        "Kind",
-        "Funny"
-      ],
-      "childrenCount": 0,
-      "maritalStatus": "Never Married",
-      "lookingForQualities": [
-        "Loyal",
-        "Supportive",
-        "Kind"
-      ]
-    },
-    "lifestyle": {
-      "values": [
-        "Honesty",
-        "Financial Stability",
-        "Kindness",
-        "Adventure",
-        "Communication"
-      ],
-      "smoking": "Never",
-      "drinking": "Never",
-      "exercise": "Daily",
-      "interests": [
-        "Travel",
-        "Cooking",
-        "Movies",
-        "Golf",
-        "Yoga"
-      ],
-      "lifestyle": [
-        "Relaxed"
-      ],
-      "otherInterest": "",
-      "futureChildren": "Yes",
-      "weekendActivity": "Cafe hopping and golfing",
-      "familyImportance": "Very Important",
-      "travelDestinations": [
-        "Paris",
-        "Tokyo",
-        "New York"
-      ]
-    },
-    "relationshipGoals": {
-      "relocate": "Yes",
-      "lookingFor": [
-        "Long-Term Relationship"
-      ],
-      "settleDown": "Within 1 Year"
-    },
-    "idealPartner": {
-      "height": "5'8\"+",
-      "weight": "40-60",
-      "ageRange": "30-38",
-      "location": "Asia",
-      "education": "Bachelor's Degree",
-      "qualities": [
-        "Honest",
-        "Family-Oriented",
-        "Romantic",
-        "Easy Going",
-        "Financially Stable"
-      ],
-      "nationality": "Asian",
-      "personality": [
-        "Kind",
-        "Ambitious",
-        "Confident",
-        "Spiritual",
-        "Easy Going"
-      ],
-      "dealBreakers": [
-        "Smoker",
-        "Dishonest",
-        "Disrespectful"
-      ]
-    },
-    "financial": {
-      "ownBusiness": "Yes",
-      "ownProperty": "No"
-    },
-    "photos": {
-      "headshot": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg",
-      "fullLength": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg",
-      "casualLifestyle": "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev/mock/male/1.jpg"
-    }
-  },
-  {
-    "personalDetails": {
       "dob": "1995-10-08T00:00:00.000Z",
       "name": "Nicha Chareon",
       "nickname": "Mook",
@@ -260,7 +263,9 @@
       "email": "nicha@example.com",
       "phone": "+66811234567",
       "nationality": "Thai",
-      "currentLocation": "Thailand"
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "CP Group",
@@ -386,8 +391,10 @@
       "prefix": "Ms.",
       "email": "maria@example.com",
       "phone": "+639171234567",
-      "nationality": "Filipino",
-      "currentLocation": "Thailand"
+      "nationality": "Thai",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Vista Architects",
@@ -402,7 +409,7 @@
         90
       ],
       "thaiFluency": [
-        90
+        100
       ]
     },
     "personality": {
@@ -515,8 +522,10 @@
       "prefix": "Ms.",
       "email": "yuki@example.com",
       "phone": "+819012345678",
-      "nationality": "Japanese",
-      "currentLocation": "Japan"
+      "nationality": "Thai",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Rakuten",
@@ -531,7 +540,7 @@
         50
       ],
       "thaiFluency": [
-        50
+        100
       ]
     },
     "personality": {
@@ -642,8 +651,10 @@
       "prefix": "Ms.",
       "email": "mai.nguyen@example.com",
       "phone": "+84901234567",
-      "nationality": "Vietnamese",
-      "currentLocation": "Thailand"
+      "nationality": "Thai",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Vietcombank",
@@ -658,7 +669,7 @@
         90
       ],
       "thaiFluency": [
-        70
+        100
       ]
     },
     "personality": {
@@ -770,8 +781,10 @@
       "prefix": "Ms.",
       "email": "jieun@example.com",
       "phone": "+821012345678",
-      "nationality": "South Korean",
-      "currentLocation": "Thailand"
+      "nationality": "Thai",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Samsung Electronics",
@@ -786,7 +799,7 @@
         90
       ],
       "thaiFluency": [
-        30
+        100
       ]
     },
     "personality": {
@@ -898,8 +911,10 @@
       "prefix": "Ms.",
       "email": "ananya@example.com",
       "phone": "+919876543210",
-      "nationality": "Indian",
-      "currentLocation": "Thailand"
+      "nationality": "Thai",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Apollo Hospitals",
@@ -914,7 +929,7 @@
         90
       ],
       "thaiFluency": [
-        40
+        100
       ]
     },
     "personality": {
@@ -1026,8 +1041,10 @@
       "prefix": "Ms.",
       "email": "aisyah@example.com",
       "phone": "+60123456789",
-      "nationality": "Malaysian",
-      "currentLocation": "Thailand"
+      "nationality": "Thai",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Petronas",
@@ -1042,7 +1059,7 @@
         90
       ],
       "thaiFluency": [
-        60
+        100
       ]
     },
     "personality": {
@@ -1155,7 +1172,9 @@
       "email": "sakura.ito@example.com",
       "phone": "+818012345678",
       "nationality": "Thai",
-      "currentLocation": "Thailand"
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Panasonic",
@@ -1285,7 +1304,9 @@
       "email": "linh.tran@example.com",
       "phone": "+849876543210",
       "nationality": "Thai",
-      "currentLocation": "Vietnam"
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "InterContinental Danang",
@@ -1412,8 +1433,10 @@
       "prefix": "Ms.",
       "email": "grace.lim@example.com",
       "phone": "+6581234567",
-      "nationality": "Singaporean",
-      "currentLocation": "Singapore"
+      "nationality": "Thai",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "DBS Bank",
@@ -1428,7 +1451,7 @@
         90
       ],
       "thaiFluency": [
-        10
+        100
       ]
     },
     "personality": {
@@ -1542,8 +1565,10 @@
       "prefix": "Ms.",
       "email": "camila.reyes@example.com",
       "phone": "+639201234567",
-      "nationality": "Filipino",
-      "currentLocation": "Philippines"
+      "nationality": "Thai",
+      "currentLocation": "Thailand",
+      "nationalityRegion": "Asia",
+      "currentLocationRegion": "Asia"
     },
     "career": {
       "company": "Cebu Pacific",
@@ -1558,7 +1583,7 @@
         90
       ],
       "thaiFluency": [
-        10
+        100
       ]
     },
     "personality": {

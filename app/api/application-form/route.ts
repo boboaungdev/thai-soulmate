@@ -60,6 +60,9 @@ export async function POST(req: Request) {
             phone: body.details.phone,
             nationality: body.details.nationality,
             currentLocation: body.details.currentLocation,
+            nationalityRegion: body.details.nationalityRegion,
+            currentLocationRegion: body.details.currentLocationRegion,
+            
           },
 
           career: {

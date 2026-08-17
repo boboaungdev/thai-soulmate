@@ -592,7 +592,12 @@ export default function MatchingPage() {
                         <Badge className="border-pink text-gradient">VIP</Badge>
                       )}
                     </CardTitle>
-                    <CardDescription>ID: {applicant.customId}</CardDescription>
+                    {applicant.personalDetails?.nickname && (
+                      <CardDescription>
+                        Nickname: {applicant.personalDetails.nickname}
+                      </CardDescription>
+                    )}
+                    <CardDescription>ID: {String(applicant.customId).padStart(4, '0')}</CardDescription>
                     <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
                       <Venus className="h-4 w-4 text-pink-500" />
                       <span>Age: {applicant.age}</span>

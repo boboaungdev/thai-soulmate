@@ -219,6 +219,13 @@ const calculateMatchDetails = (male: any, female: any) => {
     .map(normalize)
     .join(" ")
 
+  const maleEnglishFluency = Number(male.appearance?.englishFluency?.[0] ?? 0)
+  const maleThaiFluency = Number(male.appearance?.thaiFluency?.[0] ?? 0)
+  const femaleEnglishFluency = Number(
+    female.appearance?.englishFluency?.[0] ?? 0
+  )
+  const femaleThaiFluency = Number(female.appearance?.thaiFluency?.[0] ?? 0)
+
   const breakdown: MatchBreakdownItem[] = [
     createBreakdownItem({
       key: "ageRange",
@@ -467,40 +474,28 @@ const calculateMatchDetails = (male: any, female: any) => {
       weight: 5,
     }),
     createBreakdownItem({
-      key: "languages",
+      key: "languageEnglish",
       category: "Languages",
-      label: "Languages Spoken",
-      malePreference: `English ${
-        male.appearance?.englishFluency?.[0] ?? 0
-      }%, Thai ${male.appearance?.thaiFluency?.[0] ?? 0}%`,
-      femaleValue: `English ${
-        female.appearance?.englishFluency?.[0] ?? 0
-      }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 0}%`,
-      malePrefMatch:
-        Math.abs(
-          Number(male.appearance?.englishFluency?.[0] ?? 0) -
-            Number(female.appearance?.englishFluency?.[0] ?? 0)
-        ) <= 50 &&
-        Math.abs(
-          Number(male.appearance?.thaiFluency?.[0] ?? 0) -
-            Number(female.appearance?.thaiFluency?.[0] ?? 0)
-        ) <= 50,
-      femalePreference: `English ${
-        female.appearance?.englishFluency?.[0] ?? 0
-      }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 0}%`,
-      maleValue: `English ${
-        male.appearance?.englishFluency?.[0] ?? 0
-      }%, Thai ${male.appearance?.thaiFluency?.[0] ?? 0}%`,
-      femalePrefMatch:
-        Math.abs(
-          Number(female.appearance?.englishFluency?.[0] ?? 0) -
-            Number(male.appearance?.englishFluency?.[0] ?? 0)
-        ) <= 50 &&
-        Math.abs(
-          Number(female.appearance?.thaiFluency?.[0] ?? 0) -
-            Number(male.appearance?.thaiFluency?.[0] ?? 0)
-        ) <= 50,
-      weight: 4,
+      label: "English Fluency",
+      malePreference: `${maleEnglishFluency}%`,
+      femaleValue: `${femaleEnglishFluency}%`,
+      malePrefMatch: Math.abs(maleEnglishFluency - femaleEnglishFluency) <= 50,
+      femalePreference: `${femaleEnglishFluency}%`,
+      maleValue: `${maleEnglishFluency}%`,
+      femalePrefMatch: Math.abs(femaleEnglishFluency - maleEnglishFluency) <= 50,
+      weight: 2,
+    }),
+    createBreakdownItem({
+      key: "languageThai",
+      category: "Languages",
+      label: "Thai Fluency",
+      malePreference: `${maleThaiFluency}%`,
+      femaleValue: `${femaleThaiFluency}%`,
+      malePrefMatch: Math.abs(maleThaiFluency - femaleThaiFluency) <= 50,
+      femalePreference: `${femaleThaiFluency}%`,
+      maleValue: `${maleThaiFluency}%`,
+      femalePrefMatch: Math.abs(femaleThaiFluency - maleThaiFluency) <= 50,
+      weight: 2,
     }),
   ]
 

@@ -532,12 +532,20 @@ export async function GET(request: Request) {
 
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Languages Spoken %"],
-        weight: 4,
+        weight: 2,
         matched:
           Math.abs(
             Number(parsedMale.appearance?.englishFluency?.[0] ?? 0) -
               Number(femaleAppearance.englishFluency?.[0] ?? 0)
-          ) <= 50 &&
+          ) <= 50,
+        score,
+        possibleScore: totalPossibleScore,
+      }))
+
+      ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
+        enabled: activeCriteria["Languages Spoken %"],
+        weight: 2,
+        matched:
           Math.abs(
             Number(parsedMale.appearance?.thaiFluency?.[0] ?? 0) -
               Number(femaleAppearance.thaiFluency?.[0] ?? 0)

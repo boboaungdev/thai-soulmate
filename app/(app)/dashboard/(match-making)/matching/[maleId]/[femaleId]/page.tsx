@@ -444,13 +444,13 @@ function ApplicantColumn({
           icon={<Languages />}
           label="English Fluency"
           value={`${applicant.appearance?.englishFluency?.[0] || 0}%`}
-          isMatch={getMatch("languages")}
+          isMatch={getMatch("languageEnglish")}
         />
         <DetailRow
           icon={<Languages />}
           label="Thai Fluency"
           value={`${applicant.appearance?.thaiFluency?.[0] || 0}%`}
-          isMatch={getMatch("languages")}
+          isMatch={getMatch("languageThai")}
         />
       </ProfileSection>
 

@@ -114,7 +114,9 @@ const matchesHeightRange = (preferredRange: unknown, actualHeight: unknown) => {
 }
 
 const matchesWeightRange = (preferredRange: unknown, actualWeight: unknown) => {
-  const weight = Number.parseFloat(String(actualWeight ?? "").replace(/[^\d.]/g, ""))
+  const weight = Number.parseFloat(
+    String(actualWeight ?? "").replace(/[^\d.]/g, "")
+  )
   const range = normalize(preferredRange)
   if (!weight || !range) return false
 
@@ -129,6 +131,39 @@ const intersects = (preferred: unknown, actual: unknown) =>
   toArray(preferred).some((item) =>
     toArray(actual).map(normalize).includes(normalize(item))
   )
+
+const REGIONS = [
+  "asia",
+  "europe",
+  "africa",
+  "oceania",
+  "americas",
+  "polar",
+  "antarctic ocean",
+  "antarctic",
+  "any",
+]
+
+const matchRegion = (
+  preferred: unknown,
+  actualCountry: unknown,
+  actualRegion: unknown
+) => {
+  const normalizedPreferred = normalize(preferred)
+  if (
+    !normalizedPreferred ||
+    normalizedPreferred === "any" ||
+    normalizedPreferred === "not important"
+  ) {
+    return true
+  }
+
+  if (REGIONS.includes(normalizedPreferred)) {
+    return normalize(actualRegion) === normalizedPreferred
+  }
+
+  return normalize(actualCountry) === normalizedPreferred
+}
 
 const addCriterionScore = ({
   enabled,
@@ -392,13 +427,11 @@ export async function GET(request: Request) {
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Ideal Partner Nationality"],
         weight: 10,
-        matched:
-          normalize(maleIdealPartner.nationality) === "asian"
-            ? hasValue(femalePersonalDetails.nationality)
-            : matchExact(
-                maleIdealPartner.nationality,
-                femalePersonalDetails.nationality
-              ),
+        matched: matchRegion(
+          maleIdealPartner.nationality,
+          femalePersonalDetails.nationality,
+          femalePersonalDetails.nationalityRegion
+        ),
         score,
         possibleScore: totalPossibleScore,
       }))
@@ -406,9 +439,10 @@ export async function GET(request: Request) {
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Ideal Partner Location"],
         weight: 8,
-        matched: matchExact(
+        matched: matchRegion(
           maleIdealPartner.location,
-          femalePersonalDetails.currentLocation
+          femalePersonalDetails.currentLocation,
+          femalePersonalDetails.currentLocationRegion
         ),
         score,
         possibleScore: totalPossibleScore,
@@ -488,7 +522,10 @@ export async function GET(request: Request) {
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria.Hobbies,
         weight: 5,
-        matched: toArray(femaleLifestyle.interests).length > 0,
+        matched: intersects(
+          parsedMale.lifestyle.interests,
+          femaleLifestyle.interests
+        ),
         score,
         possibleScore: totalPossibleScore,
       }))
@@ -505,13 +542,7 @@ export async function GET(request: Request) {
         possibleScore: totalPossibleScore,
       }))
 
-      const finalScore =
-        totalPossibleScore > 0
-          ? Math.round((score / totalPossibleScore) * 100)
-          : 100
-
       // Deal breakers
-      let dealBreakerPenalty = 0
       if (activeCriteria["Deal Breakers"]) {
         const dealBreakers = toArray(maleIdealPartner.dealBreakers)
           .map(normalize)
@@ -520,26 +551,29 @@ export async function GET(request: Request) {
           dealBreakers.includes("smok") &&
           femaleLifestyle.smoking !== "Never"
         ) {
-          dealBreakerPenalty += 40
+          score -= 40
         }
         if (
           dealBreakers.includes("drink") &&
           normalize(femaleLifestyle.drinking) === "frequently"
         ) {
-          dealBreakerPenalty += 30
+          score -= 30
         }
         if (
           dealBreakers.includes("children") &&
           normalize(femalePersonality.hasChildren) === "yes"
         ) {
-          dealBreakerPenalty += 30
+          score -= 30
         }
       }
 
-      const finalScoreWithPenalty = finalScore - dealBreakerPenalty
+      const finalScore =
+        totalPossibleScore > 0
+          ? Math.round((score / totalPossibleScore) * 100)
+          : 100
 
       return {
-        score: Math.max(0, finalScoreWithPenalty),
+        score: Math.max(0, finalScore),
         applicant: parsedFemale,
       }
     })

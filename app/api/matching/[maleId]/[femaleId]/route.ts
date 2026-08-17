@@ -101,7 +101,9 @@ const matchesHeightRange = (preferredRange: unknown, actualHeight: unknown) => {
 }
 
 const matchesWeightRange = (preferredRange: unknown, actualWeight: unknown) => {
-  const weight = Number.parseFloat(String(actualWeight ?? "").replace(/[^\d.]/g, ""))
+  const weight = Number.parseFloat(
+    String(actualWeight ?? "").replace(/[^\d.]/g, "")
+  )
   const range = normalize(preferredRange)
   if (!weight || !range) return false
 
@@ -127,9 +129,12 @@ const REGIONS = [
   "asia",
   "europe",
   "africa",
-  "north america",
-  "south america",
   "oceania",
+  "americas",
+  "polar",
+  "antarctic ocean",
+  "antarctic",
+  "any",
 ]
 
 const matchRegion = (
@@ -222,12 +227,16 @@ const calculateMatchDetails = (male: any, female: any) => {
       malePreference: male.idealPartner?.ageRange,
       femaleValue: femaleAge ? `${femaleAge} years old` : "Not provided",
       malePrefMatch: Boolean(
-        maleAgeRange && femaleAge >= maleAgeRange[0] && femaleAge <= maleAgeRange[1]
+        maleAgeRange &&
+        femaleAge >= maleAgeRange[0] &&
+        femaleAge <= maleAgeRange[1]
       ),
       femalePreference: female.idealPartner?.ageRange,
       maleValue: maleAge ? `${maleAge} years old` : "Not provided",
       femalePrefMatch: Boolean(
-        femaleAgeRange && maleAge >= femaleAgeRange[0] && maleAge <= femaleAgeRange[1]
+        femaleAgeRange &&
+        maleAge >= femaleAgeRange[0] &&
+        maleAge <= femaleAgeRange[1]
       ),
       weight: 16,
     }),
@@ -488,10 +497,8 @@ const calculateMatchDetails = (male: any, female: any) => {
   ]
 
   let score = breakdown.reduce((total, item) => {
-    let itemScore = 0
-    if (item.malePrefMatch) itemScore += item.weight / 2
-    if (item.femalePrefMatch) itemScore += item.weight / 2
-    return total + itemScore
+    if (item.malePrefMatch) return total + item.weight
+    return total
   }, 0)
 
   const totalPossibleScore = breakdown.reduce(
@@ -553,8 +560,7 @@ const calculateMatchDetails = (male: any, female: any) => {
     },
   ].filter((item) => item.matched)
 
-  const penalties = [...malePenalties, ...femalePenalties]
-  score -= penalties.reduce((total, item) => total + item.penalty, 0)
+  score -= malePenalties.reduce((total, item) => total + item.penalty, 0)
 
   return {
     matchPercentage: Math.max(
@@ -562,7 +568,7 @@ const calculateMatchDetails = (male: any, female: any) => {
       Math.round((score / totalPossibleScore) * 100)
     ),
     matchBreakdown: breakdown,
-    dealBreakerPenalties: penalties,
+    dealBreakerPenalties: [...malePenalties, ...femalePenalties],
   }
 }
 

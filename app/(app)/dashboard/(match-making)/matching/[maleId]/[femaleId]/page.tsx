@@ -87,6 +87,26 @@ const cmToFeetAndInches = (cm: number | string | null | undefined): string => {
   return `(${feet}'${inches}")`
 }
 
+const idealPartnerNationalityOptions = [
+  { display: "Asian", value: "Asia" },
+  { display: "European", value: "Europe" },
+  { display: "African", value: "Africa" },
+  { display: "Oceanian", value: "Oceania" },
+  { display: "American", value: "Americas" },
+  { display: "Polar", value: "Polar" },
+  { display: "Antarctic", value: "Antarctic" },
+  { display: "Antarctic Ocean", value: "Antarctic Ocean" },
+  { display: "Any", value: "Any" },
+]
+
+const getNationalityDisplayValue = (value: string | undefined | null) => {
+  if (!value) return null
+  const option = idealPartnerNationalityOptions.find(
+    (opt) => opt.value === value
+  )
+  return option ? option.display : value
+}
+
 const getMatchScoreClass = (score: number) => {
   if (score > 80) {
     return "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300"
@@ -227,11 +247,19 @@ function MatchBreakdown({
                   <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
                     <div className="break-words">
                       <p className="text-muted-foreground">Preference</p>
-                      <p className="font-medium">{item.malePreference}</p>
+                      <p className="font-medium">
+                        {item.key === "nationality"
+                          ? getNationalityDisplayValue(item.malePreference)
+                          : item.malePreference}
+                      </p>
                     </div>
                     <div className="break-words">
                       <p className="text-muted-foreground">Female s Value</p>
-                      <p className="font-medium">{item.femaleValue}</p>
+                      <p className="font-medium">
+                        {item.key === "nationality"
+                          ? getNationalityDisplayValue(item.femaleValue)
+                          : item.femaleValue}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -245,11 +273,19 @@ function MatchBreakdown({
                   <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
                     <div className="break-words">
                       <p className="text-muted-foreground">Preference</p>
-                      <p className="font-medium">{item.femalePreference}</p>
+                      <p className="font-medium">
+                        {item.key === "nationality"
+                          ? getNationalityDisplayValue(item.femalePreference)
+                          : item.femalePreference}
+                      </p>
                     </div>
                     <div className="break-words">
                       <p className="text-muted-foreground">Male s Value</p>
-                      <p className="font-medium">{item.maleValue}</p>
+                      <p className="font-medium">
+                        {item.key === "nationality"
+                          ? getNationalityDisplayValue(item.maleValue)
+                          : item.maleValue}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -554,7 +590,9 @@ function ApplicantColumn({
         <DetailRow
           icon={<Home />}
           label="Nationality"
-          value={applicant.idealPartner?.nationality}
+          value={getNationalityDisplayValue(
+            applicant.idealPartner?.nationality
+          )}
         />
         <DetailRow
           icon={<Smile />}

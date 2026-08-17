@@ -474,24 +474,32 @@ const calculateMatchDetails = (male: any, female: any) => {
         male.appearance?.englishFluency?.[0] ?? 0
       }%, Thai ${male.appearance?.thaiFluency?.[0] ?? 0}%`,
       femaleValue: `English ${
-        female.appearance?.englishFluency?.[0] ?? 90
-      }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 60}%`,
+        female.appearance?.englishFluency?.[0] ?? 0
+      }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 0}%`,
       malePrefMatch:
-        (Number(male.appearance?.englishFluency?.[0] ?? 0) >= 50 &&
-          Number(female.appearance?.englishFluency?.[0] ?? 90) >= 50) ||
-        (Number(male.appearance?.thaiFluency?.[0] ?? 0) >= 50 &&
-          Number(female.appearance?.thaiFluency?.[0] ?? 60) >= 50),
+        Math.abs(
+          Number(male.appearance?.englishFluency?.[0] ?? 0) -
+            Number(female.appearance?.englishFluency?.[0] ?? 0)
+        ) <= 50 &&
+        Math.abs(
+          Number(male.appearance?.thaiFluency?.[0] ?? 0) -
+            Number(female.appearance?.thaiFluency?.[0] ?? 0)
+        ) <= 50,
       femalePreference: `English ${
         female.appearance?.englishFluency?.[0] ?? 0
       }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 0}%`,
       maleValue: `English ${
-        male.appearance?.englishFluency?.[0] ?? 90
-      }%, Thai ${male.appearance?.thaiFluency?.[0] ?? 60}%`,
+        male.appearance?.englishFluency?.[0] ?? 0
+      }%, Thai ${male.appearance?.thaiFluency?.[0] ?? 0}%`,
       femalePrefMatch:
-        (Number(female.appearance?.englishFluency?.[0] ?? 0) >= 50 &&
-          Number(male.appearance?.englishFluency?.[0] ?? 90) >= 50) ||
-        (Number(female.appearance?.thaiFluency?.[0] ?? 0) >= 50 &&
-          Number(male.appearance?.thaiFluency?.[0] ?? 60) >= 50),
+        Math.abs(
+          Number(female.appearance?.englishFluency?.[0] ?? 0) -
+            Number(male.appearance?.englishFluency?.[0] ?? 0)
+        ) <= 50 &&
+        Math.abs(
+          Number(female.appearance?.thaiFluency?.[0] ?? 0) -
+            Number(male.appearance?.thaiFluency?.[0] ?? 0)
+        ) <= 50,
       weight: 4,
     }),
   ]

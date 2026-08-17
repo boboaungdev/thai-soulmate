@@ -534,10 +534,14 @@ export async function GET(request: Request) {
         enabled: activeCriteria["Languages Spoken %"],
         weight: 4,
         matched:
-          (Number(parsedMale.appearance?.englishFluency?.[0] ?? 0) >= 50 &&
-            Number(femaleAppearance.englishFluency?.[0] ?? 90) >= 50) ||
-          (Number(parsedMale.appearance?.thaiFluency?.[0] ?? 0) >= 50 &&
-            Number(femaleAppearance.thaiFluency?.[0] ?? 60) >= 50),
+          Math.abs(
+            Number(parsedMale.appearance?.englishFluency?.[0] ?? 0) -
+              Number(femaleAppearance.englishFluency?.[0] ?? 0)
+          ) <= 50 &&
+          Math.abs(
+            Number(parsedMale.appearance?.thaiFluency?.[0] ?? 0) -
+              Number(femaleAppearance.thaiFluency?.[0] ?? 0)
+          ) <= 50,
         score,
         possibleScore: totalPossibleScore,
       }))

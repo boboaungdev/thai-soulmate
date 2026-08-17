@@ -230,16 +230,16 @@ const idealPartnerLocations = [
   "Any",
 ]
 
-const idealPartnerNationalities = [
-  "Asia",
-  "Europe",
-  "Africa",
-  "Oceania",
-  "Americas",
-  "Polar",
-  "Antarctic Ocean",
-  "Antarctic",
-  "Any",
+const idealPartnerNationalityOptions = [
+  { display: "Asian", value: "Asia" },
+  { display: "European", value: "Europe" },
+  { display: "African", value: "Africa" },
+  { display: "Oceanian", value: "Oceania" },
+  { display: "American", value: "Americas" },
+  { display: "Polar", value: "Polar" },
+  { display: "Antarctic", value: "Antarctic" },
+  { display: "Antarctic Ocean", value: "Antarctic Ocean" },
+  { display: "Any", value: "Any" },
 ]
 
 const idealPartnerHeightRanges = [
@@ -4096,12 +4096,20 @@ function AuthPageContents() {
                             id="ideal-nationality"
                             className="h-8 bg-background dark:bg-input/30"
                           >
-                            <SelectValue placeholder="Select nationality" />
+                            <SelectValue placeholder="Select nationality">
+                              {
+                                idealPartnerNationalityOptions.find(
+                                  (option) =>
+                                    option.value ===
+                                    femaleProfileForm.idealPartnerNationality
+                                )?.display
+                              }
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent className="max-h-56 overflow-y-auto">
-                            {idealPartnerNationalities.map((nat) => (
-                              <SelectItem key={nat} value={nat}>
-                                {nat}
+                            {idealPartnerNationalityOptions.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.display}
                               </SelectItem>
                             ))}
                           </SelectContent>

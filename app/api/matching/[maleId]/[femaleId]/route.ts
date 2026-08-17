@@ -123,6 +123,36 @@ const cmToFeetAndInches = (cm: number | string | null | undefined): string => {
   return `(${feet}'${inches}")`
 }
 
+const REGIONS = [
+  "asia",
+  "europe",
+  "africa",
+  "north america",
+  "south america",
+  "oceania",
+]
+
+const matchRegion = (
+  preferred: unknown,
+  actualCountry: unknown,
+  actualRegion: unknown
+) => {
+  const normalizedPreferred = normalize(preferred)
+  if (
+    !normalizedPreferred ||
+    normalizedPreferred === "any" ||
+    normalizedPreferred === "not important"
+  ) {
+    return true
+  }
+
+  if (REGIONS.includes(normalizedPreferred)) {
+    return normalize(actualRegion) === normalizedPreferred
+  }
+
+  return normalize(actualCountry) === normalizedPreferred
+}
+
 type MatchBreakdownItem = {
   key: string
   category: string
@@ -232,13 +262,17 @@ const calculateMatchDetails = (male: any, female: any) => {
       category: "Ideal Partner",
       label: "Weight",
       malePreference: male.idealPartner?.weight,
-      femaleValue: female.appearance?.weight ? `${female.appearance.weight} kg` : "Not provided",
+      femaleValue: female.appearance?.weight
+        ? `${female.appearance.weight} kg`
+        : "Not provided",
       malePrefMatch: matchesWeightRange(
         male.idealPartner?.weight,
         female.appearance?.weight
       ),
       femalePreference: female.idealPartner?.weight,
-      maleValue: male.appearance?.weight ? `${male.appearance.weight} kg` : "Not provided",
+      maleValue: male.appearance?.weight
+        ? `${male.appearance.weight} kg`
+        : "Not provided",
       femalePrefMatch: matchesWeightRange(
         female.idealPartner?.weight,
         male.appearance?.weight
@@ -251,22 +285,18 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Nationality",
       malePreference: male.idealPartner?.nationality,
       femaleValue: female.personalDetails?.nationality,
-      malePrefMatch:
-        normalize(male.idealPartner?.nationality) === "asian"
-          ? hasValue(female.personalDetails?.nationality)
-          : matchExact(
-              male.idealPartner?.nationality,
-              female.personalDetails?.nationality
-            ),
+      malePrefMatch: matchRegion(
+        male.idealPartner?.nationality,
+        female.personalDetails?.nationality,
+        female.personalDetails?.nationalityRegion
+      ),
       femalePreference: female.idealPartner?.nationality,
       maleValue: male.personalDetails?.nationality,
-      femalePrefMatch:
-        normalize(female.idealPartner?.nationality) === "asian"
-          ? hasValue(male.personalDetails?.nationality)
-          : matchExact(
-              female.idealPartner?.nationality,
-              male.personalDetails?.nationality
-            ),
+      femalePrefMatch: matchRegion(
+        female.idealPartner?.nationality,
+        male.personalDetails?.nationality,
+        male.personalDetails?.nationalityRegion
+      ),
       weight: 10,
     }),
     createBreakdownItem({
@@ -275,15 +305,17 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Location",
       malePreference: male.idealPartner?.location,
       femaleValue: female.personalDetails?.currentLocation,
-      malePrefMatch: matchExact(
+      malePrefMatch: matchRegion(
         male.idealPartner?.location,
-        female.personalDetails?.currentLocation
+        female.personalDetails?.currentLocation,
+        female.personalDetails?.currentLocationRegion
       ),
       femalePreference: female.idealPartner?.location,
       maleValue: male.personalDetails?.currentLocation,
-      femalePrefMatch: matchExact(
+      femalePrefMatch: matchRegion(
         female.idealPartner?.location,
-        male.personalDetails?.currentLocation
+        male.personalDetails?.currentLocation,
+        male.personalDetails?.currentLocationRegion
       ),
       weight: 8,
     }),
@@ -429,9 +461,9 @@ const calculateMatchDetails = (male: any, female: any) => {
       key: "languages",
       category: "Languages",
       label: "Languages Spoken",
-      malePreference: `English ${male.appearance?.englishFluency?.[0] ?? 0}%, Thai ${
-        male.appearance?.thaiFluency?.[0] ?? 0
-      }%`,
+      malePreference: `English ${
+        male.appearance?.englishFluency?.[0] ?? 0
+      }%, Thai ${male.appearance?.thaiFluency?.[0] ?? 0}%`,
       femaleValue: `English ${
         female.appearance?.englishFluency?.[0] ?? 90
       }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 60}%`,
@@ -443,9 +475,9 @@ const calculateMatchDetails = (male: any, female: any) => {
       femalePreference: `English ${
         female.appearance?.englishFluency?.[0] ?? 0
       }%, Thai ${female.appearance?.thaiFluency?.[0] ?? 0}%`,
-      maleValue: `English ${male.appearance?.englishFluency?.[0] ?? 90}%, Thai ${
-        male.appearance?.thaiFluency?.[0] ?? 60
-      }%`,
+      maleValue: `English ${
+        male.appearance?.englishFluency?.[0] ?? 90
+      }%, Thai ${male.appearance?.thaiFluency?.[0] ?? 60}%`,
       femalePrefMatch:
         (Number(female.appearance?.englishFluency?.[0] ?? 0) >= 50 &&
           Number(male.appearance?.englishFluency?.[0] ?? 90) >= 50) ||

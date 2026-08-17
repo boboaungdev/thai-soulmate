@@ -560,6 +560,7 @@ function ApplicantColumn({
           icon={<Ruler />}
           label="Height"
           value={applicant.idealPartner?.height}
+          isMatch={getMatch("height")}
         />
         <DetailRow
           icon={<Scale />}
@@ -571,21 +572,25 @@ function ApplicantColumn({
           icon={<Cake />}
           label="Age Range"
           value={applicant.idealPartner?.ageRange}
+          isMatch={getMatch("ageRange")}
         />
         <DetailRow
           icon={<MapPin />}
           label="Location"
           value={applicant.idealPartner?.location}
+          isMatch={getMatch("location")}
         />
         <DetailRow
           icon={<GraduationCap />}
           label="Education"
           value={applicant.idealPartner?.education}
+          isMatch={getMatch("education")}
         />
         <DetailRow
           icon={<Sparkles />}
           label="Qualities"
           value={applicant.idealPartner?.qualities?.join(", ")}
+          isMatch={getMatch("qualities")}
         />
         <DetailRow
           icon={<Home />}
@@ -593,11 +598,13 @@ function ApplicantColumn({
           value={getNationalityDisplayValue(
             applicant.idealPartner?.nationality
           )}
+          isMatch={getMatch("nationality")}
         />
         <DetailRow
           icon={<Smile />}
           label="Personality"
           value={applicant.idealPartner?.personality?.join(", ")}
+          isMatch={getMatch("personality")}
         />
         <DetailRow
           icon={<HeartCrack />}

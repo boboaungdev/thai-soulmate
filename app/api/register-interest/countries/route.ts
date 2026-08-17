@@ -9,6 +9,7 @@ interface Country {
     png: string
     svg: string
   }
+  region: string
 }
 
 interface CustomCountry {
@@ -17,6 +18,7 @@ interface CustomCountry {
   flag: string
   code: string
   callCode: string
+  region: string
 }
 
 export async function GET() {
@@ -43,6 +45,7 @@ export async function GET() {
         flag: country.flags.svg,
         code: country.alpha2Code,
         callCode: country.callingCodes?.[0] ?? "",
+        region: country.region,
       }))
       .sort((a, b) => a.name.localeCompare(b.name))
 

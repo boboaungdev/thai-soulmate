@@ -24,6 +24,7 @@ const formSchema = z.object({
   gender: z.string(),
   nationality: z.string(),
   currentLocation: z.string(),
+  region: z.string(),
   email: z.email().transform((val) => val.toLowerCase()),
 
   phoneCountry: z.string(),
@@ -66,6 +67,7 @@ export async function POST(req: Request) {
       gender: validatedData.gender,
       nationality: validatedData.nationality,
       currentLocation: validatedData.currentLocation,
+      region: validatedData.region,
       phoneCountry: validatedData.phoneCountry,
       phone: validatedData.phone,
       source: validatedData.source,

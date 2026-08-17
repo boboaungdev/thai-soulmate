@@ -33,6 +33,7 @@ model RegisterInterest {
   gender          String
   nationality     String
   currentLocation String
+  region          String
 
   email        String  @unique
   phoneCountry String

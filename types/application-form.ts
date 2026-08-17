@@ -42,6 +42,7 @@ export interface PersonalDetails {
   phone: string
   nationality: string
   currentLocation: string
+  region: string
 }
 
 export interface Career {

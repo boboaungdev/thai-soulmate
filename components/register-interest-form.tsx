@@ -53,6 +53,7 @@ type Country = {
   code: string
   nationality: string
   callCode: string
+  region: string
 }
 
 const formSchema = z
@@ -204,10 +205,20 @@ export function RegisterInterestForm() {
           (country) => country.code === values.phoneCountry
         )
 
+        const selectedNationalityCountry = countries.find(
+          (country) => country.nationality === values.nationality
+        )
+
+        const selectedCurrentLocationCountry = countries.find(
+          (country) => country.name === values.currentLocation
+        )
+
         const payload = {
           ...values,
           name: `${values.firstName} ${values.lastName}`.trim(),
           phoneCountry: `+${selectedCountry?.callCode ?? ""}`,
+          nationalityRegion: selectedNationalityCountry?.region,
+          currentLocationRegion: selectedCurrentLocationCountry?.region,
         }
 
         const response = await fetch("/api/register-interest", {
@@ -265,7 +276,9 @@ export function RegisterInterestForm() {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h2 className="mb-2 text-3xl font-bold text-gradient">Register Your Interest</h2>
+        <h2 className="text-gradient mb-2 text-3xl font-bold">
+          Register Your Interest
+        </h2>
         <p className="mb-6 text-muted-foreground">
           Fill out the form below to let us know you&apos;re interested.
           We&apos;ll be in touch.

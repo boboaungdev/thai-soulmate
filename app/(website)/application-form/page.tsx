@@ -95,6 +95,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ImageCropDialog } from "@/components/image-crop-dialog"
+import Link from "next/link"
 
 const educationLevels = [
   "High School",

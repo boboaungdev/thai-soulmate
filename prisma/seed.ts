@@ -15,6 +15,8 @@ async function main() {
         gender: personal.gender,
         nationality: personal.nationality,
         currentLocation: personal.currentLocation,
+        currentLocationRegion: personal.currentLocationRegion,
+        nationalityRegion: personal.nationalityRegion,
         email: personal.email,
         phoneCountry: personal.phone.substring(0, 3),
         phone: personal.phone,

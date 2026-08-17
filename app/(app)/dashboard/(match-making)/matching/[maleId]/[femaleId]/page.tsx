@@ -434,6 +434,7 @@ function ApplicantColumn({
           icon={<Scale />}
           label="Weight"
           value={`${applicant.appearance?.weight} kg`}
+          isMatch={getMatch("weight")}
         />
         <DetailRow
           icon={<BookOpen />}

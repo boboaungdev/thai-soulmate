@@ -27,13 +27,14 @@ model User {
 model RegisterInterest {
   id String @id @default(uuid())
 
-  prefix          String
-  name            String
-  dob             DateTime
-  gender          String
-  nationality     String
-  currentLocation String
-  region          String
+  prefix                String
+  name                  String
+  dob                   DateTime
+  gender                String
+  nationality           String
+  nationalityRegion     String
+  currentLocation       String
+  currentLocationRegion String
 
   email        String  @unique
   phoneCountry String

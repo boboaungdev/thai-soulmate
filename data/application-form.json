@@ -9,7 +9,8 @@
       "email": "angela@example.com",
       "phone": "+66901234567",
       "nationality": "Thai",
-      "currentLocation": "Thailand"
+      "currentLocation": "Thailand",
+      "region": "Asia"
     },
     "career": {
       "company": "Bangkok Hospital",

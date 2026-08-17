@@ -94,7 +94,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import Link from "next/link"
+import { ImageCropDialog } from "@/components/image-crop-dialog"
 
 const educationLevels = [
   "High School",
@@ -555,6 +555,11 @@ function AuthPageContents() {
     ownProperty: "",
     ownBusiness: "",
   })
+  const [cropState, setCropState] = useState<{
+    imageSrc: string
+    aspect: number
+    photoType: "headshot" | "fullLength" | "casualLifestyle"
+  } | null>(null)
   const [photosForm, setPhotosForm] = useState<{
     headshot: File | null
     fullLength: File | null

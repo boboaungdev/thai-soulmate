@@ -39,8 +39,6 @@ const toArray = (value: unknown): string[] => {
   return value.filter((item): item is string => typeof item === "string")
 }
 
-const hasValue = (value: unknown) => normalize(value).length > 0
-
 const displayValue = (value: unknown) => {
   if (Array.isArray(value)) return value.filter(Boolean).join(", ")
   if (value === undefined || value === null || value === "")
@@ -482,7 +480,8 @@ const calculateMatchDetails = (male: any, female: any) => {
       malePrefMatch: Math.abs(maleEnglishFluency - femaleEnglishFluency) <= 50,
       femalePreference: `${femaleEnglishFluency}%`,
       maleValue: `${maleEnglishFluency}%`,
-      femalePrefMatch: Math.abs(femaleEnglishFluency - maleEnglishFluency) <= 50,
+      femalePrefMatch:
+        Math.abs(femaleEnglishFluency - maleEnglishFluency) <= 50,
       weight: 2,
     }),
     createBreakdownItem({

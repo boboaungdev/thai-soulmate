@@ -64,8 +64,6 @@ const normalize = (value: unknown) =>
     .trim()
     .toLowerCase()
 
-const hasValue = (value: unknown) => normalize(value).length > 0
-
 const matchExact = (preferred: unknown, actual: unknown) => {
   const normalizedPreferred = normalize(preferred)
   if (

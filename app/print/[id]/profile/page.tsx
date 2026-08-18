@@ -114,10 +114,10 @@ export default async function ProfilePrintPage({
   const age = user.personalDetails?.dob
     ? calculateAge(user.personalDetails.dob)
     : null
-  const displayName = `${user.personalDetails?.prefix || ""} ${
-    user.personalDetails?.name || ""
-  }`.trim()
-  const nickname = user.personalDetails?.nickname
+  const nameToDisplay =
+    user.personalDetails?.nickname ||
+    user.personalDetails?.name?.split(" ")[0] ||
+    ""
 
   return (
     <>
@@ -173,11 +173,8 @@ export default async function ProfilePrintPage({
                   )}
                   <div className="mt-5 text-center">
                     <h1 className="text-2xl font-bold text-gray-800">
-                      {displayName}
+                      {nameToDisplay}
                     </h1>
-                    {nickname && (
-                      <p className="text-gradient text-lg">{nickname}</p>
-                    )}
                   </div>
                   <div className="mt-6 w-full space-y-4 border-t-2 border-amber-100 pt-6">
                     <DetailItem label="Age" value={age} />

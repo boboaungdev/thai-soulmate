@@ -76,7 +76,7 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
               >
                 <Button
                   style={{ ...button, backgroundColor: "#28a745" }}
-                  href={`${env.BASE_URL}/api/tracking/${trackingId}/update-status?status=${acceptStatus}`}
+                  href={`${env.BASE_URL}/api/tracking/${trackingId}?status=${acceptStatus}`}
                 >
                   Accept
                 </Button>

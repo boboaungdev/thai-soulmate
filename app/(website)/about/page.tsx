@@ -7,7 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Target, Eye, Handshake, Globe2 } from "lucide-react"
+import { Target, Eye, Handshake, Globe2, Phone, Mail } from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa"
 import { Cta } from "@/components/cta"
 import { MotionDiv } from "@/components/motion"
 
@@ -21,6 +22,7 @@ const team = [
       website: "https://21stcenturygroup.org",
       phone: "+447956385061",
       email: "info@21stcenturygroup.org",
+      whatsapp: "https://wa.me/447956385061",
     },
     description:
       "Mr. Sham brings over a decade of profound experience in business leadership, complemented by extensive expertise in personal assistant services and financial service management. His visionary guidance has been instrumental in shaping our mission to foster meaningful connections.",
@@ -273,14 +275,44 @@ export default function AboutPage() {
                 <p className="mb-4 text-sm text-muted-foreground">
                   {founder.description}
                 </p>
-                <a
-                  href={founder.social?.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
-                >
-                  <Globe2 className="h-6 w-6" />
-                </a>
+                <div className="flex gap-2">
+                  {founder.social?.website && (
+                    <a
+                      href={founder.social.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                    >
+                      <Globe2 className="h-6 w-6" />
+                    </a>
+                  )}
+                  {founder.social?.phone && (
+                    <a
+                      href={`tel:${founder.social.phone}`}
+                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                    >
+                      <Phone className="h-6 w-6" />
+                    </a>
+                  )}
+                  {founder.social?.email && (
+                    <a
+                      href={`mailto:${founder.social.email}`}
+                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                    >
+                      <Mail className="h-6 w-6" />
+                    </a>
+                  )}
+                  {founder.social?.whatsapp && (
+                    <a
+                      href={founder.social.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                    >
+                      <FaWhatsapp className="h-6 w-6" />
+                    </a>
+                  )}
+                </div>
               </Card>
             </MotionDiv>
           </div>

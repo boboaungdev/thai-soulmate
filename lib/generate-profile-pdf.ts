@@ -7,7 +7,7 @@ export async function generateProfilePdf(url: string): Promise<Buffer> {
     const page = await browser.newPage()
 
     await page.goto(url, {
-      waitUntil: "networkidle0",
+      waitUntil: "networkidle2",
     })
 
     const pdf = await page.pdf({

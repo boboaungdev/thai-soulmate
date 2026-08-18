@@ -84,7 +84,7 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
               <Column align="left" style={{ width: "50%", paddingLeft: "8px" }}>
                 <Button
                   style={{ ...button, backgroundColor: "#dc3545" }}
-                  href={`${env.BASE_URL}/api/tracking/${trackingId}/update-status?status=${rejectStatus}`}
+                  href={`${env.BASE_URL}/api/tracking/${trackingId}?status=${rejectStatus}`}
                 >
                   Reject
                 </Button>

@@ -19,7 +19,6 @@ export async function POST(
     const { id: trackingId } = await params
     const { male, female } = await req.json()
 
-    // 1. Generate PDFs for both profiles
     const maleProfileUrl = new URL(
       `${env.BASE_URL}/print/${male.profile.id}/profile`,
       req.url
@@ -29,60 +28,59 @@ export async function POST(
       req.url
     ).toString()
 
-    console.log("maleProfileUrl:", maleProfileUrl)
-    console.log("femaleProfileUrl:", femaleProfileUrl)
-
     const [malePdf, femalePdf] = await Promise.all([
       generateProfilePdf(maleProfileUrl),
       generateProfilePdf(femaleProfileUrl),
     ])
 
-    // 2. Prepare emails
-    const emailToFemale = {
-      from: `${APP_INFO.name} <${EMAIL.contact}>`,
-      to: ["boolean405@gmail.com"],
-      // to: [female.personalDetails.email],
-      subject:
-        "[Soulmate] A carefully selected match is waiting for your review.",
-      react: SendProfileEmail({
-        to: female.personalDetails,
-        trackingId: trackingId,
-      }),
-      attachments: [
-        {
-          filename: `Profile-ID-${male.customId}.pdf`,
-          content: malePdf,
-        },
-      ],
-    }
+    // const malePdf = await generateProfilePdf(maleProfileUrl)
+    // const femalePdf = await generateProfilePdf(femaleProfileUrl);
 
-    const emailToMale = {
-      from: `${APP_INFO.name} <${EMAIL.contact}>`,
-      to: ["boolean405@gmail.com"],
-      // to: [male.personalDetails.email],
-      subject:
-        "[Soulmate] A carefully selected match is waiting for your review.",
-      react: SendProfileEmail({
-        to: male.personalDetails,
-        trackingId: trackingId,
-      }),
-      attachments: [
-        {
-          filename: `Profile-ID-${female.customId}.pdf`,
-          content: femalePdf,
-        },
-      ],
-    }
+    console.log("male pdf", malePdf)
+    // console.log('female pdf',femalePdf);
 
-    // 3. Send both emails
-    const { data, error } = await resend.batch.send([
-      emailToFemale,
-      emailToMale,
+    const [femaleResult, maleResult] = await Promise.all([
+      resend.emails.send({
+        from: `${APP_INFO.name} <${EMAIL.contact}>`,
+        to: ["boolean405@gmail.com"],
+        // to: [female.personalDetails.email],
+        subject:
+          "[Soulmate] A carefully selected match is waiting for your review.",
+        react: SendProfileEmail({
+          to: female.personalDetails,
+          trackingId,
+        }),
+        attachments: [
+          {
+            filename: `Profile-ID-${male.customId}.pdf`,
+            content: malePdf,
+          },
+        ],
+      }),
+
+      resend.emails.send({
+        from: `${APP_INFO.name} <${EMAIL.contact}>`,
+        to: ["boolean405@gmail.com"],
+        // to: [male.personalDetails.email],
+        subject:
+          "[Soulmate] A carefully selected match is waiting for your review.",
+        react: SendProfileEmail({
+          to: male.personalDetails,
+          trackingId,
+        }),
+        attachments: [
+          {
+            filename: `Profile-ID-${female.customId}.pdf`,
+            content: femalePdf,
+          },
+        ],
+      }),
     ])
+    if (femaleResult.error || maleResult.error) {
+      console.error("Female email:", femaleResult.error)
+      console.error("Male email:", maleResult.error)
 
-    if (error || !data) {
-      console.error("Resend batch failed:", error)
-      throw new Error("Failed to send profile emails via batch.")
+      throw new Error("Failed to send profile emails")
     }
 
     await prisma.tracking.update({
@@ -90,7 +88,6 @@ export async function POST(
       data: { status: TrackingStatus.BOTH_PROFILES_SENT },
     })
 
-    console.log("Emails sent successfully:", data)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Failed to send profile emails:", error)

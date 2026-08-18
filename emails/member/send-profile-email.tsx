@@ -14,7 +14,6 @@ import {
 
 import { APP_INFO } from "@/constants"
 import { env } from "@/lib/env"
-import { TrackingStatus } from "@/lib/generated/prisma/enums"
 
 const currentYear = new Date().getFullYear()
 
@@ -29,15 +28,9 @@ interface SendProfileEmailProps {
 
 export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
   const isMaleRecipient = to.gender === "Male"
+  const from = isMaleRecipient ? "male" : "female"
   const pronoun = isMaleRecipient ? "Her" : "His"
   const otherPronoun = isMaleRecipient ? "she" : "he"
-
-  const acceptStatus = isMaleRecipient
-    ? TrackingStatus.MALE_ACCEPTED
-    : TrackingStatus.FEMALE_ACCEPTED
-  const rejectStatus = isMaleRecipient
-    ? TrackingStatus.MALE_REJECTED
-    : TrackingStatus.FEMALE_REJECTED
 
   return (
     <Html>
@@ -76,7 +69,7 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
               >
                 <Button
                   style={{ ...button, backgroundColor: "#28a745" }}
-                  href={`${env.BASE_URL}/api/tracking/${trackingId}?status=${acceptStatus}`}
+                  href={`${env.BASE_URL}/api/tracking/${trackingId}?response=accepted&from=${from}`}
                 >
                   Accept
                 </Button>
@@ -84,7 +77,7 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
               <Column align="left" style={{ width: "50%", paddingLeft: "8px" }}>
                 <Button
                   style={{ ...button, backgroundColor: "#dc3545" }}
-                  href={`${env.BASE_URL}/api/tracking/${trackingId}?status=${rejectStatus}`}
+                  href={`${env.BASE_URL}/api/tracking/${trackingId}?response=rejected&from=${from}`}
                 >
                   Reject
                 </Button>

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 
+import { env } from "@/lib/env"
 import { prisma } from "@/lib/prisma"
 import { TrackingStatus } from "@/lib/generated/prisma/enums"
 
@@ -9,7 +10,8 @@ export async function GET(
 ) {
   const { searchParams } = new URL(request.url)
   const { id: trackingId } = await params
-  const status = searchParams.get("status")
+  const response = searchParams.get("response") // 'accepted' or 'rejected'
+  const from = searchParams.get("from") // 'male' or 'female'
 
   if (!trackingId) {
     return NextResponse.json(
@@ -18,7 +20,7 @@ export async function GET(
     )
   }
 
-  if (!status) {
+  if (!response || !from) {
     // If no status is provided, return the tracking data
     try {
       const tracking = await prisma.tracking.findUnique({
@@ -66,15 +68,15 @@ export async function GET(
     }
   }
 
-  // Existing logic for status updates (accepted/rejected)
-  if (status !== "accepted" && status !== "rejected") {
+  // Logic for status updates from email links (accepted/rejected)
+  if (response !== "accepted" && response !== "rejected") {
     return NextResponse.json(
       { success: false, message: "Invalid status value" },
       { status: 400 }
     )
   }
 
-  try {
+  return await prisma.$transaction(async (tx) => {
     const tracking = await prisma.tracking.findUnique({
       where: { id: trackingId },
       include: {
@@ -98,42 +100,74 @@ export async function GET(
       )
     }
 
-    // Assuming the flow is MALE_PROFILE_SENT_TO_FEMALE -> FEMALE_ACCEPTED/FEMALE_REJECT
-    if (tracking.status !== TrackingStatus.BOTH_PROFILES_SENT) {
+    const allowedInitialStatuses: TrackingStatus[] = [
+      TrackingStatus.BOTH_PROFILES_SENT,
+      TrackingStatus.MALE_ACCEPTED,
+      TrackingStatus.FEMALE_ACCEPTED,
+    ] as const
+
+    if (!allowedInitialStatuses.includes(tracking.status)) {
+      // If action is not applicable, redirect with a message
+      const url = new URL("/action-feedback", env.BASE_URL)
+      url.searchParams.set(
+        "message",
+        "This introduction is no longer active or your response has already been recorded."
+      )
+      return NextResponse.redirect(url)
+    }
+
+    let newStatus: TrackingStatus
+    const confirmationUrl = new URL("/action-feedback", env.BASE_URL)
+    confirmationUrl.searchParams.set(
+      "message",
+      "Your response has been recorded. Thank you!"
+    )
+
+    if (from === "male") {
+      newStatus =
+        response === "accepted"
+          ? TrackingStatus.MALE_ACCEPTED
+          : TrackingStatus.MALE_REJECTED
+    } else if (from === "female") {
+      newStatus =
+        response === "accepted"
+          ? TrackingStatus.FEMALE_ACCEPTED
+          : TrackingStatus.FEMALE_REJECTED
+    } else {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "This action has already been processed or is not applicable at this stage.",
-        },
+        { success: false, message: "Invalid 'from' parameter." },
         { status: 400 }
       )
     }
 
-    const newStatus =
-      status === "accepted"
-        ? TrackingStatus.FEMALE_ACCEPTED
-        : TrackingStatus.FEMALE_REJECTED
+    // Check if this user has already responded
+    if (
+      (from === "male" && tracking.status.startsWith("MALE_")) ||
+      (from === "female" && tracking.status.startsWith("FEMALE_"))
+    ) {
+      return NextResponse.redirect(confirmationUrl)
+    }
 
-    await prisma.tracking.update({
+    // If the other party has already responded, update to a combined status
+    if (
+      tracking.status === TrackingStatus.MALE_ACCEPTED &&
+      newStatus === TrackingStatus.FEMALE_ACCEPTED
+    ) {
+      newStatus = TrackingStatus.BOTH_PROFILES_ACCEPTED
+    } else if (
+      tracking.status === TrackingStatus.FEMALE_ACCEPTED &&
+      newStatus === TrackingStatus.MALE_ACCEPTED
+    ) {
+      newStatus = TrackingStatus.BOTH_PROFILES_ACCEPTED
+    }
+
+    await tx.tracking.update({
       where: { id: trackingId },
       data: { status: newStatus },
     })
 
-    return NextResponse.json({
-      success: true,
-      message: "Your response has been recorded. Thank you!",
-    })
-  } catch (error) {
-    console.error("Error processing tracking status:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        message: "An unexpected error occurred.",
-      },
-      { status: 500 }
-    )
-  }
+    return NextResponse.redirect(confirmationUrl)
+  })
 }
 
 export async function PATCH(
@@ -160,18 +194,6 @@ export async function PATCH(
 
     const tracking = await prisma.tracking.findUnique({
       where: { id: trackingId },
-      include: {
-        male: {
-          include: {
-            profile: true,
-          },
-        },
-        female: {
-          include: {
-            profile: true,
-          },
-        },
-      },
     })
 
     if (!tracking) {
@@ -192,7 +214,7 @@ export async function PATCH(
       dataToUpdate.closedFromStatus = tracking.status
     }
 
-    const updatedSoulmate = await prisma.tracking.update({
+    const updatedTracking = await prisma.tracking.update({
       where: { id: trackingId },
       data: dataToUpdate,
       include: {
@@ -202,6 +224,7 @@ export async function PATCH(
             customId: true,
             personalDetails: true,
             photos: true,
+            profile: true,
           },
         },
         female: {
@@ -210,6 +233,7 @@ export async function PATCH(
             customId: true,
             personalDetails: true,
             photos: true,
+            profile: true,
           },
         },
         notes: {
@@ -227,7 +251,7 @@ export async function PATCH(
       },
     })
 
-    return NextResponse.json({ success: true, tracking: updatedSoulmate })
+    return NextResponse.json({ success: true, tracking: updatedTracking })
   } catch (error) {
     console.error("Error updating tracking status:", error)
     return NextResponse.json(

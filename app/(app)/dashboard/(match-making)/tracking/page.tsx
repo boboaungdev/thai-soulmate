@@ -332,7 +332,7 @@ const SoulmateStatusLine: React.FC<{
           (group.step === 3 || group.step === 4)
         ) {
           // Special case for BOTH_PROFILES_SENT
-          icon = <Clock className="size-4 text-yellow-500" />
+          icon = <Clock className="size-4 animate-spin text-yellow-500" />
           textColorClass = "text-yellow-700 font-semibold"
           separatorColorClass = "bg-gray-300"
         } else if (
@@ -340,7 +340,7 @@ const SoulmateStatusLine: React.FC<{
           (currentStatus.startsWith("MALE_") && group.step === 3)
         ) {
           // When one member has decided, show the other as still in review
-          icon = <Clock className="size-4 text-yellow-500" />
+          icon = <Clock className="size-4 animate-spin text-yellow-500" />
           textColorClass = "text-yellow-700 font-semibold"
           separatorColorClass = "bg-gray-300"
         }

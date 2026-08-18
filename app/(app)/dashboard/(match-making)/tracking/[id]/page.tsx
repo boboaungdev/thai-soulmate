@@ -323,7 +323,7 @@ const SoulmateStatusLine: React.FC<{
             currentStatus === TrackingStatus.MALE_THINKING
           ) {
             textColorClass = "text-yellow-700 font-semibold"
-            icon = <Clock className="size-4 text-yellow-500" />
+            icon = <Clock className="size-4 animate-spin text-yellow-500" />
           } else if (
             currentStatus === TrackingStatus.FEMALE_ACCEPTED ||
             currentStatus === TrackingStatus.MALE_ACCEPTED
@@ -343,7 +343,7 @@ const SoulmateStatusLine: React.FC<{
         ) {
           // Special case for BOTH_PROFILES_SENT
           textColorClass = "text-yellow-700 font-semibold"
-          icon = <Clock className="size-4 text-yellow-500" />
+          icon = <Clock className="size-4 animate-spin text-yellow-500" />
           if (index < statusGroups.length - 1) {
             separatorColorClass = "bg-gray-300"
           } else {
@@ -356,7 +356,7 @@ const SoulmateStatusLine: React.FC<{
         ) {
           // When one member has decided, show the other as still in review
           textColorClass = "text-yellow-700 font-semibold"
-          icon = <Clock className="size-4 text-yellow-500" />
+          icon = <Clock className="size-4 animate-spin text-yellow-500" />
           if (index < statusGroups.length - 1) {
             separatorColorClass = "bg-gray-300"
           }

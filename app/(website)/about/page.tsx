@@ -13,12 +13,12 @@ import { MotionDiv } from "@/components/motion"
 
 const team = [
   {
-    name: "Mr. Sham",
+    name: "Mr. Sham Velani",
     role: "Founder",
     image: "https://randomuser.me/api/portraits/men/44.jpg",
     fallback: "AS",
     url: "https://21stcenturygroup.org",
-    description: "Experience over 10 years in matchmaking.",
+    description: "Mr. Sham brings over a decade of profound experience in business leadership, complemented by extensive expertise in personal assistant services and financial service management. His visionary guidance has been instrumental in shaping our mission to foster meaningful connections.",
   },
   {
     name: "Mr. Ben Carter",
@@ -26,7 +26,7 @@ const team = [
     image: "https://randomuser.me/api/portraits/men/46.jpg",
     fallback: "BC",
     url: "https://example.com/ben",
-    description: "Dedicated to providing excellent service.",
+    description: "As our Service Lead, Mr. Ben Carter is passionately dedicated to ensuring an unparalleled service experience for all our members. He meticulously oversees our operations to guarantee satisfaction and build lasting trust.",
   },
   {
     name: "Ms. Chloe Davis",
@@ -34,7 +34,7 @@ const team = [
     image: "https://randomuser.me/api/portraits/women/47.jpg",
     fallback: "CD",
     url: "https://example.com/chloe",
-    description: "Connecting with our community online.",
+    description: "Ms. Chloe Davis, our Social Media Specialist, expertly crafts our online presence and fosters a vibrant community. She is committed to connecting with our audience and amplifying our message across all digital platforms.",
   },
   {
     name: "Mr. David Lee",
@@ -42,7 +42,7 @@ const team = [
     image: "https://randomuser.me/api/portraits/men/45.jpg",
     fallback: "DL",
     url: "https://example.com/david",
-    description: "Building the technology of connection.",
+    description: "Mr. David Lee, our innovative Lead Developer, is the architect behind the robust and intuitive technology that powers our platform. He continuously strives to enhance user experience and build seamless connections through cutting-edge solutions.",
   },
 ]
 

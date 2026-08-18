@@ -74,7 +74,6 @@ export async function POST(req: Request) {
       )
     }
 
-    // Check if a tracking connection already exists
     // Check if an active tracking connection already exists
     const existingSoulmate = await prisma.tracking.findFirst({
       where: {
@@ -109,84 +108,9 @@ export async function POST(req: Request) {
         maleId,
         femaleId,
         matchPercentage,
+        status: "INITIAL_CONNECT",
       },
     })
-
-    // --- NEW LOGIC: Send male profile to female after tracking creation ---
-    const maleApplicationForm = await prisma.applicationForm.findUnique({
-      where: { id: maleId },
-      select: {
-        id: true,
-        customId: true,
-        personalDetails: true,
-        profile: { select: { id: true } }, // Need profile.id for print URL
-      },
-    })
-
-    const femaleApplicationForm = await prisma.applicationForm.findUnique({
-      where: { id: femaleId },
-      select: {
-        personalDetails: true,
-      },
-    })
-
-    if (!maleApplicationForm || !femaleApplicationForm) {
-      console.error(
-        "Application forms not found for maleId or femaleId after tracking creation."
-      )
-      // Potentially revert tracking creation or just log and proceed with existing response
-      // For now, we'll log and return success without sending profile.
-      return NextResponse.json({
-        success: true,
-        tracking,
-        message:
-          "Soulmate created, but failed to find application forms for profile sending.",
-      })
-    }
-
-    type PersonalDetails = {
-      email: string
-      prefix: string
-      name: string
-      gender: string
-    }
-
-    const toFemale = femaleApplicationForm.personalDetails as PersonalDetails
-    const maleAppForSend = maleApplicationForm // This is the application whose profile we are sending
-
-    // Call the internal API route to send the profile
-    const sendProfileResponse = await fetch(
-      `${env.BASE_URL}/api/tracking/${tracking.id}/send-profile`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          application: maleAppForSend,
-          to: toFemale,
-        }),
-      }
-    )
-
-    if (sendProfileResponse.ok) {
-      console.log(
-        `Male profile for tracking ${tracking.id} successfully sent to female.`
-      )
-      // Update tracking status to indicate male profile has been sent to female
-      await prisma.tracking.update({
-        where: { id: tracking.id },
-        data: { status: "MALE_PROFILE_SENT_TO_FEMALE" },
-      })
-    } else {
-      console.error(
-        `Failed to send male profile for tracking ${
-          tracking.id
-        }: ${await sendProfileResponse.text()}`
-      )
-      // Log the error but still return success for tracking creation
-    }
-    // --- END NEW LOGIC ---
 
     return NextResponse.json({
       success: true,

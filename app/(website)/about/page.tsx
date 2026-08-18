@@ -1,4 +1,5 @@
 import { AppName } from "@/components/app-name"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Card,
   CardContent,
@@ -6,11 +7,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Target, Eye, Handshake } from "lucide-react"
+import { Target, Eye, Handshake, Globe2 } from "lucide-react"
 import { Cta } from "@/components/cta"
 import { MotionDiv } from "@/components/motion"
 
+const team = [
+  {
+    name: "Dr. Anya Sharma",
+    role: "Founder",
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    fallback: "AS",
+    url: "https://example.com/anya",
+  },
+  {
+    name: "Mr. Ben Carter",
+    role: "Service Lead",
+    image: "https://randomuser.me/api/portraits/men/46.jpg",
+    fallback: "BC",
+    url: "https://example.com/ben",
+  },
+  {
+    name: "Ms. Chloe Davis",
+    role: "Social Media Specialist",
+    image: "https://randomuser.me/api/portraits/women/47.jpg",
+    fallback: "CD",
+    url: "https://example.com/chloe",
+  },
+  {
+    name: "Mr. David Lee",
+    role: "Lead Developer",
+    image: "https://randomuser.me/api/portraits/men/45.jpg",
+    fallback: "DL",
+    url: "https://example.com/david",
+  },
+]
+
 export default function AboutPage() {
+  const [founder, ...otherMembers] = team
+
   return (
     <main className="mb-12 space-y-12">
       <section className="bg-animated-gradient flex min-h-[300px] py-12 md:py-24">
@@ -22,7 +56,7 @@ export default function AboutPage() {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="mb-8 text-4xl font-bold tracking-tighter md:text-5xl text-gradient">
+            <h1 className="text-gradient mb-8 text-4xl font-bold tracking-tighter md:text-5xl">
               About Us
             </h1>
           </MotionDiv>
@@ -60,7 +94,8 @@ export default function AboutPage() {
               <p className="text-muted-foreground md:text-xl">
                 <AppName className="inline font-bold" />
                 &nbsp;is a personalised matchmaking service dedicated to
-                creating a genuine, meaningful connection between YOU and your future partner.
+                creating a genuine, meaningful connection between YOU and your
+                future partner.
               </p>
 
               <p className="text-muted-foreground md:text-xl">
@@ -178,6 +213,87 @@ export default function AboutPage() {
                 </CardContent>
               </Card>
             </MotionDiv>
+          </div>
+        </div>
+      </section>
+      {/* Our Team Section */}
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <MotionDiv
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5 }}
+            className="mb-12 text-center"
+          >
+            <h2 className="text-gradient text-3xl font-bold tracking-tighter md:text-4xl">
+              Our Team
+            </h2>
+            <p className="mt-4 text-muted-foreground md:text-xl">
+              Meet the dedicated individuals behind our mission.
+            </p>
+          </MotionDiv>
+
+          {/* Founder */}
+          <div className="mb-8 flex justify-center">
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="w-full sm:max-w-sm" // Added class for width control
+            >
+              <Card className="flex h-full flex-col items-center justify-center p-6 text-center">
+                <Avatar className="mb-4 h-32 w-32">
+                  <AvatarImage src={founder.image} alt={founder.name} />
+                  <AvatarFallback>{founder.fallback}</AvatarFallback>
+                </Avatar>
+                <CardTitle className="text-xl">{founder.name}</CardTitle>
+                <CardDescription className="mb-2">
+                  {founder.role}
+                </CardDescription>
+                <a
+                  href={founder.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                >
+                  <Globe2 className="h-6 w-6" />
+                </a>
+              </Card>
+            </MotionDiv>
+          </div>
+
+          {/* Other Team Members */}
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {otherMembers.map((member, index) => (
+              <MotionDiv
+                key={member.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+              >
+                <Card className="flex h-full flex-col items-center justify-center p-6 text-center">
+                  <Avatar className="mb-4 h-32 w-32">
+                    <AvatarImage src={member.image} alt={member.name} />
+                    <AvatarFallback>{member.fallback}</AvatarFallback>
+                  </Avatar>
+                  <CardTitle className="text-xl">{member.name}</CardTitle>
+                  <CardDescription className="mb-2">
+                    {member.role}
+                  </CardDescription>
+                  <a
+                    href={member.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                  >
+                    <Globe2 className="h-6 w-6" />
+                  </a>
+                </Card>
+              </MotionDiv>
+            ))}
           </div>
         </div>
       </section>

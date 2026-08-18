@@ -13,11 +13,12 @@ import { MotionDiv } from "@/components/motion"
 
 const team = [
   {
-    name: "Dr. Anya Sharma",
+    name: "Mr. Sham",
     role: "Founder",
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    image: "https://randomuser.me/api/portraits/men/44.jpg",
     fallback: "AS",
-    url: "https://example.com/anya",
+    url: "https://21stcenturygroup.org",
+    description: "Experience over 10 years in matchmaking.",
   },
   {
     name: "Mr. Ben Carter",
@@ -25,6 +26,7 @@ const team = [
     image: "https://randomuser.me/api/portraits/men/46.jpg",
     fallback: "BC",
     url: "https://example.com/ben",
+    description: "Dedicated to providing excellent service.",
   },
   {
     name: "Ms. Chloe Davis",
@@ -32,6 +34,7 @@ const team = [
     image: "https://randomuser.me/api/portraits/women/47.jpg",
     fallback: "CD",
     url: "https://example.com/chloe",
+    description: "Connecting with our community online.",
   },
   {
     name: "Mr. David Lee",
@@ -39,6 +42,7 @@ const team = [
     image: "https://randomuser.me/api/portraits/men/45.jpg",
     fallback: "DL",
     url: "https://example.com/david",
+    description: "Building the technology of connection.",
   },
 ]
 
@@ -252,6 +256,9 @@ export default function AboutPage() {
                 <CardDescription className="mb-2">
                   {founder.role}
                 </CardDescription>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  {founder.description}
+                </p>
                 <a
                   href={founder.url}
                   target="_blank"
@@ -283,6 +290,9 @@ export default function AboutPage() {
                   <CardDescription className="mb-2">
                     {member.role}
                   </CardDescription>
+                  <p className="mb-4 text-sm text-muted-foreground">
+                    {member.description}
+                  </p>
                   <a
                     href={member.url}
                     target="_blank"

@@ -1,12 +1,7 @@
 import { NextResponse } from "next/server"
 
-import { resend } from "@/lib/resend"
-import { SendFemaleProfileMemberEmail } from "@/emails/member/send-female-profile-member"
-import { env } from "@/lib/env"
-import { APP_INFO, EMAIL } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { TrackingStatus } from "@/lib/generated/prisma/enums"
-import { generateProfilePdf } from "@/lib/generate-profile-pdf"
 
 type PersonalDetails = {
   email: string
@@ -79,8 +74,9 @@ export async function GET(
 
   // Existing logic for status updates (accepted/rejected)
   if (status !== "accepted" && status !== "rejected") {
-    return NextResponse.redirect(
-      `${env.BASE_URL}/action-feedback?error=Invalid status value`
+    return NextResponse.json(
+      { success: false, message: "Invalid status value" },
+      { status: 400 }
     )
   }
 
@@ -102,72 +98,48 @@ export async function GET(
     })
 
     if (!tracking) {
-      return NextResponse.redirect(
-        `${env.BASE_URL}/action-feedback?error=Tracking not found`
+      return NextResponse.json(
+        { success: false, message: "Tracking not found" },
+        { status: 404 }
       )
     }
 
     // Assuming the flow is MALE_PROFILE_SENT_TO_FEMALE -> FEMALE_ACCEPTED/FEMALE_REJECT
-    if (tracking.status !== TrackingStatus.MALE_PROFILE_SENT_TO_FEMALE) {
-      return NextResponse.redirect(
-        `${env.BASE_URL}/action-feedback?error=This action has already been processed or is not applicable at this stage.`
+    if (tracking.status !== TrackingStatus.BOTH_PROFILES_SENT) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "This action has already been processed or is not applicable at this stage.",
+        },
+        { status: 400 }
       )
     }
 
     const newStatus =
       status === "accepted"
         ? TrackingStatus.FEMALE_ACCEPTED
-        : TrackingStatus.FEMALE_REJECT
+        : TrackingStatus.FEMALE_REJECTED
 
     await prisma.tracking.update({
       where: { id: trackingId },
       data: { status: newStatus },
     })
 
-    if (newStatus === TrackingStatus.FEMALE_ACCEPTED) {
-      // Send email to male
-      const maleDetails = tracking.male.personalDetails as PersonalDetails
 
-      const profileUrl = new URL(
-        `/print/${tracking.female.profile!.id}/profile`,
-        request.url
-      )
-      const pdf = await generateProfilePdf(profileUrl.toString())
 
-      await resend.emails.send({
-        from: `${APP_INFO.name} <${EMAIL.contact}>`,
-        // to: [maleDetails.email`,
-        to: ["boolean405@gmail.com"],
-        subject: `[Soulmate] Good news from your potential tracking!`,
-        react: SendFemaleProfileMemberEmail({
-          to: {
-            prefix: maleDetails.prefix,
-            name: maleDetails.name,
-          },
-          profileId: tracking.female.profile!.id,
-        }),
-        attachments: [
-          {
-            filename: `Profile-ID-${tracking.female.customId}.pdf`,
-            content: pdf,
-          },
-        ],
-      })
-
-      // Update tracking status to FEMALE_PROFILE_SENT_TO_MALE
-      await prisma.tracking.update({
-        where: { id: trackingId },
-        data: { status: TrackingStatus.FEMALE_PROFILE_SENT_TO_MALE },
-      })
-    }
-
-    return NextResponse.redirect(
-      `${env.BASE_URL}/action-feedback?message=Your response has been recorded. Thank you!`
-    )
+    return NextResponse.json({
+      success: true,
+      message: "Your response has been recorded. Thank you!",
+    })
   } catch (error) {
     console.error("Error processing tracking status:", error)
-    return NextResponse.redirect(
-      `${env.BASE_URL}/action-feedback?error=An unexpected error occurred.`
+    return NextResponse.json(
+      {
+        success: false,
+        message: "An unexpected error occurred.",
+      },
+      { status: 500 }
     )
   }
 }
@@ -228,7 +200,7 @@ export async function PATCH(
       dataToUpdate.closedFromStatus = tracking.status
     }
 
-    let updatedSoulmate = await prisma.tracking.update({
+    const updatedSoulmate = await prisma.tracking.update({
       where: { id: trackingId },
       data: dataToUpdate,
       include: {
@@ -263,70 +235,7 @@ export async function PATCH(
       },
     })
 
-    if (status === TrackingStatus.FEMALE_ACCEPTED) {
-      const maleDetails = tracking.male.personalDetails as PersonalDetails
 
-      const profileUrl = new URL(
-        `/print/${tracking.female.profile!.id}/profile`,
-        request.url
-      )
-      const pdf = await generateProfilePdf(profileUrl.toString())
-
-      await resend.emails.send({
-        from: `${APP_INFO.name} <${EMAIL.contact}>`,
-        // to: [maleDetails.email],
-        to: ["boolean405@gmail.com"],
-        subject: `[Soulmate] Good news from your potential tracking!`,
-        react: SendFemaleProfileMemberEmail({
-          to: {
-            prefix: maleDetails.prefix,
-            name: maleDetails.name,
-          },
-          profileId: tracking.female.profile!.id,
-        }),
-        attachments: [
-          {
-            filename: `Profile-ID-${tracking.female.customId}.pdf`,
-            content: pdf,
-          },
-        ],
-      })
-
-      updatedSoulmate = await prisma.tracking.update({
-        where: { id: trackingId },
-        data: { status: TrackingStatus.FEMALE_PROFILE_SENT_TO_MALE },
-        include: {
-          male: {
-            select: {
-              id: true,
-              customId: true,
-              personalDetails: true,
-              photos: true,
-            },
-          },
-          female: {
-            select: {
-              id: true,
-              customId: true,
-              personalDetails: true,
-              photos: true,
-            },
-          },
-          notes: {
-            include: {
-              user: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
-        },
-      })
-    }
 
     return NextResponse.json({ success: true, tracking: updatedSoulmate })
   } catch (error) {

@@ -258,15 +258,29 @@ const SoulmateStatusLine: React.FC<{
             g.statuses.includes(closedFromStatus!)
           )
           const closedFromStep = closedFromGroup?.step ?? 0
-          if (group.step < closedFromStep) {
-            icon = <CheckCircle2 className="size-4 text-green-500" />
-            textColorClass = "text-green-700"
-            separatorColorClass = "bg-green-500"
-          } else if (group.step === statusGroups.length) {
-            icon = <CheckCircle2 className="size-4 text-blue-500" />
-            textColorClass = "text-blue-700 font-semibold"
+
+          if (closedFromStatus === TrackingStatus.INITIAL_CONNECT) {
+            // Special handling for closing from the default state.
+            if (group.step === statusGroups.length) {
+              // last step ("Closed")
+              icon = <CheckCircle2 className="size-4 text-blue-500" />
+              textColorClass = "text-blue-700 font-semibold"
+            } else {
+              // all other steps
+              icon = <Circle className="size-4 fill-gray-300 text-gray-300" />
+            }
           } else {
-            icon = <XCircle className="size-4 text-red-500" />
+            // Logic for closing from other steps
+            if (group.step < closedFromStep) {
+              icon = <CheckCircle2 className="size-4 text-green-500" />
+              textColorClass = "text-green-700"
+              separatorColorClass = "bg-green-500"
+            } else if (group.step === statusGroups.length) {
+              icon = <CheckCircle2 className="size-4 text-blue-500" />
+              textColorClass = "text-blue-700 font-semibold"
+            } else {
+              icon = <XCircle className="size-4 text-red-500" />
+            }
           }
         } else if (isCompleted) {
           icon = <CheckCircle2 className="size-4 text-green-500" />

@@ -3,12 +3,6 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { TrackingStatus } from "@/lib/generated/prisma/enums"
 
-type PersonalDetails = {
-  email: string
-  prefix: string
-  name: string
-}
-
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -126,8 +120,6 @@ export async function GET(
       data: { status: newStatus },
     })
 
-
-
     return NextResponse.json({
       success: true,
       message: "Your response has been recorded. Thank you!",
@@ -234,8 +226,6 @@ export async function PATCH(
         },
       },
     })
-
-
 
     return NextResponse.json({ success: true, tracking: updatedSoulmate })
   } catch (error) {

@@ -59,8 +59,16 @@ enum TrackingStatus {
 }
 
 const statusGroups = [
-  { step: 1, name: "Initial Connect", statuses: [TrackingStatus.INITIAL_CONNECT] },
-  { step: 2, name: "Profiles Sent", statuses: [TrackingStatus.BOTH_PROFILES_SENT] },
+  {
+    step: 1,
+    name: "Initial Connect",
+    statuses: [TrackingStatus.INITIAL_CONNECT],
+  },
+  {
+    step: 2,
+    name: "Profiles Sent",
+    statuses: [TrackingStatus.BOTH_PROFILES_SENT],
+  },
   {
     step: 3,
     name: "Female's Review",
@@ -81,12 +89,32 @@ const statusGroups = [
       TrackingStatus.MALE_ACCEPTED,
     ],
   },
-  { step: 5, name: "Both Accepted", statuses: [TrackingStatus.BOTH_PROFILES_ACCEPTED] },
+  {
+    step: 5,
+    name: "Both Accepted",
+    statuses: [TrackingStatus.BOTH_PROFILES_ACCEPTED],
+  },
   { step: 6, name: "First Meet", statuses: [TrackingStatus.FIRST_GOOGLE_MEET] },
-  { step: 7, name: "Second Meet", statuses: [TrackingStatus.SECOND_GOOGLE_MEET] },
-  { step: 8, name: "First Follow-up", statuses: [TrackingStatus.FIRST_FOLLOW_UP] },
-  { step: 9, name: "Second Follow-up", statuses: [TrackingStatus.SECOND_FOLLOW_UP] },
-  { step: 10, name: "Third Follow-up", statuses: [TrackingStatus.THIRD_FOLLOW_UP] },
+  {
+    step: 7,
+    name: "Second Meet",
+    statuses: [TrackingStatus.SECOND_GOOGLE_MEET],
+  },
+  {
+    step: 8,
+    name: "First Follow-up",
+    statuses: [TrackingStatus.FIRST_FOLLOW_UP],
+  },
+  {
+    step: 9,
+    name: "Second Follow-up",
+    statuses: [TrackingStatus.SECOND_FOLLOW_UP],
+  },
+  {
+    step: 10,
+    name: "Third Follow-up",
+    statuses: [TrackingStatus.THIRD_FOLLOW_UP],
+  },
   { step: 11, name: "Matched", statuses: [TrackingStatus.MATCHED] },
   { step: 12, name: "Closed", statuses: [TrackingStatus.CLOSED] },
 ]
@@ -149,7 +177,8 @@ const SoulmateActions: React.FC<{
     trackingId: string,
     newStatus: TrackingStatus
   ) => Promise<void>
-}> = ({ tracking, isUpdating, handleUpdateStatus }) => {
+  handleSendProfiles: (tracking: Tracking) => Promise<void>
+}> = ({ tracking, isUpdating, handleUpdateStatus, handleSendProfiles }) => {
   const canSendProfiles = tracking.status === TrackingStatus.INITIAL_CONNECT
 
   return (
@@ -157,9 +186,7 @@ const SoulmateActions: React.FC<{
       {canSendProfiles && (
         <Button
           className="btn-gradient h-8 px-3 text-sm"
-          onClick={() =>
-            handleUpdateStatus(tracking.id, TrackingStatus.BOTH_PROFILES_SENT)
-          }
+          onClick={() => handleSendProfiles(tracking)}
           disabled={isUpdating}
         >
           {isUpdating ? (
@@ -366,6 +393,38 @@ export default function SoulmateTrackingPage() {
     fetchSoulmates()
   }, [])
 
+  const handleSendProfiles = async (tracking: Tracking) => {
+    setUpdatingId(tracking.id)
+    try {
+      const response = await fetch(
+        `/api/tracking/${tracking.id}/send-profiles`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            male: tracking.male,
+            female: tracking.female,
+          }),
+        }
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to send profiles")
+      }
+
+      // If emails are sent successfully, update the status
+      await handleUpdateStatus(tracking.id, TrackingStatus.BOTH_PROFILES_SENT)
+    } catch (error) {
+      console.error(error)
+      setError(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      )
+    } finally {
+      // setUpdatingId(null) is called inside handleUpdateStatus
+    }
+  }
+
   const handleUpdateStatus = async (
     trackingId: string,
     newStatus: TrackingStatus
@@ -531,6 +590,7 @@ export default function SoulmateTrackingPage() {
               tracking={tracking}
               isUpdating={updatingId === tracking.id}
               handleUpdateStatus={handleUpdateStatus}
+              handleSendProfiles={handleSendProfiles}
             />
           </CardHeader>
           <CardContent>

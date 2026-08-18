@@ -7,72 +7,86 @@ import { resend } from "@/lib/resend"
 import { generateProfilePdf } from "@/lib/generate-profile-pdf"
 
 export const runtime = "nodejs"
-export const maxDuration = 30
+export const maxDuration = 60
 
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { application, to } = await req.json()
-    const { id } = await params
+    const { id: trackingId } = await params
+    const { male, female } = await req.json()
 
-    const reactEmail =
-      to.gender.toUpperCase() === "FEMALE"
-        ? SendMaleProfileEmail({
-            to,
-            trackingId: id,
-          })
-        : SendFemaleProfileMemberEmail({
-            profileId: application.profile.id,
-            to,
-          })
-
-    const profileUrl = new URL(
-      `/print/${application.profile.id}/profile`,
+    // 1. Generate PDFs for both profiles
+    const maleProfileUrl = new URL(
+      `/print/${male.id}/profile`,
       req.url
-    )
+    ).toString()
+    const femaleProfileUrl = new URL(
+      `/print/${female.id}/profile`,
+      req.url
+    ).toString()
 
-    const pdf = await generateProfilePdf(profileUrl.toString())
+    const [malePdf, femalePdf] = await Promise.all([
+      generateProfilePdf(maleProfileUrl),
+      generateProfilePdf(femaleProfileUrl),
+    ])
 
-    // Send email
-    const result = await resend.emails.send({
+    // 2. Prepare emails
+    const emailToFemale = {
       from: `${APP_INFO.name} <${EMAIL.contact}>`,
-      to: ["boolean405@gmail.com"],
-      // to: [to.email],
-
+      to: ['boolean405@gmail.com'],
+      // to: [female.personalDetails.email],
       subject:
         "[Soulmate] A carefully selected match is waiting for your review.",
-
-      react: reactEmail,
-
+      react: SendMaleProfileEmail({
+        to: female.personalDetails,
+        trackingId: trackingId,
+      }),
       attachments: [
         {
-          filename: `Profile-ID-${application.customId}.pdf`,
-          content: pdf,
+          filename: `Profile-ID-${male.customId}.pdf`,
+          content: malePdf,
         },
       ],
-    })
+    }
 
-    console.log("Email sent:", result)
+    const emailToMale = {
+      from: `${APP_INFO.name} <${EMAIL.contact}>`,
+      to: ['boolean405@gmail.com'],
+      // to: [male.personalDetails.email],
+      subject:
+        "[Soulmate] A carefully selected match is waiting for your review.",
+      react: SendFemaleProfileMemberEmail({
+        to: male.personalDetails,
+        profileId: female.id,
+      }),
+      attachments: [
+        {
+          filename: `Profile-ID-${female.customId}.pdf`,
+          content: femalePdf,
+        },
+      ],
+    }
 
-    return NextResponse.json({
-      success: true,
-    })
+    // 3. Send both emails
+    const [resultToFemale, resultToMale] = await resend.batch.send([
+      emailToFemale,
+      emailToMale,
+    ])
+
+    console.log("Email to female sent:", resultToFemale)
+    console.log("Email to male sent:", resultToMale)
+
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Failed to send profile email:", error)
-
+    console.error("Failed to send profile emails:", error)
     return NextResponse.json(
       {
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to send profile email",
+        error: "Failed to send profile emails",
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     )
   }
 }

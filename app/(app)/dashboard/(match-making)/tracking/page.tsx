@@ -414,7 +414,7 @@ export default function SoulmateTrackingPage() {
       }
 
       // If emails are sent successfully, update the status
-      await handleUpdateStatus(tracking.id, TrackingStatus.BOTH_PROFILES_SENT)
+      await handleUpdateStatus(tracking.id, TrackingStatus.FEMALE_REVIEW)
     } catch (error) {
       console.error(error)
       setError(

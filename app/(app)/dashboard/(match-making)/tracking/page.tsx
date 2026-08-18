@@ -39,77 +39,56 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 enum TrackingStatus {
   INITIAL_CONNECT = "INITIAL_CONNECT",
-  MALE_PROFILE_SENT_TO_FEMALE = "MALE_PROFILE_SENT_TO_FEMALE",
+  BOTH_PROFILES_SENT = "BOTH_PROFILES_SENT",
+  FEMALE_REVIEW = "FEMALE_REVIEW",
   FEMALE_THINKING = "FEMALE_THINKING",
-  FEMALE_REJECT = "FEMALE_REJECT",
+  FEMALE_REJECTED = "FEMALE_REJECTED",
   FEMALE_ACCEPTED = "FEMALE_ACCEPTED",
-  FEMALE_PROFILE_SENT_TO_MALE = "FEMALE_PROFILE_SENT_TO_MALE",
+  MALE_REVIEW = "MALE_REVIEW",
   MALE_THINKING = "MALE_THINKING",
-  MALE_REJECT = "MALE_REJECT",
+  MALE_REJECTED = "MALE_REJECTED",
   MALE_ACCEPTED = "MALE_ACCEPTED",
+  BOTH_PROFILES_ACCEPTED = "BOTH_PROFILES_ACCEPTED",
   FIRST_GOOGLE_MEET = "FIRST_GOOGLE_MEET",
-  REVIEW_FIRST_GOOGLE_MEET = "REVIEW_FIRST_GOOGLE_MEET",
   SECOND_GOOGLE_MEET = "SECOND_GOOGLE_MEET",
-  REVIEW_SECOND_GOOGLE_MEET = "REVIEW_SECOND_GOOGLE_MEET",
-  THIRD_GOOGLE_MEET = "THIRD_GOOGLE_MEET",
-  REVIEW_THIRD_GOOGLE_MEET = "REVIEW_THIRD_GOOGLE_MEET",
-  FINAL_MATCH = "FINAL_MATCH",
-  CONNECTED = "CONNECTED",
+  FIRST_FOLLOW_UP = "FIRST_FOLLOW_UP",
+  SECOND_FOLLOW_UP = "SECOND_FOLLOW_UP",
+  THIRD_FOLLOW_UP = "THIRD_FOLLOW_UP",
+  MATCHED = "MATCHED",
   CLOSED = "CLOSED",
 }
 
 const statusGroups = [
+  { step: 1, name: "Initial Connect", statuses: [TrackingStatus.INITIAL_CONNECT] },
+  { step: 2, name: "Profiles Sent", statuses: [TrackingStatus.BOTH_PROFILES_SENT] },
   {
-    name: "Initial Connect",
-    statuses: [TrackingStatus.INITIAL_CONNECT],
-  },
-  {
+    step: 3,
     name: "Female's Review",
     statuses: [
-      TrackingStatus.MALE_PROFILE_SENT_TO_FEMALE,
+      TrackingStatus.FEMALE_REVIEW,
       TrackingStatus.FEMALE_THINKING,
-      TrackingStatus.FEMALE_REJECT,
+      TrackingStatus.FEMALE_REJECTED,
       TrackingStatus.FEMALE_ACCEPTED,
     ],
   },
   {
+    step: 4,
     name: "Male's Review",
     statuses: [
-      TrackingStatus.FEMALE_PROFILE_SENT_TO_MALE,
+      TrackingStatus.MALE_REVIEW,
       TrackingStatus.MALE_THINKING,
-      TrackingStatus.MALE_REJECT,
+      TrackingStatus.MALE_REJECTED,
       TrackingStatus.MALE_ACCEPTED,
     ],
   },
-  {
-    name: "First Meet",
-    statuses: [
-      TrackingStatus.FIRST_GOOGLE_MEET,
-      TrackingStatus.REVIEW_FIRST_GOOGLE_MEET,
-    ],
-  },
-  {
-    name: "Second Meet",
-    statuses: [
-      TrackingStatus.SECOND_GOOGLE_MEET,
-      TrackingStatus.REVIEW_SECOND_GOOGLE_MEET,
-    ],
-  },
-  {
-    name: "Third Meet",
-    statuses: [
-      TrackingStatus.THIRD_GOOGLE_MEET,
-      TrackingStatus.REVIEW_THIRD_GOOGLE_MEET,
-    ],
-  },
-  {
-    name: "Final Match",
-    statuses: [TrackingStatus.FINAL_MATCH, TrackingStatus.CONNECTED],
-  },
-  {
-    name: "Closed",
-    statuses: [TrackingStatus.CLOSED],
-  },
+  { step: 5, name: "Both Accepted", statuses: [TrackingStatus.BOTH_PROFILES_ACCEPTED] },
+  { step: 6, name: "First Meet", statuses: [TrackingStatus.FIRST_GOOGLE_MEET] },
+  { step: 7, name: "Second Meet", statuses: [TrackingStatus.SECOND_GOOGLE_MEET] },
+  { step: 8, name: "First Follow-up", statuses: [TrackingStatus.FIRST_FOLLOW_UP] },
+  { step: 9, name: "Second Follow-up", statuses: [TrackingStatus.SECOND_FOLLOW_UP] },
+  { step: 10, name: "Third Follow-up", statuses: [TrackingStatus.THIRD_FOLLOW_UP] },
+  { step: 11, name: "Matched", statuses: [TrackingStatus.MATCHED] },
+  { step: 12, name: "Closed", statuses: [TrackingStatus.CLOSED] },
 ]
 
 interface TrackingApplication {
@@ -163,85 +142,38 @@ const getMatchPercentageVariant = (percentage: number) => {
   return "error"
 }
 
-interface HandleSendProfileProps {
-  tracking: Tracking
-  application: TrackingApplication
-  to: TrackingApplication
-  newStatus: TrackingStatus
-}
-
 const SoulmateActions: React.FC<{
   tracking: Tracking
   isUpdating: boolean
-  handleSendProfile: (props: HandleSendProfileProps) => Promise<void>
   handleUpdateStatus: (
     trackingId: string,
     newStatus: TrackingStatus
   ) => Promise<void>
-}> = ({ tracking, isUpdating, handleSendProfile, handleUpdateStatus }) => {
-  const canSendMaleProfileToFemale =
-    tracking.status === TrackingStatus.INITIAL_CONNECT
-  const canSendFemaleProfileToMale =
-    tracking.status === TrackingStatus.FEMALE_ACCEPTED
-
-  let sendProfileButton = null
-  if (canSendMaleProfileToFemale) {
-    sendProfileButton = (
-      <Button
-        className="btn-gradient h-8 px-3 text-sm"
-        onClick={() =>
-          handleSendProfile({
-            tracking,
-            application: tracking.male,
-            to: tracking.female,
-            newStatus: TrackingStatus.MALE_PROFILE_SENT_TO_FEMALE,
-          })
-        }
-        disabled={isUpdating}
-      >
-        {isUpdating ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
-          </>
-        ) : (
-          <>
-            <Send className="mr-2 h-4 w-4" />
-            Send Male Profile
-          </>
-        )}
-      </Button>
-    )
-  } else if (canSendFemaleProfileToMale) {
-    sendProfileButton = (
-      <Button
-        className="btn-gradient h-8 px-3 text-sm"
-        onClick={() =>
-          handleSendProfile({
-            tracking,
-            application: tracking.female,
-            to: tracking.male,
-            newStatus: TrackingStatus.FEMALE_PROFILE_SENT_TO_MALE,
-          })
-        }
-        disabled={isUpdating}
-      >
-        {isUpdating ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
-          </>
-        ) : (
-          <>
-            <Send className="mr-2 h-4 w-4" />
-            Send Female Profile
-          </>
-        )}
-      </Button>
-    )
-  }
+}> = ({ tracking, isUpdating, handleUpdateStatus }) => {
+  const canSendProfiles = tracking.status === TrackingStatus.INITIAL_CONNECT
 
   return (
     <div className="flex items-center gap-2">
-      {sendProfileButton}
+      {canSendProfiles && (
+        <Button
+          className="btn-gradient h-8 px-3 text-sm"
+          onClick={() =>
+            handleUpdateStatus(tracking.id, TrackingStatus.BOTH_PROFILES_SENT)
+          }
+          disabled={isUpdating}
+        >
+          {isUpdating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+            </>
+          ) : (
+            <>
+              <Send className="mr-2 h-4 w-4" />
+              Sent profiles
+            </>
+          )}
+        </Button>
+      )}
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -266,7 +198,6 @@ const SoulmateActions: React.FC<{
           {tracking.status !== TrackingStatus.CLOSED && (
             <>
               <DropdownMenuSeparator />
-
               <DropdownMenuItem
                 onClick={() =>
                   handleUpdateStatus(tracking.id, TrackingStatus.CLOSED)
@@ -288,113 +219,77 @@ const SoulmateStatusLine: React.FC<{
   currentStatus: Tracking["status"]
   closedFromStatus?: Tracking["status"]
 }> = ({ currentStatus, closedFromStatus }) => {
-  if (currentStatus === TrackingStatus.CLOSED) {
-    const closedAtGroupIndex = closedFromStatus
-      ? statusGroups.findIndex((group) =>
-          group.statuses.includes(closedFromStatus)
-        )
-      : -1
-
-    return (
-      <div className="flex items-center justify-between gap-1 text-xs">
-        {statusGroups.map((group, index) => {
-          const isClosedGroup = group.statuses.includes(TrackingStatus.CLOSED)
-
-          let textColorClass = "text-gray-500"
-          let separatorColorClass = "bg-gray-300"
-          let icon = <XCircle className="size-4 text-red-500" />
-
-          if (isClosedGroup) {
-            textColorClass = "text-blue-700 font-semibold"
-            icon = <CheckCircle2 className="size-4 text-blue-500" />
-          } else {
-            const wasCompletedBeforeClose =
-              closedAtGroupIndex > -1 && index < closedAtGroupIndex
-            if (wasCompletedBeforeClose) {
-              textColorClass = "text-green-700"
-              separatorColorClass = "bg-green-500"
-              icon = <CheckCircle2 className="size-4 text-green-500" />
-            }
-          }
-
-          const shouldShowSeparator = index < statusGroups.length - 1
-
-          return (
-            <React.Fragment key={group.name}>
-              <div className="flex min-w-0 flex-1 flex-col items-center">
-                <span title={group.name}>{icon}</span>
-                <span
-                  className={cn(
-                    "mt-1 truncate text-center",
-                    textColorClass,
-                    "max-w-[70px] whitespace-normal"
-                  )}
-                >
-                  {group.name}
-                </span>
-              </div>
-              {shouldShowSeparator && (
-                <div
-                  className={cn("h-1 flex-1", separatorColorClass, "mx-1")}
-                ></div>
-              )}
-            </React.Fragment>
-          )
-        })}
-      </div>
-    )
-  }
-  const currentGroupIndex = statusGroups.findIndex((group) =>
-    group.statuses.includes(currentStatus)
+  const currentGroup = statusGroups.find((g) =>
+    g.statuses.includes(currentStatus)
   )
+  const currentStep = currentGroup?.step ?? 0
 
-  const isRejected =
-    currentStatus === TrackingStatus.FEMALE_REJECT ||
-    currentStatus === TrackingStatus.MALE_REJECT
+  const getSubStatus = (step: number) => {
+    if (step === 3) {
+      if (currentStatus === TrackingStatus.FEMALE_REVIEW) return "Review"
+      if (currentStatus === TrackingStatus.FEMALE_THINKING) return "Thinking"
+      if (currentStatus === TrackingStatus.FEMALE_REJECTED) return "Rejected"
+      if (currentStatus === TrackingStatus.FEMALE_ACCEPTED) return "Accepted"
+    }
+    if (step === 4) {
+      if (currentStatus === TrackingStatus.MALE_REVIEW) return "Review"
+      if (currentStatus === TrackingStatus.MALE_THINKING) return "Thinking"
+      if (currentStatus === TrackingStatus.MALE_REJECTED) return "Rejected"
+      if (currentStatus === TrackingStatus.MALE_ACCEPTED) return "Accepted"
+    }
+    return null
+  }
 
   return (
     <div className="flex items-center justify-between gap-1 text-xs">
       {statusGroups.map((group, index) => {
-        const isCompleted = currentGroupIndex > -1 && index < currentGroupIndex
-        const isCurrent = index === currentGroupIndex
+        const isCompleted = currentStep > group.step
+        const isCurrent = currentStep === group.step
+        const isClosed = currentStatus === TrackingStatus.CLOSED
 
         let textColorClass = "text-gray-500"
         let separatorColorClass = "bg-gray-300"
-        let icon = <Circle className="size-4 fill-gray-300 text-gray-300" />
+        let icon: React.ReactNode = (
+          <Circle className="size-4 fill-gray-300 text-gray-300" />
+        )
 
-        if (isCompleted) {
+        if (isClosed) {
+          const closedFromGroup = statusGroups.find((g) =>
+            g.statuses.includes(closedFromStatus!)
+          )
+          const closedFromStep = closedFromGroup?.step ?? 0
+          if (group.step < closedFromStep) {
+            icon = <CheckCircle2 className="size-4 text-green-500" />
+            textColorClass = "text-green-700"
+            separatorColorClass = "bg-green-500"
+          } else if (group.step === statusGroups.length) {
+            icon = <CheckCircle2 className="size-4 text-blue-500" />
+            textColorClass = "text-blue-700 font-semibold"
+          } else {
+            icon = <XCircle className="size-4 text-red-500" />
+          }
+        } else if (isCompleted) {
+          icon = <CheckCircle2 className="size-4 text-green-500" />
           textColorClass = "text-green-700"
           separatorColorClass = "bg-green-500"
-          icon = <CheckCircle2 className="size-4 text-green-500" />
         } else if (isCurrent) {
-          if (isRejected) {
-            textColorClass = "text-red-700 font-semibold"
+          const subStatus = getSubStatus(group.step)
+          if (subStatus === "Thinking") {
+            icon = <Clock className="size-4 animate-spin text-yellow-500" />
+            textColorClass = "text-yellow-700 font-semibold"
+          } else if (
+            subStatus === "Rejected" ||
+            currentStatus.includes("REJECTED")
+          ) {
             icon = <XCircle className="size-4 fill-red-500 text-red-500" />
+            textColorClass = "text-red-700 font-semibold"
           } else {
-            // This is the "current" status that is not rejected.
-            // The user wants blue for 'INITIAL_CONNECT' and a yellow spinning icon for 'REVIEW' and 'THINKING' statuses.
-            const isReviewStatus = group.statuses.some((status) =>
-              status.startsWith("REVIEW_")
-            )
-            const isThinkingStatus =
-              group.statuses.includes(TrackingStatus.FEMALE_THINKING) ||
-              group.statuses.includes(TrackingStatus.MALE_THINKING)
-
-            if (currentStatus === TrackingStatus.INITIAL_CONNECT) {
-              textColorClass = "text-blue-700 font-semibold"
-              icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
-            } else if (isReviewStatus || isThinkingStatus) {
-              textColorClass = "text-yellow-700 font-semibold"
-              icon = <Clock className="size-4 animate-spin text-yellow-500" /> // Using Clock icon with spin for "thinking" and "review"
-            } else {
-              // Default to blue circle for other non-rejected current statuses
-              textColorClass = "text-blue-700 font-semibold"
-              icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
-            }
+            icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
+            textColorClass = "text-blue-700 font-semibold"
           }
         }
 
-        const shouldShowSeparator = index < statusGroups.length - 1
+        const subStatus = getSubStatus(group.step)
 
         return (
           <React.Fragment key={group.name}>
@@ -409,8 +304,16 @@ const SoulmateStatusLine: React.FC<{
               >
                 {group.name}
               </span>
+              {isCurrent && subStatus && (
+                <Badge
+                  variant={subStatus === "Rejected" ? "destructive" : "default"}
+                  className="mt-1"
+                >
+                  {subStatus}
+                </Badge>
+              )}
             </div>
-            {shouldShowSeparator && (
+            {index < statusGroups.length - 1 && (
               <div
                 className={cn("h-1 flex-1", separatorColorClass, "mx-1")}
               ></div>
@@ -498,43 +401,6 @@ export default function SoulmateTrackingPage() {
     }
   }
 
-  const handleSendProfile = async ({
-    tracking,
-    application,
-    to,
-    newStatus,
-  }: HandleSendProfileProps) => {
-    setUpdatingId(tracking.id)
-    try {
-      const response = await fetch(
-        `/api/tracking/${tracking.id}/send-profile`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            application,
-            to: {
-              name: to.personalDetails.name,
-              email: to.personalDetails.email,
-              gender: to.personalDetails.gender,
-            },
-          }),
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error("Failed to send profile")
-      }
-
-      await handleUpdateStatus(tracking.id, newStatus)
-    } catch (error) {
-      console.error(error)
-      setError("Failed to send profile.")
-    } finally {
-      setUpdatingId(null)
-    }
-  }
-
   if (isLoading) {
     return (
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -569,13 +435,13 @@ export default function SoulmateTrackingPage() {
               </div>
               <Separator className="my-4" />
               <div className="flex items-center justify-between gap-1 text-xs">
-                {Array.from({ length: 8 }).map((_, index) => (
+                {Array.from({ length: 11 }).map((_, index) => (
                   <React.Fragment key={index}>
                     <div className="flex min-w-0 flex-1 flex-col items-center">
                       <Skeleton className="size-4 rounded-full" />
                       <Skeleton className="mt-1 h-4 w-12" />
                     </div>
-                    {index < 7 && <Skeleton className="mx-1 h-1 flex-1" />}
+                    {index < 10 && <Skeleton className="mx-1 h-1 flex-1" />}
                   </React.Fragment>
                 ))}
               </div>
@@ -650,7 +516,6 @@ export default function SoulmateTrackingPage() {
             <SoulmateActions
               tracking={tracking}
               isUpdating={updatingId === tracking.id}
-              handleSendProfile={handleSendProfile}
               handleUpdateStatus={handleUpdateStatus}
             />
           </CardHeader>

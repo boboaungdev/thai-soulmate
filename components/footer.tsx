@@ -42,10 +42,10 @@ export function Footer() {
               />
               <div className="min-w-0 text-center">
                 <AppName className="truncate text-base font-semibold" />
-                <p className="truncate text-gradient text-sm">
+                <p className="text-gradient truncate text-sm">
                   {APP_INFO.tagline}
                 </p>
-                <p className="mt-2 text-gradient text-sm whitespace-pre-line">
+                <p className="text-gradient mt-2 text-sm whitespace-pre-line">
                   {APP_INFO.secondaryTagline}
                 </p>
               </div>
@@ -156,10 +156,16 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col items-center gap-4 border-t border-border/70 pt-5 text-sm text-muted-foreground">
           <div className="flex items-center gap-4">
-            <Link href="/terms-of-service" className="hover:text-foreground">
+            <Link
+              href="/terms-of-service"
+              className="hover:text-foreground hover:underline hover:brightness-125"
+            >
               Terms of Service
             </Link>
-            <Link href="/privacy-policy" className="hover:text-foreground">
+            <Link
+              href="/privacy-policy"
+              className="hover:text-foreground hover:underline hover:brightness-125"
+            >
               Privacy Policy
             </Link>
           </div>
@@ -170,7 +176,7 @@ export function Footer() {
               className="hover:text-foreground"
               onClick={handleHomeClick}
             >
-              <AppName />
+              <AppName className="transition-all hover:underline hover:brightness-125" />
             </Link>
             . All rights reserved.
           </p>

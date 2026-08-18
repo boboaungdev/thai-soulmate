@@ -245,13 +245,15 @@ export function PricingPageContents({
         </div>
         <p className="mx-auto mt-16 max-w-3xl text-base text-muted-foreground">
           For more details about any of our subscriptions, plans or membership
-          fees, please contact us.
+          fees, please{" "}
+          <Link
+            href="/contact"
+            className="text-gradient font-semibold transition-all hover:brightness-125 hover:underline"
+          >
+            contact us
+          </Link>
+          .
         </p>
-        <div className="mt-4 flex justify-center">
-          <Button asChild className="btn-gradient">
-            <Link href="/contact">Contact us</Link>
-          </Button>
-        </div>
       </div>
     </section>
   )

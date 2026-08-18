@@ -113,7 +113,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="gallery" className="py-16 sm:py-20">
+      {/* <section id="gallery" className="py-16 sm:py-20">
         <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}
@@ -138,7 +138,7 @@ export default function HomePage() {
             <ProfileGallery layout="scroll" />
           </MotionDiv>
         </div>
-      </section>
+      </section> */}
 
       <section id="faq" className="bg-muted/50 py-16 sm:py-20 dark:bg-muted/30">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">

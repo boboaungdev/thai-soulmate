@@ -21,11 +21,11 @@ export async function POST(
 
     // 1. Generate PDFs for both profiles
     const maleProfileUrl = new URL(
-      `${env.BASE_URL}/print/${male.id}/profile`,
+      `${env.BASE_URL}/print/${male.profile.id}/profile`,
       req.url
     ).toString()
     const femaleProfileUrl = new URL(
-      `${env.BASE_URL}/print/${female.id}/profile`,
+      `${env.BASE_URL}/print/${female.profile.id}/profile`,
       req.url
     ).toString()
 

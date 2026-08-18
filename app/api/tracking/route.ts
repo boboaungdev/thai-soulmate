@@ -42,7 +42,7 @@ export async function GET() {
       trackings,
     })
   } catch (error) {
-    console.error("GET SOULMATES ERROR:", error)
+    console.error("GET TRACKING ERROR:", error)
 
     return NextResponse.json(
       {

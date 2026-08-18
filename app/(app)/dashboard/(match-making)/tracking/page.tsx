@@ -278,7 +278,10 @@ const SoulmateStatusLine: React.FC<{
         )
 
         if (isClosed) {
-          if (group.step < closedFromStep) {
+          if (
+            group.step < closedFromStep ||
+            (group.step === closedFromStep && closedFromStep !== 0)
+          ) {
             icon = <CheckCircle2 className="size-4 text-green-500" />
             textColorClass = "text-green-700"
             separatorColorClass = "bg-green-500"
@@ -286,6 +289,9 @@ const SoulmateStatusLine: React.FC<{
             // The "Closed" step itself
             icon = <CheckCircle2 className="size-4 text-blue-500" />
             textColorClass = "text-blue-700 font-semibold"
+            if (closedFromStep > 0) {
+              separatorColorClass = "bg-green-500"
+            }
           } else {
             // Steps that were not completed before closing
             icon = <XCircle className="size-4 text-red-500" />

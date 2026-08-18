@@ -257,7 +257,7 @@ const SoulmateStatusLine: React.FC<{
             icon = <CheckCircle2 className="size-4 text-blue-500" />
           } else {
             const wasCompletedBeforeClose =
-              closedAtGroupIndex > -1 && index < closedAtGroupIndex
+              closedAtGroupIndex > -1 && index <= closedAtGroupIndex
             if (wasCompletedBeforeClose) {
               textColorClass = "text-green-700"
               separatorColorClass = "bg-green-500"
@@ -305,7 +305,7 @@ const SoulmateStatusLine: React.FC<{
 
         if (currentStatus === TrackingStatus.INITIAL_CONNECT && isCurrent) {
           textColorClass = "text-green-700"
-          separatorColorClass = "bg-green-500"
+          separatorColorClass = "bg-gray-300"
           icon = <CheckCircle2 className="size-4 text-green-500" />
         } else if (isCompleted) {
           textColorClass = "text-green-700"

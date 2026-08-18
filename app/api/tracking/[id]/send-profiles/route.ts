@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server"
 
+import { prisma } from "@/lib/prisma"
 import { SendFemaleProfileMemberEmail, SendMaleProfileEmail } from "@/emails"
 
 import { APP_INFO, EMAIL } from "@/constants"
 import { resend } from "@/lib/resend"
 import { generateProfilePdf } from "@/lib/generate-profile-pdf"
 import { env } from "@/lib/env"
+import { TrackingStatus } from "@/lib/generated/prisma/enums"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
@@ -83,6 +85,11 @@ export async function POST(
       console.error("Resend batch failed:", error)
       throw new Error("Failed to send profile emails via batch.")
     }
+
+    await prisma.tracking.update({
+      where: { id: trackingId },
+      data: { status: TrackingStatus.BOTH_PROFILES_SENT },
+    })
 
     console.log("Emails sent successfully:", data)
     return NextResponse.json({ success: true })

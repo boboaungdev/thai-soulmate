@@ -60,53 +60,64 @@ enum TrackingStatus {
 
 const statusGroups = [
   {
+    step: 1,
     name: "Initial Connect",
     statuses: [TrackingStatus.INITIAL_CONNECT],
   },
   {
+    step: 2,
+    name: "Profiles Sent",
+    statuses: [TrackingStatus.BOTH_PROFILES_SENT],
+  },
+  {
+    step: 3,
     name: "Female's Review",
     statuses: [
-      TrackingStatus.MALE_PROFILE_SENT_TO_FEMALE,
+      TrackingStatus.FEMALE_REVIEW,
       TrackingStatus.FEMALE_THINKING,
-      TrackingStatus.FEMALE_REJECT,
+      TrackingStatus.FEMALE_REJECTED,
       TrackingStatus.FEMALE_ACCEPTED,
     ],
   },
   {
+    step: 4,
     name: "Male's Review",
     statuses: [
-      TrackingStatus.FEMALE_PROFILE_SENT_TO_MALE,
+      TrackingStatus.MALE_REVIEW,
       TrackingStatus.MALE_THINKING,
-      TrackingStatus.MALE_REJECT,
+      TrackingStatus.MALE_REJECTED,
       TrackingStatus.MALE_ACCEPTED,
     ],
   },
   {
-    name: "First Meet",
-    statuses: [
-      TrackingStatus.FIRST_GOOGLE_MEET,
-      TrackingStatus.REVIEW_FIRST_GOOGLE_MEET,
-    ],
+    step: 5,
+    name: "Both Accepted",
+    statuses: [TrackingStatus.BOTH_PROFILES_ACCEPTED],
   },
+  { step: 6, name: "First Meet", statuses: [TrackingStatus.FIRST_GOOGLE_MEET] },
   {
+    step: 7,
     name: "Second Meet",
-    statuses: [
-      TrackingStatus.SECOND_GOOGLE_MEET,
-      TrackingStatus.REVIEW_SECOND_GOOGLE_MEET,
-    ],
+    statuses: [TrackingStatus.SECOND_GOOGLE_MEET],
   },
   {
-    name: "Third Meet",
-    statuses: [
-      TrackingStatus.THIRD_GOOGLE_MEET,
-      TrackingStatus.REVIEW_THIRD_GOOGLE_MEET,
-    ],
+    step: 8,
+    name: "First Follow-up",
+    statuses: [TrackingStatus.FIRST_FOLLOW_UP],
   },
   {
-    name: "Final Match",
-    statuses: [TrackingStatus.FINAL_MATCH, TrackingStatus.CONNECTED],
+    step: 9,
+    name: "Second Follow-up",
+    statuses: [TrackingStatus.SECOND_FOLLOW_UP],
   },
   {
+    step: 10,
+    name: "Third Follow-up",
+    statuses: [TrackingStatus.THIRD_FOLLOW_UP],
+  },
+  { step: 11, name: "Matched", statuses: [TrackingStatus.MATCHED] },
+  {
+    step: 12,
     name: "Closed",
     statuses: [TrackingStatus.CLOSED],
   },
@@ -151,85 +162,37 @@ const getInitials = (name?: string) => {
     .toUpperCase()
 }
 
-interface HandleSendProfileProps {
-  tracking: Tracking
-  application: SoulmateApplication
-  to: SoulmateApplication
-  newStatus: TrackingStatus
-}
-
 const SoulmateActions: React.FC<{
   tracking: Tracking
   isUpdating: boolean
-  handleSendProfile: (props: HandleSendProfileProps) => Promise<void>
+  handleSendProfiles: (tracking: Tracking) => Promise<void>
   handleUpdateStatus: (
     trackingId: string,
     newStatus: TrackingStatus
   ) => Promise<void>
-}> = ({ tracking, isUpdating, handleSendProfile, handleUpdateStatus }) => {
-  const canSendMaleProfileToFemale =
-    tracking.status === TrackingStatus.INITIAL_CONNECT
-  const canSendFemaleProfileToMale =
-    tracking.status === TrackingStatus.FEMALE_ACCEPTED
-
-  let sendProfileButton = null
-  if (canSendMaleProfileToFemale) {
-    sendProfileButton = (
-      <Button
-        className="btn-gradient h-8 px-3 text-sm"
-        onClick={() =>
-          handleSendProfile({
-            tracking,
-            application: tracking.male,
-            to: tracking.female,
-            newStatus: TrackingStatus.FEMALE_REVIEW,
-          })
-        }
-        disabled={isUpdating}
-      >
-        {isUpdating ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
-          </>
-        ) : (
-          <>
-            <Send className="mr-2 h-4 w-4" />
-            Send Male Profile
-          </>
-        )}
-      </Button>
-    )
-  } else if (canSendFemaleProfileToMale) {
-    sendProfileButton = (
-      <Button
-        className="btn-gradient h-8 px-3 text-sm"
-        onClick={() =>
-          handleSendProfile({
-            tracking,
-            application: tracking.female,
-            to: tracking.male,
-            newStatus: TrackingStatus.FEMALE_PROFILE_SENT_TO_MALE,
-          })
-        }
-        disabled={isUpdating}
-      >
-        {isUpdating ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
-          </>
-        ) : (
-          <>
-            <Send className="mr-2 h-4 w-4" />
-            Send Female Profile
-          </>
-        )}
-      </Button>
-    )
-  }
+}> = ({ tracking, isUpdating, handleSendProfiles, handleUpdateStatus }) => {
+  const canSendProfiles = tracking.status === TrackingStatus.INITIAL_CONNECT
 
   return (
     <div className="flex items-center gap-2">
-      {sendProfileButton}
+      {canSendProfiles && (
+        <Button
+          className="btn-gradient h-8 px-3 text-sm"
+          onClick={() => handleSendProfiles(tracking)}
+          disabled={isUpdating}
+        >
+          {isUpdating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+            </>
+          ) : (
+            <>
+              <Send className="mr-2 h-4 w-4" />
+              Send Both Profiles
+            </>
+          )}
+        </Button>
+      )}
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -269,6 +232,10 @@ const SoulmateStatusLine: React.FC<{
   currentStatus: Tracking["status"]
   closedFromStatus?: Tracking["status"]
 }> = ({ currentStatus, closedFromStatus }) => {
+  const currentGroup = statusGroups.find((g) =>
+    g.statuses.includes(currentStatus)
+  )
+  const currentStep = currentGroup?.step ?? 0
   if (currentStatus === TrackingStatus.CLOSED) {
     const closedAtGroupIndex = closedFromStatus
       ? statusGroups.findIndex((group) =>
@@ -325,30 +292,30 @@ const SoulmateStatusLine: React.FC<{
       </div>
     )
   }
-  const currentGroupIndex = statusGroups.findIndex((group) =>
-    group.statuses.includes(currentStatus)
-  )
-
-  const isRejected =
-    currentStatus === TrackingStatus.FEMALE_REJECT ||
-    currentStatus === TrackingStatus.MALE_REJECT
 
   return (
     <div className="flex items-start justify-between gap-1 text-xs">
       {statusGroups.map((group, index) => {
-        const isCompleted = currentGroupIndex > -1 && index < currentGroupIndex
-        const isCurrent = index === currentGroupIndex
+        const isCompleted = currentStep > group.step
+        const isCurrent = currentStep === group.step
 
         let textColorClass = "text-gray-500"
         let separatorColorClass = "bg-gray-300"
         let icon = <Circle className="size-4 fill-gray-300 text-gray-300" />
 
-        if (isCompleted) {
+        if (currentStatus === TrackingStatus.INITIAL_CONNECT && isCurrent) {
+          textColorClass = "text-green-700"
+          separatorColorClass = "bg-green-500"
+          icon = <CheckCircle2 className="size-4 text-green-500" />
+        } else if (isCompleted) {
           textColorClass = "text-green-700"
           separatorColorClass = "bg-green-500"
           icon = <CheckCircle2 className="size-4 text-green-500" />
         } else if (isCurrent) {
-          if (isRejected) {
+          if (
+            currentStatus === TrackingStatus.FEMALE_REJECTED ||
+            currentStatus === TrackingStatus.MALE_REJECTED
+          ) {
             textColorClass = "text-red-700 font-semibold"
             icon = <XCircle className="size-4 fill-red-500 text-red-500" />
           } else if (
@@ -357,6 +324,22 @@ const SoulmateStatusLine: React.FC<{
           ) {
             textColorClass = "text-yellow-700 font-semibold"
             icon = <Clock className="size-4 text-yellow-500" />
+          } else if (currentStatus === TrackingStatus.BOTH_PROFILES_SENT) {
+            textColorClass = "text-green-700"
+            icon = <CheckCircle2 className="size-4 text-green-500" />
+          } else {
+            textColorClass = "text-blue-700 font-semibold"
+            icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
+          }
+        } else if (
+          currentStatus === TrackingStatus.BOTH_PROFILES_SENT &&
+          (group.step === 3 || group.step === 4)
+        ) {
+          // Special case for BOTH_PROFILES_SENT
+          textColorClass = "text-yellow-700 font-semibold"
+          icon = <Clock className="size-4 text-yellow-500" />
+          if (index < statusGroups.length - 1) {
+            separatorColorClass = "bg-gray-300"
           } else {
             textColorClass = "text-blue-700 font-semibold"
             icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
@@ -377,6 +360,10 @@ const SoulmateStatusLine: React.FC<{
                 )}
               >
                 {group.name}
+                {currentStatus === TrackingStatus.BOTH_PROFILES_SENT &&
+                  (group.step === 3 || group.step === 4) && (
+                    <span className="mt-1 block">(Review)</span>
+                  )}
               </span>
             </div>
             {shouldShowSeparator && (
@@ -497,35 +484,29 @@ export default function SoulmateDetailPage() {
     }
   }
 
-  const handleSendProfile = async ({
-    tracking,
-    application,
-    to,
-    newStatus,
-  }: HandleSendProfileProps) => {
+  const handleSendProfiles = async (tracking: Tracking) => {
     setUpdatingId(tracking.id)
     try {
       const response = await fetch(
-        `/api/tracking/${tracking.id}/send-profile`,
+        `/api/tracking/${tracking.id}/send-profiles`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            application,
-            to: {
-              name: to.personalDetails.name,
-              email: to.personalDetails.email,
-              gender: to.personalDetails.gender,
-            },
+            male: tracking.male,
+            female: tracking.female,
           }),
         }
       )
 
       if (!response.ok) {
-        throw new Error("Failed to send profile")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to send profiles")
       }
 
-      await handleUpdateStatus(tracking.id, newStatus)
+      // The API now handles the status update, so we just need to refetch or update optimistically.
+      // For simplicity, let's update the status optimistically and then fully update with the response from PATCH.
+      await handleUpdateStatus(tracking.id, TrackingStatus.BOTH_PROFILES_SENT)
     } catch (error) {
       console.error(error)
       setError("Failed to send profile.")
@@ -612,7 +593,7 @@ export default function SoulmateDetailPage() {
           <SoulmateActions
             tracking={tracking}
             isUpdating={updatingId === tracking.id}
-            handleSendProfile={handleSendProfile}
+            handleSendProfiles={handleSendProfiles}
             handleUpdateStatus={handleUpdateStatus}
           />
         </div>

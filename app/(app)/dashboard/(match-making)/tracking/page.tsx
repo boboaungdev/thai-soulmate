@@ -182,7 +182,7 @@ const SoulmateActions: React.FC<{
   const canSendProfiles = tracking.status === TrackingStatus.INITIAL_CONNECT
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex shrink-0 items-center gap-2">
       {canSendProfiles && (
         <Button
           className="btn-gradient h-8 px-3 text-sm"
@@ -249,6 +249,10 @@ const SoulmateStatusLine: React.FC<{
   const currentGroup = statusGroups.find((g) =>
     g.statuses.includes(currentStatus)
   )
+  const closedFromGroup = statusGroups.find(
+    (g) => closedFromStatus && g.statuses.includes(closedFromStatus)
+  )
+  const closedFromStep = closedFromGroup?.step ?? 0
   const currentStep = currentGroup?.step ?? 0
 
   const getSubStatus = (step: number) => {
@@ -271,7 +275,7 @@ const SoulmateStatusLine: React.FC<{
     <div className="flex items-center justify-between gap-1 text-xs">
       {statusGroups.map((group, index) => {
         const isCompleted = currentStep > group.step
-        const isCurrent = currentStep === group.step
+        const isCurrent = currentStep === group.step && group.step !== 0
         const isClosed = currentStatus === TrackingStatus.CLOSED
 
         let textColorClass = "text-gray-500"
@@ -281,41 +285,35 @@ const SoulmateStatusLine: React.FC<{
         )
 
         if (isClosed) {
-          const closedFromGroup = statusGroups.find((g) =>
-            g.statuses.includes(closedFromStatus!)
-          )
-          const closedFromStep = closedFromGroup?.step ?? 0
-
-          if (closedFromStatus === TrackingStatus.INITIAL_CONNECT) {
-            // Special handling for closing from the default state.
-            if (group.step === statusGroups.length) {
-              // last step ("Closed")
-              icon = <CheckCircle2 className="size-4 text-blue-500" />
-              textColorClass = "text-blue-700 font-semibold"
-            } else {
-              // all other steps
-              icon = <Circle className="size-4 fill-gray-300 text-gray-300" />
-            }
+          if (group.step < closedFromStep) {
+            icon = <CheckCircle2 className="size-4 text-green-500" />
+            textColorClass = "text-green-700"
+            separatorColorClass = "bg-green-500"
+          } else if (group.statuses.includes(TrackingStatus.CLOSED)) {
+            // The "Closed" step itself
+            icon = <CheckCircle2 className="size-4 text-blue-500" />
+            textColorClass = "text-blue-700 font-semibold"
           } else {
-            // Logic for closing from other steps
-            if (group.step < closedFromStep) {
-              icon = <CheckCircle2 className="size-4 text-green-500" />
-              textColorClass = "text-green-700"
-              separatorColorClass = "bg-green-500"
-            } else if (group.step === statusGroups.length) {
-              icon = <CheckCircle2 className="size-4 text-blue-500" />
-              textColorClass = "text-blue-700 font-semibold"
-            } else {
-              icon = <XCircle className="size-4 text-red-500" />
-            }
+            // Steps that were not completed before closing
+            icon = <XCircle className="size-4 text-red-500" />
           }
+        } else if (
+          currentStatus === TrackingStatus.INITIAL_CONNECT &&
+          isCurrent
+        ) {
+          icon = <CheckCircle2 className="size-4 text-green-500" />
+          textColorClass = "text-green-700 font-semibold"
+          separatorColorClass = "bg-gray-300"
         } else if (isCompleted) {
           icon = <CheckCircle2 className="size-4 text-green-500" />
           textColorClass = "text-green-700"
           separatorColorClass = "bg-green-500"
         } else if (isCurrent) {
           const subStatus = getSubStatus(group.step)
-          if (subStatus === "Thinking") {
+          if (currentStatus === TrackingStatus.BOTH_PROFILES_SENT) {
+            icon = <CheckCircle2 className="size-4 text-green-500" />
+            textColorClass = "text-green-700 font-semibold"
+          } else if (subStatus === "Thinking") {
             icon = <Clock className="size-4 animate-spin text-yellow-500" />
             textColorClass = "text-yellow-700 font-semibold"
           } else if (
@@ -328,6 +326,14 @@ const SoulmateStatusLine: React.FC<{
             icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
             textColorClass = "text-blue-700 font-semibold"
           }
+        } else if (
+          currentStatus === TrackingStatus.BOTH_PROFILES_SENT &&
+          (group.step === 3 || group.step === 4)
+        ) {
+          // Special case for BOTH_PROFILES_SENT
+          icon = <Clock className="size-4 text-yellow-500" />
+          textColorClass = "text-yellow-700 font-semibold"
+          separatorColorClass = "bg-gray-300"
         }
 
         const subStatus = getSubStatus(group.step)
@@ -344,15 +350,14 @@ const SoulmateStatusLine: React.FC<{
                 )}
               >
                 {group.name}
+                {isCurrent && subStatus && !isClosed && (
+                  <span className="mt-1 block">({subStatus})</span>
+                )}
+                {currentStatus === TrackingStatus.BOTH_PROFILES_SENT &&
+                  (group.step === 3 || group.step === 4) && (
+                    <span className="mt-1 block">(Review)</span>
+                  )}
               </span>
-              {isCurrent && subStatus && (
-                <Badge
-                  variant={subStatus === "Rejected" ? "destructive" : "default"}
-                  className="mt-1"
-                >
-                  {subStatus}
-                </Badge>
-              )}
             </div>
             {index < statusGroups.length - 1 && (
               <div
@@ -414,7 +419,7 @@ export default function SoulmateTrackingPage() {
       }
 
       // If emails are sent successfully, update the status
-      await handleUpdateStatus(tracking.id, TrackingStatus.FEMALE_REVIEW)
+      await handleUpdateStatus(tracking.id, TrackingStatus.BOTH_PROFILES_SENT)
     } catch (error) {
       console.error(error)
       setError(
@@ -547,7 +552,7 @@ export default function SoulmateTrackingPage() {
 
       {trackings.map((tracking) => (
         <Card key={tracking.id} className="w-full">
-          <CardHeader className="flex flex-row items-start justify-between">
+          <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-y-2">
             <div className="space-y-1.5">
               <CardTitle className="flex items-center gap-4 text-xl">
                 <div className="flex items-center gap-2">

@@ -255,20 +255,11 @@ const SoulmateStatusLine: React.FC<{
   const closedFromStep = closedFromGroup?.step ?? 0
   const currentStep = currentGroup?.step ?? 0
 
-  const getSubStatus = (step: number) => {
-    if (step === 3) {
-      if (currentStatus === TrackingStatus.FEMALE_REVIEW) return "Review"
-      if (currentStatus === TrackingStatus.FEMALE_THINKING) return "Thinking"
-      if (currentStatus === TrackingStatus.FEMALE_REJECTED) return "Rejected"
-      if (currentStatus === TrackingStatus.FEMALE_ACCEPTED) return "Accepted"
-    }
-    if (step === 4) {
-      if (currentStatus === TrackingStatus.MALE_REVIEW) return "Review"
-      if (currentStatus === TrackingStatus.MALE_THINKING) return "Thinking"
-      if (currentStatus === TrackingStatus.MALE_REJECTED) return "Rejected"
-      if (currentStatus === TrackingStatus.MALE_ACCEPTED) return "Accepted"
-    }
-    return null
+  const getStatusLabel = (status: TrackingStatus): string => {
+    const words = status.toLowerCase().split("_")
+    return words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
   }
 
   return (
@@ -277,6 +268,8 @@ const SoulmateStatusLine: React.FC<{
         const isCompleted = currentStep > group.step
         const isCurrent = currentStep === group.step && group.step !== 0
         const isClosed = currentStatus === TrackingStatus.CLOSED
+        const groupName =
+          isCurrent && !isClosed ? getStatusLabel(currentStatus) : group.name
 
         let textColorClass = "text-gray-500"
         let separatorColorClass = "bg-gray-300"
@@ -309,19 +302,21 @@ const SoulmateStatusLine: React.FC<{
           textColorClass = "text-green-700"
           separatorColorClass = "bg-green-500"
         } else if (isCurrent) {
-          const subStatus = getSubStatus(group.step)
           if (currentStatus === TrackingStatus.BOTH_PROFILES_SENT) {
             icon = <CheckCircle2 className="size-4 text-green-500" />
             textColorClass = "text-green-700 font-semibold"
-          } else if (subStatus === "Thinking") {
+          } else if (currentStatus.includes("THINKING")) {
             icon = <Clock className="size-4 animate-spin text-yellow-500" />
             textColorClass = "text-yellow-700 font-semibold"
-          } else if (
-            subStatus === "Rejected" ||
-            currentStatus.includes("REJECTED")
-          ) {
+          } else if (currentStatus.includes("REJECTED")) {
             icon = <XCircle className="size-4 fill-red-500 text-red-500" />
             textColorClass = "text-red-700 font-semibold"
+          } else if (currentStatus.includes("ACCEPTED")) {
+            // Handle accepted status with a green check
+            icon = <CheckCircle2 className="size-4 text-green-500" />
+            textColorClass = "text-green-700 font-semibold"
+            // Keep the separator gray as the next step is not yet completed
+            separatorColorClass = "bg-gray-300"
           } else {
             icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
             textColorClass = "text-blue-700 font-semibold"
@@ -334,9 +329,15 @@ const SoulmateStatusLine: React.FC<{
           icon = <Clock className="size-4 text-yellow-500" />
           textColorClass = "text-yellow-700 font-semibold"
           separatorColorClass = "bg-gray-300"
+        } else if (
+          (currentStatus.startsWith("FEMALE_") && group.step === 4) ||
+          (currentStatus.startsWith("MALE_") && group.step === 3)
+        ) {
+          // When one member has decided, show the other as still in review
+          icon = <Clock className="size-4 text-yellow-500" />
+          textColorClass = "text-yellow-700 font-semibold"
+          separatorColorClass = "bg-gray-300"
         }
-
-        const subStatus = getSubStatus(group.step)
 
         return (
           <React.Fragment key={group.name}>
@@ -349,14 +350,21 @@ const SoulmateStatusLine: React.FC<{
                   "max-w-[70px] whitespace-normal"
                 )}
               >
-                {group.name}
-                {isCurrent && subStatus && !isClosed && (
-                  <span className="mt-1 block">({subStatus})</span>
-                )}
+                {groupName}
                 {currentStatus === TrackingStatus.BOTH_PROFILES_SENT &&
                   (group.step === 3 || group.step === 4) && (
                     <span className="mt-1 block">(Review)</span>
                   )}
+                {/* Explicitly show (Review) for current THINKING statuses */}
+                {isCurrent &&
+                  (currentStatus === TrackingStatus.FEMALE_THINKING ||
+                    currentStatus === TrackingStatus.MALE_THINKING) && (
+                    <span className="mt-1 block">(Review)</span>
+                  )}
+                {((currentStatus.startsWith("FEMALE_") && group.step === 4) ||
+                  (currentStatus.startsWith("MALE_") && group.step === 3)) && (
+                  <span className="mt-1 block">(Review)</span>
+                )}
               </span>
             </div>
             {index < statusGroups.length - 1 && (

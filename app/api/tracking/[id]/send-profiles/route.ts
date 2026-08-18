@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server"
 
-import { prisma } from "@/lib/prisma"
-import { SendFemaleProfileMemberEmail, SendMaleProfileEmail } from "@/emails"
-
-import { APP_INFO, EMAIL } from "@/constants"
-import { resend } from "@/lib/resend"
-import { generateProfilePdf } from "@/lib/generate-profile-pdf"
 import { env } from "@/lib/env"
+import { prisma } from "@/lib/prisma"
+import { resend } from "@/lib/resend"
+import { SendProfileEmail } from "@/emails"
+import { APP_INFO, EMAIL } from "@/constants"
+import { generateProfilePdf } from "@/lib/generate-profile-pdf"
 import { TrackingStatus } from "@/lib/generated/prisma/enums"
 
 export const runtime = "nodejs"
@@ -45,7 +44,7 @@ export async function POST(
       // to: [female.personalDetails.email],
       subject:
         "[Soulmate] A carefully selected match is waiting for your review.",
-      react: SendMaleProfileEmail({
+      react: SendProfileEmail({
         to: female.personalDetails,
         trackingId: trackingId,
       }),
@@ -63,9 +62,9 @@ export async function POST(
       // to: [male.personalDetails.email],
       subject:
         "[Soulmate] A carefully selected match is waiting for your review.",
-      react: SendFemaleProfileMemberEmail({
+      react: SendProfileEmail({
         to: male.personalDetails,
-        profileId: female.id,
+        trackingId: trackingId,
       }),
       attachments: [
         {

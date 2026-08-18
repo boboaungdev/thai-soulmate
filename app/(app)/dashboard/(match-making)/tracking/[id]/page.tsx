@@ -324,6 +324,12 @@ const SoulmateStatusLine: React.FC<{
           ) {
             textColorClass = "text-yellow-700 font-semibold"
             icon = <Clock className="size-4 text-yellow-500" />
+          } else if (
+            currentStatus === TrackingStatus.FEMALE_ACCEPTED ||
+            currentStatus === TrackingStatus.MALE_ACCEPTED
+          ) {
+            textColorClass = "text-green-700 font-semibold"
+            icon = <CheckCircle2 className="size-4 text-green-500" />
           } else if (currentStatus === TrackingStatus.BOTH_PROFILES_SENT) {
             textColorClass = "text-green-700"
             icon = <CheckCircle2 className="size-4 text-green-500" />
@@ -343,6 +349,16 @@ const SoulmateStatusLine: React.FC<{
           } else {
             textColorClass = "text-blue-700 font-semibold"
             icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
+          }
+        } else if (
+          (currentStatus.startsWith("FEMALE_") && group.step === 4) ||
+          (currentStatus.startsWith("MALE_") && group.step === 3)
+        ) {
+          // When one member has decided, show the other as still in review
+          textColorClass = "text-yellow-700 font-semibold"
+          icon = <Clock className="size-4 text-yellow-500" />
+          if (index < statusGroups.length - 1) {
+            separatorColorClass = "bg-gray-300"
           }
         }
 
@@ -364,6 +380,16 @@ const SoulmateStatusLine: React.FC<{
                   (group.step === 3 || group.step === 4) && (
                     <span className="mt-1 block">(Review)</span>
                   )}
+                {/* Explicitly show (Review) for current THINKING statuses */}
+                {isCurrent &&
+                  (currentStatus === TrackingStatus.FEMALE_THINKING ||
+                    currentStatus === TrackingStatus.MALE_THINKING) && (
+                    <span className="mt-1 block">(Review)</span>
+                  )}
+                {((currentStatus.startsWith("FEMALE_") && group.step === 4) ||
+                  (currentStatus.startsWith("MALE_") && group.step === 3)) && (
+                  <span className="mt-1 block">(Review)</span>
+                )}
               </span>
             </div>
             {shouldShowSeparator && (

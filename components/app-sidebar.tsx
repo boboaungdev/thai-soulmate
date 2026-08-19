@@ -133,14 +133,14 @@ const MatchmakingItems = [
     icon: HeartHandshake,
   },
   {
-    title: "Tracking",
-    url: "/dashboard/tracking",
-    icon: HeartPulse,
-  },
-  {
     title: "Google Meet",
     url: "/dashboard/google-meet",
     icon: Video,
+  },
+  {
+    title: "Tracking",
+    url: "/dashboard/tracking",
+    icon: HeartPulse,
   },
 ]
 

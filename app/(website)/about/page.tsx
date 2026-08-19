@@ -29,7 +29,7 @@ const team = [
   },
   {
     name: "Mr. Ben Carter",
-    role: "Service Lead",
+    role: "Match Maker",
     image: "https://randomuser.me/api/portraits/men/46.jpg",
     fallback: "BC",
     social: {

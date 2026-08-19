@@ -36,9 +36,6 @@ export async function POST(
     // const malePdf = await generateProfilePdf(maleProfileUrl)
     // const femalePdf = await generateProfilePdf(femaleProfileUrl);
 
-    console.log("male pdf", malePdf)
-    // console.log('female pdf',femalePdf);
-
     const [femaleResult, maleResult] = await Promise.all([
       resend.emails.send({
         from: `${APP_INFO.name} <${EMAIL.contact}>`,

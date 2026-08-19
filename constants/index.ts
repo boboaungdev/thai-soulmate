@@ -10,7 +10,7 @@ export const APP_INFO = {
 } as const
 
 export const CONTACT = {
-  email: "info@21stcenturygroup.org",
+  email: "contact@thaisoulmate.org",
   whatsapp: "66636915263",
   facebook: "https://facebook.com/thaisoulmate",
   line: "https://line.me/R/ti/p/thaisoulmate",

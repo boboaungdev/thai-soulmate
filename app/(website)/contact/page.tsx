@@ -88,7 +88,7 @@ export default function ContactPage() {
                         href={`tel:${CONTACT.primaryPhone.replace(/\D/g, "")}`}
                         className="text-lg font-medium hover:underline"
                       >
-                        {CONTACT.primaryPhone} (English)
+                        {CONTACT.primaryPhone}
                       </Link>
                     </CardDescription>
                     <CardDescription>
@@ -99,7 +99,7 @@ export default function ContactPage() {
                         )}`}
                         className="text-lg font-medium hover:underline"
                       >
-                        {CONTACT.secondaryPhone} (Thai)
+                        {CONTACT.secondaryPhone}
                       </Link>
                     </CardDescription>
                   </CardContent>

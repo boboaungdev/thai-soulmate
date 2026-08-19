@@ -132,9 +132,7 @@ export function Footer() {
               >
                 <a href={`tel:${CONTACT.primaryPhone}`}>
                   <FaPhoneAlt className="size-4" />
-                  <span className="ml-2">
-                    {CONTACT.primaryPhone} (English & Thai)
-                  </span>
+                  <span className="ml-2">{CONTACT.primaryPhone}</span>
                 </a>
               </Button>
               <Button
@@ -145,9 +143,7 @@ export function Footer() {
               >
                 <a href={`tel:${CONTACT.secondaryPhone}`}>
                   <FaPhoneAlt className="size-4" />
-                  <span className="ml-2">
-                    {CONTACT.secondaryPhone} (English)
-                  </span>
+                  <span className="ml-2">{CONTACT.secondaryPhone}</span>
                 </a>
               </Button>
             </div>

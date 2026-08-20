@@ -3,7 +3,11 @@ import type { NextConfig } from "next"
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["10.51.202.20"],
 
-  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium-min"],
+  // serverExternalPackages: [
+  //   "puppeteer-core",
+  //   "@sparticuz/chromium-min",
+  //   "@sparticuz/chromium",
+  // ],
 
   images: {
     remotePatterns: [

@@ -18,7 +18,7 @@
     "@prisma/adapter-neon": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@radix-ui/react-popover": "^1.1.18",
-    "@sparticuz/chromium-min": "^149.0.0",
+    "@sparticuz/chromium": "^149.0.0",
     "@stripe/stripe-js": "^9.9.0",
     "@tanstack/react-table": "^8.21.3",
     "@vercel/analytics": "^2.0.1",

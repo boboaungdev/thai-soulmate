@@ -3,6 +3,10 @@ import type { NextConfig } from "next"
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@sparticuz/chromium"],
 
+  outputFileTracingIncludes: {
+    "/api/tracking/**": ["./node_modules/@sparticuz/chromium/**/*"],
+  },
+
   images: {
     remotePatterns: [
       {

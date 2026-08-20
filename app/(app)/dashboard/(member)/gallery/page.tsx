@@ -67,7 +67,7 @@ function UserCard({ profile }: { profile: Profile }) {
           <p className="text-lg font-semibold">
             <span className="text-gold">
               ID-{String(profile.applicationForm.customId).padStart(4, "0")} (
-              {personalDetails?.nickname || personalDetails.name})
+              {personalDetails?.nickname})
             </span>
             , <span className="text-pink">{age}</span>
           </p>

@@ -518,10 +518,9 @@ export default function UserDetailPage() {
             </AvatarFallback>
           </Avatar>
           <h1 className="text-gradient text-3xl font-bold">
-            {personalDetails?.prefix || ""} {personalDetails?.name || "User"}
-            {personalDetails?.nickname &&
-              personalDetails.name &&
-              ` (${personalDetails.nickname})`}
+            {personalDetails?.nickname
+              ? ` ${personalDetails.nickname}`
+              : personalDetails.name}
           </h1>
           <div className="mt-2 flex items-center justify-center gap-4 text-muted-foreground">
             <div

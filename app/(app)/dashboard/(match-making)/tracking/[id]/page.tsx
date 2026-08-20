@@ -94,10 +94,10 @@ const statusGroups = [
     name: "Both Accepted",
     statuses: [TrackingStatus.BOTH_PROFILES_ACCEPTED],
   },
-  { step: 6, name: "First Meet", statuses: [TrackingStatus.FIRST_GOOGLE_MEET] },
+  { step: 6, name: "First Google Meet", statuses: [TrackingStatus.FIRST_GOOGLE_MEET] },
   {
     step: 7,
-    name: "Second Meet",
+    name: "Second Google Meet",
     statuses: [TrackingStatus.SECOND_GOOGLE_MEET],
   },
   {

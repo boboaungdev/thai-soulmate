@@ -1,13 +1,21 @@
 import { launchBrowser } from "./browser"
 
-export async function generateProfilePdf(url: string): Promise<Buffer> {
-  const browser = await launchBrowser()
+type Browser = Awaited<ReturnType<typeof launchBrowser>>
+
+export async function generateProfilePdf(
+  browser: Browser,
+  url: string
+): Promise<Buffer> {
+  const page = await browser.newPage()
 
   try {
-    const page = await browser.newPage()
-
     await page.goto(url, {
-      // waitUntil: "networkidle2",
+      waitUntil: "networkidle0",
+      timeout: 30_000,
+    })
+
+    await page.waitForSelector("#printable-area", {
+      timeout: 10_000,
     })
 
     const pdf = await page.pdf({
@@ -18,6 +26,6 @@ export async function generateProfilePdf(url: string): Promise<Buffer> {
 
     return Buffer.from(pdf)
   } finally {
-    await browser.close()
+    await page.close()
   }
 }

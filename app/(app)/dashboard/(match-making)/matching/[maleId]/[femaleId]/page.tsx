@@ -216,7 +216,7 @@ function MatchBreakdown({
         <CardTitle>Bidirectional Match Breakdown</CardTitle>
         <CardDescription>
           Each card shows how both applicants preferences match up against each
-          other s attributes.
+          other attributes.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -241,7 +241,7 @@ function MatchBreakdown({
                 {/* Male Preference vs Female Value */}
                 <div className="rounded-md bg-background/50 p-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium">Male s Preference</p>
+                    <p className="text-sm font-medium">Male Preference</p>
                     <MatchStatus matched={item.malePrefMatch} />
                   </div>
                   <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
@@ -254,7 +254,7 @@ function MatchBreakdown({
                       </p>
                     </div>
                     <div className="break-words">
-                      <p className="text-muted-foreground">Female s Value</p>
+                      <p className="text-muted-foreground">Female Value</p>
                       <p className="font-medium">
                         {item.key === "nationality"
                           ? getNationalityDisplayValue(item.femaleValue)
@@ -267,7 +267,7 @@ function MatchBreakdown({
                 {/* Female Preference vs Male Value */}
                 <div className="rounded-md bg-background/50 p-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium">Female s Preference</p>
+                    <p className="text-sm font-medium">Female Preference</p>
                     <MatchStatus matched={item.femalePrefMatch} />
                   </div>
                   <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
@@ -280,7 +280,7 @@ function MatchBreakdown({
                       </p>
                     </div>
                     <div className="break-words">
-                      <p className="text-muted-foreground">Male s Value</p>
+                      <p className="text-muted-foreground">Male Value</p>
                       <p className="font-medium">
                         {item.key === "nationality"
                           ? getNationalityDisplayValue(item.maleValue)

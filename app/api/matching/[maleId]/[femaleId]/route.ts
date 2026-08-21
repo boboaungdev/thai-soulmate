@@ -63,6 +63,28 @@ const hasIntersection = (preferred: unknown, actual: unknown) =>
     toArray(actual).map(normalize).includes(normalize(item))
   )
 
+const getMatchPoints = (
+  preferred: unknown,
+  actual: unknown,
+  matched: boolean
+) => {
+  const preferredItems = toArray(preferred)
+  const actualItems = new Set(toArray(actual).map(normalize))
+
+  if (preferredItems.length > 0) {
+    return {
+      points: preferredItems.filter((item) => actualItems.has(normalize(item)))
+        .length,
+      possiblePoints: preferredItems.length,
+    }
+  }
+
+  return { points: matched ? 1 : 0, possiblePoints: 1 }
+}
+
+const getFluencyPoints = (first: number, second: number) =>
+  Math.round(Math.max(0, 1 - Math.abs(first - second) / 100) * 5)
+
 const parseAgeRange = (range: unknown): [number, number] | null => {
   const value = String(range ?? "").trim()
   if (!value) return null
@@ -167,6 +189,10 @@ type MatchBreakdownItem = {
   maleValue: string
   femalePrefMatch: boolean
   weight: number
+  malePoints: number
+  femalePoints: number
+  malePossiblePoints: number
+  femalePossiblePoints: number
 }
 
 const createBreakdownItem = ({
@@ -179,7 +205,10 @@ const createBreakdownItem = ({
   femalePreference,
   maleValue,
   femalePrefMatch,
-  weight,
+  weight: _weight,
+  malePoints: malePointsOverride,
+  femalePoints: femalePointsOverride,
+  possiblePoints: possiblePointsOverride,
 }: {
   key: string
   category: string
@@ -191,18 +220,35 @@ const createBreakdownItem = ({
   maleValue: unknown
   femalePrefMatch: boolean
   weight: number
-}): MatchBreakdownItem => ({
-  key,
-  category,
-  label,
-  malePreference: displayValue(malePreference),
-  femaleValue: displayValue(femaleValue),
-  malePrefMatch,
-  femalePreference: displayValue(femalePreference),
-  maleValue: displayValue(maleValue),
-  femalePrefMatch,
-  weight,
-})
+  malePoints?: number
+  femalePoints?: number
+  possiblePoints?: number
+}): MatchBreakdownItem => {
+  void _weight
+  const maleScore = getMatchPoints(malePreference, femaleValue, malePrefMatch)
+  const femaleScore = getMatchPoints(
+    femalePreference,
+    maleValue,
+    femalePrefMatch
+  )
+
+  return {
+    key,
+    category,
+    label,
+    malePreference: displayValue(malePreference),
+    femaleValue: displayValue(femaleValue),
+    malePrefMatch,
+    femalePreference: displayValue(femalePreference),
+    maleValue: displayValue(maleValue),
+    femalePrefMatch,
+    weight: possiblePointsOverride ?? maleScore.possiblePoints,
+    malePoints: malePointsOverride ?? maleScore.points,
+    femalePoints: femalePointsOverride ?? femaleScore.points,
+    malePossiblePoints: possiblePointsOverride ?? maleScore.possiblePoints,
+    femalePossiblePoints: possiblePointsOverride ?? femaleScore.possiblePoints,
+  }
+}
 
 const calculateMatchDetails = (male: any, female: any) => {
   const maleAge = calculateAge(male.personalDetails?.dob)
@@ -223,6 +269,11 @@ const calculateMatchDetails = (male: any, female: any) => {
     female.appearance?.englishFluency?.[0] ?? 0
   )
   const femaleThaiFluency = Number(female.appearance?.thaiFluency?.[0] ?? 0)
+  const englishFluencyPoints = getFluencyPoints(
+    maleEnglishFluency,
+    femaleEnglishFluency
+  )
+  const thaiFluencyPoints = getFluencyPoints(maleThaiFluency, femaleThaiFluency)
 
   const breakdown: MatchBreakdownItem[] = [
     createBreakdownItem({
@@ -477,12 +528,14 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "English Fluency",
       malePreference: `${maleEnglishFluency}%`,
       femaleValue: `${femaleEnglishFluency}%`,
-      malePrefMatch: Math.abs(maleEnglishFluency - femaleEnglishFluency) <= 50,
+      malePrefMatch: englishFluencyPoints > 0,
       femalePreference: `${femaleEnglishFluency}%`,
       maleValue: `${maleEnglishFluency}%`,
-      femalePrefMatch:
-        Math.abs(femaleEnglishFluency - maleEnglishFluency) <= 50,
-      weight: 2,
+      femalePrefMatch: englishFluencyPoints > 0,
+      weight: 5,
+      malePoints: englishFluencyPoints,
+      femalePoints: englishFluencyPoints,
+      possiblePoints: 5,
     }),
     createBreakdownItem({
       key: "languageThai",
@@ -490,21 +543,21 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Thai Fluency",
       malePreference: `${maleThaiFluency}%`,
       femaleValue: `${femaleThaiFluency}%`,
-      malePrefMatch: Math.abs(maleThaiFluency - femaleThaiFluency) <= 50,
+      malePrefMatch: thaiFluencyPoints > 0,
       femalePreference: `${femaleThaiFluency}%`,
       maleValue: `${maleThaiFluency}%`,
-      femalePrefMatch: Math.abs(femaleThaiFluency - maleThaiFluency) <= 50,
-      weight: 2,
+      femalePrefMatch: thaiFluencyPoints > 0,
+      weight: 5,
+      femalePoints: thaiFluencyPoints,
+      malePoints: thaiFluencyPoints,
+      possiblePoints: 5,
     }),
   ]
 
-  let score = breakdown.reduce((total, item) => {
-    if (item.malePrefMatch) return total + item.weight
-    return total
-  }, 0)
+  let score = breakdown.reduce((total, item) => total + item.malePoints, 0)
 
   const totalPossibleScore = breakdown.reduce(
-    (total, item) => total + item.weight,
+    (total, item) => total + item.malePossiblePoints,
     0
   )
 

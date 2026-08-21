@@ -125,10 +125,14 @@ const matchesWeightRange = (preferredRange: unknown, actualWeight: unknown) => {
   return false
 }
 
-const intersects = (preferred: unknown, actual: unknown) =>
-  toArray(preferred).some((item) =>
-    toArray(actual).map(normalize).includes(normalize(item))
-  )
+const intersectionCount = (preferred: unknown, actual: unknown) => {
+  const actualItems = new Set(toArray(actual).map(normalize))
+  return toArray(preferred).filter((item) => actualItems.has(normalize(item)))
+    .length
+}
+
+const getFluencyPoints = (first: number, second: number) =>
+  Math.round(Math.max(0, 1 - Math.abs(first - second) / 100) * 5)
 
 const REGIONS = [
   "asia",
@@ -165,19 +169,22 @@ const matchRegion = (
 
 const addCriterionScore = ({
   enabled,
-  weight,
+  points,
+  possiblePoints,
   matched,
   score,
   possibleScore,
 }: {
   enabled: boolean
   weight: number
+  points?: number
+  possiblePoints?: number
   matched: boolean
   score: number
   possibleScore: number
 }) => ({
-  score: score + (enabled && matched ? weight : 0),
-  possibleScore: possibleScore + (enabled ? weight : 0),
+  score: score + (enabled ? (points ?? (matched ? 1 : 0)) : 0),
+  possibleScore: possibleScore + (enabled ? (possiblePoints ?? 1) : 0),
 })
 
 const parseCriteria = (criteriaParam: string | null) => {
@@ -459,9 +466,18 @@ export async function GET(request: Request) {
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Ideal Partner Personality"],
         weight: 10,
-        matched: intersects(
+        matched:
+          intersectionCount(
+            maleIdealPartner.personality,
+            femalePersonality.personality
+          ) > 0,
+        points: intersectionCount(
           maleIdealPartner.personality,
           femalePersonality.personality
+        ),
+        possiblePoints: Math.max(
+          toArray(maleIdealPartner.personality).length,
+          1
         ),
         score,
         possibleScore: totalPossibleScore,
@@ -471,10 +487,16 @@ export async function GET(request: Request) {
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Ideal Partner Qualities"],
         weight: 10,
-        matched: intersects(
+        matched:
+          intersectionCount(
+            maleIdealPartner.qualities,
+            femalePersonality.bestQualities
+          ) > 0,
+        points: intersectionCount(
           maleIdealPartner.qualities,
           femalePersonality.bestQualities
         ),
+        possiblePoints: Math.max(toArray(maleIdealPartner.qualities).length, 1),
         score,
         possibleScore: totalPossibleScore,
       }))
@@ -520,9 +542,18 @@ export async function GET(request: Request) {
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria.Hobbies,
         weight: 5,
-        matched: intersects(
+        matched:
+          intersectionCount(
+            parsedMale.lifestyle.interests,
+            femaleLifestyle.interests
+          ) > 0,
+        points: intersectionCount(
           parsedMale.lifestyle.interests,
           femaleLifestyle.interests
+        ),
+        possiblePoints: Math.max(
+          toArray(parsedMale.lifestyle.interests).length,
+          1
         ),
         score,
         possibleScore: totalPossibleScore,
@@ -530,24 +561,34 @@ export async function GET(request: Request) {
 
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Languages Spoken %"],
-        weight: 2,
+        weight: 5,
         matched:
-          Math.abs(
-            Number(parsedMale.appearance?.englishFluency?.[0] ?? 0) -
-              Number(femaleAppearance.englishFluency?.[0] ?? 0)
-          ) <= 50,
+          getFluencyPoints(
+            Number(parsedMale.appearance?.englishFluency?.[0] ?? 0),
+            Number(femaleAppearance.englishFluency?.[0] ?? 0)
+          ) > 0,
+        points: getFluencyPoints(
+          Number(parsedMale.appearance?.englishFluency?.[0] ?? 0),
+          Number(femaleAppearance.englishFluency?.[0] ?? 0)
+        ),
+        possiblePoints: 5,
         score,
         possibleScore: totalPossibleScore,
       }))
 
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Languages Spoken %"],
-        weight: 2,
+        weight: 5,
         matched:
-          Math.abs(
-            Number(parsedMale.appearance?.thaiFluency?.[0] ?? 0) -
-              Number(femaleAppearance.thaiFluency?.[0] ?? 0)
-          ) <= 50,
+          getFluencyPoints(
+            Number(parsedMale.appearance?.thaiFluency?.[0] ?? 0),
+            Number(femaleAppearance.thaiFluency?.[0] ?? 0)
+          ) > 0,
+        points: getFluencyPoints(
+          Number(parsedMale.appearance?.thaiFluency?.[0] ?? 0),
+          Number(femaleAppearance.thaiFluency?.[0] ?? 0)
+        ),
+        possiblePoints: 5,
         score,
         possibleScore: totalPossibleScore,
       }))

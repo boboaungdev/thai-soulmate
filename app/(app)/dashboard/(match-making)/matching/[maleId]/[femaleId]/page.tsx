@@ -68,6 +68,10 @@ type MatchBreakdownItem = {
   maleValue: string
   femalePrefMatch: boolean
   weight: number
+  malePoints: number
+  femalePoints: number
+  malePossiblePoints: number
+  femalePossiblePoints: number
 }
 
 type DealBreakerPenalty = {
@@ -237,7 +241,7 @@ function MatchBreakdown({
                     </h3>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Score point: {item.weight}
+                    Score point: {item.malePoints}/{item.malePossiblePoints}
                   </p>
                 </div>
 

@@ -120,7 +120,7 @@ export default function ContactPage() {
                   <CardContent>
                     <div className="flex flex-wrap gap-4">
                       <Link
-                        href={`https://wa.me/${CONTACT.whatsapp}`}
+                        href={`${CONTACT.whatsapp}`}
                         className="flex items-center gap-2 text-green-500 dark:text-green-400"
                         target="_blank"
                         rel="noopener noreferrer"

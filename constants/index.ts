@@ -11,9 +11,9 @@ export const APP_INFO = {
 
 export const CONTACT = {
   email: "contact@thaisoulmate.org",
-  whatsapp: "66636915263",
-  facebook: "https://facebook.com/thaisoulmate",
-  line: "https://line.me/R/ti/p/thaisoulmate",
+  whatsapp: "https://wa.me/thaisoulmates",
+  facebook: "https://facebook.com/thaisoulmate.official",
+  line: "https://line.me/ti/p/~thaisoulmate",
   instagram: "https://instagram.com/thaisoulmate",
   tiktok: "https://tiktok.com/@thaisoulmate",
   primaryPhone: "+66 6369 15263",

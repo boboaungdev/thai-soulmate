@@ -60,7 +60,7 @@ export function Footer() {
                 className="rounded-full"
               >
                 <a
-                  href={`https://wa.me/${CONTACT.whatsapp}`}
+                  href={`${CONTACT.whatsapp}`}
                   target="_blank"
                   rel="noreferrer"
                 >

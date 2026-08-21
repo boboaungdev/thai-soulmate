@@ -8,8 +8,67 @@ import { ApplicationForm } from "@/types/application-form"
 
 import { PrintTrigger } from "./print-trigger"
 
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="text-gradient text-lg font-bold">{children}</h2>
+const SectionTitle = ({ children }: { children: React.ReactNode }) => {
+  const title = String(children)
+  const gradientId = `section-gradient-${title.replace(/\W/g, "-")}`
+
+  return (
+    <h2 className="h-7 font-bold">
+      <svg
+        aria-label={title}
+        className="block h-7 w-fit"
+        role="img"
+        viewBox="0 0 360 28"
+        preserveAspectRatio="xMinYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor="#f2b854" />
+            <stop offset="1" stopColor="#f07797" />
+          </linearGradient>
+        </defs>
+        <text
+          x="0"
+          y="21"
+          fill={`url(#${gradientId})`}
+          fontFamily="sans-serif"
+          fontSize="18"
+          fontWeight="700"
+        >
+          {title}
+        </text>
+      </svg>
+    </h2>
+  )
+}
+
+const BrandName = () => (
+  <svg
+    aria-label={APP_INFO.name}
+    className="inline-block h-7 w-[180px]"
+    role="img"
+    viewBox="0 0 180 28"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <linearGradient id="brand-name-gradient" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stopColor="#f2b854" />
+        <stop offset="1" stopColor="#f07797" />
+      </linearGradient>
+    </defs>
+    <text
+      x="90"
+      y="21"
+      fill="url(#brand-name-gradient)"
+      fontFamily="sans-serif"
+      fontSize="20"
+      fontWeight="700"
+      textAnchor="middle"
+    >
+      {APP_INFO.name}
+    </text>
+  </svg>
 )
 
 const DetailItem = ({ label, value }: { label: string; value: unknown }) => {
@@ -126,6 +185,11 @@ export default async function ApplicationFormPrintPage({
             background-clip: text;
             color: transparent;
           }
+          .print-section-title {
+            text-decoration: none !important;
+            border: 0 !important;
+            box-shadow: none !important;
+          }
         }
       `}</style>
       <main
@@ -140,8 +204,8 @@ export default async function ApplicationFormPrintPage({
             <div className="flex items-center gap-4">
               <Image src="/logo.png" alt="Logo" width={56} height={56} />
               <div className="text-center">
-                <h1 className="text-gradient text-xl font-bold">
-                  {APP_INFO.name}
+                <h1 className="print-section-title text-xl font-bold">
+                  <BrandName />
                 </h1>
                 <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
               </div>

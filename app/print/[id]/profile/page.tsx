@@ -1,3 +1,4 @@
+import React from "react"
 import Image from "next/image"
 import { APP_INFO } from "@/constants"
 
@@ -36,35 +37,6 @@ const joinValues = (values: string[] | undefined) => {
   return values.join(", ")
 }
 
-const FluencyBar = ({
-  label,
-  level,
-}: {
-  label: string
-  level: number | undefined
-}) => {
-  const displayLevel = level || 0
-  return (
-    <div className="text-sm">
-      <div className="flex justify-between font-medium text-gray-700">
-        <span>{label}</span>
-        <span className="text-gradient font-semibold">
-          {formatFluency([displayLevel])}
-        </span>
-      </div>
-      <div className="mt-2 h-2 w-full rounded-full bg-amber-100">
-        <div
-          className="h-2 rounded-full"
-          style={{
-            width: `${displayLevel}%`,
-            background: "linear-gradient(to right, #f2b854, #f07797)",
-          }}
-        />
-      </div>
-    </div>
-  )
-}
-
 const DetailItem = ({
   label,
   value,
@@ -72,20 +44,77 @@ const DetailItem = ({
   label: string
   value: React.ReactNode
 }) => (
-  <div className="flex items-center">
-    <div className="flex-1">
-      <p className="text-sm font-semibold text-gray-800">{value || "N/A"}</p>
-      <p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
-        {label}
-      </p>
-    </div>
+  <div className="flex items-start justify-between gap-6 border-b border-gray-100 py-2 last:border-b-0">
+    <p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
+      {label}
+    </p>
+    <p className="text-right text-sm font-semibold text-gray-800">
+      {value || "N/A"}
+    </p>
   </div>
 )
 
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex items-center">
-    <h2 className="text-gradient text-lg font-bold">{children}</h2>
-  </div>
+const SectionTitle = ({ children }: { children: React.ReactNode }) => {
+  const title = String(children)
+  const gradientId = `profile-section-gradient-${title.replace(/\W/g, "-")}`
+
+  return (
+    <h2 className="h-7 font-bold">
+      <svg
+        aria-label={title}
+        className="block h-7 w-fit"
+        role="img"
+        viewBox="0 0 360 28"
+        preserveAspectRatio="xMinYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor="#f2b854" />
+            <stop offset="1" stopColor="#f07797" />
+          </linearGradient>
+        </defs>
+        <text
+          x="0"
+          y="21"
+          fill={`url(#${gradientId})`}
+          fontFamily="sans-serif"
+          fontSize="18"
+          fontWeight="700"
+        >
+          {title}
+        </text>
+      </svg>
+    </h2>
+  )
+}
+
+const BrandName = () => (
+  <svg
+    aria-label={APP_INFO.name}
+    className="inline-block h-7 w-[180px]"
+    role="img"
+    viewBox="0 0 180 28"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <linearGradient id="profile-brand-gradient" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stopColor="#f2b854" />
+        <stop offset="1" stopColor="#f07797" />
+      </linearGradient>
+    </defs>
+    <text
+      x="90"
+      y="21"
+      fill="url(#profile-brand-gradient)"
+      fontFamily="sans-serif"
+      fontSize="20"
+      fontWeight="700"
+      textAnchor="middle"
+    >
+      {APP_INFO.name}
+    </text>
+  </svg>
 )
 
 export default async function ProfilePrintPage({
@@ -137,8 +166,8 @@ export default async function ProfilePrintPage({
               <div className="flex items-center gap-4">
                 <Image src="/logo.png" alt="Logo" width={56} height={56} />
                 <div className="text-center">
-                  <h1 className="text-gradient text-xl font-bold">
-                    {APP_INFO.name}
+                  <h1 className="text-xl font-bold">
+                    <BrandName />
                   </h1>
                   <p className="text-sm text-gray-400">{APP_INFO.tagline}</p>
                 </div>
@@ -153,7 +182,7 @@ export default async function ProfilePrintPage({
               </div>
             </header>
 
-            <div className="flex-1 rounded-lg bg-amber-50/30 p-8">
+            <div className="flex-1 p-8">
               <div className="grid grid-cols-[300px_1fr] gap-8">
                 {/* Left Column */}
                 <aside className="flex flex-col items-center">
@@ -176,7 +205,7 @@ export default async function ProfilePrintPage({
                       {nameToDisplay}
                     </h1>
                   </div>
-                  <div className="mt-6 w-full space-y-4 border-t-2 border-amber-100 pt-6">
+                  <div className="mt-6 w-full space-y-4 border-t border-gray-100 pt-6">
                     <DetailItem label="Age" value={age} />
                     <DetailItem
                       label="Height"
@@ -208,14 +237,14 @@ export default async function ProfilePrintPage({
                     />
                     <div className="pt-2">
                       <SectionTitle>Languages</SectionTitle>
-                      <div className="mt-3 space-y-4">
-                        <FluencyBar
+                      <div className="mt-3">
+                        <DetailItem
                           label="Thai"
-                          level={user.appearance?.thaiFluency?.[0]}
+                          value={formatFluency(user.appearance?.thaiFluency)}
                         />
-                        <FluencyBar
+                        <DetailItem
                           label="English"
-                          level={user.appearance?.englishFluency?.[0]}
+                          value={formatFluency(user.appearance?.englishFluency)}
                         />
                       </div>
                     </div>
@@ -288,7 +317,7 @@ export default async function ProfilePrintPage({
                           .map((item) => (
                             <span
                               key={item}
-                              className="rounded-full border border-amber-200 bg-white px-3 py-1 text-xs font-medium text-amber-700"
+                              className="rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-700"
                             >
                               {item}
                             </span>
@@ -304,7 +333,7 @@ export default async function ProfilePrintPage({
                           (item) => (
                             <span
                               key={item}
-                              className="rounded-full border border-amber-200 bg-white px-3 py-1 text-xs font-medium text-amber-700"
+                              className="rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-700"
                             >
                               {item}
                             </span>
@@ -340,7 +369,7 @@ export default async function ProfilePrintPage({
               {user.photos?.fullLength ? (
                 <figure className="flex flex-col items-center">
                   <div
-                    className="relative overflow-hidden rounded-md bg-gray-100"
+                    className="relative overflow-hidden rounded-md"
                     style={{
                       width: "150mm",
                       height: "200mm",
@@ -388,7 +417,7 @@ export default async function ProfilePrintPage({
               {user.photos?.casualLifestyle ? (
                 <figure className="flex w-full flex-col items-center">
                   <div
-                    className="relative w-full overflow-hidden rounded-md bg-gray-100"
+                    className="relative w-full overflow-hidden rounded-md"
                     style={{ height: "180mm" }}
                   >
                     <Image

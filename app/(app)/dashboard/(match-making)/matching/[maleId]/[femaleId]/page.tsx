@@ -49,6 +49,8 @@ import {
   ChevronLeft,
   Home,
   User,
+  MoreHorizontal,
+  Printer,
 } from "lucide-react"
 import { ApplicationForm } from "@/types/application-form"
 import React from "react"
@@ -57,6 +59,12 @@ import { env } from "@/lib/env"
 
 import Image from "next/image" // Import next/image
 import { ApplicantHeader } from "./applicant-header"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 type MatchBreakdownItem = {
   key: string
   category: string
@@ -761,11 +769,37 @@ export default async function MatchComparisonPage({
           </Link>
         </Button>
 
-        <ConnectButton
-          maleId={maleId}
-          femaleId={femaleId}
-          matchPercentage={matchPercentage}
-        />
+        <div className="flex items-center gap-2">
+          <ConnectButton
+            maleId={maleId}
+            femaleId={femaleId}
+            matchPercentage={matchPercentage}
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                title="Print options"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Open print options</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <a
+                  href={`/print/matching?maleId=${maleId}&femaleId=${femaleId}&print=true`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Printer className="mr-2 h-4 w-4" />
+                  Print comparison
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="mb-6 rounded-lg border bg-card p-4">

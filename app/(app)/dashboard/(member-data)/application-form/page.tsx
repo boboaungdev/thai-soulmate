@@ -17,8 +17,7 @@ export default function ApplicationsPage() {
   const {
     applications,
     loading,
-    columnVisibility,
-    actions: { fetchApplications, forceFetchApplications, setColumnVisibility },
+    actions: { fetchApplications, forceFetchApplications },
   } = useApplicationFormStore()
 
   const statusCounts = useMemo(() => {
@@ -56,7 +55,7 @@ export default function ApplicationsPage() {
             <p className="text-sm text-muted-foreground">
               Matchmaking profile applications
             </p>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="mt-2 flex items-center gap-2">
               <Badge variant="outline" className="text-sm font-semibold">
                 Total: {applications.length}
               </Badge>
@@ -95,7 +94,7 @@ export default function ApplicationsPage() {
           <p className="text-sm text-muted-foreground">
             Matchmaking profile applications
           </p>
-          <div className="flex items-center gap-2 mt-2">
+          <div className="mt-2 flex items-center gap-2">
             <Badge variant="outline" className="text-sm font-semibold">
               Total: {applications.length}
             </Badge>

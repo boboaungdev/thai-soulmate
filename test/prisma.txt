@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(uuid())
+
+  name     String
+  avatar   String?
+  email    String  @unique
+  password String
+  role     Role    @default(MEMBER)
+
+  registerInterest RegisterInterest?
+  notes            Note[]
+  soulmateNotes    TrackingNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RegisterInterest {
+  id String @id @default(uuid())
+
+  prefix                String
+  name                  String
+  dob                   DateTime
+  gender                String
+  nationality           String
+  nationalityRegion     String
+  currentLocation       String
+  currentLocationRegion String
+
+  email        String  @unique
+  phoneCountry String
+  phone        String
+  source       String
+  otherSource  String?
+
+  status RegisterInterestStatus @default(RECEIVED)
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  notes Note[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Note {
+  id      String   @id @default(uuid())
+  message String
+  type    NoteType
+
+  registerInterestId String?
+  registerInterest   RegisterInterest? @relation(fields: [registerInterestId], references: [id])
+
+  applicationFormId String?
+  applicationForm   ApplicationForm? @relation(fields: [applicationFormId], references: [id])
+
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ApplicationForm {
+  id       String @id @default(uuid())
+  customId Int    @unique @default(autoincrement())
+
+  status ApplicationFormStatus @default(RECEIVED)
+
+  personalDetails   Json
+  career            Json
+  appearance        Json
+  personality       Json
+  lifestyle         Json
+  relationshipGoals Json
+  idealPartner      Json
+  financial         Json
+  photos            Json
+
+  membership Membership?
+
+  profile Profile?
+
+  notes Note[]
+
+  asMale   Tracking[] @relation("MaleTracking")
+  asFemale Tracking[] @relation("FemaleTracking")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id String @id @default(uuid())
+
+  applicationFormId String          @unique
+  applicationForm   ApplicationForm @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
+
+  status ProfileStatus @default(PENDING)
+  notes  Note[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ProfileStatus {
+  PENDING
+  COMPLETED
+}
+
+model Membership {
+  id String @id @default(uuid())
+
+  applicationFormId String?          @unique
+  applicationForm   ApplicationForm? @relation(fields: [applicationFormId], references: [id], onDelete: Cascade)
+
+  plan MembershipPlan @default(NONE)
+
+  startsAt  DateTime?
+  expiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tracking {
+  id     String          @id @default(uuid())
+  male   ApplicationForm @relation("MaleTracking", fields: [maleId], references: [id])
+  maleId String
+
+  female   ApplicationForm @relation("FemaleTracking", fields: [femaleId], references: [id])
+  femaleId String
+
+  matchPercentage Int
+
+  status TrackingStatus @default(INITIAL_CONNECT)
+
+  notes             TrackingNote[]
+  completedStatuses CompletedStatus[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrackingNote {
+  id      String           @id @default(uuid())
+  message String
+  type    TrackingNoteType
+
+  trackingId String
+  tracking   Tracking @relation(fields: [trackingId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CompletedStatus {
+  id          String         @id @default(uuid())
+  status      TrackingStatus
+  completedAt DateTime       @default(now())
+  trackingId  String
+  tracking    Tracking       @relation(fields: [trackingId], references: [id])
+}
+
+model Contact {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WebsiteReview {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  firstImpression      Json
+  easeOfUse            Json
+  designBranding       Json
+  understandingService Json
+  trustSafety          Json
+  contentQuality       Json
+  registrationProcess  Json
+  pricingValue         Json
+  overallExperience    Json
+  matchmakingSpecific  Json
+  reviewerInfo         Json?
+}
+
+enum Role {
+  DEV
+  ADMIN
+  STAFF
+  MEMBER
+}
+
+enum NoteType {
+  REGISTER_INTEREST
+  APPLICATION_FORM
+  PROFILE
+}
+
+enum RegisterInterestStatus {
+  RECEIVED
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum ApplicationFormStatus {
+  RECEIVED
+  PENDING
+  COMPLETED
+  MATCHED
+  CLOSED
+}
+
+enum MembershipPlan {
+  NONE
+  FEMALE_FREE
+  FEMALE_VIP_ONE_MONTH
+  FEMALE_VIP_THREE_MONTHS
+  FEMALE_VIP_SIX_MONTHS
+  MALE_ONE_MONTH
+  MALE_THREE_MONTHS
+  MALE_SIX_MONTHS
+}
+
+enum TrackingStatus {
+  // 1
+  INITIAL_CONNECT
+
+  // 2
+  BOTH_PROFILES_SENT
+
+  // 3
+  FEMALE_REVIEW
+  FEMALE_REJECTED
+  FEMALE_ACCEPTED
+
+  // 4
+  MALE_REVIEW
+  MALE_REJECTED
+  MALE_ACCEPTED
+
+  // 5
+  BOTH_MEMBERS_ACCEPTED
+
+  // 6
+  FIRST_GOOGLE_MEET
+
+  // 7
+  SECOND_GOOGLE_MEET
+
+  // 8
+  FIRST_FOLLOW_UP
+
+  // 9
+  SECOND_FOLLOW_UP
+
+  // 10
+  THIRD_FOLLOW_UP
+
+  // 11
+  MATCHED
+  CLOSED
+}
+
+enum TrackingNoteType {
+  INITIAL_CONNECT
+  MALE_PROFILE_SENT_TO_FEMALE
+  FEMALE_PROFILE_SENT_TO_MALE
+  FIRST_GOOGLE_MEET
+  SECOND_GOOGLE_MEET
+  THIRD_GOOGLE_MEET
+  FINAL_MATCH
+  CLOSED
+}

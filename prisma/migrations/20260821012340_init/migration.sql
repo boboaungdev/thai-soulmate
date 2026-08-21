@@ -8,7 +8,7 @@ CREATE TYPE "Role" AS ENUM ('DEV', 'ADMIN', 'STAFF', 'MEMBER');
 CREATE TYPE "NoteType" AS ENUM ('REGISTER_INTEREST', 'APPLICATION_FORM', 'PROFILE');
 
 -- CreateEnum
-CREATE TYPE "RegisterInterestStatus" AS ENUM ('RECEIVED', 'PENDING', 'ACCEPTED', 'DECLINED', 'CONTACTED_EMAIL', 'CONTACTED_PHONE', 'CONTACTED_WHATSAPP');
+CREATE TYPE "RegisterInterestStatus" AS ENUM ('RECEIVED', 'PENDING', 'ACCEPTED', 'DECLINED');
 
 -- CreateEnum
 CREATE TYPE "ApplicationFormStatus" AS ENUM ('RECEIVED', 'PENDING', 'COMPLETED', 'MATCHED', 'CLOSED');
@@ -17,10 +17,10 @@ CREATE TYPE "ApplicationFormStatus" AS ENUM ('RECEIVED', 'PENDING', 'COMPLETED',
 CREATE TYPE "MembershipPlan" AS ENUM ('NONE', 'FEMALE_FREE', 'FEMALE_VIP_ONE_MONTH', 'FEMALE_VIP_THREE_MONTHS', 'FEMALE_VIP_SIX_MONTHS', 'MALE_ONE_MONTH', 'MALE_THREE_MONTHS', 'MALE_SIX_MONTHS');
 
 -- CreateEnum
-CREATE TYPE "SoulmateStatus" AS ENUM ('INITIAL_CONNECT', 'MALE_PROFILE_SENT_TO_FEMALE', 'FEMALE_THINKING', 'FEMALE_REJECT', 'FEMALE_ACCEPTED', 'FEMALE_PROFILE_SENT_TO_MALE', 'MALE_THINKING', 'MALE_REJECT', 'MALE_ACCEPTED', 'FIRST_GOOGLE_MEET', 'REVIEW_FIRST_GOOGLE_MEET', 'SECOND_GOOGLE_MEET', 'REVIEW_SECOND_GOOGLE_MEET', 'THIRD_GOOGLE_MEET', 'REVIEW_THIRD_GOOGLE_MEET', 'FINAL_MATCH', 'CONNECTED', 'CLOSED');
+CREATE TYPE "TrackingStatus" AS ENUM ('INITIAL_CONNECT', 'BOTH_PROFILES_SENT', 'FEMALE_REVIEW', 'FEMALE_THINKING', 'FEMALE_REJECTED', 'FEMALE_ACCEPTED', 'MALE_REVIEW', 'MALE_THINKING', 'MALE_REJECTED', 'MALE_ACCEPTED', 'BOTH_PROFILES_ACCEPTED', 'FIRST_GOOGLE_MEET', 'SECOND_GOOGLE_MEET', 'FIRST_FOLLOW_UP', 'SECOND_FOLLOW_UP', 'THIRD_FOLLOW_UP', 'MATCHED', 'CLOSED');
 
 -- CreateEnum
-CREATE TYPE "SoulmateNoteType" AS ENUM ('INITIAL_CONNECT', 'MALE_PROFILE_SENT_TO_FEMALE', 'FEMALE_PROFILE_SENT_TO_MALE', 'FIRST_GOOGLE_MEET', 'SECOND_GOOGLE_MEET', 'THIRD_GOOGLE_MEET', 'FINAL_MATCH');
+CREATE TYPE "TrackingNoteType" AS ENUM ('INITIAL_CONNECT', 'MALE_PROFILE_SENT_TO_FEMALE', 'FEMALE_PROFILE_SENT_TO_MALE', 'FIRST_GOOGLE_MEET', 'SECOND_GOOGLE_MEET', 'THIRD_GOOGLE_MEET', 'FINAL_MATCH', 'CLOSED');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -44,7 +44,9 @@ CREATE TABLE "RegisterInterest" (
     "dob" TIMESTAMP(3) NOT NULL,
     "gender" TEXT NOT NULL,
     "nationality" TEXT NOT NULL,
+    "nationalityRegion" TEXT NOT NULL,
     "currentLocation" TEXT NOT NULL,
+    "currentLocationRegion" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phoneCountry" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
@@ -118,28 +120,30 @@ CREATE TABLE "Membership" (
 );
 
 -- CreateTable
-CREATE TABLE "Soulmate" (
+CREATE TABLE "Tracking" (
     "id" TEXT NOT NULL,
     "maleId" TEXT NOT NULL,
     "femaleId" TEXT NOT NULL,
-    "status" "SoulmateStatus" NOT NULL DEFAULT 'INITIAL_CONNECT',
+    "matchPercentage" INTEGER NOT NULL,
+    "status" "TrackingStatus" NOT NULL DEFAULT 'INITIAL_CONNECT',
+    "closedFromStatus" "TrackingStatus",
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Soulmate_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Tracking_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "SoulmateNote" (
+CREATE TABLE "TrackingNote" (
     "id" TEXT NOT NULL,
     "message" TEXT NOT NULL,
-    "type" "SoulmateNoteType" NOT NULL,
-    "soulmateId" TEXT NOT NULL,
+    "type" "TrackingNoteType" NOT NULL,
+    "trackingId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "SoulmateNote_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "TrackingNote_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -193,9 +197,6 @@ CREATE UNIQUE INDEX "Profile_applicationFormId_key" ON "Profile"("applicationFor
 -- CreateIndex
 CREATE UNIQUE INDEX "Membership_applicationFormId_key" ON "Membership"("applicationFormId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Soulmate_maleId_femaleId_key" ON "Soulmate"("maleId", "femaleId");
-
 -- AddForeignKey
 ALTER TABLE "RegisterInterest" ADD CONSTRAINT "RegisterInterest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -218,13 +219,13 @@ ALTER TABLE "Profile" ADD CONSTRAINT "Profile_applicationFormId_fkey" FOREIGN KE
 ALTER TABLE "Membership" ADD CONSTRAINT "Membership_applicationFormId_fkey" FOREIGN KEY ("applicationFormId") REFERENCES "ApplicationForm"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Soulmate" ADD CONSTRAINT "Soulmate_maleId_fkey" FOREIGN KEY ("maleId") REFERENCES "ApplicationForm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Tracking" ADD CONSTRAINT "Tracking_maleId_fkey" FOREIGN KEY ("maleId") REFERENCES "ApplicationForm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Soulmate" ADD CONSTRAINT "Soulmate_femaleId_fkey" FOREIGN KEY ("femaleId") REFERENCES "ApplicationForm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Tracking" ADD CONSTRAINT "Tracking_femaleId_fkey" FOREIGN KEY ("femaleId") REFERENCES "ApplicationForm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SoulmateNote" ADD CONSTRAINT "SoulmateNote_soulmateId_fkey" FOREIGN KEY ("soulmateId") REFERENCES "Soulmate"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TrackingNote" ADD CONSTRAINT "TrackingNote_trackingId_fkey" FOREIGN KEY ("trackingId") REFERENCES "Tracking"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SoulmateNote" ADD CONSTRAINT "SoulmateNote_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TrackingNote" ADD CONSTRAINT "TrackingNote_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

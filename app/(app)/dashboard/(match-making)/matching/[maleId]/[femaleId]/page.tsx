@@ -221,77 +221,90 @@ function MatchBreakdown({
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {items.map((item) => (
-            <div key={item.key} className="rounded-lg border bg-card p-4">
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
-                    {item.category}
+          {items.map((item) => {
+            const isLanguage =
+              item.key === "languageEnglish" || item.key === "languageThai"
+
+            return (
+              <div key={item.key} className="rounded-lg border bg-card p-4">
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                      {item.category}
+                    </p>
+                    <h3 className="text-gradient text-lg font-semibold">
+                      {item.label}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Score point: {item.weight}
                   </p>
-                  <h3 className="text-gradient text-lg font-semibold">
-                    {item.label}
-                  </h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Score point: {item.weight}
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                {/* Male Preference vs Female Value */}
-                <div className="rounded-md bg-background/50 p-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium">Male Preference</p>
-                    <MatchStatus matched={item.malePrefMatch} />
-                  </div>
-                  <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
-                    <div className="break-words">
-                      <p className="text-muted-foreground">Preference</p>
-                      <p className="font-medium">
-                        {item.key === "nationality"
-                          ? getNationalityDisplayValue(item.malePreference)
-                          : item.malePreference}
-                      </p>
-                    </div>
-                    <div className="break-words">
-                      <p className="text-muted-foreground">Female Value</p>
-                      <p className="font-medium">
-                        {item.key === "nationality"
-                          ? getNationalityDisplayValue(item.femaleValue)
-                          : item.femaleValue}
-                      </p>
-                    </div>
-                  </div>
                 </div>
 
-                {/* Female Preference vs Male Value */}
-                <div className="rounded-md bg-background/50 p-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium">Female Preference</p>
-                    <MatchStatus matched={item.femalePrefMatch} />
-                  </div>
-                  <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
-                    <div className="break-words">
-                      <p className="text-muted-foreground">Preference</p>
-                      <p className="font-medium">
-                        {item.key === "nationality"
-                          ? getNationalityDisplayValue(item.femalePreference)
-                          : item.femalePreference}
+                <div className="space-y-4">
+                  {/* Male Preference vs Female Value */}
+                  <div className="rounded-md bg-background/50 p-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">
+                        {isLanguage ? "Male vs Female" : "Male Preference"}
                       </p>
+                      <MatchStatus matched={item.malePrefMatch} />
                     </div>
-                    <div className="break-words">
-                      <p className="text-muted-foreground">Male Value</p>
-                      <p className="font-medium">
-                        {item.key === "nationality"
-                          ? getNationalityDisplayValue(item.maleValue)
-                          : item.maleValue}
+                    <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
+                      <div className="break-words">
+                        <p className="text-muted-foreground">
+                          {isLanguage ? "Male Value" : "Preference"}
+                        </p>
+                        <p className="font-medium">
+                          {item.key === "nationality"
+                            ? getNationalityDisplayValue(item.malePreference)
+                            : item.malePreference}
+                        </p>
+                      </div>
+                      <div className="break-words">
+                        <p className="text-muted-foreground">Female Value</p>
+                        <p className="font-medium">
+                          {item.key === "nationality"
+                            ? getNationalityDisplayValue(item.femaleValue)
+                            : item.femaleValue}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Female Preference vs Male Value */}
+                  <div className="rounded-md bg-background/50 p-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">
+                        {isLanguage ? "Female vs Male" : "Female Preference"}
                       </p>
+                      <MatchStatus matched={item.femalePrefMatch} />
+                    </div>
+                    <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
+                      <div className="break-words">
+                        <p className="text-muted-foreground">
+                          {isLanguage ? "Female Value" : "Preference"}
+                        </p>
+                        <p className="font-medium">
+                          {item.key === "nationality"
+                            ? getNationalityDisplayValue(item.femalePreference)
+                            : item.femalePreference}
+                        </p>
+                      </div>
+                      <div className="break-words">
+                        <p className="text-muted-foreground">Male Value</p>
+                        <p className="font-medium">
+                          {item.key === "nationality"
+                            ? getNationalityDisplayValue(item.maleValue)
+                            : item.maleValue}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {penalties.length > 0 && (

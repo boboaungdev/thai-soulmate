@@ -4,7 +4,7 @@ import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 
 const paramsSchema = z.object({
-  id: z.string().cuid(),
+  id: z.uuid(),
 })
 
 export async function DELETE(

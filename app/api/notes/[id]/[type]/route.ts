@@ -117,7 +117,7 @@ export async function GET(
 
 const postBodySchema = z.object({
   message: z.string().min(1),
-  userId: z.string().cuid(),
+  userId: z.uuid(),
 })
 
 export async function POST(

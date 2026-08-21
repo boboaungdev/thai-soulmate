@@ -8,6 +8,7 @@ import {
   Loader2,
   Mail,
   MoreHorizontal,
+  Printer,
   Phone,
   Trash2,
 } from "lucide-react"
@@ -63,6 +64,13 @@ export function DataTableRowActions<TData>({
 
   const goToDetails = () => {
     router.push(`/dashboard/application-form/${application.id}`)
+  }
+
+  const handlePrint = () => {
+    window.open(
+      `/print/${application.id}/application-form?print=true`,
+      "_blank"
+    )
   }
 
   const handleStatusChange = async (status: string) => {
@@ -250,6 +258,11 @@ export function DataTableRowActions<TData>({
             </DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handlePrint}>
+          <Printer className="mr-2 h-4 w-4" />
+          Print
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled variant="destructive">
           <Trash2 className="mr-2 h-4 w-4" />

@@ -236,123 +236,124 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-      {/* Our Team Section */}
-      <section className="py-16 sm:py-20">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <MotionDiv
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5 }}
-            className="mb-12 text-center"
-          >
-            <h2 className="text-gradient text-3xl font-bold tracking-tighter md:text-4xl">
-              Our Team
-            </h2>
-            <p className="mt-4 text-muted-foreground md:text-xl">
-              Meet the dedicated individuals behind our mission.
-            </p>
-          </MotionDiv>
-
-          {/* Founder */}
-          <div className="mb-8 flex justify-center">
+      {false && (
+        <section className="py-16 sm:py-20">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <MotionDiv
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="w-full sm:max-w-sm" // Added class for width control
+              transition={{ duration: 0.5 }}
+              className="mb-12 text-center"
             >
-              <Card className="flex h-full flex-col items-center justify-center p-6 text-center">
-                <Avatar className="mb-4 h-32 w-32">
-                  <AvatarImage src={founder.image} alt={founder.name} />
-                  <AvatarFallback>{founder.fallback}</AvatarFallback>
-                </Avatar>
-                <CardTitle className="text-xl">{founder.name}</CardTitle>
-                <CardDescription className="mb-2">
-                  {founder.role}
-                </CardDescription>
-                <p className="mb-4 text-sm text-muted-foreground">
-                  {founder.description}
-                </p>
-                <div className="flex gap-2">
-                  {founder.social?.website && (
+              <h2 className="text-gradient text-3xl font-bold tracking-tighter md:text-4xl">
+                Our Team
+              </h2>
+              <p className="mt-4 text-muted-foreground md:text-xl">
+                Meet the dedicated individuals behind our mission.
+              </p>
+            </MotionDiv>
+
+            {/* Founder */}
+            <div className="mb-8 flex justify-center">
+              <MotionDiv
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="w-full sm:max-w-sm" // Added class for width control
+              >
+                <Card className="flex h-full flex-col items-center justify-center p-6 text-center">
+                  <Avatar className="mb-4 h-32 w-32">
+                    <AvatarImage src={founder.image} alt={founder.name} />
+                    <AvatarFallback>{founder.fallback}</AvatarFallback>
+                  </Avatar>
+                  <CardTitle className="text-xl">{founder.name}</CardTitle>
+                  <CardDescription className="mb-2">
+                    {founder.role}
+                  </CardDescription>
+                  <p className="mb-4 text-sm text-muted-foreground">
+                    {founder.description}
+                  </p>
+                  <div className="flex gap-2">
+                    {founder.social?.website && (
+                      <a
+                        href={founder.social.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                      >
+                        <Globe2 className="h-6 w-6" />
+                      </a>
+                    )}
+                    {founder.social?.phone && (
+                      <a
+                        href={`tel:${founder.social.phone}`}
+                        className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                      >
+                        <Phone className="h-6 w-6" />
+                      </a>
+                    )}
+                    {founder.social?.email && (
+                      <a
+                        href={`mailto:${founder.social.email}`}
+                        className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                      >
+                        <Mail className="h-6 w-6" />
+                      </a>
+                    )}
+                    {founder.social?.whatsapp && (
+                      <a
+                        href={founder.social.whatsapp}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                      >
+                        <FaWhatsapp className="h-6 w-6" />
+                      </a>
+                    )}
+                  </div>
+                </Card>
+              </MotionDiv>
+            </div>
+
+            {/* Other Team Members */}
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {otherMembers.map((member, index) => (
+                <MotionDiv
+                  key={member.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                >
+                  <Card className="flex h-full flex-col items-center justify-center p-6 text-center">
+                    <Avatar className="mb-4 h-32 w-32">
+                      <AvatarImage src={member.image} alt={member.name} />
+                      <AvatarFallback>{member.fallback}</AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="text-xl">{member.name}</CardTitle>
+                    <CardDescription className="mb-2">
+                      {member.role}
+                    </CardDescription>
+                    <p className="mb-4 text-sm text-muted-foreground">
+                      {member.description}
+                    </p>
                     <a
-                      href={founder.social.website}
+                      href={member.social.website}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
                     >
                       <Globe2 className="h-6 w-6" />
                     </a>
-                  )}
-                  {founder.social?.phone && (
-                    <a
-                      href={`tel:${founder.social.phone}`}
-                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
-                    >
-                      <Phone className="h-6 w-6" />
-                    </a>
-                  )}
-                  {founder.social?.email && (
-                    <a
-                      href={`mailto:${founder.social.email}`}
-                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
-                    >
-                      <Mail className="h-6 w-6" />
-                    </a>
-                  )}
-                  {founder.social?.whatsapp && (
-                    <a
-                      href={founder.social.whatsapp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
-                    >
-                      <FaWhatsapp className="h-6 w-6" />
-                    </a>
-                  )}
-                </div>
-              </Card>
-            </MotionDiv>
+                  </Card>
+                </MotionDiv>
+              ))}
+            </div>
           </div>
-
-          {/* Other Team Members */}
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {otherMembers.map((member, index) => (
-              <MotionDiv
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-              >
-                <Card className="flex h-full flex-col items-center justify-center p-6 text-center">
-                  <Avatar className="mb-4 h-32 w-32">
-                    <AvatarImage src={member.image} alt={member.name} />
-                    <AvatarFallback>{member.fallback}</AvatarFallback>
-                  </Avatar>
-                  <CardTitle className="text-xl">{member.name}</CardTitle>
-                  <CardDescription className="mb-2">
-                    {member.role}
-                  </CardDescription>
-                  <p className="mb-4 text-sm text-muted-foreground">
-                    {member.description}
-                  </p>
-                  <a
-                    href={member.social.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
-                  >
-                    <Globe2 className="h-6 w-6" />
-                  </a>
-                </Card>
-              </MotionDiv>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
       <Cta />
     </main>
   )

@@ -12,7 +12,7 @@ export const APP_INFO = {
 export const CONTACT = {
   email: "contact@thaisoulmate.org",
   whatsapp: "https://wa.me/thaisoulmates",
-  facebook: "https://facebook.com/thaisoulmate.official",
+  facebook: "https://facebook.com/thaisoulmates",
   line: "https://line.me/ti/p/~thaisoulmate",
   instagram: "https://instagram.com/thaisoulmate",
   tiktok: "https://tiktok.com/@thaisoulmate",

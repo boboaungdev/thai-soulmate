@@ -15,7 +15,8 @@ import {
 
 import { APP_INFO, CONTACT } from "@/constants"
 
-type MarketingVariant = "editorial" | "classic" | "sunset" | "sage"
+type MarketingVariant =
+  "editorial" | "classic" | "sunset" | "sage" | "photographic"
 
 type MarketingCopy = {
   eyebrow: string
@@ -59,6 +60,13 @@ const colors = {
     background: "#f3f8f2",
     front: "#183b3c",
     muted: "#6b8b7c",
+  },
+  photographic: {
+    ink: "#241e2a",
+    accent: "#cfa14f",
+    background: "#ffffff",
+    front: "#241e2a",
+    muted: "#6b5b62",
   },
 } as const
 
@@ -221,7 +229,10 @@ export function MarketingPrintCard({
         <section
           className="marketing-sheet relative flex h-[210mm] w-[148mm] flex-col justify-between overflow-hidden p-[15mm_14mm_13mm] text-white"
           style={{
-            background: `linear-gradient(145deg, ${palette.front}, ${palette.ink})`,
+            background:
+              variant === "photographic"
+                ? `linear-gradient(180deg, rgb(36 30 42 / 28%), rgb(36 30 42 / 88%)), url("/home-landing.png") center / cover`
+                : `linear-gradient(145deg, ${palette.front}, ${palette.ink})`,
             boxShadow: "0 18px 45px rgb(36 30 42 / 22%)",
           }}
           aria-label="Front of Thai Soulmate marketing card"

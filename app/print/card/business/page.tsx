@@ -3,7 +3,14 @@
 import Image from "next/image"
 import { useEffect } from "react"
 import { Globe, Mail, Phone } from "lucide-react"
-import { FaFacebookF, FaInstagram, FaLine, FaWhatsapp } from "react-icons/fa"
+import { QRCodeSVG } from "qrcode.react"
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLine,
+  FaTiktok,
+  FaWhatsapp,
+} from "react-icons/fa"
 
 import { APP_INFO, CONTACT } from "@/constants"
 
@@ -28,7 +35,7 @@ function PrintTrigger() {
 
 function BrandMark({ light = false }: { light?: boolean }) {
   return (
-    <div className="flex items-center gap-[3mm]">
+    <div className="flex -translate-y-[2mm] items-center gap-[1.5mm]">
       <Image
         src="/logo.png"
         alt=""
@@ -40,16 +47,41 @@ function BrandMark({ light = false }: { light?: boolean }) {
         sizes="15mm"
         className="h-[15mm] w-[15mm] object-contain"
       />
-      <div className="leading-none">
-        <p
-          className="font-sans text-[6mm] font-bold"
-          style={{ color: light ? "#ffffff" : "#241e2a" }}
+      <div className="flex flex-col items-center justify-center text-center leading-none">
+        <svg
+          aria-label={APP_INFO.name}
+          className="block h-[6mm] w-[39mm]"
+          role="img"
+          viewBox="0 0 180 28"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          {APP_INFO.name}
-        </p>
+          <defs>
+            <linearGradient
+              id="business-card-brand-gradient"
+              x1="0"
+              x2="1"
+              y1="0"
+              y2="0"
+            >
+              <stop offset="0" stopColor="#cfa14f" />
+              <stop offset="1" stopColor="#cb5d7a" />
+            </linearGradient>
+          </defs>
+          <text
+            x="90"
+            y="22"
+            fill="url(#business-card-brand-gradient)"
+            fontFamily="sans-serif"
+            fontSize="18"
+            fontWeight="700"
+            textAnchor="middle"
+          >
+            {APP_INFO.name}
+          </text>
+        </svg>
         <p
-          className="mt-[1.5mm] font-sans text-[2.2mm] font-bold tracking-[0.08em]"
-          style={{ color: light ? "#cfa14f" : "#cb5d7a" }}
+          className="mt-[0.5mm] text-center font-sans text-[2.2mm] font-bold tracking-[0.08em]"
+          style={{ color: light ? "#ffffff" : "#241e2a" }}
         >
           {APP_INFO.tagline}
         </p>
@@ -104,17 +136,15 @@ export default function BusinessCardPrintPage() {
           }}
           aria-label="Front of Thai Soulmate business card"
         >
-          <div className="absolute top-0 right-0 h-[55mm] w-[30mm] border-l-[1.5mm] border-[#cb5d7a]" />
-          <div className="absolute right-[8mm] bottom-[-16mm] h-[34mm] w-[34mm] rounded-full border-[1mm] border-[#cfa14f]" />
           <div className="relative z-10">
             <BrandMark light />
           </div>
           <div className="relative z-10 max-w-[62mm]">
-            <p className="font-serif text-[5mm] leading-[1.05] text-white">
-              Meaningful introductions.
-            </p>
             <p className="mt-[2mm] font-sans text-[2.2mm] font-bold tracking-[0.12em] text-[#cfa14f] uppercase">
               Personal matchmaking in Thailand
+            </p>
+            <p className="mt-[2mm] max-w-[58mm] font-sans text-[2mm] leading-[1.3] text-white/70">
+              {APP_INFO.secondaryTagline}
             </p>
           </div>
         </section>
@@ -134,36 +164,63 @@ export default function BusinessCardPrintPage() {
               Connect with us
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-x-[5mm] gap-y-[1.5mm] font-sans text-[2.1mm] font-semibold text-[#241e2a]">
-            <p className="flex items-center gap-[1.5mm]">
-              <FaWhatsapp className="text-[#cb5d7a]" />
-              +66 6369 15263
-            </p>
-            <p className="flex items-center gap-[1.5mm]">
-              <Phone size={9} color="#cb5d7a" />
-              +66 6369 15264
-            </p>
-            <p className="flex items-center gap-[1.5mm]">
-              <Mail size={9} color="#cb5d7a" />
-              {CONTACT.email}
-            </p>
-            <p className="flex items-center gap-[1.5mm]">
-              <Globe size={9} color="#cb5d7a" />
-              thaisoulmate.org
-            </p>
+          <div className="flex items-start justify-between gap-[4mm] font-sans font-semibold text-[#241e2a]">
+            <div className="grid min-w-0 gap-[1.5mm] text-[1.9mm]">
+              <p className="flex items-center gap-[1.5mm] whitespace-nowrap">
+                <FaWhatsapp size={9} className="shrink-0 text-[#cb5d7a]" />
+                <span>{CONTACT.primaryPhone}</span>
+              </p>
+              <p className="flex items-center gap-[1.5mm] whitespace-nowrap">
+                <Phone size={9} color="#cb5d7a" className="shrink-0" />
+                <span>
+                  {CONTACT.primaryPhone} / {CONTACT.secondaryPhone}
+                </span>
+              </p>
+              <p className="flex items-center gap-[1.5mm] whitespace-nowrap">
+                <Mail size={9} color="#cb5d7a" className="shrink-0" />
+                {CONTACT.email}
+              </p>
+              <p className="flex items-center gap-[1.5mm] whitespace-nowrap">
+                <Globe size={9} color="#cb5d7a" className="shrink-0" />
+                thaisoulmate.org
+              </p>
+            </div>
+            <div className="grid shrink-0 justify-items-center text-center text-[1.6mm] font-bold">
+              <div className="relative border border-[#cb5d7a]/45 bg-white p-[1mm]">
+                <QRCodeSVG
+                  value={CONTACT.whatsapp}
+                  level="H"
+                  includeMargin={false}
+                  className="block h-[14mm] w-[14mm]"
+                />
+                <span className="absolute top-1/2 left-1/2 grid h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 place-items-center border border-white bg-white text-[#25d366]">
+                  <FaWhatsapp className="h-[3mm] w-[3mm]" />
+                </span>
+              </div>
+              <span className="mt-[0.5mm] text-[#241e2a]">
+                Scan to WhatsApp
+              </span>
+            </div>
           </div>
-          <div className="flex items-center justify-between border-t border-[#cb5d7a]/25 pt-[2.5mm]">
-            <div className="flex items-center gap-[2mm] text-[#cb5d7a]">
-              <FaFacebookF size={11} />
-              <FaInstagram size={11} />
-              <FaLine size={11} />
-              <span className="font-sans text-[2mm] font-bold text-[#241e2a]">
+          <div className="flex items-center justify-start gap-[3mm] border-t border-[#cb5d7a]/25 pt-[2.5mm]">
+            <div className="grid grid-cols-2 gap-x-[3mm] gap-y-[1mm] font-sans text-[1.8mm] font-bold text-[#241e2a]">
+              <span className="flex items-center gap-[1mm]">
+                <FaFacebookF size={9} color="#cb5d7a" />
+                @thaisoulmates
+              </span>
+              <span className="flex items-center gap-[1mm]">
+                <FaInstagram size={9} color="#cb5d7a" />
+                @thaisoulmate
+              </span>
+              <span className="flex items-center gap-[1mm]">
+                <FaLine size={9} color="#cb5d7a" />
+                @thaisoulmate
+              </span>
+              <span className="flex items-center gap-[1mm]">
+                <FaTiktok size={9} color="#cb5d7a" />
                 @thaisoulmate
               </span>
             </div>
-            <p className="font-sans text-[2mm] font-bold tracking-[0.08em] text-[#cfa14f] uppercase">
-              thaisoulmate.org
-            </p>
           </div>
         </section>
       </main>

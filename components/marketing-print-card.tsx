@@ -108,6 +108,10 @@ function BrandMark({ inverse, color }: { inverse?: boolean; color: string }) {
         alt=""
         width={76}
         height={76}
+        priority
+        quality={100}
+        unoptimized
+        sizes="23mm"
         className="h-[23mm] w-[23mm] object-contain"
       />
       <div className="flex flex-col items-center justify-center text-center leading-none">
@@ -238,7 +242,7 @@ export function MarketingPrintCard({
           style={{
             background:
               variant === "photographic"
-                ? `linear-gradient(180deg, rgb(36 30 42 / 28%), rgb(36 30 42 / 88%)), url("/home-landing.png") center / cover`
+                ? palette.front
                 : variant === "striped"
                   ? `linear-gradient(90deg, #cb5d7a 0 3mm, transparent 3mm), ${palette.front}`
                   : `linear-gradient(145deg, ${palette.front}, ${palette.ink})`,
@@ -246,8 +250,25 @@ export function MarketingPrintCard({
           }}
           aria-label="Front of Thai Soulmate marketing card"
         >
-          <BrandMark color="#ffffff" />
-          <div className="relative my-auto max-w-[111mm]">
+          {variant === "photographic" && (
+            <>
+              <Image
+                src="/home-landing.png"
+                alt=""
+                fill
+                priority
+                quality={100}
+                unoptimized
+                sizes="148mm"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-[#241e2a]/70" />
+            </>
+          )}
+          <div className="relative z-10">
+            <BrandMark color="#ffffff" />
+          </div>
+          <div className="relative z-10 my-auto max-w-[111mm]">
             <p
               className="mb-[8mm] inline-block border-b pb-[2mm] font-sans text-[2.7mm] font-extrabold tracking-[0.2em] uppercase"
               style={{ borderColor: palette.accent, color: palette.accent }}
@@ -262,7 +283,7 @@ export function MarketingPrintCard({
             </p>
           </div>
           {copy.showFrontFooter && (
-            <footer className="flex items-end justify-between gap-[8mm] border-t border-white/35 pt-[5mm]">
+            <footer className="relative z-10 flex items-end justify-between gap-[8mm] border-t border-white/35 pt-[5mm]">
               <p className="font-sans text-[3mm] font-extrabold tracking-[0.14em]">
                 thaisoulmate.org
               </p>

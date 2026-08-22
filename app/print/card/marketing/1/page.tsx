@@ -183,11 +183,11 @@ export default function BusinessMarketingPrintPage() {
         .brand-mark {
           display: flex;
           align-items: center;
-          gap: 4mm;
+          gap: 3mm;
         }
         .brand-mark__logo {
-          width: 19mm;
-          height: 19mm;
+          width: 23mm;
+          height: 23mm;
           object-fit: contain;
           border-radius: 5mm;
         }
@@ -205,7 +205,7 @@ export default function BusinessMarketingPrintPage() {
           margin: 2mm 0 0;
           color: var(--marketing-ink);
           font-family: Arial, sans-serif;
-          font-size: 2.7mm;
+          font-size: 3.4mm;
           font-weight: 700;
           letter-spacing: 0.08em;
           text-transform: uppercase;
@@ -438,7 +438,9 @@ export default function BusinessMarketingPrintPage() {
         .brand-mark > div {
           display: flex;
           flex-direction: column;
+          align-items: center;
           justify-content: center;
+          text-align: center;
         }
         .brand-mark__tag {
           margin-top: 0;
@@ -452,12 +454,12 @@ export default function BusinessMarketingPrintPage() {
         }
         .brand-mark__name {
           display: block;
-          width: 46mm;
-          height: 7mm;
+          width: 58mm;
+          height: 9mm;
         }
         .marketing-page__back .brand-mark__name {
-          width: 46mm;
-          height: 7mm;
+          width: 58mm;
+          height: 9mm;
         }
         .front-content {
           max-width: 111mm;
@@ -527,13 +529,13 @@ export default function BusinessMarketingPrintPage() {
           background: transparent;
         }
         .marketing-page__back .brand-mark__logo {
-          width: 19mm;
-          height: 19mm;
+          width: 23mm;
+          height: 23mm;
           border-radius: 50%;
         }
         .marketing-page__back .brand-mark__name {
-          width: 46mm;
-          height: 8mm;
+          width: 58mm;
+          height: 9mm;
         }
         .back-heading h2 {
           margin-top: 10mm;
@@ -637,51 +639,52 @@ export default function BusinessMarketingPrintPage() {
         }
         .marketing-page__back {
           padding: 0;
-          background: #f7f5f0;
+          background: #f3cbd4;
         }
         .back-inner {
           padding: 15mm 14mm 13mm;
           border: 0;
-          background: #f7f5f0;
+          background: #fff7f8;
         }
         .marketing-page__back .brand-mark__name {
-          width: 46mm;
-          height: 7mm;
+          width: 58mm;
+          height: 9mm;
         }
         .back-heading h2 {
-          color: #18212f;
+          color: #542538;
         }
         .back-heading p {
-          color: #9a7430;
+          color: #cb5d7a;
         }
         .contact-row {
-          border-bottom-color: rgb(24 33 47 / 16%);
+          border-bottom-color: rgb(203 93 122 / 24%);
         }
         .contact-row__icon {
           border-radius: 1mm;
-          background: #18212f;
-          color: #cfa14f;
+          background: transparent;
+          color: #cb5d7a;
         }
         .contact-row__label {
-          color: #68717b;
+          color: #a45d72;
         }
         .contact-row__value,
         .social-list__item,
         .qr-block {
-          color: #18212f;
+          color: #542538;
         }
         .back-bottom {
-          border-top-color: rgb(24 33 47 / 16%);
+          border-top-color: rgb(203 93 122 / 24%);
         }
         .marketing-page__back .back-bottom {
           border-top: 0;
         }
         .social-list__item svg {
-          color: #9a7430;
+          color: #cb5d7a;
+          background: transparent;
         }
         .qr-block__code {
           position: relative;
-          border: 1px solid rgb(24 33 47 / 16%);
+          border: 1px solid rgb(203 93 122 / 28%);
           border-radius: 0;
         }
         .qr-block__whatsapp {
@@ -703,7 +706,7 @@ export default function BusinessMarketingPrintPage() {
           height: 4mm;
         }
         .print-only-url {
-          color: #9a7430;
+          color: #cb5d7a;
         }
         @media print {
           @page {

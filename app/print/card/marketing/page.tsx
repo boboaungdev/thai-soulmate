@@ -17,9 +17,9 @@ import { APP_INFO, CONTACT } from "@/constants"
 
 const socialLinks = [
   { label: "Facebook", value: "@thaisoulmates", icon: FaFacebookF },
-  { label: "Line", value: "@thaisoulmate", icon: FaLine },
   { label: "Instagram", value: "@thaisoulmate", icon: FaInstagram },
   { label: "TikTok", value: "@thaisoulmate", icon: FaTiktok },
+  { label: "Line", value: "@thaisoulmate", icon: FaLine },
 ]
 
 function PrintTrigger() {

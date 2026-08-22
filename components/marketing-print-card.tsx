@@ -16,7 +16,7 @@ import {
 import { APP_INFO, CONTACT } from "@/constants"
 
 type MarketingVariant =
-  "editorial" | "classic" | "sunset" | "sage" | "photographic"
+  "editorial" | "classic" | "sunset" | "sage" | "photographic" | "striped"
 
 type MarketingCopy = {
   eyebrow: string
@@ -64,6 +64,13 @@ const colors = {
   photographic: {
     ink: "#241e2a",
     accent: "#cfa14f",
+    background: "#ffffff",
+    front: "#241e2a",
+    muted: "#6b5b62",
+  },
+  striped: {
+    ink: "#241e2a",
+    accent: "#cb5d7a",
     background: "#ffffff",
     front: "#241e2a",
     muted: "#6b5b62",
@@ -232,7 +239,9 @@ export function MarketingPrintCard({
             background:
               variant === "photographic"
                 ? `linear-gradient(180deg, rgb(36 30 42 / 28%), rgb(36 30 42 / 88%)), url("/home-landing.png") center / cover`
-                : `linear-gradient(145deg, ${palette.front}, ${palette.ink})`,
+                : variant === "striped"
+                  ? `linear-gradient(90deg, #cb5d7a 0 3mm, transparent 3mm), ${palette.front}`
+                  : `linear-gradient(145deg, ${palette.front}, ${palette.ink})`,
             boxShadow: "0 18px 45px rgb(36 30 42 / 22%)",
           }}
           aria-label="Front of Thai Soulmate marketing card"
@@ -275,6 +284,9 @@ export function MarketingPrintCard({
           className="marketing-sheet flex h-[210mm] w-[148mm] flex-col overflow-hidden p-[15mm_14mm_13mm]"
           style={{
             background: palette.background,
+            borderTop: variant === "striped" ? "2mm solid #cfa14f" : undefined,
+            borderBottom:
+              variant === "striped" ? "2mm solid #cb5d7a" : undefined,
             boxShadow: "0 18px 45px rgb(36 30 42 / 18%)",
           }}
           aria-label="Back of Thai Soulmate marketing card"

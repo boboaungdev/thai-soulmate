@@ -452,6 +452,9 @@ export default function BusinessMarketingPrintPage() {
           border-top: 1px solid rgb(36 30 42 / 15%);
           padding-top: 5mm;
         }
+        .marketing-page__back .back-bottom {
+          border-top: 0;
+        }
         .social-list {
           display: grid;
           gap: 2.3mm;
@@ -555,9 +558,6 @@ export default function BusinessMarketingPrintPage() {
               {APP_INFO.secondaryTagline}
             </p>
           </div>
-          <footer className="front-footer">
-            <p className="front-footer__url">thaisoulmate.org</p>
-          </footer>
         </section>
         <section
           className="marketing-page marketing-page__back"

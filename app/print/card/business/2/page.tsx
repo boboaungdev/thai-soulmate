@@ -50,13 +50,7 @@ function CornerOrnament({ className }: { className?: string }) {
 
 function BrandWordmark({ compact = false }: { compact?: boolean }) {
   return (
-    <div
-      className={
-        compact
-          ? "flex items-center gap-[1.4mm]"
-          : "flex flex-col items-center text-center"
-      }
-    >
+    <div className="flex w-full flex-col items-center text-center">
       <Image
         src="/logo.png"
         alt=""
@@ -65,24 +59,18 @@ function BrandWordmark({ compact = false }: { compact?: boolean }) {
         priority
         quality={100}
         unoptimized
-        sizes={compact ? "11mm" : "16mm"}
+        sizes={compact ? "10mm" : "16mm"}
         className={
           compact
-            ? "h-[11mm] w-[11mm] object-contain"
+            ? "h-[10mm] w-[10mm] object-contain"
             : "h-[16mm] w-[16mm] object-contain"
         }
       />
-      <div
-        className={
-          compact
-            ? "flex flex-col items-start leading-none"
-            : "mt-[1.5mm] flex flex-col items-center leading-none"
-        }
-      >
+      <div className="mt-[1.2mm] flex flex-col items-center leading-none">
         <svg
           aria-label={APP_INFO.name}
           className={
-            compact ? "block h-[5mm] w-[34mm]" : "block h-[7mm] w-[48mm]"
+            compact ? "block h-[4.6mm] w-[36mm]" : "block h-[7mm] w-[48mm]"
           }
           role="img"
           viewBox="0 0 180 28"
@@ -123,8 +111,8 @@ function BrandWordmark({ compact = false }: { compact?: boolean }) {
         <p
           className={
             compact
-              ? "mt-[0.6mm] font-sans text-[1.8mm] font-bold tracking-[0.14em] text-[#5a4d55]"
-              : "mt-[1mm] font-sans text-[2mm] font-bold tracking-[0.22em] text-[#5a4d55] uppercase"
+              ? "mt-[0.7mm] max-w-[40mm] text-center font-sans text-[1.7mm] leading-[1.2] font-bold tracking-[0.08em] text-[#5a4d55]"
+              : "mt-[1mm] text-center font-sans text-[2mm] font-bold tracking-[0.22em] text-[#5a4d55] uppercase"
           }
         >
           {APP_INFO.tagline}

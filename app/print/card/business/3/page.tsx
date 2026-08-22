@@ -51,7 +51,7 @@ function BrandName({
       <defs>
         <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stopColor="#cfa14f" />
-          <stop offset="1" stopColor="#e8c27a" />
+          <stop offset="1" stopColor="#cb5d7a" />
         </linearGradient>
       </defs>
       <text
@@ -113,10 +113,11 @@ export default function BusinessCardPrintPageV3() {
           aria-label="Front of Thai Soulmate business card, gold rail design"
         >
           <div
-            className="flex w-[24mm] shrink-0 flex-col items-center justify-center"
+            className="flex w-[36mm] shrink-0 flex-col items-center justify-center px-[2mm] text-center"
             style={{
               background:
-                "linear-gradient(180deg, #e8c27a 0%, #cfa14f 48%, #b8863e 100%)",
+                "linear-gradient(180deg, #fffdf8 0%, #fff8f4 55%, #f6ebe0 100%)",
+              borderRight: "0.6mm solid #cfa14f",
             }}
           >
             <Image
@@ -127,37 +128,33 @@ export default function BusinessCardPrintPageV3() {
               priority
               quality={100}
               unoptimized
-              sizes="16mm"
-              className="h-[16mm] w-[16mm] object-contain"
+              sizes="13mm"
+              className="h-[13mm] w-[13mm] object-contain"
             />
+            <BrandName
+              gradientId="business-card-v3-front-name"
+              className="mt-[1.6mm] block h-[5mm] w-[32mm]"
+            />
+            <p className="mt-[0.8mm] max-w-[32mm] text-center font-sans text-[1.7mm] leading-[1.25] font-bold tracking-[0.06em] text-[#241e2a]">
+              {APP_INFO.tagline}
+            </p>
           </div>
           <div
-            className="relative flex min-w-0 flex-1 flex-col justify-between px-[6mm] py-[6mm]"
+            className="relative flex min-w-0 flex-1 flex-col justify-center px-[6mm] py-[6mm]"
             style={{
               background:
                 "linear-gradient(165deg, #3a2430 0%, #241e2a 55%, #1a151c 100%)",
             }}
           >
-            <div>
-              <BrandName
-                gradientId="business-card-v3-front-name"
-                className="block h-[7mm] w-[48mm]"
-              />
-              <p className="mt-[1.2mm] font-sans text-[2mm] font-bold tracking-[0.16em] text-white/85">
-                {APP_INFO.tagline}
-              </p>
-            </div>
-            <div>
-              <span className="mb-[2mm] block h-[0.4mm] w-[14mm] bg-[#cfa14f]" />
-              <p className="font-sans text-[2.1mm] font-bold tracking-[0.04em] text-[#cfa14f]">
-                Personal matchmaking in Thailand
-              </p>
-              <p className="mt-[1.6mm] max-w-[52mm] font-sans text-[1.9mm] leading-[1.35] text-white/65">
-                Real people. Real relationships.
-                <br />
-                Personally matched.
-              </p>
-            </div>
+            <span className="mb-[2mm] block h-[0.4mm] w-[14mm] bg-[#cfa14f]" />
+            <p className="font-sans text-[2.1mm] font-bold tracking-[0.04em] text-[#cfa14f]">
+              Personal matchmaking in Thailand
+            </p>
+            <p className="mt-[1.6mm] max-w-[46mm] font-sans text-[1.9mm] leading-[1.35] text-white/65">
+              Real people. Real relationships.
+              <br />
+              Personally matched.
+            </p>
           </div>
         </section>
 
@@ -169,30 +166,28 @@ export default function BusinessCardPrintPageV3() {
           }}
           aria-label="Back of Thai Soulmate business card, band design"
         >
-          <div className="flex flex-1 items-start justify-between gap-[4mm] px-[6mm] pt-[5mm] pb-[3mm]">
-            <div className="min-w-0">
-              <div className="mb-[3mm] flex items-center gap-[1.4mm]">
-                <Image
-                  src="/logo.png"
-                  alt=""
-                  width={48}
-                  height={48}
-                  quality={100}
-                  unoptimized
-                  sizes="9mm"
-                  className="h-[9mm] w-[9mm] object-contain"
-                />
-                <div className="flex flex-col leading-none">
-                  <BrandName
-                    gradientId="business-card-v3-back-name"
-                    className="block h-[4.6mm] w-[32mm]"
-                  />
-                  <p className="mt-[0.6mm] font-sans text-[1.7mm] font-bold tracking-[0.08em] text-[#5a4d55]">
-                    {APP_INFO.tagline}
-                  </p>
-                </div>
-              </div>
-              <div className="grid gap-[1.4mm] font-sans text-[1.9mm] font-semibold text-[#241e2a]">
+          <div className="flex flex-1 flex-col px-[6mm] pt-[3.5mm] pb-[2mm]">
+            <div className="mb-[2mm] flex flex-col items-center text-center">
+              <Image
+                src="/logo.png"
+                alt=""
+                width={48}
+                height={48}
+                quality={100}
+                unoptimized
+                sizes="8mm"
+                className="h-[8mm] w-[8mm] object-contain"
+              />
+              <BrandName
+                gradientId="business-card-v3-back-name"
+                className="mt-[0.8mm] block h-[4.4mm] w-[36mm]"
+              />
+              <p className="mt-[0.5mm] max-w-[40mm] text-center font-sans text-[1.6mm] leading-[1.2] font-bold tracking-[0.08em] text-[#5a4d55]">
+                {APP_INFO.tagline}
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-[3mm]">
+              <div className="grid min-w-0 gap-[1.2mm] font-sans text-[1.8mm] font-semibold text-[#241e2a]">
                 <p className="flex items-center gap-[1.4mm] whitespace-nowrap">
                   <FaWhatsapp size={9} className="shrink-0 text-[#cb5d7a]" />
                   <span>{CONTACT.primaryPhone}</span>
@@ -212,22 +207,22 @@ export default function BusinessCardPrintPageV3() {
                   thaisoulmate.org
                 </p>
               </div>
-            </div>
-            <div className="grid shrink-0 justify-items-center pt-[1mm] text-center">
-              <div className="relative border border-[#cfa14f]/60 bg-white p-[1.1mm]">
-                <QRCodeSVG
-                  value={CONTACT.whatsapp}
-                  level="H"
-                  includeMargin={false}
-                  className="block h-[16mm] w-[16mm]"
-                />
-                <span className="absolute top-1/2 left-1/2 grid h-[4.2mm] w-[4.2mm] -translate-x-1/2 -translate-y-1/2 place-items-center border border-white bg-white text-[#25d366]">
-                  <FaWhatsapp className="h-[3mm] w-[3mm]" />
+              <div className="grid shrink-0 justify-items-center text-center">
+                <div className="relative border border-[#cfa14f]/60 bg-white p-[0.9mm]">
+                  <QRCodeSVG
+                    value={CONTACT.whatsapp}
+                    level="H"
+                    includeMargin={false}
+                    className="block h-[14mm] w-[14mm]"
+                  />
+                  <span className="absolute top-1/2 left-1/2 grid h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 place-items-center border border-white bg-white text-[#25d366]">
+                    <FaWhatsapp className="h-[2.8mm] w-[2.8mm]" />
+                  </span>
+                </div>
+                <span className="mt-[0.6mm] font-sans text-[1.4mm] font-bold text-[#241e2a]">
+                  Scan to WhatsApp
                 </span>
               </div>
-              <span className="mt-[1mm] font-sans text-[1.5mm] font-bold text-[#241e2a]">
-                Scan to WhatsApp
-              </span>
             </div>
           </div>
 
@@ -235,7 +230,7 @@ export default function BusinessCardPrintPageV3() {
             className="flex items-center justify-between gap-[2mm] px-[6mm] py-[2.4mm]"
             style={{
               background:
-                "linear-gradient(90deg, #8a3d55 0%, #cb5d7a 55%, #cfa14f 100%)",
+                "linear-gradient(90deg, #cfa14f 0%, #cb5d7a 55%, #8a3d55 100%)",
             }}
           >
             <span className="flex items-center gap-[1mm] font-sans text-[1.7mm] font-bold text-white">

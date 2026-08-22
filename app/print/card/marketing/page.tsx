@@ -2,17 +2,24 @@
 
 import Image from "next/image"
 import { useEffect } from "react"
-import { Globe, Mail, MessageCircle, Music2, Phone } from "lucide-react"
+import { Globe, Mail, Phone } from "lucide-react"
 import { QRCodeSVG } from "qrcode.react"
-import { FaFacebookF, FaInstagram } from "react-icons/fa"
+import type { IconType } from "react-icons"
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLine,
+  FaTiktok,
+  FaWhatsapp,
+} from "react-icons/fa"
 
 import { APP_INFO, CONTACT } from "@/constants"
 
 const socialLinks = [
-  { label: "Facebook", value: "@thaisoulmate.official", icon: FaFacebookF },
-  { label: "Line", value: "@thaisoulmate", icon: MessageCircle },
+  { label: "Facebook", value: "@thaisoulmates", icon: FaFacebookF },
+  { label: "Line", value: "@thaisoulmate", icon: FaLine },
   { label: "Instagram", value: "@thaisoulmate", icon: FaInstagram },
-  { label: "TikTok", value: "@thaisoulmate", icon: Music2 },
+  { label: "TikTok", value: "@thaisoulmate", icon: FaTiktok },
 ]
 
 function PrintTrigger() {
@@ -38,15 +45,37 @@ function BrandMark({ inverse = false }: { inverse?: boolean }) {
         className="brand-mark__logo"
       />
       <div>
-        <p
-          className={
-            inverse
-              ? "brand-mark__name brand-mark__name--light"
-              : "brand-mark__name"
-          }
+        <svg
+          aria-label={APP_INFO.name}
+          className="brand-mark__name"
+          role="img"
+          viewBox="0 0 180 28"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          {APP_INFO.name}
-        </p>
+          <defs>
+            <linearGradient
+              id="marketing-brand-gradient"
+              x1="0"
+              x2="1"
+              y1="0"
+              y2="0"
+            >
+              <stop offset="0" stopColor="#f2b854" />
+              <stop offset="1" stopColor="#f07797" />
+            </linearGradient>
+          </defs>
+          <text
+            x="90"
+            y="21"
+            fill="url(#marketing-brand-gradient)"
+            fontFamily="sans-serif"
+            fontSize="20"
+            fontWeight="700"
+            textAnchor="middle"
+          >
+            {APP_INFO.name}
+          </text>
+        </svg>
         <p
           className={
             inverse
@@ -66,7 +95,7 @@ function ContactRow({
   label,
   children,
 }: {
-  icon: typeof Phone
+  icon: IconType | typeof Phone
   label: string
   children: React.ReactNode
 }) {
@@ -161,7 +190,6 @@ export default function BusinessMarketingPrintPage() {
           height: 19mm;
           object-fit: contain;
           border-radius: 5mm;
-          background: white;
         }
         .brand-mark__name {
           margin: 0;
@@ -365,6 +393,318 @@ export default function BusinessMarketingPrintPage() {
           font-weight: 800;
           text-align: center;
         }
+        .marketing-preview {
+          background: #e8e1df;
+          font-family: Arial, sans-serif;
+        }
+        .marketing-page {
+          border-radius: 0;
+          box-shadow: 0 18px 45px rgb(42 25 31 / 18%);
+          font-family: Arial, sans-serif;
+        }
+        .marketing-page__front {
+          justify-content: space-between;
+          padding: 15mm 14mm 13mm;
+          background:
+            radial-gradient(
+              circle at 90% 8%,
+              rgb(255 255 255 / 22%) 0 18mm,
+              transparent 18.2mm
+            ),
+            linear-gradient(145deg, #d95f7b 0%, #bf4566 54%, #91354f 100%);
+        }
+        .marketing-page__front::before {
+          top: 80mm;
+          right: -29mm;
+          width: 82mm;
+          height: 82mm;
+          border: 1px solid rgb(255 255 255 / 25%);
+          background: transparent;
+        }
+        .marketing-page__front::after {
+          right: -16mm;
+          bottom: -19mm;
+          width: 70mm;
+          height: 70mm;
+          border: 1px solid rgb(255 255 255 / 24%);
+        }
+        .marketing-page__front .brand-mark {
+          align-items: center;
+        }
+        .marketing-page__front .brand-mark__name,
+        .marketing-page__front .brand-mark__tag {
+          color: white;
+        }
+        .brand-mark > div {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .brand-mark__tag {
+          margin-top: 0;
+        }
+        .marketing-page__back .brand-mark__tag {
+          margin-top: 0;
+          text-transform: none;
+        }
+        .brand-mark__tag {
+          text-transform: none;
+        }
+        .brand-mark__name {
+          display: block;
+          width: 46mm;
+          height: 7mm;
+        }
+        .marketing-page__back .brand-mark__name {
+          width: 46mm;
+          height: 7mm;
+        }
+        .front-content {
+          max-width: 111mm;
+          margin-top: auto;
+          margin-bottom: auto;
+        }
+        .front-content__eyebrow {
+          display: inline-block;
+          margin-bottom: 8mm;
+          border-bottom: 1px solid rgb(255 255 255 / 65%);
+          padding-bottom: 2mm;
+          color: white;
+          font-size: 2.7mm;
+          letter-spacing: 0.2em;
+        }
+        .front-content h1 {
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 18mm;
+          font-weight: 400;
+          letter-spacing: -0.035em;
+          line-height: 0.93;
+        }
+        .front-content__secondary {
+          max-width: 90mm;
+          margin-top: 9mm;
+          color: white;
+          font-size: 3.6mm;
+          font-weight: 600;
+          line-height: 1.5;
+        }
+        .front-footer {
+          align-items: end;
+          border-top: 1px solid rgb(255 255 255 / 35%);
+          padding-top: 5mm;
+        }
+        .front-footer__url {
+          font-size: 3mm;
+          letter-spacing: 0.14em;
+        }
+        .front-footer__mark {
+          width: 25mm;
+          height: 25mm;
+          border: 1px solid rgb(255 255 255 / 80%);
+          color: white;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 2.8mm;
+          font-weight: 400;
+          line-height: 1.25;
+        }
+        .marketing-page__back {
+          padding: 10mm;
+          background: #f5dadd;
+        }
+        .back-inner {
+          padding: 11mm 10mm 9mm;
+          border: 1px solid rgb(137 48 74 / 25%);
+          background:
+            linear-gradient(135deg, rgb(255 255 255 / 68%), transparent 42%),
+            #f8e8e9;
+        }
+        .back-inner::after {
+          right: -20mm;
+          bottom: -22mm;
+          width: 65mm;
+          height: 65mm;
+          border: 1px solid rgb(137 48 74 / 18%);
+          background: transparent;
+        }
+        .marketing-page__back .brand-mark__logo {
+          width: 19mm;
+          height: 19mm;
+          border-radius: 50%;
+        }
+        .marketing-page__back .brand-mark__name {
+          width: 46mm;
+          height: 8mm;
+        }
+        .back-heading h2 {
+          margin-top: 10mm;
+          color: #542538;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 11mm;
+          font-weight: 400;
+          letter-spacing: -0.03em;
+          line-height: 0.98;
+        }
+        .back-heading p {
+          margin-top: 4mm;
+          color: #b44767;
+          font-size: 2.8mm;
+          letter-spacing: 0.17em;
+        }
+        .contact-list {
+          gap: 3mm;
+          margin: 9mm 0 7mm;
+        }
+        .contact-row {
+          grid-template-columns: 9mm 25mm 1fr;
+          min-height: 8mm;
+          border-bottom-color: rgb(137 48 74 / 18%);
+          padding-bottom: 2mm;
+        }
+        .contact-row__icon {
+          width: 7mm;
+          height: 7mm;
+          background: #b44767;
+        }
+        .contact-row__label,
+        .contact-row__value,
+        .social-list__item,
+        .qr-block {
+          color: #542538;
+        }
+        .contact-row__label {
+          color: #956879;
+          font-size: 2.4mm;
+        }
+        .contact-row__value {
+          font-size: 2.9mm;
+        }
+        .back-bottom {
+          align-items: end;
+          border-top: 1px solid rgb(137 48 74 / 18%);
+          padding-top: 6mm;
+        }
+        .social-list__item {
+          font-size: 2.7mm;
+        }
+        .social-list__item svg {
+          color: #b44767;
+        }
+        .qr-block__code {
+          border: 1px solid rgb(137 48 74 / 18%);
+        }
+        .print-only-url {
+          color: #b44767;
+          font-size: 2.4mm;
+          letter-spacing: 0.14em;
+        }
+        .marketing-page__front {
+          background:
+            linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px),
+            #18212f;
+          background-size: 12mm 12mm;
+        }
+        .marketing-page__front::before,
+        .marketing-page__front::after,
+        .back-inner::after {
+          display: none;
+        }
+        .marketing-page__front .brand-mark__logo,
+        .marketing-page__back .brand-mark__logo {
+          border: 0;
+          border-radius: 0;
+        }
+        .front-content__eyebrow {
+          border-bottom-color: #cfa14f;
+          color: #cfa14f;
+        }
+        .front-content h1 {
+          max-width: 105mm;
+          color: #f7f4ed;
+        }
+        .front-content__secondary {
+          color: rgb(247 244 237 / 72%);
+        }
+        .front-footer__mark {
+          width: auto;
+          height: auto;
+          min-width: 32mm;
+          border: 1px solid #cfa14f;
+          border-radius: 0;
+          padding: 3mm 4mm;
+          color: #cfa14f;
+          transform: none;
+        }
+        .marketing-page__back {
+          padding: 0;
+          background: #f7f5f0;
+        }
+        .back-inner {
+          padding: 15mm 14mm 13mm;
+          border: 0;
+          background: #f7f5f0;
+        }
+        .marketing-page__back .brand-mark__name {
+          width: 46mm;
+          height: 7mm;
+        }
+        .back-heading h2 {
+          color: #18212f;
+        }
+        .back-heading p {
+          color: #9a7430;
+        }
+        .contact-row {
+          border-bottom-color: rgb(24 33 47 / 16%);
+        }
+        .contact-row__icon {
+          border-radius: 1mm;
+          background: #18212f;
+          color: #cfa14f;
+        }
+        .contact-row__label {
+          color: #68717b;
+        }
+        .contact-row__value,
+        .social-list__item,
+        .qr-block {
+          color: #18212f;
+        }
+        .back-bottom {
+          border-top-color: rgb(24 33 47 / 16%);
+        }
+        .marketing-page__back .back-bottom {
+          border-top: 0;
+        }
+        .social-list__item svg {
+          color: #9a7430;
+        }
+        .qr-block__code {
+          position: relative;
+          border: 1px solid rgb(24 33 47 / 16%);
+          border-radius: 0;
+        }
+        .qr-block__whatsapp {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          display: grid;
+          width: 6mm;
+          height: 6mm;
+          place-items: center;
+          border: 1px solid white;
+          background: white;
+          color: #25d366;
+          transform: translate(-50%, -50%);
+        }
+        .qr-block__whatsapp svg {
+          display: block;
+          width: 4mm;
+          height: 4mm;
+        }
+        .print-only-url {
+          color: #9a7430;
+        }
         @media print {
           @page {
             size: A5 portrait;
@@ -376,6 +716,13 @@ export default function BusinessMarketingPrintPage() {
             height: 210mm;
             margin: 0;
             background: white;
+          }
+          body * {
+            visibility: visible;
+          }
+          .marketing-document,
+          .marketing-document * {
+            visibility: visible;
           }
           .marketing-preview {
             display: block;
@@ -396,22 +743,23 @@ export default function BusinessMarketingPrintPage() {
         }
       `}</style>
 
-      <main className="marketing-preview">
+      <main
+        id="printable-area"
+        className="marketing-preview marketing-document"
+      >
         <section
           className="marketing-page marketing-page__front"
           aria-label="Front of Thai Soulmate marketing card"
         >
           <BrandMark />
           <div className="front-content">
-            <p className="front-content__eyebrow">
-              A more meaningful way to meet
-            </p>
+            <p className="front-content__eyebrow">Matchmaking, with heart</p>
             <h1>
-              Find the
+              Meet someone
               <br />
-              connection
+              who feels
               <br />
-              that feels real.
+              like home.
             </h1>
             <p className="front-content__secondary">
               {APP_INFO.secondaryTagline}
@@ -436,14 +784,14 @@ export default function BusinessMarketingPrintPage() {
             <div className="back-heading">
               <BrandMark inverse />
               <h2>
-                Let&apos;s start
+                Your next
                 <br />
-                something real.
+                chapter starts here.
               </h2>
-              <p>Connect with us today</p>
+              <p>Personal matchmaking in Thailand</p>
             </div>
             <div className="contact-list">
-              <ContactRow icon={MessageCircle} label="WhatsApp">
+              <ContactRow icon={FaWhatsapp} label="WhatsApp">
                 +66 6369 15263
               </ContactRow>
               <ContactRow icon={Phone} label="Phone">
@@ -470,9 +818,12 @@ export default function BusinessMarketingPrintPage() {
                 <div className="qr-block__code">
                   <QRCodeSVG
                     value={CONTACT.whatsapp}
-                    level="M"
+                    level="H"
                     includeMargin={false}
                   />
+                  <span className="qr-block__whatsapp" aria-hidden="true">
+                    <FaWhatsapp />
+                  </span>
                 </div>
                 <span>Scan to WhatsApp us</span>
               </div>

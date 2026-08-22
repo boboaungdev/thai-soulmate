@@ -171,6 +171,82 @@ export default function BusinessMarketingPrintPage() {
           );
           content: "";
         }
+        .marketing-page__front::after,
+        .marketing-page__back::after {
+          position: absolute;
+          inset: 6mm;
+          z-index: 2;
+          background:
+            linear-gradient(rgb(244 211 138 / 100%), rgb(244 211 138 / 100%)) 0
+              0 / 14mm 0.75mm no-repeat,
+            linear-gradient(rgb(244 211 138 / 100%), rgb(244 211 138 / 100%))
+              100% 0 / 14mm 0.75mm no-repeat,
+            linear-gradient(rgb(244 211 138 / 100%), rgb(244 211 138 / 100%)) 0
+              100% / 14mm 0.75mm no-repeat,
+            linear-gradient(rgb(244 211 138 / 100%), rgb(244 211 138 / 100%))
+              100% 100% / 14mm 0.75mm no-repeat,
+            linear-gradient(
+                90deg,
+                rgb(244 211 138 / 100%),
+                rgb(244 211 138 / 100%)
+              )
+              0 0 / 0.75mm 14mm no-repeat,
+            linear-gradient(
+                90deg,
+                rgb(244 211 138 / 100%),
+                rgb(244 211 138 / 100%)
+              )
+              100% 0 / 0.75mm 14mm no-repeat,
+            linear-gradient(
+                90deg,
+                rgb(244 211 138 / 100%),
+                rgb(244 211 138 / 100%)
+              )
+              0 100% / 0.75mm 14mm no-repeat,
+            linear-gradient(
+                90deg,
+                rgb(244 211 138 / 100%),
+                rgb(244 211 138 / 100%)
+              )
+              100% 100% / 0.75mm 14mm no-repeat;
+          content: "";
+          pointer-events: none;
+        }
+        .marketing-page__back::after {
+          background:
+            linear-gradient(rgb(203 93 122 / 100%), rgb(203 93 122 / 100%)) 0
+              0 / 14mm 0.75mm no-repeat,
+            linear-gradient(rgb(203 93 122 / 100%), rgb(203 93 122 / 100%)) 100%
+              0 / 14mm 0.75mm no-repeat,
+            linear-gradient(rgb(203 93 122 / 100%), rgb(203 93 122 / 100%)) 0
+              100% / 14mm 0.75mm no-repeat,
+            linear-gradient(rgb(203 93 122 / 100%), rgb(203 93 122 / 100%)) 100%
+              100% / 14mm 0.75mm no-repeat,
+            linear-gradient(
+                90deg,
+                rgb(203 93 122 / 100%),
+                rgb(203 93 122 / 100%)
+              )
+              0 0 / 0.75mm 14mm no-repeat,
+            linear-gradient(
+                90deg,
+                rgb(203 93 122 / 100%),
+                rgb(203 93 122 / 100%)
+              )
+              100% 0 / 0.75mm 14mm no-repeat,
+            linear-gradient(
+                90deg,
+                rgb(203 93 122 / 100%),
+                rgb(203 93 122 / 100%)
+              )
+              0 100% / 0.75mm 14mm no-repeat,
+            linear-gradient(
+                90deg,
+                rgb(203 93 122 / 100%),
+                rgb(203 93 122 / 100%)
+              )
+              100% 100% / 0.75mm 14mm no-repeat;
+        }
         .brand-mark,
         .front-content,
         .front-footer,

@@ -3,11 +3,26 @@ import { MarketingPrintCard } from "@/components/marketing-print-card"
 export default function BusinessMarketingPrintPage() {
   return (
     <MarketingPrintCard
-      variant="classic"
+      variant="editorial"
       copy={{
-        eyebrow: "Meaningful connections, personally matched",
-        headline: "Meet someone who is truly right for you.",
-        backHeadline: "Begin something beautifully real.",
+        eyebrow: "Matchmaking, with heart",
+        headline: (
+          <>
+            Meet someone
+            <br />
+            who feels
+            <br />
+            like home.
+          </>
+        ),
+        backHeadline: (
+          <>
+            Your next
+            <br />
+            chapter starts here.
+          </>
+        ),
+        showFrontFooter: true,
       }}
     />
   )

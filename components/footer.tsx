@@ -63,8 +63,9 @@ export function Footer() {
                   href={`${CONTACT.whatsapp}`}
                   target="_blank"
                   rel="noreferrer"
+                  aria-label="Contact us on WhatsApp"
                 >
-                  <FaWhatsapp className="size-4" />
+                  <FaWhatsapp className="size-4 text-[#25D366]" />
                   <span className="hidden sm:inline">WhatsApp</span>
                 </a>
               </Button>
@@ -85,8 +86,13 @@ export function Footer() {
                 size="sm"
                 className="rounded-full"
               >
-                <a href={CONTACT.facebook} target="_blank" rel="noreferrer">
-                  <FaFacebook className="size-4" />
+                <a
+                  href={CONTACT.facebook}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Follow us on Facebook"
+                >
+                  <FaFacebook className="size-4 text-[#1877F2]" />
                   <span className="hidden sm:inline">Facebook</span>
                 </a>
               </Button>
@@ -97,8 +103,13 @@ export function Footer() {
                 size="sm"
                 className="rounded-full"
               >
-                <a href={CONTACT.instagram} target="_blank" rel="noreferrer">
-                  <FaInstagram className="size-4" />
+                <a
+                  href={CONTACT.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Follow us on Instagram"
+                >
+                  <FaInstagram className="size-4 text-[#E4405F]" />
                   <span className="hidden sm:inline">Instagram</span>
                 </a>
               </Button>
@@ -108,8 +119,13 @@ export function Footer() {
                 size="sm"
                 className="rounded-full"
               >
-                <a href={CONTACT.tiktok} target="_blank" rel="noreferrer">
-                  <FaTiktok className="size-4" />
+                <a
+                  href={CONTACT.tiktok}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Follow us on TikTok"
+                >
+                  <FaTiktok className="size-4 text-foreground" />
                   <span className="hidden sm:inline">TikTok</span>
                 </a>
               </Button>
@@ -119,9 +135,14 @@ export function Footer() {
                 size="sm"
                 className="rounded-full"
               >
-                <a href={CONTACT.line} target="_blank" rel="noreferrer">
-                  <FaLine className="size-4" />
-                  <span className="hidden sm:inline">Line</span>
+                <a
+                  href={CONTACT.line}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Contact us on LINE"
+                >
+                  <FaLine className="size-4 text-[#00C300]" />
+                  <span className="hidden sm:inline">LINE</span>
                 </a>
               </Button>
               <Button
@@ -131,7 +152,7 @@ export function Footer() {
                 className="rounded-full"
               >
                 <a href={`tel:${CONTACT.primaryPhone}`}>
-                  <FaPhoneAlt className="size-4" />
+                  <FaPhoneAlt className="size-4 text-[#0A84FF]" />
                   <span className="ml-2">{CONTACT.primaryPhone}</span>
                 </a>
               </Button>
@@ -142,7 +163,7 @@ export function Footer() {
                 className="rounded-full"
               >
                 <a href={`tel:${CONTACT.secondaryPhone}`}>
-                  <FaPhoneAlt className="size-4" />
+                  <FaPhoneAlt className="size-4 text-[#0A84FF]" />
                   <span className="ml-2">{CONTACT.secondaryPhone}</span>
                 </a>
               </Button>

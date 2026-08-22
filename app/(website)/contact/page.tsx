@@ -62,7 +62,7 @@ export default function ContactPage() {
                     <CardDescription>
                       <Link
                         href={`mailto:${CONTACT.email}`}
-                        className="text-lg font-medium hover:underline"
+                        className="text-lg font-medium hover:text-foreground hover:underline"
                       >
                         {CONTACT.email}
                       </Link>
@@ -86,7 +86,7 @@ export default function ContactPage() {
                     <CardDescription>
                       <Link
                         href={`tel:${CONTACT.primaryPhone.replace(/\D/g, "")}`}
-                        className="text-lg font-medium hover:underline"
+                        className="text-lg font-medium hover:text-foreground hover:underline"
                       >
                         {CONTACT.primaryPhone}
                       </Link>
@@ -97,7 +97,7 @@ export default function ContactPage() {
                           /\D/g,
                           ""
                         )}`}
-                        className="text-lg font-medium hover:underline"
+                        className="text-lg font-medium hover:text-foreground hover:underline"
                       >
                         {CONTACT.secondaryPhone}
                       </Link>
@@ -121,49 +121,54 @@ export default function ContactPage() {
                     <div className="flex flex-wrap gap-4">
                       <Link
                         href={`${CONTACT.whatsapp}`}
-                        className="flex items-center gap-2 text-green-500 dark:text-green-400"
+                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Contact us on WhatsApp"
                       >
-                        <FaWhatsapp className="h-6 w-6" />
+                        <FaWhatsapp className="h-6 w-6 text-[#25D366]" />
                         <span className="sr-only sm:not-sr-only">WhatsApp</span>
                       </Link>
                       <Link
                         href={CONTACT.facebook}
-                        className="flex items-center gap-2 text-blue-600 dark:text-blue-500"
+                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Follow us on Facebook"
                       >
-                        <FaFacebookF className="h-6 w-6" />
+                        <FaFacebookF className="h-6 w-6 text-[#1877F2]" />
                         <span className="sr-only sm:not-sr-only">Facebook</span>
                       </Link>
                       <Link
                         href={CONTACT.instagram}
-                        className="flex items-center gap-2 text-pink-500 dark:text-pink-400"
+                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Follow us on Instagram"
                       >
-                        <FaInstagram className="h-6 w-6" />
+                        <FaInstagram className="h-6 w-6 text-[#E4405F]" />
                         <span className="sr-only sm:not-sr-only">
                           Instagram
                         </span>
                       </Link>
                       <Link
                         href={CONTACT.tiktok}
-                        className="flex items-center gap-2 text-black dark:text-white"
+                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Follow us on TikTok"
                       >
-                        <FaTiktok className="h-6 w-6" />
+                        <FaTiktok className="h-6 w-6 text-foreground" />
                         <span className="sr-only sm:not-sr-only">TikTok</span>
                       </Link>
                       <Link
                         href={CONTACT.line}
-                        className="flex items-center gap-2 text-green-500 dark:text-green-400"
+                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Contact us on LINE"
                       >
-                        <FaLine className="h-6 w-6" />
+                        <FaLine className="h-6 w-6 text-[#00C300]" />
                         <span className="sr-only sm:not-sr-only">Line</span>
                       </Link>
                     </div>

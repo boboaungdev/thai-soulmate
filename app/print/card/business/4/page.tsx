@@ -152,7 +152,7 @@ export default function BusinessCardPrintPage() {
         {/* ====================================================== */}
 
         <section
-          className="business-card-side relative flex h-[55mm] w-[90mm] flex-col items-center justify-center overflow-hidden rounded-[28px] shadow-2xl"
+          className="business-card-side relative flex h-[55mm] w-[90mm] flex-col items-center justify-center overflow-hidden shadow-2xl"
           style={{
             background:
               "linear-gradient(135deg, #5A0816 0%, #741128 50%, #3F0510 100%)",
@@ -170,8 +170,7 @@ export default function BusinessCardPrintPage() {
           />
 
           {/* Gold Border */}
-          <div className="absolute inset-[2mm] rounded-[5mm] border border-[#D3A753]/30" />
-
+          <div className="absolute inset-[2mm] border border-[#D3A753]/30" />
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center text-center">
             {/* Logo */}
@@ -220,7 +219,7 @@ export default function BusinessCardPrintPage() {
         {/* ====================================================== */}
 
         <section
-          className="business-card-side relative h-[55mm] w-[90mm] overflow-hidden rounded-[28px] bg-[#FBF8F3] shadow-2xl"
+          className="business-card-side relative h-[55mm] w-[90mm] overflow-hidden bg-[#FBF8F3] shadow-2xl"
           aria-label="Back of Thai Soulmate business card"
         >
           {/* Bottom Gradient */}

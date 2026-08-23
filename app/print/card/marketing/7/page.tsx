@@ -177,39 +177,44 @@ function Audience({
   items: string[]
 }) {
   return (
-    <div className="relative overflow-hidden rounded-[4mm] bg-[#FBF8F3] p-[4mm]">
+    <div className="relative min-h-[46mm] overflow-hidden rounded-[4mm] border border-[#D3A753]/25 bg-[#FBF8F3] px-[3.5mm] py-[3.5mm]">
+      {/* Decorative circle */}
       <div className="absolute top-[-8mm] right-[-8mm] h-[27mm] w-[27mm] rounded-full bg-[#D3A753]/10" />
 
       <div className="relative">
+        {/* Header */}
         <div className="flex items-start justify-between">
-          <div className="flex h-[10mm] w-[10mm] items-center justify-center rounded-full bg-white shadow-sm">
+          <div className="flex h-[9mm] w-[9mm] items-center justify-center rounded-full bg-white shadow-sm">
             {icon}
           </div>
 
-          <span className="font-serif text-[7mm] leading-none text-[#D3A753]/35">
+          <span className="font-serif text-[6mm] leading-none text-[#D3A753]/35">
             {number}
           </span>
         </div>
 
-        <h3 className="mt-[3mm] font-sans text-[3mm] font-bold text-[#5A0816]">
+        {/* Title */}
+        <h3 className="mt-[2.5mm] font-sans text-[2.8mm] font-bold text-[#5A0816]">
           {title}
         </h3>
 
-        <p className="mt-[1mm] font-sans text-[1.7mm] leading-[1.3] font-medium text-[#CA617D]">
+        {/* Description */}
+        <p className="mt-[0.8mm] font-sans text-[1.55mm] leading-[1.3] font-medium text-[#CA617D]">
           {description}
         </p>
 
-        <div className="mt-[3mm] space-y-[1.4mm]">
+        {/* Features */}
+        <div className="mt-[2.5mm] space-y-[1.4mm]">
           {items.map((item) => (
-            <div key={item} className="flex items-start gap-[1.5mm]">
+            <div key={item} className="flex items-start gap-[1.3mm]">
               <Check
-                size={9}
+                size={8}
                 color="#CA617D"
                 strokeWidth={3}
-                className="mt-[0.2mm] shrink-0"
+                className="mt-[0.15mm] shrink-0"
               />
 
-              <p className="font-sans text-[1.65mm] leading-[1.3] text-[#24141A]/65">
+              <p className="font-sans text-[1.5mm] leading-[1.3] text-[#24141A]/65">
                 {item}
               </p>
             </div>
@@ -360,51 +365,67 @@ export default function MarketingLeafletPrintPage() {
 
       <main id="printable-area" className="marketing-leaflet-document">
         {/* ========================================================
-            PAGE 1 — PREMIUM HERO
-            ======================================================== */}
+    PAGE 1 — MODERN PREMIUM HERO
+    ======================================================== */}
 
         <section className="marketing-leaflet-page bg-[#FBF8F3] shadow-2xl">
-          {/* Background geometry */}
+          {/* Background */}
 
-          <div className="absolute top-[-30mm] right-[-34mm] h-[100mm] w-[100mm] rounded-full bg-[#D3A753]/12" />
+          <div className="absolute top-[-35mm] right-[-35mm] h-[105mm] w-[105mm] rounded-full bg-[#D3A753]/10" />
 
-          <div className="absolute bottom-[-35mm] left-[-30mm] h-[95mm] w-[95mm] rounded-full bg-[#CA617D]/8" />
+          <div className="absolute bottom-[-35mm] left-[-35mm] h-[90mm] w-[90mm] rounded-full bg-[#CA617D]/8" />
 
-          <div className="absolute top-0 left-0 h-[115mm] w-[70mm] bg-[#5A0816] [clip-path:polygon(0_0,100%_0,73%_100%,0_100%)]" />
+          <div className="absolute top-0 right-0 h-[78mm] w-[55mm] bg-[#5A0816] [clip-path:polygon(25%_0,100%_0,100%_100%,0_70%)]" />
 
-          {/* Gold decorative line */}
+          {/* Gold side accent */}
 
-          <div className="absolute top-[8mm] left-[8mm] h-[194mm] w-[1px] bg-[#D3A753]/30" />
+          <div className="absolute top-0 bottom-0 left-0 w-[1.5mm] bg-gradient-to-b from-[#D3A753] via-[#CA617D] to-[#D3A753]" />
 
-          {/* BRAND HEADER */}
+          {/* Decorative circles */}
 
-          <div className="absolute top-[12mm] left-[13mm] z-20 w-[50mm] text-center">
-            <Image
-              src="/logo.png"
-              alt="Thai Soulmate"
-              width={180}
-              height={180}
-              priority
-              quality={100}
-              unoptimized
-              className="mx-auto h-[17mm] w-[17mm] object-contain"
-            />
+          <div className="absolute top-[17mm] right-[12mm] h-[45mm] w-[45mm] rounded-full border border-[#D3A753]/20" />
 
-            <BrandName className="mx-auto mt-[2mm] w-[52mm]" />
+          <div className="absolute top-[21mm] right-[16mm] h-[37mm] w-[37mm] rounded-full border border-[#CA617D]/15" />
 
-            <p className="text-center font-sans text-[1.8mm] font-semibold tracking-[0.22em] text-[#D3A753] uppercase">
-              1-2-1 Matchmaking Service
-            </p>
+          {/* ======================================================
+      HEADER
+      ====================================================== */}
+
+          <div className="absolute top-[9mm] right-[11mm] left-[11mm] z-30 flex items-center justify-between">
+            {/* BRAND HEADER — SAME STYLE AS PAGE 2 */}
+
+            <div className="left-4mm] absolute top-[4mm] z-20 flex w-[64mm] items-center">
+              {/* Logo */}
+              <Image
+                src="/logo.png"
+                alt="Thai Soulmate"
+                width={180}
+                height={180}
+                priority
+                quality={100}
+                unoptimized
+                className="h-[14mm] w-[14mm] shrink-0 object-contain"
+              />
+
+              {/* Brand + tagline */}
+              <div className="w-[48mm] text-center">
+                <BrandName className="mx-auto w-[48mm]" />
+
+                <p className="mt-[0.5mm] text-center font-sans text-[1.8mm] font-semibold tracking-[0.22em] text-[#D3A753] uppercase">
+                  1-2-1 Matchmaking Service
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Hero image */}
-
-          {/* HERO IMAGE */}
+          {/* ======================================================
+      HERO IMAGE
+      ====================================================== */}
 
           <div
-            className="absolute top-[8mm] right-[-4mm] z-10 h-[84mm] w-[88mm] overflow-hidden border-[2mm] border-[#FBF8F3] shadow-[0_5mm_15mm_rgba(36,20,26,0.2)]"
+            className="absolute top-[31mm] right-[8mm] z-10 h-[79mm] w-[76mm] overflow-hidden border-[2mm] border-[#FBF8F3] shadow-[0_7mm_20mm_rgba(36,20,26,0.18)]"
             style={{
-              borderRadius: "48% 0% 0% 48% / 35% 0% 0% 65%",
+              borderRadius: "42% 42% 42% 12% / 38% 38% 38% 18%",
             }}
           >
             <Image
@@ -415,103 +436,246 @@ export default function MarketingLeafletPrintPage() {
               quality={100}
               unoptimized
               className="object-cover"
-              sizes="90mm"
+              sizes="80mm"
             />
+
+            {/* Image overlay */}
+
+            <div className="absolute inset-0 bg-gradient-to-t from-[#5A0816]/35 via-transparent to-transparent" />
           </div>
 
-          {/* Main headline */}
+          {/* Floating image badge */}
 
-          <div className="absolute top-[64mm] left-[13mm] z-20 w-[54mm]">
-            <Eyebrow light>REAL CONNECTIONS</Eyebrow>
+          <div className="absolute top-[91mm] right-[55mm] z-30 rounded-[3mm] bg-white px-[3mm] py-[2.5mm] shadow-[0_3mm_12mm_rgba(36,20,26,0.15)]">
+            <div className="flex items-center gap-[2mm]">
+              <div className="flex h-[7mm] w-[7mm] items-center justify-center rounded-full bg-[#FBF1E5]">
+                <Heart size={13} color="#CA617D" fill="#CA617D" />
+              </div>
 
-            <h1 className="mt-[4mm] font-serif text-[10mm] leading-[0.92] tracking-[-0.03em] text-white">
-              Finding
+              <div>
+                <p className="font-sans text-[1.35mm] font-bold tracking-[0.12em] text-[#CA617D] uppercase">
+                  Personal Matching
+                </p>
+
+                <p className="mt-[0.5mm] font-sans text-[1.45mm] font-medium text-[#5A0816]">
+                  Made around you
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ======================================================
+      MAIN COPY
+      ====================================================== */}
+
+          <div className="absolute top-[34mm] left-[11mm] z-20 w-[57mm]">
+            <Eyebrow>REAL CONNECTIONS</Eyebrow>
+
+            <h1 className="mt-[4mm] font-serif text-[11mm] leading-[0.9] tracking-[-0.035em] text-[#5A0816]">
+              Meet someone
               <br />
-              <span className="text-[#D3A753] italic">your</span>
-              <br />
-              soulmate?
+              <span className="text-[#CA617D] italic">worth knowing.</span>
             </h1>
+
+            <p className="mt-[5mm] w-[51mm] font-sans text-[2mm] leading-[1.55] text-[#24141A]/65">
+              A personal matchmaking service connecting genuine Thai ladies and
+              foreign gentlemen through thoughtful, private introductions in
+              Thailand.
+            </p>
+
+            {/* CTA */}
+
+            <div className="mt-[5mm] flex items-center gap-[2mm]">
+              <div className="flex items-center gap-[2mm] rounded-full bg-[#5A0816] px-[4mm] py-[2.5mm] shadow-md">
+                <span className="font-sans text-[1.65mm] font-bold tracking-[0.1em] text-white uppercase">
+                  Start Your Journey
+                </span>
+
+                <ArrowRight size={11} color="#D3A753" />
+              </div>
+            </div>
           </div>
 
-          {/* Floating image circle */}
+          {/* ======================================================
+      TRUST LABELS
+      ====================================================== */}
 
-          <div className="absolute top-[92mm] right-[12mm] z-30 h-[37mm] w-[37mm] overflow-hidden rounded-full border-[1.5mm] border-[#FBF8F3] shadow-xl">
-            <Image
-              src="/card/marketing/2.png"
-              alt="Thai Soulmate"
-              fill
-              quality={100}
-              unoptimized
-              className="object-cover"
-              sizes="37mm"
-            />
+          <div className="absolute top-[119mm] right-[11mm] left-[11mm] z-20">
+            <div className="grid grid-cols-3 gap-[2.5mm]">
+              {/* Personal */}
+
+              <div className="rounded-[3mm] border border-[#D3A753]/25 bg-white px-[3mm] py-[3mm] shadow-[0_2mm_8mm_rgba(36,20,26,0.06)]">
+                <div className="flex items-center gap-[2mm]">
+                  <div className="flex h-[7mm] w-[7mm] items-center justify-center rounded-full bg-[#FBF1E5]">
+                    <Heart size={13} color="#CA617D" fill="#CA617D" />
+                  </div>
+
+                  <div>
+                    <p className="font-sans text-[1.6mm] font-bold text-[#5A0816]">
+                      Personal
+                    </p>
+
+                    <p className="mt-[0.5mm] font-sans text-[1.25mm] text-[#24141A]/50">
+                      Matching around you
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Genuine */}
+
+              <div className="rounded-[3mm] border border-[#D3A753]/25 bg-white px-[3mm] py-[3mm] shadow-[0_2mm_8mm_rgba(36,20,26,0.06)]">
+                <div className="flex items-center gap-[2mm]">
+                  <div className="flex h-[7mm] w-[7mm] items-center justify-center rounded-full bg-[#FBF1E5]">
+                    <Users size={13} color="#D3A753" />
+                  </div>
+
+                  <div>
+                    <p className="font-sans text-[1.6mm] font-bold text-[#5A0816]">
+                      Genuine
+                    </p>
+
+                    <p className="mt-[0.5mm] font-sans text-[1.25mm] text-[#24141A]/50">
+                      Real people & intentions
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Discreet */}
+
+              <div className="rounded-[3mm] border border-[#D3A753]/25 bg-white px-[3mm] py-[3mm] shadow-[0_2mm_8mm_rgba(36,20,26,0.06)]">
+                <div className="flex items-center gap-[2mm]">
+                  <div className="flex h-[7mm] w-[7mm] items-center justify-center rounded-full bg-[#FBF1E5]">
+                    <ShieldCheck size={13} color="#CA617D" />
+                  </div>
+
+                  <div>
+                    <p className="font-sans text-[1.6mm] font-bold text-[#5A0816]">
+                      Discreet
+                    </p>
+
+                    <p className="mt-[0.5mm] font-sans text-[1.25mm] text-[#24141A]/50">
+                      Private & respectful
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Quote */}
+          {/* ======================================================
+      WHY THAI SOULMATE
+      ====================================================== */}
 
-          <div className="absolute right-[13mm] bottom-[58mm] left-[13mm] z-20">
-            <div className="flex items-center gap-[3mm]">
-              <div className="h-px w-[15mm] bg-[#D3A753]" />
+          <div className="absolute top-[142mm] right-[11mm] left-[11mm] z-20">
+            <div className="flex items-end justify-between">
+              <div>
+                <Eyebrow>WHY THAI SOULMATE</Eyebrow>
 
-              <Heart size={11} color="#D3A753" fill="#D3A753" />
+                <h2 className="mt-[2mm] font-serif text-[5.5mm] leading-[1] text-[#5A0816]">
+                  A more personal way
+                  <br />
+                  <span className="text-[#CA617D] italic">to meet.</span>
+                </h2>
+              </div>
+
+              <Sparkles size={18} color="#D3A753" />
             </div>
 
-            <p className="mt-[2.5mm] font-serif text-[4.5mm] leading-[1.15] text-[#5A0816] italic">
-              “The right introduction
-              <br />
-              can change everything.”
+            <p className="mt-[2.5mm] w-[110mm] font-sans text-[1.65mm] leading-[1.45] text-[#24141A]/60">
+              We don't simply introduce profiles. We take time to understand who
+              you are, what you want, and the kind of relationship you're hoping
+              to build.
+            </p>
+
+            <div className="mt-[3mm] grid grid-cols-3 gap-[3mm]">
+              <div>
+                <div className="flex items-center gap-[1.5mm]">
+                  <span className="font-serif text-[3.5mm] text-[#D3A753]">
+                    01
+                  </span>
+
+                  <span className="font-sans text-[1.7mm] font-bold text-[#5A0816]">
+                    Real People
+                  </span>
+                </div>
+
+                <p className="mt-[1mm] font-sans text-[1.35mm] leading-[1.35] text-[#24141A]/50">
+                  Genuine introductions instead of endless swiping.
+                </p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-[1.5mm]">
+                  <span className="font-serif text-[3.5mm] text-[#D3A753]">
+                    02
+                  </span>
+
+                  <span className="font-sans text-[1.7mm] font-bold text-[#5A0816]">
+                    Personal Approach
+                  </span>
+                </div>
+
+                <p className="mt-[1mm] font-sans text-[1.35mm] leading-[1.35] text-[#24141A]/50">
+                  We learn about you before recommending a match.
+                </p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-[1.5mm]">
+                  <span className="font-serif text-[3.5mm] text-[#D3A753]">
+                    03
+                  </span>
+
+                  <span className="font-sans text-[1.7mm] font-bold text-[#5A0816]">
+                    Thailand Focused
+                  </span>
+                </div>
+
+                <p className="mt-[1mm] font-sans text-[1.35mm] leading-[1.35] text-[#24141A]/50">
+                  Personal matchmaking support based in Thailand.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ======================================================
+      BOTTOM CTA
+      ====================================================== */}
+
+          <div className="absolute right-0 bottom-0 left-0 h-[22mm] bg-[#5A0816]">
+            {/* Decorative gold curve */}
+
+            <div className="absolute top-[-12mm] right-[-12mm] h-[35mm] w-[35mm] rounded-full border border-[#D3A753]/20" />
+
+            <div className="absolute top-[-18mm] right-[20mm] h-[42mm] w-[42mm] rounded-full border border-[#CA617D]/10" />
+
+            <div className="absolute top-[4mm] right-[11mm] left-[11mm] z-10 flex items-center justify-between">
+              <div>
+                <p className="font-sans text-[1.45mm] font-bold tracking-[0.2em] text-[#D3A753] uppercase">
+                  Ready to meet differently?
+                </p>
+
+                <p className="mt-[1mm] font-serif text-[3.5mm] text-white italic">
+                  Your story deserves the right introduction.
+                </p>
+              </div>
+
+              <div className="flex h-[10mm] items-center gap-[2mm] rounded-full bg-[#D3A753] px-[4mm] shadow-lg">
+                <span className="font-sans text-[1.65mm] font-bold tracking-[0.1em] text-[#5A0816] uppercase">
+                  Contact Us
+                </span>
+
+                <ArrowRight size={12} color="#5A0816" />
+              </div>
+            </div>
+
+            <p className="absolute right-[11mm] bottom-[2.5mm] font-sans text-[1.2mm] tracking-[0.12em] text-white/35 uppercase">
+              Real People · Real Connections · Real Futures
             </p>
           </div>
-
-          {/* Features */}
-
-          <div className="absolute right-[13mm] bottom-[27mm] left-[13mm] z-20 grid grid-cols-3 gap-[2.5mm]">
-            <MiniFeature
-              icon={<Heart size={15} color="#CA617D" fill="#CA617D" />}
-              title="Personal"
-              text="Matches selected around you."
-            />
-
-            <MiniFeature
-              icon={<ShieldCheck size={15} color="#D3A753" />}
-              title="Discreet"
-              text="Private and respectful service."
-            />
-
-            <MiniFeature
-              icon={<Users size={15} color="#CA617D" />}
-              title="Genuine"
-              text="Real people. Real intentions."
-            />
-          </div>
-
-          {/* CTA */}
-
-          <div className="absolute right-0 bottom-0 left-0 h-[19mm] bg-[#5A0816]">
-            <div className="absolute top-[4mm] left-[13mm]">
-              <p className="font-sans text-[1.6mm] font-semibold tracking-[0.18em] text-[#D3A753] uppercase">
-                Begin your journey
-              </p>
-
-              <p className="mt-[1mm] font-serif text-[3.4mm] text-white italic">
-                Personally matched in Thailand.
-              </p>
-            </div>
-
-            <div className="absolute top-[4.5mm] right-[13mm] flex h-[10mm] items-center gap-[2mm] rounded-full bg-[#D3A753] px-[4mm]">
-              <span className="font-sans text-[1.8mm] font-bold tracking-[0.1em] text-[#5A0816] uppercase">
-                Contact Us
-              </span>
-
-              <ArrowRight size={12} color="#5A0816" />
-            </div>
-          </div>
-
-          {/* Gold edge */}
-
-          <div className="absolute top-0 bottom-0 left-0 w-[1.5mm] bg-gradient-to-b from-[#D3A753] via-[#CA617D] to-[#D3A753]" />
         </section>
-
         {/* ========================================================
             PAGE 2 — SERVICE / CONTACT
             ======================================================== */}
@@ -526,8 +690,6 @@ export default function MarketingLeafletPrintPage() {
           <div className="absolute top-[-28mm] right-[-25mm] h-[75mm] w-[75mm] rounded-full border border-[#D3A753]/30" />
 
           <div className="absolute top-[-22mm] right-[-19mm] h-[63mm] w-[63mm] rounded-full border border-[#CA617D]/20" />
-
-          {/* Header */}
 
           {/* Header */}
 
@@ -594,7 +756,7 @@ export default function MarketingLeafletPrintPage() {
 
           {/* Who we help */}
 
-          <div className="absolute top-[81mm] right-[10mm] left-[10mm]">
+          <div className="absolute top-[81mm] right-[10mm] left-[10mm] z-20">
             <Eyebrow>WHO WE HELP</Eyebrow>
 
             <h2 className="mt-[2mm] font-serif text-[5.2mm] leading-none text-[#5A0816]">
@@ -605,7 +767,7 @@ export default function MarketingLeafletPrintPage() {
               </span>
             </h2>
 
-            <div className="mt-[4mm] grid grid-cols-2 gap-[3mm]">
+            <div className="mt-[3mm] grid grid-cols-2 gap-[3mm]">
               <Audience
                 number="01"
                 icon={<FaFemale size={20} color="#CA617D" />}
@@ -636,7 +798,7 @@ export default function MarketingLeafletPrintPage() {
 
           {/* How it works */}
 
-          <div className="absolute top-[130mm] right-0 left-0 bg-[#24141A] px-[10mm] pt-[6mm] pb-[7mm]">
+          {/* <div className="absolute top-[130mm] right-0 left-0 bg-[#24141A] px-[10mm] pt-[6mm] pb-[7mm]">
             <div className="flex items-center justify-between">
               <div>
                 <Eyebrow light>HOW IT WORKS</Eyebrow>
@@ -645,8 +807,6 @@ export default function MarketingLeafletPrintPage() {
                   A more personal way to meet.
                 </h2>
               </div>
-
-              <Sparkles size={22} color="#D3A753" />
             </div>
 
             <div className="relative mt-[5mm] grid grid-cols-4 gap-[3mm]">
@@ -676,7 +836,7 @@ export default function MarketingLeafletPrintPage() {
                 text="We help create the first connection."
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Contact section */}
 
@@ -697,13 +857,20 @@ export default function MarketingLeafletPrintPage() {
                   </p>
 
                   <div className="mt-[3mm] grid gap-[1.4mm]">
+                    {/* WhatsApp */}
                     <ContactItem
                       icon={<FaWhatsapp size={11} color="#25D366" />}
                     >
                       {CONTACT.primaryPhone}
                     </ContactItem>
 
-                    <ContactItem icon={<Phone size={11} color="#D3A753" />}>
+                    {/* Phone 1 */}
+                    <ContactItem icon={<Phone size={11} color="#1877F2" />}>
+                      {CONTACT.primaryPhone}
+                    </ContactItem>
+
+                    {/* Phone 2 */}
+                    <ContactItem icon={<Phone size={11} color="#1877F2" />}>
                       {CONTACT.secondaryPhone}
                     </ContactItem>
 
@@ -719,7 +886,8 @@ export default function MarketingLeafletPrintPage() {
 
                 {/* QR */}
 
-                <div className="mt-10 mr-4 flex w-[47mm] shrink-0 items-center justify-center gap-[3mm]">
+                <div className="mt-[15mm] mr-[4mm] flex w-[47mm] shrink-0 items-center justify-center gap-[3mm]">
+                  {" "}
                   {/* WhatsApp QR */}
                   <div className="flex flex-col items-center">
                     <div className="relative rounded-[2mm] bg-white p-[1.5mm] shadow-md">
@@ -742,7 +910,6 @@ export default function MarketingLeafletPrintPage() {
                       </span>
                     </div>
                   </div>
-
                   {/* Website QR */}
                   <div className="flex flex-col items-center">
                     <div className="relative rounded-[2mm] bg-white p-[1.5mm] shadow-md">

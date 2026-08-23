@@ -335,7 +335,12 @@ export default function BusinessCardPrintPage() {
                   {/* Phone */}
                   <Info
                     icon={<Phone size={10} color="#1877F2" />}
-                    text={`${CONTACT.primaryPhone} / ${CONTACT.secondaryPhone}`}
+                    text={CONTACT.primaryPhone}
+                  />
+                  {/* Phone */}
+                  <Info
+                    icon={<Phone size={10} color="#1877F2" />}
+                    text={CONTACT.secondaryPhone}
                   />
 
                   {/* Email */}
@@ -386,10 +391,10 @@ export default function BusinessCardPrintPage() {
                 {/* WHATSAPP QR BESIDE SOCIAL */}
                 {/* ================================================== */}
 
-                <div className="ml-[3mm] flex shrink-0 items-center pt-[13mm]">
+                <div className="ml-[3mm] flex shrink-0 items-center pt-[17mm]">
                   {/* WhatsApp QR */}
                   <div className="flex flex-col items-center">
-                    <div className="relative mb-2 rounded-[2mm] border border-[#D3A753]/40 bg-white p-[1mm] shadow-sm">
+                    <div className="relative mb-1 rounded-[1mm] bg-white shadow-sm">
                       <QRCodeSVG
                         value={CONTACT.whatsapp}
                         level="H"

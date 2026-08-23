@@ -10,6 +10,7 @@ export const APP_INFO = {
 } as const
 
 export const CONTACT = {
+  website: "https://thaisoulmate.org",
   email: "contact@thaisoulmate.org",
   whatsapp: "https://wa.me/66636915263",
   facebook: "https://facebook.com/thaisoulmates",

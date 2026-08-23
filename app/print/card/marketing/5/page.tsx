@@ -344,7 +344,7 @@ export default function MarketingLeafletPrintPage() {
 
           <div className="absolute top-[70mm] right-[10mm] left-[10mm] h-[68mm] overflow-hidden border-[2mm] border-white shadow-xl">
             <Image
-              src="/card/marketing/1.png"
+              src="/card/marketing/2.png"
               alt="Thai Soulmate matchmaking"
               fill
               priority
@@ -612,7 +612,7 @@ export default function MarketingLeafletPrintPage() {
 
               <div className="relative">
                 <Image
-                  src="/card/marketing/1.png"
+                  src="/card/marketing/1-5.png"
                   alt="Thai Soulmate"
                   fill
                   quality={100}

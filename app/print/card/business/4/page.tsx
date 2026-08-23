@@ -209,10 +209,6 @@ export default function CardPage() {
             {/* RIGHT SIDE */}
             {/* ================================================== */}
 
-            {/* ================================================== */}
-            {/* RIGHT SIDE */}
-            {/* ================================================== */}
-
             <div className="flex h-full flex-col pt-5 pl-8">
               {/* Contact Title */}
               <div className="mb-2">

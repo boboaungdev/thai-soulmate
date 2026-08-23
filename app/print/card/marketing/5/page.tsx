@@ -431,15 +431,13 @@ export default function MarketingLeafletPrintPage() {
             {/* Header */}
 
             <div className="flex items-center justify-between">
-              <div>
+              <div className="flex flex-col items-center text-center">
                 <BrandName className="w-[50mm]" />
 
                 <p className="mt-[1mm] font-sans text-[2.1mm] font-semibold tracking-[0.18em] text-[#CA617D] uppercase">
                   1-2-1 Matchmaking Service
                 </p>
               </div>
-
-              <Sparkles size={24} color="#D3A753" />
             </div>
 
             {/* Connect title */}

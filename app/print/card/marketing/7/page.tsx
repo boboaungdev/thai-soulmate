@@ -5,15 +5,12 @@ import { useEffect } from "react"
 import {
   ArrowRight,
   Check,
-  ChevronRight,
   Globe,
-  HandHeart,
   Heart,
   Mail,
   Phone,
   ShieldCheck,
   Sparkles,
-  Star,
   Users,
 } from "lucide-react"
 import { QRCodeSVG } from "qrcode.react"

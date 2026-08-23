@@ -7,13 +7,11 @@ import {
   ShieldCheck,
   Sparkles,
   Users,
-  MessageCircle,
   Globe,
   Mail,
   Phone,
   Check,
   ArrowRight,
-  UserRound,
   HandHeart,
   Star,
 } from "lucide-react"

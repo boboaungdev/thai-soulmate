@@ -356,13 +356,11 @@ export default function MarketingLeafletPrintPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#3F0510]/75 via-transparent to-transparent" />
 
             <div className="absolute right-[6mm] bottom-[6mm] left-[6mm]">
-              <p className="font-sans text-[5.5mm] leading-[1.05] font-bold text-white">
+              <p className="font-sans text-[4.6mm] leading-[1.15] font-bold text-white">
                 Real People.
                 <br />
                 Real Relationships.
-              </p>
-
-              <p className="mt-[2mm] font-sans text-[2.5mm] font-medium text-white/85">
+                <br />
                 Personally matched in Thailand.
               </p>
             </div>

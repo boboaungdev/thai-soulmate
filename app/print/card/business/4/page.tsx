@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Phone, Mail, MessageCircle, Music2, Globe } from "lucide-react"
+import { Phone, Mail, Globe } from "lucide-react"
 
 import {
   FaFacebook,

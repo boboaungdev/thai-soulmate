@@ -261,7 +261,11 @@ export default function BusinessCardPrintPage() {
 
             <BrandName className="mt-[1mm] w-[47mm]" />
 
-            <p className="mt-[1mm] font-sans text-[1.75mm] font-semibold tracking-[0.24em] text-[#D3A753] uppercase">
+            <p className="mt-[0.8mm] font-sans text-[1.45mm] font-semibold tracking-[0.3em] text-[#E791A7] uppercase">
+              Exclusive
+            </p>
+
+            <p className="mt-[0.6mm] font-sans text-[1.75mm] font-semibold tracking-[0.24em] text-[#D3A753] uppercase">
               1-2-1 Matchmaking Service
             </p>
 
@@ -462,36 +466,36 @@ export default function BusinessCardPrintPage() {
               </div>
             </div>
           </div>
-{/* ==================================================
+          {/* ==================================================
     SOCIAL — ABOVE FOOTER
     ================================================== */}
 
-<div className="absolute right-[3mm] bottom-[10mm] left-[3mm]">
-  {/* Gradient top border */}
-  <div className="h-px w-full bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+          <div className="absolute right-[3mm] bottom-[10mm] left-[3mm]">
+            {/* Gradient top border */}
+            <div className="h-px w-full bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
-  <div className="flex items-center justify-center gap-[2.5mm] pt-[2mm]">
-    <SocialItem
-      icon={<FaFacebook size={11} color="#1877F2" />}
-      text="@thaisoulmates"
-    />
+            <div className="flex items-center justify-center gap-[2.5mm] pt-[2mm]">
+              <SocialItem
+                icon={<FaFacebook size={11} color="#1877F2" />}
+                text="@thaisoulmates"
+              />
 
-    <SocialItem
-      icon={<FaInstagram size={11} color="#E4405F" />}
-      text="@thaisoulmate"
-    />
+              <SocialItem
+                icon={<FaInstagram size={11} color="#E4405F" />}
+                text="@thaisoulmate"
+              />
 
-    <SocialItem
-      icon={<FaTiktok size={11} color="#000000" />}
-      text="@thaisoulmate"
-    />
+              <SocialItem
+                icon={<FaTiktok size={11} color="#000000" />}
+                text="@thaisoulmate"
+              />
 
-    <SocialItem
-      icon={<FaLine size={11} color="#00C300" />}
-      text="@thaisoulmate"
-    />
-  </div>
-</div>
+              <SocialItem
+                icon={<FaLine size={11} color="#00C300" />}
+                text="@thaisoulmate"
+              />
+            </div>
+          </div>
 
           {/* ==================================================
               BOTTOM GRADIENT

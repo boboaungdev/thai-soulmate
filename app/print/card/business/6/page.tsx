@@ -36,6 +36,9 @@ function PrintTrigger() {
         })
       )
 
+      // Small delay makes sure SVG / gradients are painted
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
       window.print()
     }
 
@@ -145,7 +148,9 @@ export default function BusinessCardPrintPage() {
           padding: 0;
         }
 
-        * {
+        *,
+        *::before,
+        *::after {
           box-sizing: border-box;
         }
 
@@ -174,35 +179,61 @@ export default function BusinessCardPrintPage() {
           overflow: hidden;
         }
 
+        /* ========================================================
+           PRINT
+           ======================================================== */
+
         @media print {
           html,
           body {
-            background: white;
+            width: 90mm;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
 
           #printable-area.new-business-card-document {
-            width: 90mm;
-            padding: 0;
-            gap: 0;
-            background: white;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            width: 90mm !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            gap: 0 !important;
+            background: white !important;
           }
 
           .new-business-card {
-            width: 90mm;
-            height: 55mm;
-            min-width: 90mm;
-            min-height: 55mm;
-            max-width: 90mm;
-            max-height: 55mm;
+            position: relative !important;
+            display: block !important;
+            width: 90mm !important;
+            height: 55mm !important;
+            min-width: 90mm !important;
+            min-height: 55mm !important;
+            max-width: 90mm !important;
+            max-height: 55mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
             box-shadow: none !important;
             border-radius: 0 !important;
-            break-after: page;
-            page-break-after: always;
+            break-after: page !important;
+            page-break-after: always !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
 
           .new-business-card:last-child {
-            break-after: auto;
-            page-break-after: auto;
+            break-after: auto !important;
+            page-break-after: auto !important;
+          }
+
+          img,
+          svg {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
         }
       `}</style>
@@ -227,19 +258,51 @@ export default function BusinessCardPrintPage() {
           <div className="absolute bottom-[-28mm] left-[-22mm] h-[65mm] w-[65mm] rounded-full bg-[#CA617D]/10" />
 
           {/* ====================================================
-    FRONT — MATCHING GRADIENT EDGE
-    ==================================================== */}
+              FRONT BORDER
+              
+              Top:    Gold → Pink
+              Right:  Pink
+              Bottom: Gold → Pink
+              Left:   Gold
+              
+              This makes every corner match.
+              ==================================================== */}
+
+          {/* TOP */}
 
           <div
-            className="pointer-events-none absolute inset-0 z-20"
+            className="pointer-events-none absolute top-0 right-0 left-0 z-30 h-[1.3mm]"
             style={{
-              padding: "1.3mm",
               background:
-                "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
-              WebkitMask:
-                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-              WebkitMaskComposite: "xor",
-              maskComposite: "exclude",
+                "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+            }}
+          />
+
+          {/* RIGHT */}
+
+          <div
+            className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-[1.3mm]"
+            style={{
+              background: "#CA617D",
+            }}
+          />
+
+          {/* BOTTOM */}
+
+          <div
+            className="pointer-events-none absolute right-0 bottom-0 left-0 z-30 h-[1.3mm]"
+            style={{
+              background:
+                "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+            }}
+          />
+
+          {/* LEFT */}
+
+          <div
+            className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-[1.3mm]"
+            style={{
+              background: "#D3A753",
             }}
           />
 
@@ -269,8 +332,11 @@ export default function BusinessCardPrintPage() {
               1-2-1 Matchmaking Service
             </p>
 
+            {/* Divider */}
+
             <div className="mt-[3mm] flex items-center gap-[2mm]">
-              {/* Left gradient line */}
+              {/* Left line */}
+
               <div
                 className="h-px w-[14mm]"
                 style={{
@@ -286,7 +352,8 @@ export default function BusinessCardPrintPage() {
                 strokeWidth={1.5}
               />
 
-              {/* Right gradient line */}
+              {/* Right line */}
+
               <div
                 className="h-px w-[14mm]"
                 style={{
@@ -295,6 +362,7 @@ export default function BusinessCardPrintPage() {
                 }}
               />
             </div>
+
             <p className="mt-[2.5mm] max-w-[62mm] font-serif text-[2.6mm] leading-[1.35] text-white italic">
               {APP_INFO.secondaryTagline}
             </p>
@@ -310,23 +378,56 @@ export default function BusinessCardPrintPage() {
           aria-label="Back of Thai Soulmate business card"
         >
           {/* ====================================================
-    PERFECT MATCHING GRADIENT BORDER
-    ==================================================== */}
+              BACK BORDER
+              
+              Same continuous color logic:
+              left = gold
+              top = gold → pink
+              right = pink
+              bottom = gold → pink
+              ==================================================== */}
+
+          {/* TOP */}
 
           <div
-            className="pointer-events-none absolute inset-0 z-20"
+            className="pointer-events-none absolute top-0 right-0 left-0 z-30 h-[1.3mm]"
             style={{
-              padding: "1.3mm",
               background:
-                "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
-              WebkitMask:
-                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-              WebkitMaskComposite: "xor",
-              maskComposite: "exclude",
+                "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
             }}
           />
 
-          {/* Decorative background */}
+          {/* RIGHT */}
+
+          <div
+            className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-[1.3mm]"
+            style={{
+              background: "#CA617D",
+            }}
+          />
+
+          {/* BOTTOM */}
+
+          <div
+            className="pointer-events-none absolute right-0 bottom-0 left-0 z-30 h-[8mm]"
+            style={{
+              background:
+                "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+            }}
+          />
+
+          {/* LEFT */}
+
+          <div
+            className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-[1.3mm]"
+            style={{
+              background: "#D3A753",
+            }}
+          />
+
+          {/* ====================================================
+              DECORATIVE BACKGROUND
+              ==================================================== */}
 
           <div className="absolute top-[-18mm] right-[-15mm] h-[45mm] w-[45mm] rounded-full bg-[#D3A753]/7" />
 
@@ -409,9 +510,14 @@ export default function BusinessCardPrintPage() {
                   {/* WhatsApp QR */}
 
                   <div className="flex flex-col items-center">
-                    <div className="rounded-[0.2mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[0.3mm]">
-                      {" "}
-                      <div className="relative">
+                    <div
+                      className="rounded-[0.8mm] p-[0.3mm]"
+                      style={{
+                        background:
+                          "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+                      }}
+                    >
+                      <div className="relative rounded-[0.5mm] bg-white p-[0.15mm]">
                         <QRCodeSVG
                           value={CONTACT.whatsapp}
                           level="H"
@@ -433,16 +539,20 @@ export default function BusinessCardPrintPage() {
                   {/* Website QR */}
 
                   <div className="flex flex-col items-center">
-                    <div className="rounded-[0.2mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[0.3mm]">
-                      <div className="relative">
+                    <div
+                      className="rounded-[0.8mm] p-[0.3mm]"
+                      style={{
+                        background:
+                          "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+                      }}
+                    >
+                      <div className="relative rounded-[0.5mm] bg-white p-[0.15mm]">
                         <QRCodeSVG
                           value={CONTACT.website}
                           level="H"
                           marginSize={1}
                           className="block h-[13mm] w-[13mm]"
                         />
-
-                        {/* Logo inside Website QR */}
 
                         <div className="absolute top-1/2 left-1/2 flex h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white shadow-sm">
                           <Image
@@ -466,13 +576,21 @@ export default function BusinessCardPrintPage() {
               </div>
             </div>
           </div>
-          {/* ==================================================
-    SOCIAL — ABOVE FOOTER
-    ================================================== */}
 
-          <div className="absolute right-[3mm] bottom-[10mm] left-[3mm]">
-            {/* Gradient top border */}
-            <div className="h-px w-full bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+          {/* ====================================================
+              SOCIAL — ABOVE BOTTOM GRADIENT
+              ==================================================== */}
+
+          <div className="absolute right-[3mm] bottom-[10mm] left-[3mm] z-10">
+            {/* Gradient social divider */}
+
+            <div
+              className="h-px w-full"
+              style={{
+                background:
+                  "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+              }}
+            />
 
             <div className="flex items-center justify-center gap-[2.5mm] pt-[2mm]">
               <SocialItem
@@ -497,12 +615,18 @@ export default function BusinessCardPrintPage() {
             </div>
           </div>
 
-          {/* ==================================================
-              BOTTOM GRADIENT
-              ================================================== */}
+          {/* ====================================================
+    BOTTOM GRADIENT CONTENT
+    ==================================================== */}
 
-          <div className="absolute inset-x-0 bottom-0 flex h-[8mm] items-center justify-center bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]">
-            <div className="flex items-center gap-[4mm] font-sans text-[2.1mm] font-semibold tracking-[0.2em] text-white uppercase">
+          <div
+            className="absolute inset-x-0 bottom-0 z-40 flex h-[8mm] items-center justify-center"
+            style={{
+              background:
+                "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+            }}
+          >
+            <div className="relative z-50 flex items-center gap-[4mm] font-sans text-[2.1mm] font-semibold tracking-[0.2em] text-white uppercase">
               <span>Exclusive</span>
 
               <span className="text-white/80">•</span>

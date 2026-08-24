@@ -112,7 +112,7 @@ function ContactRow({ icon, text }: { icon: React.ReactNode; text: string }) {
 
 function SocialItem({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <div className="flex items-center gap-[1.2mm]">
+    <div className="flex items-center">
       <div className="flex w-[4.5mm] shrink-0 items-center justify-center">
         {icon}
       </div>
@@ -227,16 +227,21 @@ export default function BusinessCardPrintPage() {
           <div className="absolute bottom-[-28mm] left-[-22mm] h-[65mm] w-[65mm] rounded-full bg-[#CA617D]/10" />
 
           {/* ====================================================
-              FULL GRADIENT EDGES
-              ==================================================== */}
+    FRONT — MATCHING GRADIENT EDGE
+    ==================================================== */}
 
-          <div className="absolute top-0 right-0 left-0 h-[1.3mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-          <div className="absolute right-0 bottom-0 left-0 h-[1.3mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-          <div className="absolute top-0 bottom-0 left-0 w-[1.3mm] bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-          <div className="absolute top-0 right-0 bottom-0 w-[1.3mm] bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+          <div
+            className="pointer-events-none absolute inset-0 z-20"
+            style={{
+              padding: "1.3mm",
+              background:
+                "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+              WebkitMask:
+                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+            }}
+          />
 
           {/* ====================================================
               MAIN CONTENT
@@ -261,7 +266,14 @@ export default function BusinessCardPrintPage() {
             </p>
 
             <div className="mt-[3mm] flex items-center gap-[2mm]">
-              <div className="h-px w-[14mm] bg-gradient-to-r from-transparent to-[#D3A753]" />
+              {/* Left gradient line */}
+              <div
+                className="h-px w-[14mm]"
+                style={{
+                  background:
+                    "linear-gradient(to left, #D3A753 0%, #E791A7 55%, transparent 100%)",
+                }}
+              />
 
               <Heart
                 size={8}
@@ -270,9 +282,15 @@ export default function BusinessCardPrintPage() {
                 strokeWidth={1.5}
               />
 
-              <div className="h-px w-[14mm] bg-gradient-to-l from-transparent to-[#D3A753]" />
+              {/* Right gradient line */}
+              <div
+                className="h-px w-[14mm]"
+                style={{
+                  background:
+                    "linear-gradient(to right, #D3A753 0%, #E791A7 55%, transparent 100%)",
+                }}
+              />
             </div>
-
             <p className="mt-[2.5mm] max-w-[62mm] font-serif text-[2.6mm] leading-[1.35] text-white italic">
               {APP_INFO.secondaryTagline}
             </p>
@@ -288,16 +306,21 @@ export default function BusinessCardPrintPage() {
           aria-label="Back of Thai Soulmate business card"
         >
           {/* ====================================================
-              FULL GRADIENT EDGES
-              ==================================================== */}
+    PERFECT MATCHING GRADIENT BORDER
+    ==================================================== */}
 
-          <div className="absolute top-0 right-0 left-0 h-[1.3mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-          <div className="absolute right-0 bottom-0 left-0 h-[1.3mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-          <div className="absolute top-0 bottom-0 left-0 w-[1.3mm] bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-          <div className="absolute top-0 right-0 bottom-0 w-[1.3mm] bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+          <div
+            className="pointer-events-none absolute inset-0 z-20"
+            style={{
+              padding: "1.3mm",
+              background:
+                "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+              WebkitMask:
+                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+            }}
+          />
 
           {/* Decorative background */}
 
@@ -382,7 +405,8 @@ export default function BusinessCardPrintPage() {
                   {/* WhatsApp QR */}
 
                   <div className="flex flex-col items-center">
-                    <div className="rounded-[1mm] border border-[#D3A753]/35 bg-white p-[0.6mm]">
+                    <div className="rounded-[0.2mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[0.3mm]">
+                      {" "}
                       <div className="relative">
                         <QRCodeSVG
                           value={CONTACT.whatsapp}
@@ -405,7 +429,7 @@ export default function BusinessCardPrintPage() {
                   {/* Website QR */}
 
                   <div className="flex flex-col items-center">
-                    <div className="rounded-[1mm] border border-[#D3A753]/35 bg-white p-[0.6mm]">
+                    <div className="rounded-[0.2mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[0.3mm]">
                       <div className="relative">
                         <QRCodeSVG
                           value={CONTACT.website}
@@ -438,32 +462,36 @@ export default function BusinessCardPrintPage() {
               </div>
             </div>
           </div>
+{/* ==================================================
+    SOCIAL — ABOVE FOOTER
+    ================================================== */}
 
-          {/* ==================================================
-              SOCIAL — ABOVE FOOTER
-              ================================================== */}
+<div className="absolute right-[3mm] bottom-[10mm] left-[3mm]">
+  {/* Gradient top border */}
+  <div className="h-px w-full bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
-          <div className="absolute right-[3mm] bottom-[10mm] left-[3mm] flex items-center justify-center gap-[2.5mm] border-t border-[#D3A753]/20 pt-[2mm]">
-            <SocialItem
-              icon={<FaFacebook size={11} color="#1877F2" />}
-              text="@thaisoulmates"
-            />
+  <div className="flex items-center justify-center gap-[2.5mm] pt-[2mm]">
+    <SocialItem
+      icon={<FaFacebook size={11} color="#1877F2" />}
+      text="@thaisoulmates"
+    />
 
-            <SocialItem
-              icon={<FaInstagram size={11} color="#E4405F" />}
-              text="@thaisoulmate"
-            />
+    <SocialItem
+      icon={<FaInstagram size={11} color="#E4405F" />}
+      text="@thaisoulmate"
+    />
 
-            <SocialItem
-              icon={<FaTiktok size={11} color="#000000" />}
-              text="@thaisoulmate"
-            />
+    <SocialItem
+      icon={<FaTiktok size={11} color="#000000" />}
+      text="@thaisoulmate"
+    />
 
-            <SocialItem
-              icon={<FaLine size={11} color="#00C300" />}
-              text="@thaisoulmate"
-            />
-          </div>
+    <SocialItem
+      icon={<FaLine size={11} color="#00C300" />}
+      text="@thaisoulmate"
+    />
+  </div>
+</div>
 
           {/* ==================================================
               BOTTOM GRADIENT

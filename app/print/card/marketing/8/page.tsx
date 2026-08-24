@@ -10,8 +10,9 @@ import {
   Mail,
   Phone,
   Check,
-  ArrowRight,
+  ChevronRight,
   HandHeart,
+  
   Star,
   HeartHandshake,
 } from "lucide-react"
@@ -62,6 +63,7 @@ function PrintTrigger() {
 /* ============================================================
    BRAND
    ============================================================ */
+
 function BrandName({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -118,9 +120,8 @@ function SectionTitle({
       <div
         className="h-px w-[18mm] shrink-0"
         style={{
-          background: light
-            ? "linear-gradient(to left, #D3A753 0%, #E791A7 55%, transparent 100%)"
-            : "linear-gradient(to left, #D3A753 0%, #E791A7 55%, transparent 100%)",
+          background:
+            "linear-gradient(to left, #D3A753 0%, #E791A7 55%, transparent 100%)",
         }}
       />
 
@@ -137,9 +138,8 @@ function SectionTitle({
       <div
         className="h-px w-[18mm] shrink-0"
         style={{
-          background: light
-            ? "linear-gradient(to right, #D3A753 0%, #E791A7 55%, transparent 100%)"
-            : "linear-gradient(to right, #D3A753 0%, #E791A7 55%, transparent 100%)",
+          background:
+            "linear-gradient(to right, #D3A753 0%, #E791A7 55%, transparent 100%)",
         }}
       />
     </div>
@@ -175,12 +175,14 @@ function Feature({
           </div>
         </div>
 
-        <h3 className="font-sans text-[2.35mm] leading-[1.15] font-bold text-[#5A0816]">
+        {/* Larger card title */}
+        <h3 className="font-sans text-[2.65mm] leading-[1.15] font-bold text-[#5A0816]">
           {title}
         </h3>
       </div>
 
-      <p className="mt-[2mm] font-sans text-[1.65mm] leading-[1.35] text-[#241e2a]/60">
+      {/* Larger card description */}
+      <p className="mt-[2mm] font-sans text-[1.9mm] leading-[1.35] text-[#241e2a]/60">
         {text}
       </p>
     </div>
@@ -387,16 +389,19 @@ export default function MarketingLeafletPrintPage() {
 
             <BrandName className="mt-[1mm] w-[47mm]" />
 
-            <p className="mt-[0.8mm] font-sans text-[1.8mm] font-semibold tracking-[0.3em] text-[#E791A7] uppercase">
+            {/* Slightly larger */}
+            <p className="mt-[0.8mm] font-sans text-[2mm] font-semibold tracking-[0.3em] text-[#E791A7] uppercase">
               Exclusive
             </p>
 
-            <p className="mt-[0.6mm] font-sans text-[2.1mm] font-semibold tracking-[0.24em] text-[#D3A753] uppercase">
+            {/* Slightly larger */}
+            <p className="mt-[0.6mm] font-sans text-[2.3mm] font-semibold tracking-[0.24em] text-[#D3A753] uppercase">
               1-2-1 Matchmaking Service
             </p>
 
             <div className="mt-[3mm] flex items-center gap-[3mm]">
               {/* Left gradient line */}
+
               <div
                 className="h-[0.6px] w-[18mm]"
                 style={{
@@ -406,6 +411,7 @@ export default function MarketingLeafletPrintPage() {
               />
 
               {/* Heart */}
+
               <Heart
                 size={13}
                 color="#D3A753"
@@ -414,6 +420,7 @@ export default function MarketingLeafletPrintPage() {
               />
 
               {/* Right gradient line */}
+
               <div
                 className="h-[0.6px] w-[18mm]"
                 style={{
@@ -448,23 +455,28 @@ export default function MarketingLeafletPrintPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#39040E] via-transparent to-transparent" />
 
               <div className="absolute right-[5mm] bottom-[5mm] left-[5mm]">
+                {/* Hero headline stays the same */}
                 <p className="font-sans text-[5.2mm] leading-[1.08] font-bold text-white">
                   Real People.
                   <br />
                   Real Relationships.
                 </p>
 
-                <p className="mt-[1.8mm] font-sans text-[2.2mm] font-medium text-[#F9DDA7]">
+                {/* Larger hero subtitle */}
+                <p className="mt-[1.8mm] font-sans text-[2.5mm] font-medium text-[#F9DDA7]">
                   Personally matched in Thailand.
                 </p>
               </div>
             </div>
           </div>
+
           {/* Main statement */}
 
           <div className="absolute top-[117mm] right-[10mm] left-[10mm]">
             <SectionTitle>A Different Kind Of Matchmaking</SectionTitle>
-            <p className="mt-[3mm] font-sans text-[2.25mm] leading-[1.45] text-[#241e2a]/72">
+
+            {/* Larger paragraph */}
+            <p className="mt-[3mm] font-sans text-[2.55mm] leading-[1.45] text-[#241e2a]/72">
               Finding the right person is about more than a profile, a
               photograph or a swipe. We take the time to understand the person
               behind the profile and create introductions with genuine
@@ -479,6 +491,7 @@ export default function MarketingLeafletPrintPage() {
 
             <div className="flex items-center justify-center gap-[2mm]">
               {/* Left gradient line */}
+
               <div
                 className="h-px w-[18mm] shrink-0"
                 style={{
@@ -492,6 +505,7 @@ export default function MarketingLeafletPrintPage() {
               </h2>
 
               {/* Right gradient line */}
+
               <div
                 className="h-px w-[18mm] shrink-0"
                 style={{
@@ -531,18 +545,17 @@ export default function MarketingLeafletPrintPage() {
           </div>
 
           {/* Bottom CTA */}
-          {/* Bottom CTA */}
 
           <div className="absolute inset-x-0 bottom-0 h-[15mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]">
             <div className="flex h-full items-center justify-between px-[10mm]">
               {/* Left labels */}
 
               <div className="flex flex-col justify-center">
-                <p className="font-sans text-[2.5mm] leading-none font-bold tracking-[0.12em] text-white uppercase">
+                <p className="font-sans text-[2.8mm] leading-none font-bold tracking-[0.12em] text-white uppercase">
                   Start Your Story
                 </p>
 
-                <p className="mt-[1.2mm] font-sans text-[1.6mm] leading-none font-medium text-white/80">
+                <p className="mt-[1.2mm] font-sans text-[1.85mm] leading-none font-medium text-white/80">
                   Your journey to a meaningful connection.
                 </p>
               </div>
@@ -550,11 +563,11 @@ export default function MarketingLeafletPrintPage() {
               {/* Contact button */}
 
               <div className="flex items-center rounded-full bg-white px-[4mm] py-[2mm] shadow-md">
-                <span className="font-sans text-[2mm] font-bold tracking-[0.08em] text-[#5A0816] uppercase">
+                <span className="font-sans text-[2.25mm] font-bold tracking-[0.08em] text-[#5A0816] uppercase">
                   Contact Us
                 </span>
 
-                <ArrowRight
+                <ChevronRight
                   size={12}
                   color="#CA617D"
                   strokeWidth={2.5}
@@ -700,8 +713,6 @@ export default function MarketingLeafletPrintPage() {
               </div>
             </div>
 
-            {/* CONTACT AREA — FIXED HEIGHT */}
-
             {/* CONTACT AREA */}
 
             <div className="absolute right-[9mm] bottom-[9mm] left-[9mm] h-[47mm] overflow-hidden rounded-[3mm] bg-[#24141A]">
@@ -805,6 +816,7 @@ export default function MarketingLeafletPrintPage() {
               <div className="flex items-center gap-[3.5mm]">
                 <div className="flex items-center gap-[1mm]">
                   <FaFacebook size={10} color="#1877F2" />
+
                   <span className="font-sans text-[1.45mm] font-semibold text-[#241e2a]/60">
                     @thaisoulmates
                   </span>
@@ -812,6 +824,7 @@ export default function MarketingLeafletPrintPage() {
 
                 <div className="flex items-center gap-[1mm]">
                   <FaInstagram size={10} color="#E4405F" />
+
                   <span className="font-sans text-[1.45mm] font-semibold text-[#241e2a]/60">
                     @thaisoulmate
                   </span>
@@ -819,6 +832,7 @@ export default function MarketingLeafletPrintPage() {
 
                 <div className="flex items-center gap-[1mm]">
                   <FaTiktok size={10} color="#000000" />
+
                   <span className="font-sans text-[1.45mm] font-semibold text-[#241e2a]/60">
                     @thaisoulmate
                   </span>
@@ -826,6 +840,7 @@ export default function MarketingLeafletPrintPage() {
 
                 <div className="flex items-center gap-[1mm]">
                   <FaLine size={10} color="#00C300" />
+
                   <span className="font-sans text-[1.45mm] font-semibold text-[#241e2a]/60">
                     @thaisoulmate
                   </span>

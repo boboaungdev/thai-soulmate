@@ -57,9 +57,8 @@ function PrintTrigger() {
 function SalesTitle() {
   return (
     <div className="h-[36mm] w-[160mm]">
-      {" "}
       <svg
-        aria-label="Sales Person"
+        aria-label="Service Sales Person"
         className="block h-full w-full"
         viewBox="0 0 620 125"
         xmlns="http://www.w3.org/2000/svg"
@@ -80,26 +79,26 @@ function SalesTitle() {
 
         <text
           x="0"
-          y="58"
+          y="55"
           fill="#242124"
           fontFamily="Arial, Helvetica, sans-serif"
-          fontSize="82"
+          fontSize="68"
           fontWeight="600"
-          letterSpacing="-5"
+          letterSpacing="-4"
         >
-          Sales
+          Service
         </text>
 
         <text
           x="0"
-          y="128"
+          y="122"
           fill="url(#sales-title-gradient)"
           fontFamily="Arial, Helvetica, sans-serif"
-          fontSize="82"
+          fontSize="72"
           fontWeight="600"
-          letterSpacing="-5"
+          letterSpacing="-4"
         >
-          Person
+          Sales Person
         </text>
       </svg>
     </div>

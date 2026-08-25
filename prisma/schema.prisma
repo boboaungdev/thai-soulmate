@@ -36,11 +36,13 @@ model RegisterInterest {
   currentLocation       String
   currentLocationRegion String
 
-  email        String  @unique
-  phoneCountry String
-  phone        String
-  source       String
-  otherSource  String?
+  email                String   @unique
+  phoneCountry         String
+  phone                String
+  preferredContactDate DateTime?
+  preferredContactTime String?
+  source               String
+  otherSource          String?
 
   status RegisterInterestStatus @default(RECEIVED)
 

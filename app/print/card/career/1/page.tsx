@@ -27,7 +27,19 @@ function PrintTrigger() {
 
     const print = async () => {
       await document.fonts.ready
+
+      await Promise.all(
+        Array.from(document.images).map(async (image) => {
+          if (image.complete) {
+            try {
+              await image.decode()
+            } catch {}
+          }
+        })
+      )
+
       await new Promise((resolve) => setTimeout(resolve, 500))
+
       window.print()
     }
 
@@ -35,6 +47,63 @@ function PrintTrigger() {
   }, [])
 
   return null
+}
+
+/* ============================================================
+   GRADIENT SALES TITLE
+   SVG IS USED FOR RELIABLE PRINTING
+============================================================ */
+
+function SalesTitle() {
+  return (
+    <div className="h-[36mm] w-[160mm]">
+      {" "}
+      <svg
+        aria-label="Sales Person"
+        className="block h-full w-full"
+        viewBox="0 0 620 125"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient
+            id="sales-title-gradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="0%"
+          >
+            <stop offset="0%" stopColor="#D3A753" />
+            <stop offset="55%" stopColor="#CA617D" />
+            <stop offset="100%" stopColor="#E791A7" />
+          </linearGradient>
+        </defs>
+
+        <text
+          x="0"
+          y="58"
+          fill="#242124"
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="82"
+          fontWeight="600"
+          letterSpacing="-5"
+        >
+          Sales
+        </text>
+
+        <text
+          x="0"
+          y="128"
+          fill="url(#sales-title-gradient)"
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="82"
+          fontWeight="600"
+          letterSpacing="-5"
+        >
+          Person
+        </text>
+      </svg>
+    </div>
+  )
 }
 
 /* ============================================================
@@ -72,11 +141,11 @@ export default function Page() {
            SCREEN
         ====================================================== */
 
-        .hiring-print-document {
+        #printable-area.hiring-print-document {
           display: flex;
           justify-content: center;
           width: 100%;
-          padding: 32px;
+          padding: 36px;
           background: #eee7df;
         }
 
@@ -89,8 +158,11 @@ export default function Page() {
           max-width: 210mm;
           max-height: 297mm;
           overflow: hidden;
-          background: white;
+          background: #ffffff;
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
         /* ======================================================
@@ -100,46 +172,63 @@ export default function Page() {
         @media print {
           html,
           body {
-            width: 210mm !important;
-            height: 297mm !important;
+            width: auto !important;
+            height: auto !important;
             margin: 0 !important;
             padding: 0 !important;
             background: white !important;
           }
 
           body {
-            overflow: hidden !important;
+            overflow: visible !important;
           }
 
-          .hiring-print-document {
-            display: block !important;
+          #printable-area.hiring-print-document {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
             width: 210mm !important;
-            height: 297mm !important;
             margin: 0 !important;
             padding: 0 !important;
+            gap: 0 !important;
             background: white !important;
           }
 
-          .hiring-a4-page {
+          #printable-area.hiring-print-document .hiring-a4-page {
             position: relative !important;
             display: block !important;
+
             width: 210mm !important;
             height: 297mm !important;
+
             min-width: 210mm !important;
             min-height: 297mm !important;
+
             max-width: 210mm !important;
             max-height: 297mm !important;
+
             margin: 0 !important;
             padding: 0 !important;
+
             overflow: hidden !important;
+
+            background: white !important;
+
             box-shadow: none !important;
+
+            border-radius: 0 !important;
+
             break-after: auto !important;
             page-break-after: auto !important;
+
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
 
-          * {
+          *,
+          *::before,
+          *::after {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
@@ -151,8 +240,12 @@ export default function Page() {
         }
       `}</style>
 
-      <main className="hiring-print-document">
-        <div className="hiring-a4-page">
+      <main id="printable-area" className="hiring-print-document">
+        {/* =====================================================
+            A4 PAGE
+        ====================================================== */}
+
+        <section className="hiring-a4-page">
           {/* =====================================================
               BACKGROUND
           ====================================================== */}
@@ -173,18 +266,32 @@ export default function Page() {
             }}
           />
 
-          <div className="pointer-events-none absolute top-[40mm] -right-[30mm] h-[95mm] w-[112mm] rotate-[18deg] rounded-[48%] border border-[#D3A753]/25" />
+          <div
+            className="pointer-events-none absolute top-[40mm] -right-[30mm] h-[95mm] w-[112mm] rotate-[18deg] rounded-[48%]"
+            style={{
+              border: "1px solid rgba(211,167,83,0.25)",
+            }}
+          />
 
-          <div className="pointer-events-none absolute top-[45mm] -right-[34mm] h-[95mm] w-[112mm] rotate-[18deg] rounded-[48%] border border-[#CA617D]/20" />
+          <div
+            className="pointer-events-none absolute top-[45mm] -right-[34mm] h-[95mm] w-[112mm] rotate-[18deg] rounded-[48%]"
+            style={{
+              border: "1px solid rgba(202,97,125,0.20)",
+            }}
+          />
 
-          <div className="pointer-events-none absolute top-[50mm] -right-[38mm] h-[95mm] w-[112mm] rotate-[18deg] rounded-[48%] border border-[#D3A753]/15" />
+          <div
+            className="pointer-events-none absolute top-[50mm] -right-[38mm] h-[95mm] w-[112mm] rotate-[18deg] rounded-[48%]"
+            style={{
+              border: "1px solid rgba(211,167,83,0.15)",
+            }}
+          />
 
           {/* =====================================================
               CONTENT
           ====================================================== */}
 
           <div className="relative z-10 flex h-full flex-col px-[15mm] py-[8mm]">
-
             {/* =================================================
                 HEADER
             ================================================== */}
@@ -203,12 +310,9 @@ export default function Page() {
               <div className="flex items-center gap-[2mm] rounded-full border border-[#D3A753]/30 bg-white/90 px-[4mm] py-[2mm] text-[2.7mm] font-semibold tracking-[0.18em] text-[#B78D46] uppercase">
                 <span className="relative flex h-[3.5mm] w-[3.5mm] items-center justify-center">
                   <span className="absolute h-[3.5mm] w-[3.5mm] rounded-full bg-emerald-400/20" />
-
                   <span className="absolute h-[2.8mm] w-[2.8mm] rounded-full border border-emerald-400/40" />
-
-                  <span className="relative h-[2mm] w-[2mm] rounded-full bg-emerald-500 shadow-[0_0_3px_rgba(16,185,129,0.55)]" />
+                  <span className="relative h-[2mm] w-[2mm] rounded-full bg-emerald-500" />{" "}
                 </span>
-
                 Now Hiring
               </div>
             </header>
@@ -220,28 +324,14 @@ export default function Page() {
             <section className="mt-[9mm] shrink-0">
               <div className="mb-[3mm] inline-flex items-center gap-2 rounded-full bg-[#CA617D]/10 px-[4mm] py-[1.8mm] text-[2.9mm] font-semibold tracking-[0.24em] text-[#B78D46] uppercase">
                 <Sparkles size={14} />
-
                 We&apos;re Hiring
               </div>
 
-              {/* KEEP THIS BIG */}
-              <h1 className="max-w-[160mm] text-[19mm] leading-[0.84] font-semibold tracking-[-0.065em] text-[#242124]">
-                Sales
-                <br />
+              {/* BIG SALES PERSON TITLE */}
 
-                <span
-                  style={{
-                    background:
-                      "linear-gradient(90deg, #D3A753, #CA617D, #E791A7)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  Person
-                </span>
-              </h1>
+              <SalesTitle />
 
-              <p className="mt-[4mm] max-w-[153mm] text-[4mm] leading-[1.45] text-neutral-600">
+              <p className="mt-[1mm] max-w-[153mm] text-[4mm] leading-[1.45] text-neutral-600">
                 Join a growing service business and become part of a new team
                 where you will learn our application, systems, customer service
                 process, sales workflow, and daily operations.
@@ -281,10 +371,10 @@ export default function Page() {
             </section>
 
             {/* =================================================
-                QUICK BENEFITS
-            ================================================== */}
+    QUICK BENEFITS
+================================================== */}
 
-            <section className="mt-[3.5mm] grid shrink-0 grid-cols-4 gap-[2.5mm]">
+            <section className="mt-[3.5mm] grid shrink-0 grid-cols-3 gap-[2.5mm]">
               <Feature
                 icon={<MonitorCog size={17} />}
                 title="Full Training"
@@ -298,12 +388,6 @@ export default function Page() {
               />
 
               <Feature
-                icon={<BriefcaseBusiness size={17} />}
-                title="Career Growth"
-                text="Grow with a new business"
-              />
-
-              <Feature
                 icon={<Award size={17} />}
                 title="Salary"
                 text="Basic salary + up to ฿40,000 commission"
@@ -314,14 +398,12 @@ export default function Page() {
                 TWO MATCHING CARDS
             ================================================== */}
 
-            <section className="mt-[3.5mm] shrink-0 grid grid-cols-2 gap-[5mm]">
-
+            <section className="mt-[3.5mm] grid shrink-0 grid-cols-2 gap-[5mm]">
               {/* =================================================
                   CANDIDATE CARD
               ================================================== */}
 
               <div className="overflow-hidden rounded-[6mm] border border-[#D3A753]/25 bg-gradient-to-br from-[#D3A753]/10 via-white to-[#CA617D]/10">
-
                 <div
                   className="h-[1.1mm] w-full"
                   style={{
@@ -340,25 +422,17 @@ export default function Page() {
                   </h2>
 
                   <div className="mt-[3.2mm] space-y-[2.25mm]">
-                    <Requirement highlight>
-                      Thai female only
-                    </Requirement>
+                    <Requirement highlight>Thai female only</Requirement>
 
-                    <Requirement highlight>
-                      Fluent in English
-                    </Requirement>
+                    <Requirement highlight>Fluent in English</Requirement>
 
                     <Requirement>
                       Friendly, confident and professional
                     </Requirement>
 
-                    <Requirement>
-                      Strong customer service skills
-                    </Requirement>
+                    <Requirement>Strong customer service skills</Requirement>
 
-                    <Requirement>
-                      Good communication skills
-                    </Requirement>
+                    <Requirement>Good communication skills</Requirement>
 
                     <Requirement>
                       Willing to learn new systems and technology
@@ -367,7 +441,6 @@ export default function Page() {
                     <Requirement>
                       Responsible, hardworking and positive
                     </Requirement>
-
                   </div>
                 </div>
               </div>
@@ -377,7 +450,6 @@ export default function Page() {
               ================================================== */}
 
               <div className="overflow-hidden rounded-[6mm] border border-[#D3A753]/25 bg-gradient-to-br from-[#D3A753]/10 via-white to-[#CA617D]/10">
-
                 <div
                   className="h-[1.1mm] w-full"
                   style={{
@@ -396,38 +468,19 @@ export default function Page() {
                   </h2>
 
                   <div className="mt-[3.2mm] space-y-[2.25mm]">
-                    <SmallItem>
-                      How our application works
-                    </SmallItem>
+                    <SmallItem>How our application works</SmallItem>
 
-                    <SmallItem>
-                      Our internal systems and tools
-                    </SmallItem>
+                    <SmallItem>Our internal systems and tools</SmallItem>
 
-                    <SmallItem>
-                      Customer service and communication
-                    </SmallItem>
+                    <SmallItem>Customer service and communication</SmallItem>
 
-                    <SmallItem>
-                      Sales and client follow-up
-                    </SmallItem>
+                    <SmallItem>Sales and client follow-up</SmallItem>
 
-                    <SmallItem>
-                      Daily business operations
-                    </SmallItem>
+                    <SmallItem>Daily business operations</SmallItem>
 
-                    <SmallItem>
-                      How to support customers
-                    </SmallItem>
+                    <SmallItem>How to support customers</SmallItem>
 
-                    <SmallItem>
-                      Professional service workflow
-                    </SmallItem>
-
-                    <SmallItem>
-                      Building customer relationships
-                    </SmallItem>
-
+                    <SmallItem>Professional service workflow</SmallItem>
                   </div>
                 </div>
               </div>
@@ -464,7 +517,7 @@ export default function Page() {
                 <JobDetail
                   icon={<Globe2 size={17} />}
                   label="Work Environment"
-                  value="Office / Online"
+                  value="Office"
                 />
               </div>
             </section>
@@ -531,7 +584,7 @@ export default function Page() {
               </div>
             </section>
           </div>
-        </div>
+        </section>
       </main>
     </>
   )
@@ -624,9 +677,7 @@ function Requirement({
 
       <div
         className={`text-[3.1mm] leading-[1.3] ${
-          highlight
-            ? "font-medium text-neutral-700"
-            : "text-neutral-600"
+          highlight ? "font-medium text-neutral-700" : "text-neutral-600"
         }`}
       >
         {children}
@@ -639,11 +690,7 @@ function Requirement({
    SMALL ITEM
 ================================================================ */
 
-function SmallItem({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+function SmallItem({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-start gap-[2.3mm]">
       <div className="mt-[1.9mm] h-[1.7mm] w-[1.7mm] shrink-0 rounded-full bg-[#CA617D]" />

@@ -12,6 +12,8 @@ import {
 
 import { APP_INFO } from "@/constants"
 import { env } from "@/lib/env"
+import { formatDate } from "@/lib/date"
+import { formatPreferredContactTime } from "@/lib/preferred-contact"
 import { User } from "@/types"
 
 const currentYear = new Date().getFullYear()
@@ -40,7 +42,11 @@ export const RegisterInterestMemberConfirmationEmail = ({
 
         <Text style={paragraph}>
           Our matchmaking team will carefully review your information and
-          contact you soon to discuss the next steps.
+          contact you soon to discuss the next steps
+          {userDetails.preferredContactDate && userDetails.preferredContactTime
+            ? `, preferably on ${userDetails.preferredContactDate} between ${userDetails.preferredContactTime}`
+            : ""}
+          .
         </Text>
 
         <Text style={paragraph}>

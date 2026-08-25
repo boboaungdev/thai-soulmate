@@ -8,7 +8,11 @@ import {
   RegisterInterestAdminNotificationEmail,
   RegisterInterestMemberConfirmationEmail,
 } from "@/emails"
-import { calculateAge } from "@/lib/date"
+import { calculateAge, formatDate } from "@/lib/date"
+import {
+  formatPreferredContactTime,
+  isValidPreferredContactTime,
+} from "@/lib/preferred-contact"
 
 const formSchema = z.object({
   prefix: z.string(),
@@ -33,6 +37,12 @@ const formSchema = z.object({
 
   source: z.string(),
   otherSource: z.string().optional(),
+  preferredContactDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid preferred contact date."),
+  preferredContactTime: z
+    .string()
+    .refine(isValidPreferredContactTime, "Invalid preferred contact time."),
 })
 
 export async function POST(req: Request) {
@@ -60,6 +70,10 @@ export async function POST(req: Request) {
     }
 
     const birthDate = new Date(validatedData.dob)
+    const [year, month, day] = validatedData.preferredContactDate
+      .split("-")
+      .map(Number)
+    const preferredContactDate = new Date(Date.UTC(year, month - 1, day, 12))
 
     const interestData = {
       prefix: validatedData.prefix,
@@ -72,6 +86,8 @@ export async function POST(req: Request) {
       currentLocationRegion: validatedData.currentLocationRegion,
       phoneCountry: validatedData.phoneCountry,
       phone: validatedData.phone,
+      preferredContactDate,
+      preferredContactTime: validatedData.preferredContactTime,
       source: validatedData.source,
       otherSource: validatedData.otherSource,
     }
@@ -82,7 +98,13 @@ export async function POST(req: Request) {
       to: validatedData.email,
       replyTo: EMAIL.contact,
       subject: `[Register Interest] Thank you for your interest in ${APP_INFO.name}!`,
-      react: RegisterInterestMemberConfirmationEmail(validatedData),
+      react: RegisterInterestMemberConfirmationEmail({
+        ...validatedData,
+        preferredContactDate: formatDate(preferredContactDate),
+        preferredContactTime: formatPreferredContactTime(
+          validatedData.preferredContactTime
+        ),
+      }),
     })
 
     if (userError) {
@@ -135,6 +157,10 @@ export async function POST(req: Request) {
         ...validatedData,
         age: calculateAge(validatedData.dob),
         location: validatedData.currentLocation,
+        preferredContactDate: formatDate(preferredContactDate),
+        preferredContactTime: formatPreferredContactTime(
+          validatedData.preferredContactTime
+        ),
       }),
     })
 

@@ -26,6 +26,8 @@ type AdminNotificationDetails = {
   phone: string
   source: string
   otherSource?: string
+  preferredContactDate?: string
+  preferredContactTime?: string
 }
 
 const currentYear = new Date().getFullYear()
@@ -88,6 +90,16 @@ export const RegisterInterestAdminNotificationEmail = ({
 
           <Text style={paragraph}>
             <strong>Phone:</strong> {details.phoneCountry} {details.phone}
+          </Text>
+
+          <Text style={paragraph}>
+            <strong>Preferred contact date:</strong>{" "}
+            {details.preferredContactDate || "-"}
+          </Text>
+
+          <Text style={paragraph}>
+            <strong>Preferred contact time:</strong>{" "}
+            {details.preferredContactTime || "-"}
           </Text>
 
           <Text style={paragraph}>

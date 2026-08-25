@@ -4,7 +4,17 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect, useState, useTransition } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
-import { Check, ChevronsUpDown, User, Mail, Phone, Cake } from "lucide-react"
+import { format, startOfToday } from "date-fns"
+import {
+  CalendarIcon,
+  Check,
+  ChevronsUpDown,
+  Clock,
+  User,
+  Mail,
+  Phone,
+  Cake,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -40,12 +50,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Calendar } from "@/components/ui/calendar"
 import { DateOfBirthInput } from "@/components/ui/date-of-birth-input"
 import { Textarea } from "@/components/ui/textarea"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
 import { MotionDiv } from "./motion"
 import Image from "next/image"
+import {
+  formatHourLabel,
+  getPreferredContactEndHours,
+  PREFERRED_CONTACT_START_HOURS,
+  toPreferredContactTime,
+} from "@/lib/preferred-contact"
 
 type Country = {
   name: string
@@ -99,11 +116,32 @@ const formSchema = z
       message: "Please select how you heard about us.",
     }),
     otherSource: z.string().optional(),
+    preferredContactDate: z.date({
+      message: "Please select a preferred contact date.",
+    }),
+    preferredContactTimeStart: z.string().min(1, {
+      message: "Please select a start time.",
+    }),
+    preferredContactTimeEnd: z.string().min(1, {
+      message: "Please select an end time.",
+    }),
   })
   .refine((data) => data.source !== "Other" || !!data.otherSource, {
     message: "Please specify the other source.",
     path: ["otherSource"],
   })
+  .refine(
+    (data) => {
+      const startHour = Number(data.preferredContactTimeStart)
+      const endHour = Number(data.preferredContactTimeEnd)
+
+      return getPreferredContactEndHours(startHour).includes(endHour)
+    },
+    {
+      message: "Please choose a time range within business hours (8:00–18:00).",
+      path: ["preferredContactTimeEnd"],
+    }
+  )
 
 export function RegisterInterestForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -122,6 +160,9 @@ export function RegisterInterestForm() {
       phone: "",
       source: "",
       otherSource: "",
+      preferredContactDate: undefined,
+      preferredContactTimeStart: "",
+      preferredContactTimeEnd: "",
     },
   })
 
@@ -145,6 +186,11 @@ export function RegisterInterestForm() {
   const source = useWatch({
     control: form.control,
     name: "source",
+  })
+
+  const preferredContactTimeStart = useWatch({
+    control: form.control,
+    name: "preferredContactTimeStart",
   })
 
   const [countries, setCountries] = useState<Country[]>([])
@@ -213,12 +259,23 @@ export function RegisterInterestForm() {
           (country) => country.name === values.currentLocation
         )
 
+        const { preferredContactTimeStart, preferredContactTimeEnd, ...rest } =
+          values
+
         const payload = {
-          ...values,
+          ...rest,
           name: `${values.firstName} ${values.lastName}`.trim(),
           phoneCountry: `+${selectedCountry?.callCode ?? ""}`,
           nationalityRegion: selectedNationalityCountry?.region,
           currentLocationRegion: selectedCurrentLocationCountry?.region,
+          preferredContactDate: format(
+            values.preferredContactDate,
+            "yyyy-MM-dd"
+          ),
+          preferredContactTime: toPreferredContactTime(
+            Number(preferredContactTimeStart),
+            Number(preferredContactTimeEnd)
+          ),
         }
 
         const response = await fetch("/api/register-interest", {
@@ -842,6 +899,130 @@ export function RegisterInterestForm() {
                   )}
                 />
               </div>
+            </MotionDiv>
+
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.65 }}
+            >
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="preferredContactDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Preferred contact date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 text-left font-normal shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 size-4" />
+                              {field.value
+                                ? format(field.value, "d MMM yyyy")
+                                : "Pick a date"}
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={{ before: startOfToday() }}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <FormField
+                    control={form.control}
+                    name="preferredContactTimeStart"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>From</FormLabel>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value)
+                            const nextEndHours = getPreferredContactEndHours(
+                              Number(value)
+                            )
+                            const currentEnd = form.getValues(
+                              "preferredContactTimeEnd"
+                            )
+
+                            if (!nextEndHours.includes(Number(currentEnd))) {
+                              form.setValue("preferredContactTimeEnd", "", {
+                                shouldValidate: true,
+                              })
+                            }
+                          }}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                              <Clock className="mr-1 size-4" />
+                              <SelectValue placeholder="Start" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {PREFERRED_CONTACT_START_HOURS.map((hour) => (
+                              <SelectItem key={hour} value={String(hour)}>
+                                {formatHourLabel(hour)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="preferredContactTimeEnd"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>To</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={!preferredContactTimeStart}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30">
+                              <SelectValue placeholder="End" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {getPreferredContactEndHours(
+                              Number(preferredContactTimeStart)
+                            ).map((hour) => (
+                              <SelectItem key={hour} value={String(hour)}>
+                                {formatHourLabel(hour)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Business hours are 8:00–18:00. Choose a date and a time range we
+                can call you.
+              </p>
             </MotionDiv>
 
             {source === "Other" && (

@@ -28,6 +28,8 @@ export interface User {
   phone?: string
   nationality?: string
   currentLocation?: string
+  preferredContactDate?: string
+  preferredContactTime?: string
   hobbies?: string[]
   plan?: Plan
   paymentStatus?: "paid" | null

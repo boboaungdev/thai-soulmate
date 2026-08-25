@@ -44,7 +44,8 @@ import { toast } from "sonner"
 
 import { useAuthStore } from "@/stores/auth-store"
 import { Note, RegisterInterest, User } from "@/lib/generated/prisma/client"
-import { calculateAge, formatDateTime, formatDOB } from "@/lib/date"
+import { calculateAge, formatDate, formatDateTime, formatDOB } from "@/lib/date"
+import { formatPreferredContactTime } from "@/lib/preferred-contact"
 
 type NoteWithUser = Note & {
   user: Pick<User, "name" | "avatar" | "email" | "role">
@@ -227,6 +228,18 @@ export function RegisterInterestDetails({
               <DetailItem
                 label="Phone"
                 value={`(${item.phoneCountry}) ${item.phone}`}
+              />
+              <DetailItem
+                label="Preferred Contact Date"
+                value={
+                  item.preferredContactDate
+                    ? formatDate(item.preferredContactDate)
+                    : "-"
+                }
+              />
+              <DetailItem
+                label="Preferred Contact Time"
+                value={formatPreferredContactTime(item.preferredContactTime)}
               />
               <DetailItem label="Source" value={item.source} />
               {item.otherSource && (

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation"
 import { formatDateTime, formatDOB } from "@/lib/date"
+import { formatPreferredContactTime } from "@/lib/preferred-contact"
 import { prisma } from "@/lib/prisma"
 import Image from "next/image"
 import { APP_INFO } from "@/constants"
@@ -155,6 +156,17 @@ export default async function PrintRegisterInterestPage({
               <DetailItem
                 label="Phone"
                 value={`${interest.phoneCountry} ${interest.phone}`}
+              />
+              <DetailItem
+                label="Preferred Contact Date"
+                value={
+                  interest.preferredContactDate
+                    ? formatDateTime(interest.preferredContactDate).replace(
+                        / \d{2}:\d{2}$/,
+                        ""
+                      )
+                    : null
+                }
               />
             </div>
           </section>

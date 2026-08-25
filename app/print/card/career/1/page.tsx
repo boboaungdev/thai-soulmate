@@ -17,7 +17,7 @@ import {
 
 /* ============================================================
    PRINT TRIGGER
-   ============================================================ */
+============================================================ */
 
 function PrintTrigger() {
   useEffect(() => {
@@ -27,9 +27,7 @@ function PrintTrigger() {
 
     const print = async () => {
       await document.fonts.ready
-
       await new Promise((resolve) => setTimeout(resolve, 500))
-
       window.print()
     }
 
@@ -41,7 +39,7 @@ function PrintTrigger() {
 
 /* ============================================================
    PAGE
-   ============================================================ */
+============================================================ */
 
 export default function Page() {
   return (
@@ -186,24 +184,23 @@ export default function Page() {
           ====================================================== */}
 
           <div className="relative z-10 flex h-full flex-col px-[15mm] py-[8mm]">
+
             {/* =================================================
                 HEADER
             ================================================== */}
 
             <header className="flex shrink-0 items-center justify-between">
               <div>
-                <div className="text-[2.3mm] font-semibold tracking-[0.28em] text-[#B78D46] uppercase">
+                <div className="text-[2.7mm] font-semibold tracking-[0.28em] text-[#B78D46] uppercase">
                   New Business Opportunity
                 </div>
 
-                <div className="mt-[1mm] text-[2.7mm] text-neutral-500">
+                <div className="mt-[1mm] text-[3.1mm] text-neutral-500">
                   Thailand-Based Service Business
                 </div>
               </div>
 
-              {/* NOW HIRING */}
-
-              <div className="flex items-center gap-[2mm] rounded-full border border-[#D3A753]/30 bg-white/90 px-[4mm] py-[2mm] text-[2.3mm] font-semibold tracking-[0.18em] text-[#B78D46] uppercase">
+              <div className="flex items-center gap-[2mm] rounded-full border border-[#D3A753]/30 bg-white/90 px-[4mm] py-[2mm] text-[2.7mm] font-semibold tracking-[0.18em] text-[#B78D46] uppercase">
                 <span className="relative flex h-[3.5mm] w-[3.5mm] items-center justify-center">
                   <span className="absolute h-[3.5mm] w-[3.5mm] rounded-full bg-emerald-400/20" />
 
@@ -221,12 +218,13 @@ export default function Page() {
             ================================================== */}
 
             <section className="mt-[9mm] shrink-0">
-              <div className="mb-[3mm] inline-flex items-center gap-2 rounded-full bg-[#CA617D]/10 px-[4mm] py-[1.8mm] text-[2.6mm] font-semibold tracking-[0.24em] text-[#B78D46] uppercase">
-                <Sparkles size={13} />
+              <div className="mb-[3mm] inline-flex items-center gap-2 rounded-full bg-[#CA617D]/10 px-[4mm] py-[1.8mm] text-[2.9mm] font-semibold tracking-[0.24em] text-[#B78D46] uppercase">
+                <Sparkles size={14} />
 
                 We&apos;re Hiring
               </div>
 
+              {/* KEEP THIS BIG */}
               <h1 className="max-w-[160mm] text-[19mm] leading-[0.84] font-semibold tracking-[-0.065em] text-[#242124]">
                 Sales
                 <br />
@@ -243,7 +241,7 @@ export default function Page() {
                 </span>
               </h1>
 
-              <p className="mt-[4mm] max-w-[153mm] text-[3.6mm] leading-[1.45] text-neutral-600">
+              <p className="mt-[4mm] max-w-[153mm] text-[4mm] leading-[1.45] text-neutral-600">
                 Join a growing service business and become part of a new team
                 where you will learn our application, systems, customer service
                 process, sales workflow, and daily operations.
@@ -255,7 +253,7 @@ export default function Page() {
             ================================================== */}
 
             <section
-              className="relative mt-[3.5mm] shrink-0 overflow-hidden rounded-[6mm] border border-[#D3A753]/20 px-[6mm] py-[3.2mm]"
+              className="relative mt-[3.5mm] shrink-0 overflow-hidden rounded-[6mm] border border-[#D3A753]/20 px-[6mm] py-[3.5mm]"
               style={{
                 background:
                   "linear-gradient(105deg, rgba(211,167,83,0.10), rgba(202,97,125,0.10), rgba(231,145,167,0.12))",
@@ -270,11 +268,11 @@ export default function Page() {
               />
 
               <div className="pl-[3mm]">
-                <div className="text-[4mm] leading-[1.1] font-semibold tracking-[-0.03em] text-[#5A0816]">
+                <div className="text-[4.6mm] leading-[1.1] font-semibold tracking-[-0.03em] text-[#5A0816]">
                   No need to know everything from day one.
                 </div>
 
-                <p className="mt-[1.2mm] text-[2.6mm] leading-[1.4] text-neutral-600">
+                <p className="mt-[1.4mm] text-[3mm] leading-[1.4] text-neutral-600">
                   Full guidance and training will be provided. You will learn
                   our application, internal systems, customer service, sales
                   process, and daily workflow as you grow with the team.
@@ -282,193 +280,189 @@ export default function Page() {
               </div>
             </section>
 
-         {/* =================================================
-    QUICK BENEFITS
-================================================== */}
+            {/* =================================================
+                QUICK BENEFITS
+            ================================================== */}
 
-<section className="mt-[3.5mm] grid shrink-0 grid-cols-4 gap-[2.5mm]">
-  <Feature
-    icon={<MonitorCog size={16} />}
-    title="Full Training"
-    text="Application & systems"
-  />
+            <section className="mt-[3.5mm] grid shrink-0 grid-cols-4 gap-[2.5mm]">
+              <Feature
+                icon={<MonitorCog size={17} />}
+                title="Full Training"
+                text="Application & systems"
+              />
 
-  <Feature
-    icon={<Users size={16} />}
-    title="Customer Service"
-    text="Learn client communication"
-  />
+              <Feature
+                icon={<Users size={17} />}
+                title="Customer Service"
+                text="Learn client communication"
+              />
 
-  <Feature
-    icon={<BriefcaseBusiness size={16} />}
-    title="Career Growth"
-    text="Grow with a new business"
-  />
+              <Feature
+                icon={<BriefcaseBusiness size={17} />}
+                title="Career Growth"
+                text="Grow with a new business"
+              />
 
-  <Feature
-    icon={<Award size={16} />}
-    title="Salary"
-    text="Basic salary + up to ฿40,000 commission"
-  />
-</section>
-{/* =================================================
-    MAIN INFORMATION — TWO MATCHING CARDS
-================================================== */}
+              <Feature
+                icon={<Award size={17} />}
+                title="Salary"
+                text="Basic salary + up to ฿40,000 commission"
+              />
+            </section>
 
-<section className="mt-[3.5mm] shrink-0 grid grid-cols-2 gap-[5mm]">
-  {/* =================================================
-      CANDIDATE CARD
-  ================================================== */}
+            {/* =================================================
+                TWO MATCHING CARDS
+            ================================================== */}
 
-  <div className="overflow-hidden rounded-[6mm] border border-[#D3A753]/25 bg-gradient-to-br from-[#D3A753]/10 via-white to-[#CA617D]/10">
-    {/* Card top gradient */}
-    <div
-      className="h-[1.1mm] w-full"
-      style={{
-        background:
-          "linear-gradient(90deg, #D3A753, #CA617D, #E791A7)",
-      }}
-    />
+            <section className="mt-[3.5mm] shrink-0 grid grid-cols-2 gap-[5mm]">
 
-    <div className="p-[4.5mm]">
-      <div className="text-[2.2mm] font-semibold tracking-[0.22em] text-[#B78D46] uppercase">
-        Candidate
-      </div>
+              {/* =================================================
+                  CANDIDATE CARD
+              ================================================== */}
 
-      <h2 className="mt-[1mm] text-[5mm] font-semibold tracking-[-0.035em] text-neutral-800">
-        Who we&apos;re looking for
-      </h2>
+              <div className="overflow-hidden rounded-[6mm] border border-[#D3A753]/25 bg-gradient-to-br from-[#D3A753]/10 via-white to-[#CA617D]/10">
 
-      <div className="mt-[3.2mm] space-y-[2.15mm]">
-        <Requirement highlight>
-          Thai female only
-        </Requirement>
+                <div
+                  className="h-[1.1mm] w-full"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #D3A753, #CA617D, #E791A7)",
+                  }}
+                />
 
-        <Requirement highlight>
-          Fluent in English
-        </Requirement>
+                <div className="p-[4.5mm]">
+                  <div className="text-[2.7mm] font-semibold tracking-[0.22em] text-[#B78D46] uppercase">
+                    Candidate
+                  </div>
 
-        <Requirement>
-          Friendly, confident and professional
-        </Requirement>
+                  <h2 className="mt-[1mm] text-[5.8mm] leading-[1.1] font-semibold tracking-[-0.035em] text-neutral-800">
+                    Who we&apos;re looking for
+                  </h2>
 
-        <Requirement>
-          Strong customer service skills
-        </Requirement>
+                  <div className="mt-[3.2mm] space-y-[2.25mm]">
+                    <Requirement highlight>
+                      Thai female only
+                    </Requirement>
 
-        <Requirement>
-          Good communication skills
-        </Requirement>
+                    <Requirement highlight>
+                      Fluent in English
+                    </Requirement>
 
-        <Requirement>
-          Willing to learn new systems and technology
-        </Requirement>
+                    <Requirement>
+                      Friendly, confident and professional
+                    </Requirement>
 
-        <Requirement>
-          Responsible, hardworking and positive
-        </Requirement>
+                    <Requirement>
+                      Strong customer service skills
+                    </Requirement>
 
-        <Requirement>
-          Comfortable communicating with customers
-        </Requirement>
-      </div>
-    </div>
-  </div>
+                    <Requirement>
+                      Good communication skills
+                    </Requirement>
 
-  {/* =================================================
-      TRAINING CARD
-  ================================================== */}
+                    <Requirement>
+                      Willing to learn new systems and technology
+                    </Requirement>
 
-  <div className="overflow-hidden rounded-[6mm] border border-[#D3A753]/25 bg-gradient-to-br from-[#D3A753]/10 via-white to-[#CA617D]/10">
-    {/* Card top gradient */}
-    <div
-      className="h-[1.1mm] w-full"
-      style={{
-        background:
-          "linear-gradient(90deg, #D3A753, #CA617D, #E791A7)",
-      }}
-    />
+                    <Requirement>
+                      Responsible, hardworking and positive
+                    </Requirement>
 
-    <div className="p-[4.5mm]">
-      <div className="text-[2.2mm] font-semibold tracking-[0.22em] text-[#B78D46] uppercase">
-        Training & Development
-      </div>
+                  </div>
+                </div>
+              </div>
 
-      <h2 className="mt-[1mm] text-[5mm] font-semibold tracking-[-0.035em] text-neutral-800">
-        What you&apos;ll learn
-      </h2>
+              {/* =================================================
+                  TRAINING CARD
+              ================================================== */}
 
-      <div className="mt-[3.2mm] space-y-[2.15mm]">
-        <SmallItem>
-          How our application works
-        </SmallItem>
+              <div className="overflow-hidden rounded-[6mm] border border-[#D3A753]/25 bg-gradient-to-br from-[#D3A753]/10 via-white to-[#CA617D]/10">
 
-        <SmallItem>
-          Our internal systems and tools
-        </SmallItem>
+                <div
+                  className="h-[1.1mm] w-full"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #D3A753, #CA617D, #E791A7)",
+                  }}
+                />
 
-        <SmallItem>
-          Customer service and communication
-        </SmallItem>
+                <div className="p-[4.5mm]">
+                  <div className="text-[2.7mm] font-semibold tracking-[0.22em] text-[#B78D46] uppercase">
+                    Training & Development
+                  </div>
 
-        <SmallItem>
-          Sales and client follow-up
-        </SmallItem>
+                  <h2 className="mt-[1mm] text-[5.8mm] leading-[1.1] font-semibold tracking-[-0.035em] text-neutral-800">
+                    What you&apos;ll learn
+                  </h2>
 
-        <SmallItem>
-          Daily business operations
-        </SmallItem>
+                  <div className="mt-[3.2mm] space-y-[2.25mm]">
+                    <SmallItem>
+                      How our application works
+                    </SmallItem>
 
-        <SmallItem>
-          How to support customers
-        </SmallItem>
+                    <SmallItem>
+                      Our internal systems and tools
+                    </SmallItem>
 
-        <SmallItem>
-          Professional service workflow
-        </SmallItem>
+                    <SmallItem>
+                      Customer service and communication
+                    </SmallItem>
 
-        <SmallItem>
-          Building customer relationships
-        </SmallItem>
+                    <SmallItem>
+                      Sales and client follow-up
+                    </SmallItem>
 
-        <SmallItem>
-          Team communication and coordination
-        </SmallItem>
-      </div>
-    </div>
-  </div>
-</section>
+                    <SmallItem>
+                      Daily business operations
+                    </SmallItem>
+
+                    <SmallItem>
+                      How to support customers
+                    </SmallItem>
+
+                    <SmallItem>
+                      Professional service workflow
+                    </SmallItem>
+
+                    <SmallItem>
+                      Building customer relationships
+                    </SmallItem>
+
+                  </div>
+                </div>
+              </div>
+            </section>
 
             {/* =================================================
                 POSITION DETAILS
             ================================================== */}
 
             <section className="mt-[3.5mm] shrink-0">
-              <div className="mb-[2mm] text-[2.2mm] font-semibold tracking-[0.22em] text-[#B78D46] uppercase">
+              <div className="mb-[2mm] text-[2.7mm] font-semibold tracking-[0.22em] text-[#B78D46] uppercase">
                 Position Details
               </div>
 
               <div className="grid grid-cols-4 gap-[2.5mm]">
                 <JobDetail
-                  icon={<Clock3 size={16} />}
+                  icon={<Clock3 size={17} />}
                   label="Working Days"
                   value="5 Days / Week"
                 />
 
                 <JobDetail
-                  icon={<BriefcaseBusiness size={16} />}
+                  icon={<BriefcaseBusiness size={17} />}
                   label="Working Hours"
                   value="10 Hours / Day"
                 />
 
                 <JobDetail
-                  icon={<Award size={16} />}
+                  icon={<Award size={17} />}
                   label="Salary"
                   value="Based on Experience"
                 />
 
                 <JobDetail
-                  icon={<Globe2 size={16} />}
+                  icon={<Globe2 size={17} />}
                   label="Work Environment"
                   value="Office / Online"
                 />
@@ -481,15 +475,15 @@ export default function Page() {
 
             <section className="mt-[3.5mm] flex shrink-0 items-center gap-[4mm] rounded-[5mm] border border-neutral-200/70 bg-white/75 px-[5mm] py-[3mm]">
               <div className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#D3A753]/15 to-[#CA617D]/15 text-[#CA617D]">
-                <Heart size={16} />
+                <Heart size={17} />
               </div>
 
               <div>
-                <div className="text-[3.1mm] font-semibold text-neutral-800">
+                <div className="text-[3.5mm] font-semibold text-neutral-800">
                   We&apos;re looking for the right attitude.
                 </div>
 
-                <div className="mt-[0.7mm] text-[2.5mm] leading-[1.4] text-neutral-500">
+                <div className="mt-[0.7mm] text-[2.8mm] leading-[1.4] text-neutral-500">
                   If you are willing to learn, work hard, communicate well, and
                   grow with a new business, we want to hear from you.
                 </div>
@@ -514,19 +508,19 @@ export default function Page() {
 
               <div className="relative z-10 flex items-center justify-between gap-5">
                 <div>
-                  <div className="text-[2.1mm] font-semibold tracking-[0.25em] text-white/75 uppercase">
+                  <div className="text-[2.7mm] font-semibold tracking-[0.25em] text-white/75 uppercase">
                     Apply / Contact
                   </div>
 
                   <div className="mt-[1.2mm] flex items-center gap-[2mm]">
-                    <Mail size={15} />
+                    <Mail size={17} />
 
-                    <span className="text-[4.2mm] font-semibold tracking-[-0.02em]">
+                    <span className="text-[4.7mm] font-semibold tracking-[-0.02em]">
                       info@21stcenturygroup.org
                     </span>
                   </div>
 
-                  <div className="mt-[1mm] text-[2.6mm] text-white/80">
+                  <div className="mt-[1mm] text-[2.9mm] text-white/80">
                     Send your Resume and a short introduction to apply.
                   </div>
                 </div>
@@ -557,17 +551,17 @@ function Feature({
   text: string
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-[4mm] border border-neutral-200/80 bg-white/80 px-[3.5mm] py-[2.5mm]">
-      <div className="flex h-[8mm] w-[8mm] shrink-0 items-center justify-center rounded-full bg-[#CA617D]/10 text-[#CA617D]">
+    <div className="flex items-center gap-[2.5mm] rounded-[4mm] border border-neutral-200/80 bg-white/80 px-[3mm] py-[2.7mm]">
+      <div className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full bg-[#CA617D]/10 text-[#CA617D]">
         {icon}
       </div>
 
-      <div>
-        <div className="text-[2.7mm] font-semibold text-neutral-800">
+      <div className="min-w-0">
+        <div className="text-[3.1mm] leading-[1.1] font-semibold text-neutral-800">
           {title}
         </div>
 
-        <div className="mt-[0.4mm] text-[2.1mm] leading-tight text-neutral-500">
+        <div className="mt-[0.6mm] text-[2.5mm] leading-[1.25] text-neutral-500">
           {text}
         </div>
       </div>
@@ -593,12 +587,12 @@ function JobDetail({
       <div className="flex items-center gap-2 text-[#CA617D]">
         {icon}
 
-        <span className="text-[1.9mm] font-semibold tracking-[0.1em] text-[#B78D46] uppercase">
+        <span className="text-[2.2mm] font-semibold tracking-[0.1em] text-[#B78D46] uppercase">
           {label}
         </span>
       </div>
 
-      <div className="mt-[1.2mm] text-[2.7mm] leading-[1.2] font-semibold text-neutral-800">
+      <div className="mt-[1.2mm] text-[3.1mm] leading-[1.2] font-semibold text-neutral-800">
         {value}
       </div>
     </div>
@@ -619,17 +613,17 @@ function Requirement({
   return (
     <div className="flex items-start gap-[2.3mm]">
       <div
-        className={`mt-[0.4mm] flex h-[4mm] w-[4mm] shrink-0 items-center justify-center rounded-full text-white ${
+        className={`mt-[0.4mm] flex h-[4.2mm] w-[4.2mm] shrink-0 items-center justify-center rounded-full text-white ${
           highlight
             ? "bg-gradient-to-br from-[#D3A753] to-[#CA617D]"
             : "bg-[#CA617D]/80"
         }`}
       >
-        <Check size={8} strokeWidth={3} />
+        <Check size={9} strokeWidth={3} />
       </div>
 
       <div
-        className={`text-[2.8mm] leading-[1.3] ${
+        className={`text-[3.1mm] leading-[1.3] ${
           highlight
             ? "font-medium text-neutral-700"
             : "text-neutral-600"
@@ -652,9 +646,9 @@ function SmallItem({
 }) {
   return (
     <div className="flex items-start gap-[2.3mm]">
-      <div className="mt-[1.6mm] h-[1.5mm] w-[1.5mm] shrink-0 rounded-full bg-[#CA617D]" />
+      <div className="mt-[1.9mm] h-[1.7mm] w-[1.7mm] shrink-0 rounded-full bg-[#CA617D]" />
 
-      <div className="text-[2.7mm] leading-[1.3] text-neutral-600">
+      <div className="text-[3.1mm] leading-[1.3] text-neutral-600">
         {children}
       </div>
     </div>

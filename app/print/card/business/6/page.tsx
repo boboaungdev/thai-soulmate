@@ -525,7 +525,7 @@ export default function BusinessCardPrintPage() {
                           className="block h-[13mm] w-[13mm]"
                         />
 
-                        <div className="absolute top-1/2 left-1/2 flex h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white shadow-sm">
+                        <div className="absolute top-1/2 left-1/2 flex h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white">
                           <FaWhatsapp size={10} color="#25D366" />
                         </div>
                       </div>
@@ -554,7 +554,7 @@ export default function BusinessCardPrintPage() {
                           className="block h-[13mm] w-[13mm]"
                         />
 
-                        <div className="absolute top-1/2 left-1/2 flex h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white shadow-sm">
+                        <div className="absolute top-1/2 left-1/2 flex h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white">
                           <Image
                             src="/logo.png"
                             alt="Thai Soulmate"

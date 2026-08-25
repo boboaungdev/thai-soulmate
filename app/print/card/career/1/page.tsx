@@ -6,6 +6,7 @@ import {
   Award,
   BriefcaseBusiness,
   Check,
+  ChevronRight,
   Clock3,
   Globe2,
   Heart,
@@ -388,8 +389,8 @@ export default function Page() {
 
               <Feature
                 icon={<Award size={17} />}
-                title="Salary"
-                text="Basic salary + up to ฿40,000 commission"
+                title="Salary & Commission"
+                text="Up to ฿40,000"
               />
             </section>
 
@@ -506,11 +507,10 @@ export default function Page() {
                   label="Working Hours"
                   value="10 Hours / Day"
                 />
-
                 <JobDetail
                   icon={<Award size={17} />}
-                  label="Salary"
-                  value="Based on Experience"
+                  label="Salary & Commission"
+                  value="Up to ฿40,000"
                 />
 
                 <JobDetail
@@ -557,7 +557,6 @@ export default function Page() {
                 className="pointer-events-none absolute -top-[8mm] -right-[3mm] h-[38mm] w-[38mm] rotate-12 opacity-10"
                 fill="currentColor"
               />
-
               <div className="relative z-10 flex items-center justify-between gap-5">
                 <div>
                   <div className="text-[2.7mm] font-semibold tracking-[0.25em] text-white/75 uppercase">
@@ -577,8 +576,12 @@ export default function Page() {
                   </div>
                 </div>
 
-                <div className="flex h-[12mm] w-[12mm] shrink-0 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/30">
-                  <ArrowRight size={21} />
+                {/* APPLY NOW BUTTON */}
+                <div className="flex items-center gap-[2mm] rounded-full bg-white/15 px-[5mm] py-[2.5mm] ring-1 ring-white/30">
+                  <span className="text-[3.2mm] font-semibold whitespace-nowrap">
+                    Apply Now
+                  </span>
+                  <ChevronRight size={18} />
                 </div>
               </div>
             </section>

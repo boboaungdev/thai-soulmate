@@ -9,47 +9,70 @@ import {
   RegisterInterestMemberConfirmationEmail,
 } from "@/emails"
 import { calculateAge, formatDate } from "@/lib/date"
-import {
-  formatPreferredContactTime,
-  isValidPreferredContactTime,
-} from "@/lib/preferred-contact"
+
+const PREFERRED_CONTACT_TIMES = [
+  "10:00 - 11:00",
+  "11:00 - 12:00",
+  "12:00 - 13:00",
+  "13:00 - 14:00",
+  "14:00 - 15:00",
+  "15:00 - 16:00",
+  "16:00 - 17:00",
+  "17:00 - 18:00",
+  "18:00 - 19:00",
+  "19:00 - 20:00",
+] as const
 
 const formSchema = z.object({
   prefix: z.string(),
+
   name: z.string().transform((val) =>
     val
       .trim()
       .split(" ")
-      .filter(Boolean) // Removes empty strings from multiple spaces
+      .filter(Boolean)
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(" ")
   ),
+
   dob: z.string(),
+
   gender: z.string(),
+
   nationality: z.string(),
+
   nationalityRegion: z.string(),
+
   currentLocation: z.string(),
+
   currentLocationRegion: z.string(),
+
   email: z.email().transform((val) => val.toLowerCase()),
 
   phoneCountry: z.string(),
+
   phone: z.string(),
 
   source: z.string(),
+
   otherSource: z.string().optional(),
+
   preferredContactDate: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid preferred contact date."),
-  preferredContactTime: z
-    .string()
-    .refine(isValidPreferredContactTime, "Invalid preferred contact time."),
+
+  preferredContactTime: z.enum(PREFERRED_CONTACT_TIMES, {
+    message: "Please select a preferred contact time.",
+  }),
 })
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
+
     const validatedData = formSchema.parse(body)
 
+    // Check if email already exists
     const existingAppForm = await prisma.applicationForm.findFirst({
       where: {
         personalDetails: {
@@ -69,41 +92,64 @@ export async function POST(req: Request) {
       )
     }
 
+    // Convert DOB
     const birthDate = new Date(validatedData.dob)
+
+    // Convert preferred contact date
     const [year, month, day] = validatedData.preferredContactDate
       .split("-")
       .map(Number)
+
     const preferredContactDate = new Date(Date.UTC(year, month - 1, day, 12))
 
+    // Data to save in RegisterInterest
     const interestData = {
       prefix: validatedData.prefix,
+
       name: validatedData.name,
+
       dob: birthDate,
+
       gender: validatedData.gender,
+
       nationality: validatedData.nationality,
+
       nationalityRegion: validatedData.nationalityRegion,
+
       currentLocation: validatedData.currentLocation,
+
       currentLocationRegion: validatedData.currentLocationRegion,
+
       phoneCountry: validatedData.phoneCountry,
+
       phone: validatedData.phone,
+
       preferredContactDate,
+
       preferredContactTime: validatedData.preferredContactTime,
+
       source: validatedData.source,
+
       otherSource: validatedData.otherSource,
     }
 
-    // Send confirmation email to user first
+    // -----------------------------------------
+    // SEND CONFIRMATION EMAIL TO USER
+    // -----------------------------------------
+
     const { data: userData, error: userError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
       to: validatedData.email,
       replyTo: EMAIL.contact,
+
       subject: `[Register Interest] Thank you for your interest in ${APP_INFO.name}!`,
+
       react: RegisterInterestMemberConfirmationEmail({
         ...validatedData,
+
         preferredContactDate: formatDate(preferredContactDate),
-        preferredContactTime: formatPreferredContactTime(
-          validatedData.preferredContactTime
-        ),
+
+        preferredContactTime: validatedData.preferredContactTime,
       }),
     })
 
@@ -122,13 +168,18 @@ export async function POST(req: Request) {
 
     console.log("User email sent:", userData?.id)
 
-    // Save registration after email succeeds
+    // -----------------------------------------
+    // SAVE TO DATABASE
+    // -----------------------------------------
+
     try {
       await prisma.registerInterest.upsert({
         where: {
           email: validatedData.email,
         },
+
         update: interestData,
+
         create: {
           email: validatedData.email,
           ...interestData,
@@ -146,21 +197,32 @@ export async function POST(req: Request) {
       )
     }
 
-    // Send admin notification last
+    // -----------------------------------------
+    // SEND ADMIN NOTIFICATION
+    // -----------------------------------------
+
     const { data: adminData, error: adminError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
-      to: [CONTACT.email],
-      // to: ['boolean405@gmail.com'],
+
+      // Change this back to CONTACT.email when ready
+      // to: [CONTACT.email],
+
+      to: ["boolean405@gmail.com"],
+
       replyTo: validatedData.email,
+
       subject: `[Register Interest] New Interest Registration: ${validatedData.name}`,
+
       react: RegisterInterestAdminNotificationEmail({
         ...validatedData,
+
         age: calculateAge(validatedData.dob),
+
         location: validatedData.currentLocation,
+
         preferredContactDate: formatDate(preferredContactDate),
-        preferredContactTime: formatPreferredContactTime(
-          validatedData.preferredContactTime
-        ),
+
+        preferredContactTime: validatedData.preferredContactTime,
       }),
     })
 
@@ -205,6 +267,10 @@ export async function POST(req: Request) {
   }
 }
 
+// -----------------------------------------
+// GET REGISTER INTERESTS
+// -----------------------------------------
+
 export async function GET() {
   try {
     const registerInterests = await prisma.registerInterest.findMany({
@@ -215,6 +281,7 @@ export async function GET() {
           },
         },
       },
+
       orderBy: {
         updatedAt: "desc",
       },
@@ -223,8 +290,11 @@ export async function GET() {
     return NextResponse.json(registerInterests)
   } catch (error) {
     console.error(error)
+
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      {
+        error: "Internal Server Error",
+      },
       { status: 500 }
     )
   }

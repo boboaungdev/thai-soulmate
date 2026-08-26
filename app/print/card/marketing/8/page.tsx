@@ -373,8 +373,14 @@ export default function MarketingLeafletPrintPage() {
 
           <div className="absolute inset-0 bg-[#FBF8F3]" />
 
-          <div className="absolute inset-x-0 top-0 h-[91mm] bg-gradient-to-br from-[#43050F] via-[#650D20] to-[#8A1E3A]" />
+          <div className="absolute top-0 right-0 left-0 h-[91mm] bg-gradient-to-br from-[#43050F] via-[#650D20] to-[#8A1E3A]" />
 
+          <div
+            className="absolute top-[78mm] right-[-10mm] left-[-10mm] h-[25mm] bg-[#FBF8F3]"
+            style={{
+              borderRadius: "50% 50% 0 0 / 100% 100% 0 0",
+            }}
+          />
           <div className="absolute top-[35mm] left-[-20mm] h-[80mm] w-[80mm] rounded-full bg-[#E791A7]/10 blur-2xl" />
 
           <div className="absolute top-[-25mm] right-[-25mm] h-[75mm] w-[75mm] rounded-full bg-[#D3A753]/10 blur-2xl" />
@@ -482,8 +488,8 @@ export default function MarketingLeafletPrintPage() {
             <SectionTitle>More Than Matching</SectionTitle>
 
             <p className="mt-[2.8mm] font-sans text-[3mm] leading-[1.5] text-[#241e2a]/72">
-              Finding the right person is about more than a profile or
-              photograph. We take the time to understand you and create
+              Finding the right person is about more than a profile, photograph
+              or swipe. We take the time to understand you and create
               introductions with genuine relationship potential.
             </p>
           </div>
@@ -563,48 +569,26 @@ export default function MarketingLeafletPrintPage() {
       TOP BURGUNDY SECTION
       ====================================================== */}
 
-          <div className="absolute top-0 right-0 left-0 h-[77mm] bg-[#5A0816]" />
+          <div className="absolute top-0 right-0 left-0 h-[91mm] bg-gradient-to-br from-[#43050F] via-[#650D20] to-[#8A1E3A]" />
 
-          {/* ======================================================
-      HEADER
-      ====================================================== */}
-
-          <div className="absolute top-[12mm] left-[8mm] z-20 flex w-[64mm] items-center">
-            <Image
-              src="/logo.png"
-              alt="Thai Soulmate"
-              width={180}
-              height={180}
-              priority
-              quality={100}
-              unoptimized
-              className="h-[14mm] w-[14mm] shrink-0 object-contain"
-            />
-
-            <div className="w-[48mm] text-center">
-              <BrandName className="mx-auto w-[48mm]" />
-
-              <p className="mt-[0.8mm] text-center font-sans text-[1.8mm] font-bold tracking-[0.28em] text-[#E791A7] uppercase">
-                Exclusive
-              </p>
-
-              <p className="mt-[0.5mm] text-center font-sans text-[2.2mm] font-semibold tracking-[0.22em] text-[#D3A753] uppercase">
-                1-2-1 Matchmaking Service
-              </p>
-            </div>
-          </div>
+          <div
+            className="absolute top-[78mm] right-[-10mm] left-[-10mm] h-[25mm] bg-[#FBF8F3]"
+            style={{
+              borderRadius: "50% 50% 0 0 / 100% 100% 0 0",
+            }}
+          />
 
           {/* ======================================================
       HERO TITLE
       ====================================================== */}
 
-          <div className="absolute top-[29mm] left-[11mm] z-20 w-[66mm]">
+          <div className="absolute top-[15mm] left-[11mm] z-20 w-[66mm]">
+            {" "}
             <h2 className="mt-[3mm] font-serif text-[8.5mm] leading-[0.95] text-white">
               More than
               <br />
               <span className="text-[#D3A753] italic">a match.</span>
             </h2>
-
             <p className="mt-[3mm] w-[63mm] font-sans text-[3mm] leading-[1.45] font-medium text-white/75">
               We get to know you first, understand what you are looking for, and
               introduce you to people who may genuinely complement your life.
@@ -650,7 +634,7 @@ export default function MarketingLeafletPrintPage() {
       WHO WE HELP
       ====================================================== */}
 
-          <div className="absolute top-[75mm] right-[10mm] left-[10mm] z-20">
+          <div className="absolute top-[80mm] right-[10mm] left-[10mm] z-20">
             <div className="flex items-center justify-center gap-[2.5mm]">
               <div
                 className="h-px w-[22mm] shrink-0"
@@ -674,33 +658,121 @@ export default function MarketingLeafletPrintPage() {
             </div>
 
             {/* ====================================================
-        AUDIENCE CARDS
-        ==================================================== */}
+     {/* ====================================================
+    AUDIENCE CARD
+    ==================================================== */}
+            <div className="mt-[2mm]">
+<div
+  className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/30 px-[5mm] py-[4mm]"
+  style={{
+    background:
+      "linear-gradient(135deg, #FFF9F3 0%, #FBF3ED 50%, #F8E9E8 100%)",
+  }}
+>                {/* Two sides inside ONE card */}
+                <div className="grid grid-cols-2 gap-[5mm]">
+                  {/* Thai Ladies */}
+                  <div className="border-r border-[#D3A753]/20 pr-[4mm]">
+                    <div className="flex items-center gap-[2mm]">
+                      <div
+                        className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+                        }}
+                      >
+                        <div className="flex h-full w-full items-center justify-center rounded-full bg-[#FBF8F3]">
+                          <FaFemale size={16} color="#CA617D" />
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-sans text-[3.2mm] font-bold text-[#5A0816]">
+                          For Thai Ladies
+                        </h4>
 
-            <div className="mt-[4mm] grid grid-cols-2 gap-[4mm]">
-              <Audience
-                icon={<FaFemale size={24} color="#CA617D" />}
-                title="For Thai Ladies"
-                description="Meet genuine foreign gentlemen"
-                items={[
-                  "Personal consultation",
-                  "Carefully selected introductions",
-                  "Compatibility-focused matching",
-                  "Private and respectful support",
-                ]}
-              />
+                        <p className="mt-[0.4mm] font-sans text-[2.5mm] font-semibold text-[#CA617D]">
+                          Meet genuine foreign gentlemen
+                        </p>
+                      </div>
+                    </div>
 
-              <Audience
-                icon={<FaMale size={24} color="#D3A753" />}
-                title="For Foreign Gentlemen"
-                description="Meet genuine Thai ladies"
-                items={[
-                  "Personal matchmaking consultation",
-                  "Genuine Thai introductions",
-                  "Matches based on preferences",
-                  "Professional support in Thailand",
-                ]}
-              />
+                    <div className="mt-[2.5mm] space-y-[1.5mm]">
+                      {[
+                        "Personal consultation",
+                        "Carefully selected introductions",
+                        "Compatibility-focused matching",
+                        "Private and respectful support",
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-start gap-[1.5mm]"
+                        >
+                          <Check
+                            size={9}
+                            color="#CA617D"
+                            strokeWidth={3}
+                            className="mt-[0.3mm] shrink-0"
+                          />
+
+                          <p className="font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Foreign Gentlemen */}
+                  <div className="pl-[1mm]">
+                    <div className="flex items-center gap-[2mm]">
+                      <div
+                        className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+                        }}
+                      >
+                        <div className="flex h-full w-full items-center justify-center rounded-full bg-[#FBF8F3]">
+                          <FaMale size={16} color="#D3A753" />
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-sans text-[3.2mm] font-bold text-[#5A0816]">
+                          For Foreign Gentlemen
+                        </h4>
+
+                        <p className="mt-[0.4mm] font-sans text-[2.4mm] font-semibold text-[#CA617D]">
+                          Meet genuine Thai ladies
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-[2.5mm] space-y-[1.5mm]">
+                      {[
+                        "Personal matchmaking consultation",
+                        "Genuine Thai introductions",
+                        "Matches based on preferences",
+                        "Professional support in Thailand",
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-start gap-[1.5mm]"
+                        >
+                          <Check
+                            size={9}
+                            color="#D3A753"
+                            strokeWidth={3}
+                            className="mt-[0.3mm] shrink-0"
+                          />
+
+                          <p className="font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -827,7 +899,7 @@ export default function MarketingLeafletPrintPage() {
         SOCIAL
         ==================================================== */}
 
-            <div className="mt-[2mm] flex items-center justify-center">
+            <div className="mt-[5mm] flex items-center justify-center">
               <div className="flex items-center justify-center gap-[5mm]">
                 {/* Facebook */}
 

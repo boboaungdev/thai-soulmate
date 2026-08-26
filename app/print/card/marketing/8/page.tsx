@@ -13,6 +13,7 @@ import {
   Phone,
   ShieldCheck,
   Users,
+  ChevronRight,
 } from "lucide-react"
 import { QRCodeSVG } from "qrcode.react"
 import {
@@ -148,7 +149,7 @@ function Feature({
   text: string
 }) {
   return (
-    <div className="rounded-[2.5mm] border border-[#D3A753]/25 bg-[#FFF9F3] px-[3.2mm] py-[3.2mm]">
+    <div className="rounded-[2.5mm] border border-[#D3A753]/25 bg-[#FFF9F3] px-[3mm] py-[2mm]">
       <div className="flex items-center gap-[2.5mm]">
         <div
           className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
@@ -162,12 +163,12 @@ function Feature({
           </div>
         </div>
 
-        <h3 className="font-sans text-[2.9mm] leading-[1.15] font-bold text-[#5A0816]">
+        <h3 className="font-sans text-[3mm] leading-[1.15] font-bold text-[#5A0816]">
           {title}
         </h3>
       </div>
 
-      <p className="mt-[2mm] font-sans text-[2.15mm] leading-[1.4] text-[#241e2a]/65">
+      <p className="mt-[2mm] font-sans text-[3mm] leading-[1.4] text-[#241e2a]/65">
         {text}
       </p>
     </div>
@@ -190,7 +191,7 @@ function Audience({
   items: string[]
 }) {
   return (
-    <div className="relative min-h-[46mm] overflow-hidden rounded-[4mm] border border-[#D3A753]/25 bg-[#FBF8F3] px-[4mm] py-[4mm]">
+    <div className="relative min-h-[46mm] overflow-hidden rounded-[4mm] border border-[#D3A753]/25 bg-[#FBF8F3] px-[4mm] py-[2mm]">
       <div className="relative flex h-full flex-col items-center text-center">
         {/* Gender Icon */}
 
@@ -208,20 +209,20 @@ function Audience({
 
         {/* Title */}
 
-        <h3 className="mt-[2.5mm] font-sans text-[3.2mm] font-bold text-[#5A0816]">
+        <h3 className="mt-[2.5mm] font-sans text-[3.6mm] font-bold text-[#5A0816]">
           {title}
         </h3>
 
         {/* Description */}
 
-        <p className="mt-[0.8mm] font-sans text-[1.9mm] font-semibold text-[#CA617D]">
+        <p className="mt-[0.8mm] font-sans text-[2.7mm] font-semibold text-[#CA617D]">
           {description}
         </p>
 
         {/* Gradient Line */}
 
         <div
-          className="mt-[2.5mm] h-px w-[18mm]"
+          className="mt-[2.5mm] h-px w-[30mm]"
           style={{
             background:
               "linear-gradient(to right, transparent, #D3A753, #E791A7, #CA617D, transparent)",
@@ -243,7 +244,7 @@ function Audience({
                 className="shrink-0"
               />
 
-              <p className="font-sans text-[1.8mm] leading-[1.3] text-[#24141A]/65">
+              <p className="font-sans text-[2.7mm] leading-[1.3] text-[#24141A]/65">
                 {item}
               </p>
             </div>
@@ -267,11 +268,11 @@ function ContactItem({
 }) {
   return (
     <div className="flex items-center gap-[1.5mm]">
-      <div className="flex h-[5.5mm] w-[5.5mm] shrink-0 items-center justify-center rounded-full bg-white/10">
+      <div className="flex h-[5.5mm] w-[5.5mm] shrink-0 items-center justify-center">
         {icon}
       </div>
 
-      <span className="font-sans text-[2.2mm] leading-none font-medium text-white/90">
+      <span className="font-sans text-[3mm] leading-none font-medium text-white/90">
         {children}
       </span>
     </div>
@@ -480,7 +481,7 @@ export default function MarketingLeafletPrintPage() {
           <div className="absolute top-[117mm] right-[10mm] left-[10mm]">
             <SectionTitle>More Than Matching</SectionTitle>
 
-            <p className="mt-[3mm] font-sans text-[2.9mm] leading-[1.5] text-[#241e2a]/72">
+            <p className="mt-[2.8mm] font-sans text-[3mm] leading-[1.5] text-[#241e2a]/72">
               Finding the right person is about more than a profile or
               photograph. We take the time to understand you and create
               introductions with genuine relationship potential.
@@ -510,7 +511,7 @@ export default function MarketingLeafletPrintPage() {
               <Feature
                 icon={<ShieldCheck size={15} color="#D3A753" />}
                 title="Private & Discreet"
-                text="Your personal information and matchmaking journey are treated with care."
+                text="Personal information and matchmaking journey are treated with care."
               />
 
               <Feature
@@ -525,28 +526,28 @@ export default function MarketingLeafletPrintPage() {
               BOTTOM CTA
               ====================================================== */}
 
-          <div className="absolute inset-x-0 bottom-0 h-[13mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]">
+          <div className="absolute inset-x-0 bottom-0 h-[12mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]">
             <div className="flex h-full items-center justify-between px-[10mm]">
               <div className="flex flex-col justify-center">
                 <p className="font-sans text-[2.9mm] leading-none font-bold tracking-[0.12em] text-white uppercase">
                   Start Your Story
                 </p>
 
-                <p className="mt-[1.2mm] font-sans text-[2mm] leading-none font-medium text-white/80">
+                <p className="mt-[1.2mm] font-sans text-[2.2mm] leading-none font-medium text-white/80">
                   Your journey to a meaningful connection.
                 </p>
               </div>
 
-              <div className="flex items-center rounded-full bg-white px-[4mm] py-[2mm]">
-                <span className="font-sans text-[2.3mm] font-bold tracking-[0.08em] text-[#5A0816] uppercase">
+              <div className="relative flex items-center justify-center rounded-full bg-white px-[5mm] py-[2mm]">
+                <span className="translate-y-[0.3mm] font-sans text-[2.3mm] leading-none font-bold tracking-[0.08em] text-[#5A0816] uppercase">
                   Contact Us
                 </span>
 
-                <ArrowRight
+                <ChevronRight
                   size={14}
                   color="#CA617D"
                   strokeWidth={2.5}
-                  className="ml-[1.5mm]"
+                  className="absolute right-[1.5mm] translate-x-[1mm]"
                 />
               </div>
             </div>
@@ -554,17 +555,19 @@ export default function MarketingLeafletPrintPage() {
         </section>
 
         {/* ========================================================
-            PAGE 2
-            ======================================================== */}
+    PAGE 2
+    ======================================================== */}
 
-        <section className="marketing-leaflet-page bg-[#FBF8F3] ">
-          {/* Top burgundy section */}
+        <section className="marketing-leaflet-page bg-[#FBF8F3]">
+          {/* ======================================================
+      TOP BURGUNDY SECTION
+      ====================================================== */}
 
           <div className="absolute top-0 right-0 left-0 h-[77mm] bg-[#5A0816]" />
 
           {/* ======================================================
-              HEADER
-              ====================================================== */}
+      HEADER
+      ====================================================== */}
 
           <div className="absolute top-[12mm] left-[8mm] z-20 flex w-[64mm] items-center">
             <Image
@@ -581,19 +584,19 @@ export default function MarketingLeafletPrintPage() {
             <div className="w-[48mm] text-center">
               <BrandName className="mx-auto w-[48mm]" />
 
-              <p className="mt-[0.8mm] text-center font-sans text-[1.6mm] font-bold tracking-[0.28em] text-[#E791A7] uppercase">
+              <p className="mt-[0.8mm] text-center font-sans text-[1.8mm] font-bold tracking-[0.28em] text-[#E791A7] uppercase">
                 Exclusive
               </p>
 
-              <p className="mt-[0.5mm] text-center font-sans text-[2mm] font-semibold tracking-[0.22em] text-[#D3A753] uppercase">
+              <p className="mt-[0.5mm] text-center font-sans text-[2.2mm] font-semibold tracking-[0.22em] text-[#D3A753] uppercase">
                 1-2-1 Matchmaking Service
               </p>
             </div>
           </div>
 
           {/* ======================================================
-              HERO TITLE
-              ====================================================== */}
+      HERO TITLE
+      ====================================================== */}
 
           <div className="absolute top-[29mm] left-[11mm] z-20 w-[66mm]">
             <h2 className="mt-[3mm] font-serif text-[8.5mm] leading-[0.95] text-white">
@@ -602,15 +605,15 @@ export default function MarketingLeafletPrintPage() {
               <span className="text-[#D3A753] italic">a match.</span>
             </h2>
 
-            <p className="mt-[3mm] w-[63mm] font-sans text-[2.2mm] leading-[1.45] text-white/60">
+            <p className="mt-[3mm] w-[63mm] font-sans text-[3mm] leading-[1.45] font-medium text-white/75">
               We get to know you first, understand what you are looking for, and
               introduce you to people who may genuinely complement your life.
             </p>
           </div>
 
           {/* ======================================================
-              CIRCULAR HERO IMAGE
-              ====================================================== */}
+      CIRCULAR HERO IMAGE
+      ====================================================== */}
 
           <div
             className="absolute top-[30mm] right-[10mm] z-30 h-[43mm] w-[43mm] rounded-full p-[0.6mm]"
@@ -633,8 +636,8 @@ export default function MarketingLeafletPrintPage() {
           </div>
 
           {/* ======================================================
-              WAVE
-              ====================================================== */}
+      WAVE
+      ====================================================== */}
 
           <div
             className="absolute top-[67mm] right-[-10mm] left-[-10mm] h-[24mm] bg-[#FBF8F3]"
@@ -644,8 +647,8 @@ export default function MarketingLeafletPrintPage() {
           />
 
           {/* ======================================================
-              WHO WE HELP
-              ====================================================== */}
+      WHO WE HELP
+      ====================================================== */}
 
           <div className="absolute top-[75mm] right-[10mm] left-[10mm] z-20">
             <div className="flex items-center justify-center gap-[2.5mm]">
@@ -657,7 +660,7 @@ export default function MarketingLeafletPrintPage() {
                 }}
               />
 
-              <h2 className="shrink-0 text-center font-sans text-[4mm] font-bold tracking-[0.16em] text-[#5A0816] uppercase">
+              <h2 className="shrink-0 text-center font-sans text-[4.5mm] font-bold tracking-[0.16em] text-[#5A0816] uppercase">
                 Who We Help
               </h2>
 
@@ -670,11 +673,13 @@ export default function MarketingLeafletPrintPage() {
               />
             </div>
 
-            {/* Audience Cards */}
+            {/* ====================================================
+        AUDIENCE CARDS
+        ==================================================== */}
 
             <div className="mt-[4mm] grid grid-cols-2 gap-[4mm]">
               <Audience
-                icon={<FaFemale size={22} color="#CA617D" />}
+                icon={<FaFemale size={24} color="#CA617D" />}
                 title="For Thai Ladies"
                 description="Meet genuine foreign gentlemen"
                 items={[
@@ -686,7 +691,7 @@ export default function MarketingLeafletPrintPage() {
               />
 
               <Audience
-                icon={<FaMale size={22} color="#D3A753" />}
+                icon={<FaMale size={24} color="#D3A753" />}
                 title="For Foreign Gentlemen"
                 description="Meet genuine Thai ladies"
                 items={[
@@ -700,124 +705,136 @@ export default function MarketingLeafletPrintPage() {
           </div>
 
           {/* ======================================================
-              CONTACT SECTION
-              ====================================================== */}
+      CONTACT SECTION
+      ====================================================== */}
 
           <div className="absolute right-[10mm] bottom-[8mm] left-[10mm]">
-            <div className="relative overflow-hidden rounded-[4mm] bg-gradient-to-br from-[#6B1023] to-[#3D0710] p-[4mm] ">
+            <div className="relative overflow-hidden rounded-[4mm] bg-gradient-to-br from-[#6B1023] to-[#3D0710] p-[4mm]">
               <div className="absolute top-[-12mm] right-[-12mm] h-[35mm] w-[35mm] rounded-full border border-[#D3A753]/20" />
 
               <div className="relative flex">
-                {/* CONTACT */}
+                {/* ==================================================
+            CONTACT
+            ================================================== */}
 
                 <div className="min-w-0 flex-1">
-                  <p className="font-sans text-[2.1mm] font-bold tracking-[0.15em] text-[#D3A753] uppercase">
+                  <p className="font-sans text-[2.5mm] font-bold tracking-[0.15em] text-[#D3A753] uppercase">
                     Start Your Journey
                   </p>
 
-                  <p className="mt-[1mm] w-[62mm] font-serif text-[3.4mm] text-white italic">
+                  <p className="mt-[1mm] w-[62mm] font-serif text-[3.5mm] leading-[1.15] text-white italic">
                     Your story deserves the right introduction.
                   </p>
 
-                  <div className="mt-[3mm] grid gap-[1.4mm]">
+                  <div className="mt-[3mm] grid gap-[1.5mm]">
+                    {/* WhatsApp */}
+
                     <ContactItem
-                      icon={<FaWhatsapp size={12} color="#25D366" />}
+                      icon={<FaWhatsapp size={20} color="#25D366" />}
                     >
                       {CONTACT.primaryPhone}
                     </ContactItem>
 
-                    <ContactItem icon={<Phone size={12} color="#1877F2" />}>
+                    {/* Primary Phone */}
+
+                    <ContactItem icon={<Phone size={20} color="#1877F2" />}>
                       {CONTACT.primaryPhone}
                     </ContactItem>
 
-                    <ContactItem icon={<Phone size={12} color="#1877F2" />}>
+                    {/* Secondary Phone */}
+
+                    <ContactItem icon={<Phone size={20} color="#1877F2" />}>
                       {CONTACT.secondaryPhone}
                     </ContactItem>
 
-                    <ContactItem icon={<Mail size={12} color="#E791A7" />}>
+                    {/* Email */}
+
+                    <ContactItem icon={<Mail size={20} color="#E791A7" />}>
                       {CONTACT.email}
                     </ContactItem>
 
-                    <ContactItem icon={<Globe size={12} color="#D3A753" />}>
+                    {/* Website */}
+
+                    <ContactItem icon={<Globe size={20} color="#D3A753" />}>
                       {CONTACT.website}
                     </ContactItem>
                   </div>
                 </div>
 
                 {/* ==================================================
-                    QR CODES
-                    ================================================== */}
+            QR CODES
+            ================================================== */}
 
                 <div className="mt-[15mm] mr-[4mm] flex w-[47mm] shrink-0 items-center justify-center gap-[3mm]">
-                  {/* WhatsApp QR */}
+                  {/* ==================================================
+              WHATSAPP QR
+              ================================================== */}
 
                   <div className="flex flex-col items-center">
                     <div className="relative rounded-[2mm] bg-white p-[1.5mm]">
                       <QRCodeSVG
                         value={CONTACT.whatsapp}
                         level="H"
-                        marginSize={2}
+                        // marginSize={1}
                         className="block h-[22mm] w-[22mm]"
                       />
 
-                      <div className="absolute top-1/2 left-1/2 flex h-[6mm] w-[6mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-white">
-                        <FaWhatsapp size={16} color="#25D366" />
+                      <div className="absolute top-1/2 left-1/2 flex h-[8mm] w-[8mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-white">
+                        <FaWhatsapp size={20} color="#25D366" />
                       </div>
                     </div>
 
-                    <div className="mt-[1.2mm] flex items-center gap-[1mm]">
-                      <span className="font-sans text-[1.7mm] font-bold text-white/75">
-                        WhatsApp
-                      </span>
-                    </div>
+                    <span className="mt-[1.2mm] font-sans text-[2.5mm] font-bold text-white/85">
+                      WhatsApp
+                    </span>
                   </div>
 
-                  {/* Website QR */}
+                  {/* ==================================================
+              WEBSITE QR
+              ================================================== */}
 
                   <div className="flex flex-col items-center">
-                    <div className="relative rounded-[2mm] bg-white p-[1.5mm] ">
+                    <div className="relative rounded-[2mm] bg-white p-[1.5mm]">
                       <QRCodeSVG
                         value={`https://${CONTACT.website}`}
                         level="H"
-                        marginSize={2}
+                        // marginSize={1}
                         className="block h-[22mm] w-[22mm]"
                       />
 
-                      <div className="absolute top-1/2 left-1/2 flex h-[6mm] w-[6mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-white">
+                      <div className="absolute top-1/2 left-1/2 flex h-[8mm] w-[8mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-white">
                         <Image
                           src="/logo.png"
                           alt="Thai Soulmate"
-                          width={40}
-                          height={40}
+                          width={100}
+                          height={100}
                           quality={100}
                           unoptimized
-                          className="h-[4.5mm] w-[4.5mm] object-contain"
+                          className="object-contain"
                         />
                       </div>
                     </div>
 
-                    <div className="mt-[1.2mm] flex items-center gap-[1mm]">
-                      <span className="font-sans text-[1.7mm] font-bold text-white/75">
-                        Website
-                      </span>
-                    </div>
+                    <span className="mt-[1.2mm] font-sans text-[2.5mm] font-bold text-white/85">
+                      Website
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* ====================================================
-    SOCIAL
-    ==================================================== */}
+        SOCIAL
+        ==================================================== */}
 
-            <div className="mt-[2.5mm] flex items-center justify-center">
+            <div className="mt-[2mm] flex items-center justify-center">
               <div className="flex items-center justify-center gap-[5mm]">
                 {/* Facebook */}
 
                 <div className="flex items-center gap-[1.5mm]">
-                  <FaFacebook size={18} color="#1877F2" />
+                  <FaFacebook size={20} color="#1877F2" />
 
-                  <span className="font-sans text-[2.2mm] font-semibold text-[#24141A]/65">
+                  <span className="font-sans text-[3mm] font-semibold text-[#24141A]/80">
                     @thaisoulmates
                   </span>
                 </div>
@@ -825,9 +842,9 @@ export default function MarketingLeafletPrintPage() {
                 {/* Instagram */}
 
                 <div className="flex items-center gap-[1.5mm]">
-                  <FaInstagram size={18} color="#E4405F" />
+                  <FaInstagram size={22} color="#E4405F" />
 
-                  <span className="font-sans text-[2.2mm] font-semibold text-[#24141A]/65">
+                  <span className="font-sans text-[3mm] font-semibold text-[#24141A]/80">
                     @thaisoulmate
                   </span>
                 </div>
@@ -835,9 +852,9 @@ export default function MarketingLeafletPrintPage() {
                 {/* TikTok */}
 
                 <div className="flex items-center gap-[1.5mm]">
-                  <FaTiktok size={18} color="#000000" />
+                  <FaTiktok size={20} color="#000000" />
 
-                  <span className="font-sans text-[2.2mm] font-semibold text-[#24141A]/65">
+                  <span className="font-sans text-[3mm] font-semibold text-[#24141A]/80">
                     @thaisoulmate
                   </span>
                 </div>
@@ -845,9 +862,9 @@ export default function MarketingLeafletPrintPage() {
                 {/* LINE */}
 
                 <div className="flex items-center gap-[1.5mm]">
-                  <FaLine size={18} color="#00C300" />
+                  <FaLine size={20} color="#00C300" />
 
-                  <span className="font-sans text-[2.2mm] font-semibold text-[#24141A]/65">
+                  <span className="font-sans text-[3mm] font-semibold text-[#24141A]/80">
                     @thaisoulmate
                   </span>
                 </div>
@@ -856,8 +873,8 @@ export default function MarketingLeafletPrintPage() {
           </div>
 
           {/* ======================================================
-              BOTTOM GOLD ACCENT
-              ====================================================== */}
+      BOTTOM GOLD ACCENT
+      ====================================================== */}
 
           <div className="absolute right-0 bottom-0 left-0 h-[1.5mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
         </section>

@@ -12,8 +12,6 @@ import {
 
 import { APP_INFO } from "@/constants"
 import { env } from "@/lib/env"
-import { formatDate } from "@/lib/date"
-import { formatPreferredContactTime } from "@/lib/preferred-contact"
 import { User } from "@/types"
 
 const currentYear = new Date().getFullYear()

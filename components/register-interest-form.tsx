@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect, useState, useTransition } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
-import { format, startOfToday } from "date-fns"
+import { addDays, format, startOfToday } from "date-fns"
 import {
   CalendarIcon,
   Check,
@@ -75,6 +75,12 @@ type Country = {
   region: string
 }
 
+/*
+ * Business hours:
+ * 10:00 - 20:00
+ *
+ * Each option represents a 1-hour contact window.
+ */
 const PREFERRED_CONTACT_TIMES = [
   "10:00 - 11:00",
   "11:00 - 12:00",
@@ -142,16 +148,25 @@ const formSchema = z.object({
 
   otherSource: z.string().optional(),
 
+  /*
+   * Normal Date object.
+   * No custom date format is needed here.
+   */
   preferredContactDate: z.date({
     message: "Please select a preferred contact date.",
   }),
 
+  /*
+   * Normal string.
+   * Example: "10:00 - 11:00"
+   */
   preferredContactTime: z.enum(PREFERRED_CONTACT_TIMES, {
     message: "Please select a preferred contact time.",
   }),
 })
 
 export function RegisterInterestForm() {
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -169,7 +184,15 @@ export function RegisterInterestForm() {
       phone: "",
       source: "",
       otherSource: "",
+
+      /*
+       * No default date.
+       */
       preferredContactDate: undefined,
+
+      /*
+       * No default time.
+       */
       preferredContactTime: undefined,
     },
   })
@@ -270,6 +293,12 @@ export function RegisterInterestForm() {
           (country) => country.name === values.currentLocation
         )
 
+        /*
+         * Keep preferredContactDate as a normal Date.
+         *
+         * JSON.stringify automatically converts the Date
+         * into an ISO string when sending it to the API.
+         */
         const payload = {
           ...values,
 
@@ -280,11 +309,6 @@ export function RegisterInterestForm() {
           nationalityRegion: selectedNationalityCountry?.region ?? "",
 
           currentLocationRegion: selectedCurrentLocationCountry?.region ?? "",
-
-          preferredContactDate: format(
-            values.preferredContactDate,
-            "yyyy-MM-dd"
-          ),
         }
 
         const response = await fetch("/api/register-interest", {
@@ -365,7 +389,10 @@ export function RegisterInterestForm() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.2,
+              }}
             >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-[100px_1fr_1fr]">
                 {/* Prefix */}
@@ -458,7 +485,10 @@ export function RegisterInterestForm() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.3,
+              }}
             >
               <div className="grid grid-cols-[100px_1fr] gap-4">
                 {/* Gender */}
@@ -531,7 +561,10 @@ export function RegisterInterestForm() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: 0.35 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.35,
+              }}
             >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Nationality */}
@@ -677,7 +710,7 @@ export function RegisterInterestForm() {
                               {loadingCountries ? (
                                 <CommandItem disabled>Loading...</CommandItem>
                               ) : (
-                                countries
+                                [...countries]
                                   .sort((a, b) => a.name.localeCompare(b.name))
                                   .map((country) => (
                                     <CommandItem
@@ -726,7 +759,10 @@ export function RegisterInterestForm() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.4,
+              }}
             >
               <FormField
                 control={form.control}
@@ -760,7 +796,10 @@ export function RegisterInterestForm() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: 0.45 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.45,
+              }}
             >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Phone */}
@@ -944,54 +983,64 @@ export function RegisterInterestForm() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5,
+              }}
             >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Date */}
                 <FormField
                   control={form.control}
                   name="preferredContactDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Preferred contact date</FormLabel>
+                  render={({ field }) => {
+                    const today = startOfToday()
 
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 text-left font-normal shadow-none dark:bg-input/30",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 size-4" />
+                    const maxDate = new Date(today)
+                    maxDate.setDate(maxDate.getDate() + 7)
 
-                              {field.value
-                                ? format(field.value, "d MMM yyyy")
-                                : "Pick a date"}
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
+                    return (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Preferred contact date</FormLabel>
 
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={{
-                              before: startOfToday(),
-                            }}
-                          />
-                        </PopoverContent>
-                      </Popover>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 text-left font-normal shadow-none dark:bg-input/30",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 size-4" />
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                                {field.value
+                                  ? format(field.value, "d MMM yyyy")
+                                  : "Pick a date"}
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date < today || date > maxDate
+                              }
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )
+                  }}
                 />
 
-                {/* Time */}
+                {/* Preferred Contact Time */}
                 <FormField
                   control={form.control}
                   name="preferredContactTime"
@@ -1027,8 +1076,8 @@ export function RegisterInterestForm() {
               </div>
 
               <p className="mt-2 text-xs text-muted-foreground">
-                Business hours are 10:00 – 20:00. Choose a date and a 1-hour
-                time range when we can call you.
+                Business hours are 10:00 – 20:00. Choose a date within the next
+                7 days and a 1-hour time range when we can call you.
               </p>
             </MotionDiv>
 
@@ -1036,8 +1085,13 @@ export function RegisterInterestForm() {
             {source === "Other" && (
               <MotionDiv
                 initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  duration: 0.3,
+                }}
               >
                 <FormField
                   control={form.control}
@@ -1063,10 +1117,22 @@ export function RegisterInterestForm() {
 
           {/* SUBMIT */}
           <MotionDiv
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.5,
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 0.6,
+            }}
           >
             <Button
               type="submit"

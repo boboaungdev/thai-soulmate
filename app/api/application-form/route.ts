@@ -62,7 +62,6 @@ export async function POST(req: Request) {
             currentLocation: body.details.currentLocation,
             nationalityRegion: body.details.nationalityRegion,
             currentLocationRegion: body.details.currentLocationRegion,
-            
           },
 
           career: {
@@ -144,7 +143,8 @@ export async function POST(req: Request) {
       return application
     })
 
-    const personalDetails = application.personalDetails as unknown as PersonalDetails
+    const personalDetails =
+      application.personalDetails as unknown as PersonalDetails
 
     // Send email to admin
     const { data, error } = await resend.emails.send({
@@ -152,8 +152,9 @@ export async function POST(req: Request) {
       to: [CONTACT.email],
       // to: ['boolean405@gmail.com'],
       replyTo: personalDetails.email,
-      subject: `[New Application Form] New application received from ${personalDetails.name}`,
+      subject: `[New Application Form] New application received from ${personalDetails.prefix} ${personalDetails.name}`,
       react: ApplicationFormAdminNotificationEmail({
+        prefix: personalDetails.prefix,
         nickname: personalDetails.nickname ?? "", // Provide default for optional
         name: personalDetails.name,
         gender: personalDetails.gender,

@@ -44,8 +44,7 @@ import { toast } from "sonner"
 
 import { useAuthStore } from "@/stores/auth-store"
 import { Note, RegisterInterest, User } from "@/lib/generated/prisma/client"
-import { calculateAge, formatDate, formatDateTime, formatDOB } from "@/lib/date"
-import { formatPreferredContactTime } from "@/lib/preferred-contact"
+import { formatDate, formatDateTime, formatDOB } from "@/lib/date"
 
 type NoteWithUser = Note & {
   user: Pick<User, "name" | "avatar" | "email" | "role">
@@ -68,7 +67,6 @@ export function RegisterInterestDetails({
   const [editingNote, setEditingNote] = useState<NoteWithUser | null>(null)
   const [editedMessage, setEditedMessage] = useState("")
 
-  const router = useRouter()
   const { user } = useAuthStore()
 
   useEffect(() => {
@@ -239,7 +237,9 @@ export function RegisterInterestDetails({
               />
               <DetailItem
                 label="Preferred Contact Time"
-                value={formatPreferredContactTime(item.preferredContactTime)}
+                value={
+                  item.preferredContactTime ? item.preferredContactTime : "-"
+                }
               />
               <DetailItem label="Source" value={item.source} />
               {item.otherSource && (

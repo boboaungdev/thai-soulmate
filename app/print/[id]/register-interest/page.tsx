@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation"
 import { formatDateTime, formatDOB } from "@/lib/date"
-import { formatPreferredContactTime } from "@/lib/preferred-contact"
 import { prisma } from "@/lib/prisma"
 import Image from "next/image"
 import { APP_INFO } from "@/constants"

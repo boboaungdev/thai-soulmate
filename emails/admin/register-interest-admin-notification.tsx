@@ -39,11 +39,12 @@ export const RegisterInterestAdminNotificationEmail = ({
     <Head />
 
     <Preview>
-      [Register Interest] New user registration from {details.name}
+      [Register Interest] New user registration from {details.prefix} {details.name}
     </Preview>
 
     <Body style={main}>
       <Container style={container}>
+        {/* HEADER */}
         <Section style={signature}>
           <Container style={signatureContainer}>
             <Img
@@ -54,22 +55,25 @@ export const RegisterInterestAdminNotificationEmail = ({
             />
 
             <Text style={appName}>{APP_INFO.name}</Text>
+
             <Text style={tagline}>{APP_INFO.tagline}</Text>
           </Container>
         </Section>
 
+        {/* INTRO */}
         <Text style={paragraph}>
           A new user has registered their interest on the website.
         </Text>
 
+        {/* DETAILS */}
         <Section>
           <Text style={paragraph}>
             <strong>Name:</strong> {details.prefix} {details.name}
           </Text>
 
           <Text style={paragraph}>
-            <strong>Date of Birth:</strong>{" "}
-            {new Date(details.dob).toLocaleDateString()} (Age: {details.age})
+            <strong>Date of Birth:</strong> {details.dob}{" "}
+            <span style={ageStyle}>(Age: {details.age})</span>
           </Text>
 
           <Text style={paragraph}>
@@ -92,6 +96,11 @@ export const RegisterInterestAdminNotificationEmail = ({
             <strong>Phone:</strong> {details.phoneCountry} {details.phone}
           </Text>
 
+          <Hr style={smallHr} />
+
+          {/* PREFERRED CONTACT */}
+          <Text style={sectionTitle}>Preferred Contact</Text>
+
           <Text style={paragraph}>
             <strong>Preferred contact date:</strong>{" "}
             {details.preferredContactDate || "-"}
@@ -101,6 +110,11 @@ export const RegisterInterestAdminNotificationEmail = ({
             <strong>Preferred contact time:</strong>{" "}
             {details.preferredContactTime || "-"}
           </Text>
+
+          <Hr style={smallHr} />
+
+          {/* SOURCE */}
+          <Text style={sectionTitle}>Registration Source</Text>
 
           <Text style={paragraph}>
             <strong>How did you hear about us:</strong> {details.source}
@@ -115,11 +129,12 @@ export const RegisterInterestAdminNotificationEmail = ({
 
         <Hr style={hr} />
 
+        {/* AUTOMATED MESSAGE */}
         <Text style={autoMessage}>
-          This is an automated notification from your website. You can reply to
-          this email directly to contact {details.name}.
+          This is an automated notification from your website.
         </Text>
 
+        {/* COPYRIGHT */}
         <Section style={copyrightSection}>
           <Text style={copyright}>
             Copyright &copy; {currentYear} {APP_INFO.name}. All rights reserved.
@@ -141,16 +156,35 @@ const main = {
 const container = {
   margin: "0 auto",
   padding: "20px 0 48px",
+  maxWidth: "600px",
 }
 
 const paragraph = {
   fontSize: "16px",
   lineHeight: "26px",
+  margin: "8px 0",
+}
+
+const sectionTitle = {
+  fontSize: "17px",
+  fontWeight: "700",
+  lineHeight: "26px",
+  margin: "18px 0 8px",
+  color: "#222222",
+}
+
+const ageStyle = {
+  color: "#666666",
 }
 
 const hr = {
   borderColor: "#cccccc",
-  margin: "20px 0",
+  margin: "24px 0",
+}
+
+const smallHr = {
+  borderColor: "#eeeeee",
+  margin: "18px 0",
 }
 
 const signature = {
@@ -188,6 +222,7 @@ const autoMessage = {
   color: "#8898aa",
   fontSize: "12px",
   fontStyle: "italic",
+  lineHeight: "18px",
 }
 
 const copyrightSection = {

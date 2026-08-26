@@ -15,6 +15,7 @@ import { env } from "@/lib/env"
 
 type AdminNotificationDetails = {
   nickname: string
+  prefix: string
   name: string
   gender: string
   email: string
@@ -29,7 +30,8 @@ export const ApplicationFormAdminNotificationEmail = ({
   <Html>
     <Head />
     <Preview>
-      [New Application] New application received from {details.name}
+      [New Application] New application received from {details.prefix}{" "}
+      {details.name}
     </Preview>
     <Body style={main}>
       <Container style={container}>
@@ -49,11 +51,13 @@ export const ApplicationFormAdminNotificationEmail = ({
           A new application has been submitted on the website.
         </Text>
         <Section>
+          {details.nickname && (
+            <Text style={paragraph}>
+              <strong>Nickname:</strong> {details.nickname}
+            </Text>
+          )}
           <Text style={paragraph}>
-            <strong>Nickname:</strong> {details.nickname}
-          </Text>
-          <Text style={paragraph}>
-            <strong>Name:</strong> {details.name}
+            <strong>Name:</strong> {details.prefix} {details.name}
           </Text>
           <Text style={paragraph}>
             <strong>Gender:</strong> {details.gender}
@@ -67,9 +71,7 @@ export const ApplicationFormAdminNotificationEmail = ({
         </Section>
         <Hr style={hr} />
         <Text style={autoMessage}>
-          This is an automated notification from your website. You can reply to
-          this email directly to contact {details.name} or view the full
-          application in the admin dashboard.
+          This is an automated notification from your website.
         </Text>
         <Section style={copyrightSection}>
           <Text style={copyright}>

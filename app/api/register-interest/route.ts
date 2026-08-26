@@ -57,10 +57,9 @@ const formSchema = z.object({
 
   otherSource: z.string().optional(),
 
-  preferredContactDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid preferred contact date."),
-
+  preferredContactDate: z.coerce.date({
+    message: "Invalid preferred contact date.",
+  }),
   preferredContactTime: z.enum(PREFERRED_CONTACT_TIMES, {
     message: "Please select a preferred contact time.",
   }),
@@ -72,7 +71,10 @@ export async function POST(req: Request) {
 
     const validatedData = formSchema.parse(body)
 
-    // Check if email already exists
+    // -----------------------------------------
+    // CHECK EXISTING APPLICATION
+    // -----------------------------------------
+
     const existingAppForm = await prisma.applicationForm.findFirst({
       where: {
         personalDetails: {
@@ -92,17 +94,21 @@ export async function POST(req: Request) {
       )
     }
 
-    // Convert DOB
+    // -----------------------------------------
+    // DOB
+    // -----------------------------------------
+
     const birthDate = new Date(validatedData.dob)
 
-    // Convert preferred contact date
-    const [year, month, day] = validatedData.preferredContactDate
-      .split("-")
-      .map(Number)
+    // -----------------------------------------
+    // PREFERRED CONTACT DATE
+    // -----------------------------------------
 
-    const preferredContactDate = new Date(Date.UTC(year, month - 1, day, 12))
+    const preferredContactDate = validatedData.preferredContactDate
+    // -----------------------------------------
+    // DATABASE DATA
+    // -----------------------------------------
 
-    // Data to save in RegisterInterest
     const interestData = {
       prefix: validatedData.prefix,
 
@@ -134,12 +140,14 @@ export async function POST(req: Request) {
     }
 
     // -----------------------------------------
-    // SEND CONFIRMATION EMAIL TO USER
+    // USER CONFIRMATION EMAIL
     // -----------------------------------------
 
     const { data: userData, error: userError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
+
       to: validatedData.email,
+
       replyTo: EMAIL.contact,
 
       subject: `[Register Interest] Thank you for your interest in ${APP_INFO.name}!`,
@@ -198,20 +206,20 @@ export async function POST(req: Request) {
     }
 
     // -----------------------------------------
-    // SEND ADMIN NOTIFICATION
+    // ADMIN NOTIFICATION
     // -----------------------------------------
 
     const { data: adminData, error: adminError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
 
-      // Change this back to CONTACT.email when ready
-      // to: [CONTACT.email],
+      // Change this to CONTACT.email when ready
+      to: [CONTACT.email],
 
-      to: ["boolean405@gmail.com"],
+      // to: ["boolean405@gmail.com"],
 
       replyTo: validatedData.email,
 
-      subject: `[Register Interest] New Interest Registration: ${validatedData.name}`,
+      subject: `[Register Interest] New Interest Registration from ${validatedData.prefix} ${validatedData.name}`,
 
       react: RegisterInterestAdminNotificationEmail({
         ...validatedData,

@@ -568,20 +568,16 @@ export default function MarketingLeafletPrintPage() {
           {/* ======================================================
       TOP BURGUNDY SECTION
       ====================================================== */}
-
           <div className="absolute top-0 right-0 left-0 h-[91mm] bg-gradient-to-br from-[#43050F] via-[#650D20] to-[#8A1E3A]" />
-
           <div
             className="absolute top-[78mm] right-[-10mm] left-[-10mm] h-[25mm] bg-[#FBF8F3]"
             style={{
               borderRadius: "50% 50% 0 0 / 100% 100% 0 0",
             }}
           />
-
           {/* ======================================================
       HERO TITLE
       ====================================================== */}
-
           <div className="absolute top-[15mm] left-[11mm] z-20 w-[66mm]">
             {" "}
             <h2 className="mt-[3mm] font-serif text-[8.5mm] leading-[0.95] text-white">
@@ -594,11 +590,9 @@ export default function MarketingLeafletPrintPage() {
               introduce you to people who may genuinely complement your life.
             </p>
           </div>
-
           {/* ======================================================
       CIRCULAR HERO IMAGE
       ====================================================== */}
-
           <div
             className="absolute top-[30mm] right-[10mm] z-30 h-[43mm] w-[43mm] rounded-full p-[0.6mm]"
             style={{
@@ -618,22 +612,18 @@ export default function MarketingLeafletPrintPage() {
               />
             </div>
           </div>
-
           {/* ======================================================
       WAVE
       ====================================================== */}
-
           <div
             className="absolute top-[67mm] right-[-10mm] left-[-10mm] h-[24mm] bg-[#FBF8F3]"
             style={{
               borderRadius: "50% 50% 0 0 / 100% 100% 0 0",
             }}
           />
-
           {/* ======================================================
       WHO WE HELP
       ====================================================== */}
-
           <div className="absolute top-[80mm] right-[10mm] left-[10mm] z-20">
             <div className="flex items-center justify-center gap-[2.5mm]">
               <div
@@ -662,13 +652,15 @@ export default function MarketingLeafletPrintPage() {
     AUDIENCE CARD
     ==================================================== */}
             <div className="mt-[2mm]">
-<div
-  className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/30 px-[5mm] py-[4mm]"
-  style={{
-    background:
-      "linear-gradient(135deg, #FFF9F3 0%, #FBF3ED 50%, #F8E9E8 100%)",
-  }}
->                {/* Two sides inside ONE card */}
+              <div
+                className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/30 px-[5mm] py-[4mm]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #FFF9F3 0%, #FBF3ED 50%, #F8E9E8 100%)",
+                }}
+              >
+                {" "}
+                {/* Two sides inside ONE card */}
                 <div className="grid grid-cols-2 gap-[5mm]">
                   {/* Thai Ladies */}
                   <div className="border-r border-[#D3A753]/20 pr-[4mm]">
@@ -775,12 +767,10 @@ export default function MarketingLeafletPrintPage() {
               </div>
             </div>
           </div>
-
           {/* ======================================================
       CONTACT SECTION
       ====================================================== */}
-
-          <div className="absolute right-[10mm] bottom-[8mm] left-[10mm]">
+          <div className="absolute right-[10mm] bottom-[20mm] left-[10mm]">
             <div className="relative overflow-hidden rounded-[4mm] bg-gradient-to-br from-[#6B1023] to-[#3D0710] p-[4mm]">
               <div className="absolute top-[-12mm] right-[-12mm] h-[35mm] w-[35mm] rounded-full border border-[#D3A753]/20" />
 
@@ -895,60 +885,48 @@ export default function MarketingLeafletPrintPage() {
               </div>
             </div>
 
-            {/* ====================================================
-        SOCIAL
-        ==================================================== */}
-
-            <div className="mt-[5mm] flex items-center justify-center">
+    
+          </div>
+          {/* ======================================================
+    BOTTOM SOCIAL FOOTER
+====================================================== */}
+          <div className="absolute inset-x-0 bottom-0 h-[12mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]">
+            <div className="flex h-full items-center justify-center px-[8mm]">
               <div className="flex items-center justify-center gap-[5mm]">
-                {/* Facebook */}
+               {/* Facebook */}
+<div className="flex items-center gap-[1.5mm]">
+  <FaFacebook size={17} color="#1877F2" />
+  <span className="font-sans text-[2.7mm] font-semibold text-white">
+    @thaisoulmates
+  </span>
+</div>
 
-                <div className="flex items-center gap-[1.5mm]">
-                  <FaFacebook size={20} color="#1877F2" />
+{/* Instagram */}
+<div className="flex items-center gap-[1.5mm]">
+  <FaInstagram size={18} color="#E4405F" />
+  <span className="font-sans text-[2.7mm] font-semibold text-white">
+    @thaisoulmate
+  </span>
+</div>
 
-                  <span className="font-sans text-[3mm] font-semibold text-[#24141A]/80">
-                    @thaisoulmates
-                  </span>
-                </div>
+{/* TikTok */}
+<div className="flex items-center gap-[1.5mm]">
+  <FaTiktok size={17} color="#000000" />
+  <span className="font-sans text-[2.7mm] font-semibold text-white">
+    @thaisoulmate
+  </span>
+</div>
 
-                {/* Instagram */}
-
-                <div className="flex items-center gap-[1.5mm]">
-                  <FaInstagram size={22} color="#E4405F" />
-
-                  <span className="font-sans text-[3mm] font-semibold text-[#24141A]/80">
-                    @thaisoulmate
-                  </span>
-                </div>
-
-                {/* TikTok */}
-
-                <div className="flex items-center gap-[1.5mm]">
-                  <FaTiktok size={20} color="#000000" />
-
-                  <span className="font-sans text-[3mm] font-semibold text-[#24141A]/80">
-                    @thaisoulmate
-                  </span>
-                </div>
-
-                {/* LINE */}
-
-                <div className="flex items-center gap-[1.5mm]">
-                  <FaLine size={20} color="#00C300" />
-
-                  <span className="font-sans text-[3mm] font-semibold text-[#24141A]/80">
-                    @thaisoulmate
-                  </span>
-                </div>
+{/* LINE */}
+<div className="flex items-center gap-[1.5mm]">
+  <FaLine size={17} color="#00C300" />
+  <span className="font-sans text-[2.7mm] font-semibold text-white">
+    @thaisoulmate
+  </span>
+</div>
               </div>
             </div>
-          </div>
-
-          {/* ======================================================
-      BOTTOM GOLD ACCENT
-      ====================================================== */}
-
-          <div className="absolute right-0 bottom-0 left-0 h-[1.5mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+          </div>{" "}
         </section>
       </main>
     </>

@@ -3,7 +3,6 @@
 import Image from "next/image"
 import { useEffect } from "react"
 import {
-  ArrowRight,
   Check,
   Globe,
   Heart,
@@ -171,86 +170,6 @@ function Feature({
       <p className="mt-[2mm] font-sans text-[3mm] leading-[1.4] text-[#241e2a]/65">
         {text}
       </p>
-    </div>
-  )
-}
-
-/* ============================================================
-   PAGE 2 AUDIENCE
-   ============================================================ */
-
-function Audience({
-  icon,
-  title,
-  description,
-  items,
-}: {
-  icon: React.ReactNode
-  title: string
-  description: string
-  items: string[]
-}) {
-  return (
-    <div className="relative min-h-[46mm] overflow-hidden rounded-[4mm] border border-[#D3A753]/25 bg-[#FBF8F3] px-[4mm] py-[2mm]">
-      <div className="relative flex h-full flex-col items-center text-center">
-        {/* Gender Icon */}
-
-        <div
-          className="flex h-[11mm] w-[11mm] items-center justify-center rounded-full p-[0.45mm]"
-          style={{
-            background:
-              "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
-          }}
-        >
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-[#FBF8F3]">
-            {icon}
-          </div>
-        </div>
-
-        {/* Title */}
-
-        <h3 className="mt-[2.5mm] font-sans text-[3.6mm] font-bold text-[#5A0816]">
-          {title}
-        </h3>
-
-        {/* Description */}
-
-        <p className="mt-[0.8mm] font-sans text-[2.7mm] font-semibold text-[#CA617D]">
-          {description}
-        </p>
-
-        {/* Gradient Line */}
-
-        <div
-          className="mt-[2.5mm] h-px w-[30mm]"
-          style={{
-            background:
-              "linear-gradient(to right, transparent, #D3A753, #E791A7, #CA617D, transparent)",
-          }}
-        />
-
-        {/* Features */}
-
-        <div className="mt-[2.5mm] flex w-full flex-col items-center gap-[1.5mm]">
-          {items.map((item) => (
-            <div
-              key={item}
-              className="flex items-center justify-center gap-[1.5mm]"
-            >
-              <Check
-                size={9}
-                color="#CA617D"
-                strokeWidth={3}
-                className="shrink-0"
-              />
-
-              <p className="font-sans text-[2.7mm] leading-[1.3] text-[#24141A]/65">
-                {item}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   )
 }

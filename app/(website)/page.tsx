@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
-import { ProfileGallery } from "@/components/profile-gallery"
+// import { ProfileGallery } from "@/components/profile-gallery"
 import { Faq } from "@/components/faq"
 import { RegisterInterestForm } from "@/components/register-interest-form"
 import { MotionDiv } from "@/components/motion"
@@ -43,14 +43,14 @@ export default function HomePage() {
           className="absolute inset-0"
         >
           <Image
-            src="/home-landing-mobile.png"
+            src="/home-landing-mobile-2.png"
             alt="Background"
             fill
             className="object-cover md:hidden"
             priority
           />
           <Image
-            src="/home-landing.png"
+            src="/home-landing-2.png"
             alt="Background"
             fill
             className="hidden object-cover md:block"
@@ -58,7 +58,7 @@ export default function HomePage() {
           />
         </MotionDiv>
         <div className="absolute inset-0 bg-black/30" />
-        <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative mx-auto w-full max-w-7xl px-4 pt-60 sm:px-6 sm:pt-0 lg:px-8">
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

@@ -368,27 +368,19 @@ export default function BusinessCardPrintPage() {
             </p>
           </div>
         </section>
-
         {/* ======================================================
-            BACK
-            ====================================================== */}
+    BACK
+    ====================================================== */}
 
         <section
           className="new-business-card bg-[#FBF8F3] shadow-2xl"
           aria-label="Back of Thai Soulmate business card"
         >
           {/* ====================================================
-              BACK BORDER
-              
-              Same continuous color logic:
-              left = gold
-              top = gold → pink
-              right = pink
-              bottom = gold → pink
-              ==================================================== */}
+      BACK BORDER
+      ==================================================== */}
 
           {/* TOP */}
-
           <div
             className="pointer-events-none absolute top-0 right-0 left-0 z-30 h-[1.3mm]"
             style={{
@@ -398,7 +390,6 @@ export default function BusinessCardPrintPage() {
           />
 
           {/* RIGHT */}
-
           <div
             className="pointer-events-none absolute top-0 right-0 bottom-0 z-30 w-[1.3mm]"
             style={{
@@ -407,7 +398,6 @@ export default function BusinessCardPrintPage() {
           />
 
           {/* BOTTOM */}
-
           <div
             className="pointer-events-none absolute right-0 bottom-0 left-0 z-30 h-[8mm]"
             style={{
@@ -417,7 +407,6 @@ export default function BusinessCardPrintPage() {
           />
 
           {/* LEFT */}
-
           <div
             className="pointer-events-none absolute top-0 bottom-0 left-0 z-30 w-[1.3mm]"
             style={{
@@ -426,87 +415,76 @@ export default function BusinessCardPrintPage() {
           />
 
           {/* ====================================================
-              DECORATIVE BACKGROUND
-              ==================================================== */}
+      DECORATIVE BACKGROUND
+      ==================================================== */}
 
           <div className="absolute top-[-18mm] right-[-15mm] h-[45mm] w-[45mm] rounded-full bg-[#D3A753]/7" />
 
           <div className="absolute bottom-[-20mm] left-[-18mm] h-[50mm] w-[50mm] rounded-full bg-[#CA617D]/5" />
 
           {/* ====================================================
-              FULL WIDTH CONTENT
-              ==================================================== */}
+      MAIN CONTENT
+      ==================================================== */}
 
           <div className="relative z-10 flex h-full p-[5mm]">
             <div className="flex min-w-0 flex-1 flex-col">
               {/* ==================================================
-                  HEADING
-                  ================================================== */}
+          HEADING
+          ================================================== */}
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-sans text-[1.5mm] font-bold tracking-[0.18em] text-[#CA617D] uppercase">
-                    Thai Soulmate
-                  </p>
-
-                  <h2 className="mt-[0.4mm] font-serif text-[4.2mm] leading-none text-[#5A0816]">
-                    Connect with us.
-                  </h2>
-                </div>
-
-                <Heart
-                  size={12}
-                  color="#D3A753"
-                  fill="#D3A753"
-                  strokeWidth={1.5}
-                />
+              <div>
+                <h2 className="font-serif text-[5.2mm] leading-none font-medium text-[#5A0816]">
+                  Connect with us.
+                </h2>
               </div>
 
               {/* Internal line */}
 
-              <div className="mt-[1.4mm] h-px w-full bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-transparent" />
+              <div className="mt-[2mm] h-px w-full bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-transparent" />
 
               {/* ==================================================
-                  CONTACT + QR CODES
-                  ================================================== */}
+          CONTACT + QR CODES
+          ================================================== */}
 
-              <div className="mt-[3mm] flex flex-1">
-                {/* CONTACT */}
+              <div className="mt-[3.5mm] flex flex-1">
+                {/* ==================================================
+            CONTACT
+            ================================================== */}
 
                 <div className="flex-1">
-                  <div className="space-y-[0.4mm]">
+                  <div className="space-y-[0.7mm]">
                     <ContactRow
-                      icon={<FaWhatsapp size={11} color="#25D366" />}
+                      icon={<FaWhatsapp size={13} color="#25D366" />}
                       text={CONTACT.primaryPhone}
                     />
 
                     <ContactRow
-                      icon={<Phone size={11} color="#1877F2" />}
+                      icon={<Phone size={13} color="#1877F2" />}
                       text={CONTACT.primaryPhone}
                     />
 
                     <ContactRow
-                      icon={<Phone size={11} color="#1877F2" />}
+                      icon={<Phone size={13} color="#1877F2" />}
                       text={CONTACT.secondaryPhone}
                     />
 
                     <ContactRow
-                      icon={<Mail size={11} color="#CA617D" />}
+                      icon={<Mail size={13} color="#CA617D" />}
                       text={CONTACT.email}
                     />
 
                     <ContactRow
-                      icon={<Globe size={11} color="#D3A753" />}
+                      icon={<Globe size={13} color="#D3A753" />}
                       text={CONTACT.website}
                     />
                   </div>
                 </div>
 
                 {/* ==================================================
-                    QR CODES
-                    ================================================== */}
+            QR CODES
+            ================================================== */}
 
-                <div className="flex w-[34mm] items-center justify-center gap-[3mm] pb-[14mm] pl-[3mm]">
+                <div className="flex w-[36mm] items-center justify-center gap-[3mm] pb-[12mm] pl-[3mm]">
                   {/* WhatsApp QR */}
 
                   <div className="flex flex-col items-center">
@@ -522,16 +500,16 @@ export default function BusinessCardPrintPage() {
                           value={CONTACT.whatsapp}
                           level="H"
                           marginSize={1}
-                          className="block h-[13mm] w-[13mm]"
+                          className="block h-[14.5mm] w-[14.5mm]"
                         />
 
-                        <div className="absolute top-1/2 left-1/2 flex h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white">
-                          <FaWhatsapp size={10} color="#25D366" />
+                        <div className="absolute top-1/2 left-1/2 flex h-[4.2mm] w-[4.2mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white">
+                          <FaWhatsapp size={11} color="#25D366" />
                         </div>
                       </div>
                     </div>
 
-                    <span className="mt-[0.5mm] font-sans text-[1.9mm] leading-none font-medium text-[#24141A]">
+                    <span className="mt-[0.7mm] font-sans text-[2.1mm] leading-none font-semibold text-[#24141A]">
                       WhatsApp
                     </span>
                   </div>
@@ -551,10 +529,10 @@ export default function BusinessCardPrintPage() {
                           value={CONTACT.website}
                           level="H"
                           marginSize={1}
-                          className="block h-[13mm] w-[13mm]"
+                          className="block h-[14.5mm] w-[14.5mm]"
                         />
 
-                        <div className="absolute top-1/2 left-1/2 flex h-[4mm] w-[4mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white">
+                        <div className="absolute top-1/2 left-1/2 flex h-[4.2mm] w-[4.2mm] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm border border-white bg-white">
                           <Image
                             src="/logo.png"
                             alt="Thai Soulmate"
@@ -568,7 +546,7 @@ export default function BusinessCardPrintPage() {
                       </div>
                     </div>
 
-                    <span className="mt-[0.5mm] font-sans text-[1.9mm] leading-none font-medium text-[#24141A]">
+                    <span className="mt-[0.7mm] font-sans text-[2.1mm] leading-none font-semibold text-[#24141A]">
                       Website
                     </span>
                   </div>
@@ -578,8 +556,8 @@ export default function BusinessCardPrintPage() {
           </div>
 
           {/* ====================================================
-              SOCIAL — ABOVE BOTTOM GRADIENT
-              ==================================================== */}
+      SOCIAL — ABOVE BOTTOM GRADIENT
+      ==================================================== */}
 
           <div className="absolute right-[3mm] bottom-[10mm] left-[3mm] z-10">
             {/* Gradient social divider */}
@@ -594,30 +572,30 @@ export default function BusinessCardPrintPage() {
 
             <div className="flex items-center justify-center gap-[2.5mm] pt-[2mm]">
               <SocialItem
-                icon={<FaFacebook size={11} color="#1877F2" />}
+                icon={<FaFacebook size={13} color="#1877F2" />}
                 text="@thaisoulmates"
               />
 
               <SocialItem
-                icon={<FaInstagram size={11} color="#E4405F" />}
+                icon={<FaInstagram size={13} color="#E4405F" />}
                 text="@thaisoulmate"
               />
 
               <SocialItem
-                icon={<FaTiktok size={11} color="#000000" />}
+                icon={<FaTiktok size={13} color="#000000" />}
                 text="@thaisoulmate"
               />
 
               <SocialItem
-                icon={<FaLine size={11} color="#00C300" />}
+                icon={<FaLine size={13} color="#00C300" />}
                 text="@thaisoulmate"
               />
             </div>
           </div>
 
           {/* ====================================================
-    BOTTOM GRADIENT CONTENT
-    ==================================================== */}
+      BOTTOM GRADIENT CONTENT
+      ==================================================== */}
 
           <div
             className="absolute inset-x-0 bottom-0 z-40 flex h-[8mm] items-center justify-center"
@@ -626,7 +604,7 @@ export default function BusinessCardPrintPage() {
                 "linear-gradient(to right, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
             }}
           >
-            <div className="relative z-50 flex items-center gap-[4mm] font-sans text-[2.1mm] font-semibold tracking-[0.2em] text-white uppercase">
+            <div className="relative z-50 flex items-center gap-[4mm] font-sans text-[2.3mm] font-semibold tracking-[0.2em] text-white uppercase">
               <span>Exclusive</span>
 
               <span className="text-white/80">•</span>

@@ -18,7 +18,7 @@ export default function GalleryPage() {
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                 Explore the profiles of our vibrant community. Your next
-                connection could be just a click away.
+                soulmate could be just a click away.
               </p>
             </div>
             <ProfileGallery layout="grid" />

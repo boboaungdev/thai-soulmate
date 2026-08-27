@@ -13,6 +13,7 @@ const allowedRoutes = {
   DEV: ["/dashboard"],
   ADMIN: [
     "/dashboard/admin-dashboard",
+    "/dashboard/calendar",
     "/dashboard/application-form",
     "/dashboard/matching",
     "/dashboard/payment",
@@ -25,7 +26,8 @@ const allowedRoutes = {
     "/dashboard/google-meet",
   ],
   STAFF: [
-    "/dashboard/staff-dashboard",
+    "/dashboard/admin-dashboard",
+    "/dashboard/calendar",
     "/dashboard/application-form",
     "/dashboard/matching",
     "/dashboard/payment",

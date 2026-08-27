@@ -595,17 +595,17 @@ export default function MarketingLeafletPrintPage() {
                   {/* List */}
                   <div className="mt-[2.5mm] flex flex-col items-center gap-[1.5mm]">
                     {[
-                      "People looking for a serious future partner",
-                      "People who want carefully matched introductions",
-                      "People looking for a genuine and meaningful relationship",
-                      "People who appreciate personalized, 1-2-1 guidance and support",
-                      "People who prefer a private and discreet matchmaking experience",
-                      "People who value compatibility, shared values, and long-term potential",
-                      "People who value their time and prefer a professional matchmaking service",
+                      "Individulas looking for a serious future partner",
+                      "Individulas who want carefully matched introductions",
+                      "Individulas looking for a genuine and meaningful relationship",
+                      "Individulas who appreciate personalized, 1-2-1 guidance and support",
+                      "Individulas who prefer a private and discreet matchmaking experience",
+                      "Individulas who value compatibility, shared values, and long-term potential",
+                      "Individulas who value their time and prefer a professional matchmaking service",
                     ].map((item) => (
                       <div
                         key={item}
-                        className="flex items-center justify-center gap-[1.5mm]"
+                        className="flex items-center justify-center gap-[1.1mm]"
                       >
                         <Check
                           size={9}

@@ -564,124 +564,63 @@ export default function MarketingLeafletPrintPage() {
             </div>
 
             {/* ====================================================
-      AUDIENCE CARD
-      ==================================================== */}
+    AUDIENCE CARD
+    ==================================================== */}
 
             <div className="mt-[2mm]">
               <div
-                className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/30 px-[5mm] py-[4mm]"
+                className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/30 px-[6mm] py-[4mm]"
                 style={{
                   background:
                     "linear-gradient(135deg, #FFFDF9 0%, #FFF7F0 50%, #FCEFF0 100%)",
                 }}
               >
-                <div className="grid grid-cols-2 gap-[4mm]">
-                  {/* ==================================================
-            THAI LADIES
-            ================================================== */}
-
-                  <div className="pr-[4mm]">
-                    <div className="flex flex-col items-center text-center">
-                      <div
-                        className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
-                        }}
-                      >
-                        <div className="flex h-full w-full items-center justify-center rounded-full bg-[#FBF8F3]">
-                          <FaFemale size={16} color="#CA617D" />
-                        </div>
-                      </div>
-
-                      <h4 className="mt-[1.5mm] font-sans text-[3.2mm] font-bold text-[#5A0816]">
-                        For Thai Ladies
-                      </h4>
-
-                      <p className="mt-[0.7mm] font-sans text-[2.5mm] font-semibold text-[#CA617D]">
-                        Meet genuine foreign gentlemen
-                      </p>
-                    </div>
-
-                    <div className="mt-[2.5mm] flex flex-col items-center gap-[1.5mm]">
-                      {[
-                        "Personal consultation",
-                        "Carefully selected introductions",
-                        "Compatibility-focused matching",
-                        "Private and respectful support",
-                        "Guidance throughout your journey",
-                      ].map((item) => (
-                        <div
-                          key={item}
-                          className="flex items-center justify-center gap-[1.5mm]"
-                        >
-                          <Check
-                            size={9}
-                            color="#CA617D"
-                            strokeWidth={3}
-                            className="shrink-0"
-                          />
-
-                          <p className="text-center font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
-                            {item}
-                          </p>
-                        </div>
-                      ))}
+                <div className="flex flex-col items-center text-center">
+                  {/* Heart Icon */}
+                  <div
+                    className="flex h-[9mm] w-[9mm] items-center justify-center rounded-full p-[0.3mm]"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+                    }}
+                  >
+                    <div className="flex h-full w-full items-center justify-center rounded-full bg-[#FBF8F3]">
+                      <Heart
+                        size={17}
+                        color="#CA617D"
+                        fill="#CA617D"
+                        strokeWidth={1.8}
+                      />
                     </div>
                   </div>
 
-                  {/* ==================================================
-            FOREIGN GENTLEMEN
-            ================================================== */}
-
-                  <div className="pl-[1mm]">
-                    <div className="flex flex-col items-center text-center">
+                  {/* List */}
+                  <div className="mt-[2.5mm] flex flex-col items-center gap-[1.5mm]">
+                    {[
+                      "People looking for a serious future partner",
+                      "People who want carefully matched introductions",
+                      "People looking for a genuine and meaningful relationship",
+                      "People who appreciate personalized, 1-2-1 guidance and support",
+                      "People who prefer a private and discreet matchmaking experience",
+                      "People who value compatibility, shared values, and long-term potential",
+                      "People who value their time and prefer a professional matchmaking service",
+                    ].map((item) => (
                       <div
-                        className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
-                        }}
+                        key={item}
+                        className="flex items-center justify-center gap-[1.5mm]"
                       >
-                        <div className="flex h-full w-full items-center justify-center rounded-full bg-[#FBF8F3]">
-                          <FaMale size={16} color="#D3A753" />
-                        </div>
+                        <Check
+                          size={9}
+                          color="#CA617D"
+                          strokeWidth={3}
+                          className="shrink-0"
+                        />
+
+                        <p className="text-center font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
+                          {item}
+                        </p>
                       </div>
-
-                      <h4 className="mt-[1.5mm] font-sans text-[3.2mm] font-bold text-[#5A0816]">
-                        For Foreign Gentlemen
-                      </h4>
-
-                      <p className="mt-[0.7mm] font-sans text-[2.4mm] font-semibold text-[#CA617D]">
-                        Meet genuine Thai ladies
-                      </p>
-                    </div>
-
-                    <div className="mt-[2.5mm] flex flex-col items-center gap-[1.5mm]">
-                      {[
-                        "Personal matchmaking consultation",
-                        "Genuine Thai introductions",
-                        "Matches based on preferences",
-                        "Professional support in Thailand",
-                        "Guidance throughout your journey",
-                      ].map((item) => (
-                        <div
-                          key={item}
-                          className="flex items-center justify-center gap-[1.5mm]"
-                        >
-                          <Check
-                            size={9}
-                            color="#D3A753"
-                            strokeWidth={3}
-                            className="shrink-0"
-                          />
-
-                          <p className="text-center font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
-                            {item}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>

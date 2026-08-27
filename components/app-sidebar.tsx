@@ -23,9 +23,10 @@ import {
   UserKey,
   Code,
   Moon,
-  Star,
   MessageCircle,
   Video,
+  Calendar,
+  Calendar1,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 
@@ -66,7 +67,7 @@ const roleIcons: Record<string, React.ElementType> = {
 
 const memberItems = [
   {
-    title: "Member Dashboard",
+    title: "Dashboard",
     url: "/dashboard/member-dashboard",
     icon: LayoutDashboard,
   },
@@ -87,19 +88,16 @@ const memberItems = [
   },
 ]
 
-const staffItems = [
-  {
-    title: "Staff Dashboard",
-    url: "/dashboard/staff-dashboard",
-    icon: LayoutDashboard,
-  },
-]
-
 const adminItems = [
   {
-    title: "Admin Dashboard",
+    title: "Dashboard",
     url: "/dashboard/admin-dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Calendar",
+    url: "/dashboard/calendar",
+    icon: Calendar1,
   },
 ]
 
@@ -248,37 +246,17 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-        {(user.role === "STAFF" || user.role === "DEV") && (
+
+        {user?.role !== "MEMBER" && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
-              Staff
-            </SidebarGroupLabel>
-
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {staffItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={item.title}
-                      isActive={pathname === item.url}
-                    >
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-
-        {(user?.role === "ADMIN" || user?.role === "DEV") && (
-          <SidebarGroup>
-            <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
-              Admin
+              {user?.role === "ADMIN"
+                ? "Admin Menu"
+                : user?.role === "STAFF"
+                  ? "Staff"
+                  : user?.role === "DEV"
+                    ? "Dev Menu"
+                    : "Team Menu"}
             </SidebarGroupLabel>
 
             <SidebarGroupContent>

@@ -47,7 +47,7 @@ const allowedRoutes = {
 const dashboardHome = {
   DEV: "/dashboard/admin-dashboard",
   ADMIN: "/dashboard/admin-dashboard",
-  STAFF: "/dashboard/staff-dashboard",
+  STAFF: "/dashboard/admin-dashboard",
   MEMBER: "/dashboard/member-dashboard",
 } as const
 

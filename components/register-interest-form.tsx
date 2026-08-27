@@ -6,7 +6,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { addDays, format, startOfToday } from "date-fns"
 import {
-  CalendarIcon,
+  Calendar1,
   Check,
   ChevronsUpDown,
   Clock,
@@ -15,7 +15,7 @@ import {
   Phone,
   Cake,
   MapPin,
-  Globe,
+  Home,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -595,7 +595,7 @@ export function RegisterInterestForm() {
                               )}
                             >
                               <span className="flex items-center truncate">
-                                <Globe className="mr-2 size-4 shrink-0" />
+                                <Home className="mr-2 size-4 shrink-0" />
 
                                 {field.value || "Select nationality"}
                               </span>
@@ -1021,11 +1021,11 @@ export function RegisterInterestForm() {
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                <CalendarIcon className="mr-2 size-4" />
+                                <Calendar1 className="mr-2 size-4" />
 
                                 {field.value
                                   ? format(field.value, "d MMM yyyy")
-                                  : "Pick a date"}
+                                  : "Select a date"}
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
@@ -1034,7 +1034,6 @@ export function RegisterInterestForm() {
                             <div className="px-3 pt-3 pb-1 text-xs text-muted-foreground">
                               Choose a date within 7 days
                             </div>
-
                             <Calendar
                               mode="single"
                               selected={field.value}
@@ -1043,8 +1042,27 @@ export function RegisterInterestForm() {
                                 setOpenContactDate(false)
                               }}
                               disabled={(date) =>
-                                date < today || date > maxDate
+                                date < today ||
+                                date > maxDate ||
+                                date.getDay() === 0 ||
+                                date.getDay() === 6
                               }
+                              modifiers={{
+                                weekend: (date) =>
+                                  date >= today &&
+                                  date <= maxDate &&
+                                  (date.getDay() === 0 || date.getDay() === 6),
+
+                                available: (date) =>
+                                  date >= today &&
+                                  date <= maxDate &&
+                                  date.getDay() !== 0 &&
+                                  date.getDay() !== 6,
+                              }}
+                              modifiersClassNames={{
+                                weekend: "text-red-500 dark:text-red-400",
+                                available: "text-green-600 dark:text-green-400",
+                              }}
                             />
                           </PopoverContent>
                         </Popover>

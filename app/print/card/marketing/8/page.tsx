@@ -390,9 +390,7 @@ export default function MarketingLeafletPrintPage() {
                   Real People.
                   <br />
                   Real Relationships.
-                </p>
-
-                <p className="mt-[1.8mm] font-sans text-[2.6mm] font-medium text-[#F9DDA7]">
+                  <br />
                   Personally matched in Thailand.
                 </p>
               </div>
@@ -407,9 +405,9 @@ export default function MarketingLeafletPrintPage() {
             <SectionTitle>More Than Matching</SectionTitle>
 
             <p className="mt-[2.8mm] font-sans text-[3mm] leading-[1.5] text-[#241e2a]/72">
-              Finding the right person is about more than a profile, photograph
-              or swipe. We take the time to understand you and create
-              introductions with genuine relationship potential.
+              Finding the right person is about more than a profile, a
+              photograph or a swipe. We take the time to understand you and
+              create introductions with genuine relationship potential.
             </p>
           </div>
 
@@ -498,7 +496,6 @@ export default function MarketingLeafletPrintPage() {
       HERO TITLE
       ====================================================== */}
           <div className="absolute top-[15mm] left-[11mm] z-20 w-[66mm]">
-            {" "}
             <h2 className="mt-[3mm] font-serif text-[8.5mm] leading-[0.95] text-white">
               More than
               <br />
@@ -543,7 +540,7 @@ export default function MarketingLeafletPrintPage() {
           {/* ======================================================
       WHO WE HELP
       ====================================================== */}
-          <div className="absolute top-[80mm] right-[10mm] left-[10mm] z-20">
+          <div className="absolute top-[74mm] right-[10mm] left-[10mm] z-20">
             <div className="flex items-center justify-center gap-[2.5mm]">
               <div
                 className="h-px w-[22mm] shrink-0"
@@ -567,7 +564,6 @@ export default function MarketingLeafletPrintPage() {
             </div>
 
             {/* ====================================================
-     {/* ====================================================
     AUDIENCE CARD
     ==================================================== */}
             <div className="mt-[2mm]">
@@ -578,12 +574,12 @@ export default function MarketingLeafletPrintPage() {
                     "linear-gradient(135deg, #FFF9F3 0%, #FBF3ED 50%, #F8E9E8 100%)",
                 }}
               >
-                {" "}
-                {/* Two sides inside ONE card */}
                 <div className="grid grid-cols-2 gap-[5mm]">
-                  {/* Thai Ladies */}
+                  {/* ==================================================
+          THAI LADIES
+          ================================================== */}
                   <div className="border-r border-[#D3A753]/20 pr-[4mm]">
-                    <div className="flex items-center gap-[2mm]">
+                    <div className="flex flex-col items-center text-center">
                       <div
                         className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
                         style={{
@@ -595,18 +591,17 @@ export default function MarketingLeafletPrintPage() {
                           <FaFemale size={16} color="#CA617D" />
                         </div>
                       </div>
-                      <div>
-                        <h4 className="font-sans text-[3.2mm] font-bold text-[#5A0816]">
-                          For Thai Ladies
-                        </h4>
 
-                        <p className="mt-[0.4mm] font-sans text-[2.5mm] font-semibold text-[#CA617D]">
-                          Meet genuine foreign gentlemen
-                        </p>
-                      </div>
+                      <h4 className="mt-[1.5mm] font-sans text-[3.2mm] font-bold text-[#5A0816]">
+                        For Thai Ladies
+                      </h4>
+
+                      <p className="mt-[0.7mm] font-sans text-[2.5mm] font-semibold text-[#CA617D]">
+                        Meet genuine foreign gentlemen
+                      </p>
                     </div>
 
-                    <div className="mt-[2.5mm] space-y-[1.5mm]">
+                    <div className="mt-[2.5mm] flex flex-col items-center gap-[1.5mm]">
                       {[
                         "Personal consultation",
                         "Carefully selected introductions",
@@ -615,16 +610,16 @@ export default function MarketingLeafletPrintPage() {
                       ].map((item) => (
                         <div
                           key={item}
-                          className="flex items-start gap-[1.5mm]"
+                          className="flex items-center justify-center gap-[1.5mm]"
                         >
                           <Check
                             size={9}
                             color="#CA617D"
                             strokeWidth={3}
-                            className="mt-[0.3mm] shrink-0"
+                            className="shrink-0"
                           />
 
-                          <p className="font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
+                          <p className="text-center font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
                             {item}
                           </p>
                         </div>
@@ -632,9 +627,11 @@ export default function MarketingLeafletPrintPage() {
                     </div>
                   </div>
 
-                  {/* Foreign Gentlemen */}
+                  {/* ==================================================
+          FOREIGN GENTLEMEN
+          ================================================== */}
                   <div className="pl-[1mm]">
-                    <div className="flex items-center gap-[2mm]">
+                    <div className="flex flex-col items-center text-center">
                       <div
                         className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
                         style={{
@@ -646,18 +643,17 @@ export default function MarketingLeafletPrintPage() {
                           <FaMale size={16} color="#D3A753" />
                         </div>
                       </div>
-                      <div>
-                        <h4 className="font-sans text-[3.2mm] font-bold text-[#5A0816]">
-                          For Foreign Gentlemen
-                        </h4>
 
-                        <p className="mt-[0.4mm] font-sans text-[2.4mm] font-semibold text-[#CA617D]">
-                          Meet genuine Thai ladies
-                        </p>
-                      </div>
+                      <h4 className="mt-[1.5mm] font-sans text-[3.2mm] font-bold text-[#5A0816]">
+                        For Foreign Gentlemen
+                      </h4>
+
+                      <p className="mt-[0.7mm] font-sans text-[2.4mm] font-semibold text-[#CA617D]">
+                        Meet genuine Thai ladies
+                      </p>
                     </div>
 
-                    <div className="mt-[2.5mm] space-y-[1.5mm]">
+                    <div className="mt-[2.5mm] flex flex-col items-center gap-[1.5mm]">
                       {[
                         "Personal matchmaking consultation",
                         "Genuine Thai introductions",
@@ -666,16 +662,16 @@ export default function MarketingLeafletPrintPage() {
                       ].map((item) => (
                         <div
                           key={item}
-                          className="flex items-start gap-[1.5mm]"
+                          className="flex items-center justify-center gap-[1.5mm]"
                         >
                           <Check
                             size={9}
                             color="#D3A753"
                             strokeWidth={3}
-                            className="mt-[0.3mm] shrink-0"
+                            className="shrink-0"
                           />
 
-                          <p className="font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
+                          <p className="text-center font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
                             {item}
                           </p>
                         </div>
@@ -803,8 +799,6 @@ export default function MarketingLeafletPrintPage() {
                 </div>
               </div>
             </div>
-
-    
           </div>
           {/* ======================================================
     BOTTOM SOCIAL FOOTER
@@ -812,37 +806,37 @@ export default function MarketingLeafletPrintPage() {
           <div className="absolute inset-x-0 bottom-0 h-[12mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]">
             <div className="flex h-full items-center justify-center px-[8mm]">
               <div className="flex items-center justify-center gap-[5mm]">
-               {/* Facebook */}
-<div className="flex items-center gap-[1.5mm]">
-  <FaFacebook size={17} color="#1877F2" />
-  <span className="font-sans text-[2.7mm] font-semibold text-white">
-    @thaisoulmates
-  </span>
-</div>
+                {/* Facebook */}
+                <div className="flex items-center gap-[1.5mm]">
+                  <FaFacebook size={17} color="#1877F2" />
+                  <span className="font-sans text-[2.7mm] font-semibold text-white">
+                    @thaisoulmates
+                  </span>
+                </div>
 
-{/* Instagram */}
-<div className="flex items-center gap-[1.5mm]">
-  <FaInstagram size={18} color="#E4405F" />
-  <span className="font-sans text-[2.7mm] font-semibold text-white">
-    @thaisoulmate
-  </span>
-</div>
+                {/* Instagram */}
+                <div className="flex items-center gap-[1.5mm]">
+                  <FaInstagram size={18} color="#E4405F" />
+                  <span className="font-sans text-[2.7mm] font-semibold text-white">
+                    @thaisoulmate
+                  </span>
+                </div>
 
-{/* TikTok */}
-<div className="flex items-center gap-[1.5mm]">
-  <FaTiktok size={17} color="#000000" />
-  <span className="font-sans text-[2.7mm] font-semibold text-white">
-    @thaisoulmate
-  </span>
-</div>
+                {/* TikTok */}
+                <div className="flex items-center gap-[1.5mm]">
+                  <FaTiktok size={17} color="#000000" />
+                  <span className="font-sans text-[2.7mm] font-semibold text-white">
+                    @thaisoulmate
+                  </span>
+                </div>
 
-{/* LINE */}
-<div className="flex items-center gap-[1.5mm]">
-  <FaLine size={17} color="#00C300" />
-  <span className="font-sans text-[2.7mm] font-semibold text-white">
-    @thaisoulmate
-  </span>
-</div>
+                {/* LINE */}
+                <div className="flex items-center gap-[1.5mm]">
+                  <FaLine size={17} color="#00C300" />
+                  <span className="font-sans text-[2.7mm] font-semibold text-white">
+                    @thaisoulmate
+                  </span>
+                </div>
               </div>
             </div>
           </div>{" "}

@@ -17,10 +17,8 @@ import {
 import { QRCodeSVG } from "qrcode.react"
 import {
   FaFacebook,
-  FaFemale,
   FaInstagram,
   FaLine,
-  FaMale,
   FaTiktok,
   FaWhatsapp,
 } from "react-icons/fa"

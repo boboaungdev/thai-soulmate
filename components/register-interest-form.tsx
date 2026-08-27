@@ -166,7 +166,6 @@ const formSchema = z.object({
 })
 
 export function RegisterInterestForm() {
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -203,6 +202,7 @@ export function RegisterInterestForm() {
   const [openNationality, setOpenNationality] = useState(false)
   const [openCurrentLocation, setOpenCurrentLocation] = useState(false)
   const [openPhoneCountry, setOpenPhoneCountry] = useState(false)
+  const [openContactDate, setOpenContactDate] = useState(false)
 
   const { setValue } = form
 
@@ -219,6 +219,11 @@ export function RegisterInterestForm() {
   const source = useWatch({
     control: form.control,
     name: "source",
+  })
+
+  const preferredContactDate = useWatch({
+    control: form.control,
+    name: "preferredContactDate",
   })
 
   const [countries, setCountries] = useState<Country[]>([])
@@ -1003,7 +1008,10 @@ export function RegisterInterestForm() {
                       <FormItem className="flex flex-col">
                         <FormLabel>Preferred contact date</FormLabel>
 
-                        <Popover>
+                        <Popover
+                          open={openContactDate}
+                          onOpenChange={setOpenContactDate}
+                        >
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -1023,15 +1031,22 @@ export function RegisterInterestForm() {
                           </PopoverTrigger>
 
                           <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date < today || date > maxDate
-                              }
-                            />
-                          </PopoverContent>
+  <div className="px-3 pt-3 pb-1 text-xs text-muted-foreground">
+    Choose a date within 7 days
+  </div>
+
+  <Calendar
+    mode="single"
+    selected={field.value}
+    onSelect={(date) => {
+      field.onChange(date)
+      setOpenContactDate(false)
+    }}
+    disabled={(date) =>
+      date < today || date > maxDate
+    }
+  />
+</PopoverContent>
                         </Popover>
 
                         <FormMessage />
@@ -1051,12 +1066,19 @@ export function RegisterInterestForm() {
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
+                        disabled={!preferredContactDate}
                       >
                         <FormControl>
                           <SelectTrigger className="h-8 w-full rounded-lg border border-input bg-background dark:bg-input/30">
                             <Clock className="mr-2 size-4" />
 
-                            <SelectValue placeholder="Select a time" />
+                            <SelectValue
+                              placeholder={
+                                preferredContactDate
+                                  ? "Select a time"
+                                  : "Select date first"
+                              }
+                            />
                           </SelectTrigger>
                         </FormControl>
 

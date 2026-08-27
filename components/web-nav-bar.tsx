@@ -32,7 +32,7 @@ const SITE_NAV_LINKS = [
   { label: "Service", href: "/service" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
-  // { label: "Pricing", href: "/pricing" },
+  { label: "Pricing", href: "/pricing" },
 ] as const
 
 export function WebNavBar() {

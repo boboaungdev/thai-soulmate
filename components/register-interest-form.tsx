@@ -1031,22 +1031,22 @@ export function RegisterInterestForm() {
                           </PopoverTrigger>
 
                           <PopoverContent className="w-auto p-0" align="start">
-  <div className="px-3 pt-3 pb-1 text-xs text-muted-foreground">
-    Choose a date within 7 days
-  </div>
+                            <div className="px-3 pt-3 pb-1 text-xs text-muted-foreground">
+                              Choose a date within 7 days
+                            </div>
 
-  <Calendar
-    mode="single"
-    selected={field.value}
-    onSelect={(date) => {
-      field.onChange(date)
-      setOpenContactDate(false)
-    }}
-    disabled={(date) =>
-      date < today || date > maxDate
-    }
-  />
-</PopoverContent>
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => {
+                                field.onChange(date)
+                                setOpenContactDate(false)
+                              }}
+                              disabled={(date) =>
+                                date < today || date > maxDate
+                              }
+                            />
+                          </PopoverContent>
                         </Popover>
 
                         <FormMessage />

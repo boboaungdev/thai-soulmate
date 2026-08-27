@@ -248,7 +248,7 @@ export function PricingPageContents({
           fees, please{" "}
           <Link
             href="/contact"
-            className="text-gradient font-semibold transition-all hover:brightness-125 hover:underline"
+            className="text-gradient font-semibold transition-all hover:underline hover:brightness-125"
           >
             contact us
           </Link>
@@ -267,4 +267,3 @@ export default function PricingPage() {
     </Suspense>
   )
 }
-

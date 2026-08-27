@@ -50,12 +50,12 @@ export function WebNavBar() {
       },
     },
   }
-  
+
   const navItemVariants = {
     hidden: { y: -20, opacity: 0 },
     show: { y: 0, opacity: 1 },
   }
-  
+
   useEffect(() => {
     setIsClient(true)
   }, [])

@@ -538,8 +538,8 @@ export default function MarketingLeafletPrintPage() {
             }}
           />
           {/* ======================================================
-      WHO WE HELP
-      ====================================================== */}
+    WHO WE HELP
+    ====================================================== */}
           <div className="absolute top-[74mm] right-[10mm] left-[10mm] z-20">
             <div className="flex items-center justify-center gap-[2.5mm]">
               <div
@@ -564,21 +564,23 @@ export default function MarketingLeafletPrintPage() {
             </div>
 
             {/* ====================================================
-    AUDIENCE CARD
-    ==================================================== */}
+      AUDIENCE CARD
+      ==================================================== */}
+
             <div className="mt-[2mm]">
               <div
                 className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/30 px-[5mm] py-[4mm]"
                 style={{
                   background:
-                    "linear-gradient(135deg, #FFF9F3 0%, #FBF3ED 50%, #F8E9E8 100%)",
+                    "linear-gradient(135deg, #FFFDF9 0%, #FFF7F0 50%, #FCEFF0 100%)",
                 }}
               >
-                <div className="grid grid-cols-2 gap-[5mm]">
+                <div className="grid grid-cols-2 gap-[4mm]">
                   {/* ==================================================
-          THAI LADIES
-          ================================================== */}
-                  <div className="border-r border-[#D3A753]/20 pr-[4mm]">
+            THAI LADIES
+            ================================================== */}
+
+                  <div className="pr-[4mm]">
                     <div className="flex flex-col items-center text-center">
                       <div
                         className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
@@ -607,6 +609,7 @@ export default function MarketingLeafletPrintPage() {
                         "Carefully selected introductions",
                         "Compatibility-focused matching",
                         "Private and respectful support",
+                        "Guidance throughout your journey",
                       ].map((item) => (
                         <div
                           key={item}
@@ -628,8 +631,9 @@ export default function MarketingLeafletPrintPage() {
                   </div>
 
                   {/* ==================================================
-          FOREIGN GENTLEMEN
-          ================================================== */}
+            FOREIGN GENTLEMEN
+            ================================================== */}
+
                   <div className="pl-[1mm]">
                     <div className="flex flex-col items-center text-center">
                       <div
@@ -659,6 +663,7 @@ export default function MarketingLeafletPrintPage() {
                         "Genuine Thai introductions",
                         "Matches based on preferences",
                         "Professional support in Thailand",
+                        "Guidance throughout your journey",
                       ].map((item) => (
                         <div
                           key={item}
@@ -685,7 +690,7 @@ export default function MarketingLeafletPrintPage() {
           {/* ======================================================
       CONTACT SECTION
       ====================================================== */}
-          <div className="absolute right-[10mm] bottom-[20mm] left-[10mm]">
+          <div className="absolute right-[10mm] bottom-[15mm] left-[10mm]">
             <div className="relative overflow-hidden rounded-[4mm] bg-gradient-to-br from-[#6B1023] to-[#3D0710] p-[4mm]">
               <div className="absolute top-[-12mm] right-[-12mm] h-[35mm] w-[35mm] rounded-full border border-[#D3A753]/20" />
 

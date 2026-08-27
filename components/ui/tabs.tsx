@@ -55,24 +55,86 @@ function TabsList({
   )
 }
 
+/* -----------------------------------------
+   Tab Trigger Variants
+----------------------------------------- */
+
+const tabsTriggerVariants = cva(
+  "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default:
+          "text-foreground/60 data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground",
+
+        gradient:
+          "text-foreground/60 data-active:[animation:tabGradient_4s_ease-in-out_infinite] data-active:bg-[linear-gradient(90deg,#CFA14F,#E791A7,#CB5D7A,#CFA14F)] data-active:bg-[length:300%_100%] data-active:text-white data-active:shadow-md",
+      },
+    },
+
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+/* -----------------------------------------
+   Tab Trigger
+----------------------------------------- */
+
 function TabsTrigger({
   className,
+  variant = "default",
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+}: React.ComponentProps<typeof TabsPrimitive.Trigger> &
+  VariantProps<typeof tabsTriggerVariants>) {
   return (
-    <TabsPrimitive.Trigger
-      data-slot="tabs-trigger"
-      className={cn(
-        "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 dark:text-muted-foreground dark:hover:text-foreground group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent",
-        "data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground",
-        "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[-5px] group-data-horizontal/tabs:after:h-0.5 group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-right-1 group-data-vertical/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-active:after:opacity-100",
-        className
-      )}
-      {...props}
-    />
+    <>
+      <style jsx>{`
+        @keyframes tabGradient {
+          0% {
+            background-position: 0% 50%;
+          }
+
+          50% {
+            background-position: 100% 50%;
+          }
+
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+      `}</style>
+
+      <TabsPrimitive.Trigger
+        data-slot="tabs-trigger"
+        className={cn(
+          tabsTriggerVariants({ variant }),
+
+          "group-data-[variant=line]/tabs-list:bg-transparent",
+          "group-data-[variant=line]/tabs-list:data-active:bg-transparent",
+          "dark:group-data-[variant=line]/tabs-list:data-active:border-transparent",
+
+          "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity",
+          "group-data-horizontal/tabs:after:inset-x-0",
+          "group-data-horizontal/tabs:after:bottom-[-5px]",
+          "group-data-horizontal/tabs:after:h-0.5",
+          "group-data-vertical/tabs:after:inset-y-0",
+          "group-data-vertical/tabs:after:-right-1",
+          "group-data-vertical/tabs:after:w-0.5",
+          "group-data-[variant=line]/tabs-list:data-active:after:opacity-100",
+
+          className
+        )}
+        {...props}
+      />
+    </>
   )
 }
+
+/* -----------------------------------------
+   Tab Content
+----------------------------------------- */
 
 function TabsContent({
   className,

@@ -1,0 +1,56 @@
+.calendar-shell {
+  --fc-monarch-primary: var(--gold);
+  --fc-monarch-primary-foreground: #ffffff;
+  --fc-monarch-primary-over: color-mix(in oklab, var(--gold) 88%, black);
+  --fc-monarch-primary-down: color-mix(in oklab, var(--gold) 76%, black);
+  --fc-monarch-secondary: color-mix(in oklab, var(--pink) 18%, white);
+  --fc-monarch-secondary-foreground: var(--pink);
+  --fc-monarch-event: var(--gold);
+  --fc-monarch-event-contrast: #ffffff;
+  --fc-monarch-highlight: color-mix(in oklab, var(--gold) 16%, transparent);
+  --fc-monarch-now: var(--pink);
+  --fc-monarch-selected: var(--gold);
+  --fc-monarch-selected-foreground: #ffffff;
+  --fc-monarch-outline: var(--gold);
+  --fc-monarch-background: var(--card);
+  --fc-monarch-foreground: var(--card-foreground);
+  --fc-monarch-muted-foreground: var(--muted-foreground);
+  --fc-monarch-border: var(--border);
+  --fc-monarch-strong-border: var(--border);
+  --fc-monarch-popover: var(--popover);
+  --fc-monarch-faint: color-mix(in oklab, var(--foreground) 4%, transparent);
+  --fc-monarch-muted: color-mix(in oklab, var(--foreground) 6%, transparent);
+  font-family: inherit;
+}
+
+.calendar-shell[data-color-scheme="dark"] {
+  --fc-monarch-primary: var(--gold);
+  --fc-monarch-primary-foreground: #1a1208;
+  --fc-monarch-secondary: color-mix(in oklab, var(--pink) 28%, black);
+  --fc-monarch-secondary-foreground: #ffd6e1;
+  --fc-monarch-event-contrast: #1a1208;
+  --fc-monarch-now: #f4a3b8;
+}
+
+.calendar-shell .fc-event-chip {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.35rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.calendar-shell .fc-event-chip-time {
+  flex: none;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.calendar-shell .fc-event-chip-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

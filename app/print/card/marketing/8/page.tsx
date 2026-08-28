@@ -450,17 +450,17 @@ export default function MarketingLeafletPrintPage() {
           <div className="absolute inset-x-0 bottom-0 h-[12mm] bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]">
             <div className="flex h-full items-center justify-between px-[10mm]">
               <div className="flex flex-col justify-center">
-                <p className="font-sans text-[2.9mm] leading-none font-bold tracking-[0.12em] text-white uppercase">
+                <p className="font-sans text-[3.2mm] leading-none font-bold tracking-[0.12em] text-white uppercase">
                   Start Your Story
                 </p>
 
-                <p className="mt-[1.2mm] font-sans text-[2.2mm] leading-none font-medium text-white/80">
+                <p className="mt-[1.2mm] font-sans text-[3mm] leading-none font-medium text-white/80">
                   Your journey to a meaningful connection.
                 </p>
               </div>
 
               <div className="relative flex items-center justify-center rounded-full bg-white px-[5mm] py-[2mm]">
-                <span className="translate-y-[0.3mm] font-sans text-[2.3mm] leading-none font-bold tracking-[0.08em] text-[#5A0816] uppercase">
+                <span className="translate-y-[0.3mm] font-sans text-[3mm] leading-none font-bold tracking-[0.08em] text-[#5A0816] uppercase">
                   Contact Us
                 </span>
 
@@ -751,7 +751,7 @@ export default function MarketingLeafletPrintPage() {
                 {/* Facebook */}
                 <div className="flex items-center gap-[1.5mm]">
                   <FaFacebook size={17} color="#1877F2" />
-                  <span className="font-sans text-[2.7mm] font-semibold text-white">
+                  <span className="font-sans text-[3mm] font-semibold text-white">
                     @thaisoulmates
                   </span>
                 </div>
@@ -759,7 +759,7 @@ export default function MarketingLeafletPrintPage() {
                 {/* Instagram */}
                 <div className="flex items-center gap-[1.5mm]">
                   <FaInstagram size={18} color="#E4405F" />
-                  <span className="font-sans text-[2.7mm] font-semibold text-white">
+                  <span className="font-sans text-[3mm] font-semibold text-white">
                     @thaisoulmate
                   </span>
                 </div>
@@ -767,7 +767,7 @@ export default function MarketingLeafletPrintPage() {
                 {/* TikTok */}
                 <div className="flex items-center gap-[1.5mm]">
                   <FaTiktok size={17} color="#000000" />
-                  <span className="font-sans text-[2.7mm] font-semibold text-white">
+                  <span className="font-sans text-[3mm] font-semibold text-white">
                     @thaisoulmate
                   </span>
                 </div>
@@ -775,7 +775,7 @@ export default function MarketingLeafletPrintPage() {
                 {/* LINE */}
                 <div className="flex items-center gap-[1.5mm]">
                   <FaLine size={17} color="#00C300" />
-                  <span className="font-sans text-[2.7mm] font-semibold text-white">
+                  <span className="font-sans text-[3mm] font-semibold text-white">
                     @thaisoulmate
                   </span>
                 </div>

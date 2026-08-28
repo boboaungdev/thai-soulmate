@@ -175,7 +175,7 @@ export function PricingPageContents({
                   className="gap-2 px-5 py-2.5 text-sm font-semibold"
                 >
                   <Flame className="size-4" />
-                  <span>Fresh Launch Offers</span>
+                  <span>Special Promotion Offers</span>
                 </TabsTrigger>
 
                 <TabsTrigger
@@ -226,24 +226,21 @@ export function PricingPageContents({
                   {/* Promotion heading */}
 
                   <div className="mx-auto max-w-3xl">
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D3A753]/40 bg-[#D3A753]/10 px-4 py-2 text-sm font-semibold text-[#B78D46]">
-                      <Sparkles className="size-4" />
-                      Fresh Launch Promotion
-                    </div>
+                   
 
                     <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-                      Exclusive Launch Offers
+                      Special Promotion Offers
                     </h2>
 
                     <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-                      Special introductory packages created for the launch of
-                      our personal matchmaking service.
+                      Special introductory packages created for the exclusive  of
+                      our 1-2-1 matchmaking service.
                     </p>
 
                     {/* Limited availability */}
 
                     <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/10 to-[#CA617D]/10 px-4 py-2 text-sm font-semibold">
-                      <Clock className="size-4 text-[#CA617D]" />
+                      <Clock className="size-4 text-[#CA617D] animate-spin" />
 
                       <span>
                         Limited to the <strong>first 15 men</strong>

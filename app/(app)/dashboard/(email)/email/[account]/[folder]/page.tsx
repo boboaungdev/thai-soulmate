@@ -24,6 +24,7 @@ import {
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
 import { useAuthStore } from "@/stores/auth-store"
+import { ComposeEmailDialog } from "@/components/email/compose-email-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -131,6 +132,11 @@ export default function EmailFolderDynamicPage() {
 
   const [searchQuery, setSearchQuery] = React.useState("")
   const [composeOpen, setComposeOpen] = React.useState(false)
+  const [composeData, setComposeData] = React.useState<{
+    to?: string
+    subject?: string
+    body?: string
+  }>({})
   const [selectedEmail, setSelectedEmail] = React.useState<
     (typeof mockEmails.inbox)[0] | null
   >(null)
@@ -188,59 +194,26 @@ export default function EmailFolderDynamicPage() {
             </TabsList>
           </Tabs>
 
-          <Dialog open={composeOpen} onOpenChange={setComposeOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-1.5">
-                <Plus className="size-4" />
-                <span>Compose</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[550px]">
-              <DialogHeader>
-                <DialogTitle>New Message</DialogTitle>
-                <DialogDescription>
-                  Sending from{" "}
-                  <span className="font-semibold text-foreground">
-                    {currentAccount.email}
-                  </span>
-                </DialogDescription>
-              </DialogHeader>
+          <Button
+            className="gap-1.5 btn-gradient"
+            onClick={() => {
+              setComposeData({})
+              setComposeOpen(true)
+            }}
+          >
+            <Plus className="size-4" />
+            <span>Compose</span>
+          </Button>
 
-              <div className="grid gap-4 py-2">
-                <div className="grid gap-2">
-                  <Label htmlFor="to">To</Label>
-                  <Input id="to" placeholder="recipient@example.com" />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="subject">Subject</Label>
-                  <Input id="subject" placeholder="Subject" />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="body">Message</Label>
-                  <Textarea
-                    id="body"
-                    placeholder="Write your email here..."
-                    rows={6}
-                  />
-                </div>
-              </div>
-
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setComposeOpen(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    setComposeOpen(false)
-                  }}
-                  className="gap-1.5"
-                >
-                  <Send className="size-4" />
-                  Send Email
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <ComposeEmailDialog
+            open={composeOpen}
+            onOpenChange={setComposeOpen}
+            fromEmail={currentAccount.email}
+            fromName={currentAccount.name}
+            initialTo={composeData.to}
+            initialSubject={composeData.subject}
+            initialBody={composeData.body}
+          />
         </div>
       </div>
 
@@ -449,6 +422,20 @@ export default function EmailFolderDynamicPage() {
             </Button>
             <Button
               onClick={() => {
+                if (selectedEmail) {
+                  const replyTo =
+                    "from" in selectedEmail ? selectedEmail.from : ""
+                  const replySubject = selectedEmail.subject.startsWith("Re:")
+                    ? selectedEmail.subject
+                    : `Re: ${selectedEmail.subject}`
+                  const replyBody = `<br/><br/><blockquote>On ${selectedEmail.date}, ${replyTo} wrote:<br/>${selectedEmail.preview}</blockquote>`
+
+                  setComposeData({
+                    to: replyTo,
+                    subject: replySubject,
+                    body: replyBody,
+                  })
+                }
                 setSelectedEmail(null)
                 setComposeOpen(true)
               }}

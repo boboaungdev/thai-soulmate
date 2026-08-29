@@ -13,14 +13,8 @@ export interface EmailFolder {
 
 export const EMAIL_ACCOUNTS: EmailAccount[] = [
   {
-    id: "socials",
-    email: "socials@gmail.com",
-    name: "Socials",
-    description: "Social media and public channel inquiries",
-  },
-  {
     id: "contact",
-    email: "contact@thaisoulmate.com",
+    email: "contact@thaisoulmate.org",
     name: "Contact",
     description: "Primary business and member inquiries",
   },
@@ -29,6 +23,12 @@ export const EMAIL_ACCOUNTS: EmailAccount[] = [
     email: "admin@thaisoulmate.org",
     name: "Admin",
     description: "Administrative notifications and management",
+  },
+  {
+    id: "socials",
+    email: "socials@thaisoulmate.org",
+    name: "Socials",
+    description: "Social media and public channel inquiries",
   },
 ]
 

@@ -113,9 +113,17 @@ export function PricingPageContents({
         {/* ========================================================= */}
 
         <MotionDiv
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.5,
+          }}
         >
           {!isEmbedded && !isFromApplicationForm && (
             <>
@@ -175,6 +183,7 @@ export function PricingPageContents({
                   className="gap-2 px-5 py-2.5 text-sm font-semibold"
                 >
                   <Flame className="size-4" />
+
                   <span>Special Promotion Offers</span>
                 </TabsTrigger>
 
@@ -184,6 +193,7 @@ export function PricingPageContents({
                   className="gap-2 px-5 py-2.5 text-sm font-semibold"
                 >
                   <Crown className="size-4" />
+
                   <span>Regular Membership</span>
                 </TabsTrigger>
               </TabsList>
@@ -226,21 +236,19 @@ export function PricingPageContents({
                   {/* Promotion heading */}
 
                   <div className="mx-auto max-w-3xl">
-                   
-
                     <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
                       Special Promotion Offers
                     </h2>
 
                     <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-                      Special introductory packages created for the exclusive  of
+                      Special introductory packages created for the exclusive of
                       our 1-2-1 matchmaking service.
                     </p>
 
                     {/* Limited availability */}
 
                     <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/10 to-[#CA617D]/10 px-4 py-2 text-sm font-semibold">
-                      <Clock className="size-4 text-[#CA617D] animate-spin" />
+                      <Clock className="size-4 animate-spin text-[#CA617D]" />
 
                       <span>
                         Limited to the <strong>first 15 men</strong>
@@ -282,6 +290,7 @@ export function PricingPageContents({
                             ? "Subscribe for 1 month"
                             : "Pay for 1 month"}
                         </p>
+
                         <p className="mt-1 text-sm text-muted-foreground">
                           Get 6 months of membership
                         </p>
@@ -291,6 +300,7 @@ export function PricingPageContents({
                         {PLANS[0]?.features?.map((feature, index) => (
                           <li key={index} className="flex gap-2">
                             <span className="text-[#D3A753]">✓</span>
+
                             <span>{feature}</span>
                           </li>
                         ))}
@@ -299,7 +309,7 @@ export function PricingPageContents({
                       <Button
                         className="mt-7 w-full text-white"
                         variant="outline"
-                        size={"lg"}
+                        size="lg"
                         onClick={() => {
                           const plan = PLANS.find(
                             (item) => item.id === "1-month"
@@ -320,16 +330,20 @@ export function PricingPageContents({
 
                     <div className="relative flex flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1">
                       {/* Gradient border */}
+
                       <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
                       <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 pt-7 text-left">
                         {/* Most Popular */}
-                        <div className="btn-gradient absolute -top-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold text-white">
+
+                        <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
                           <Flame className="size-4" />
+
                           <span>Most Popular</span>
                         </div>
 
                         {/* Discount */}
+
                         <div className="btn-gradient absolute top-4 right-4 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm">
                           43% OFF
                         </div>
@@ -354,6 +368,7 @@ export function PricingPageContents({
                               ? "Subscribe for 3 months"
                               : "Pay for 3 months"}
                           </p>
+
                           <p className="mt-1 text-sm text-muted-foreground">
                             Get 9 months of membership
                           </p>
@@ -365,6 +380,7 @@ export function PricingPageContents({
                           )?.features?.map((feature, index) => (
                             <li key={index} className="flex gap-2">
                               <span className="text-[#CA617D]">✓</span>
+
                               <span>{feature}</span>
                             </li>
                           ))}
@@ -372,7 +388,7 @@ export function PricingPageContents({
 
                         <Button
                           className="btn-gradient mt-7 w-full text-white"
-                          size={"lg"}
+                          size="lg"
                           onClick={() => {
                             const plan = PLANS.find(
                               (item) => item.id === "3-months"
@@ -396,6 +412,7 @@ export function PricingPageContents({
                       <div className="absolute top-4 right-4 rounded-full bg-[#E791A7]/15 px-3 py-1 text-xs font-bold text-[#CA617D]">
                         Free Trial
                       </div>
+
                       <p className="mt-2 text-sm font-semibold tracking-wider text-[#CA617D] uppercase">
                         New Member Experience
                       </p>
@@ -405,11 +422,13 @@ export function PricingPageContents({
                       </h3>
 
                       <div className="mt-5">
-                        <div className="text-3xl font-bold">Meet 3 Matches</div>
+                        <span className="text-sm text-muted-foreground line-through">
+                          ฿14,999
+                        </span>
 
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          Start with a personal introduction experience
-                        </p>
+                        <div className="mt-1 text-4xl font-bold">
+                          Free Trial
+                        </div>
                       </div>
 
                       <div className="mt-5 rounded-xl bg-[#E791A7]/10 p-4">
@@ -427,38 +446,44 @@ export function PricingPageContents({
                       <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                         <li className="flex gap-2">
                           <span className="text-[#CA617D]">✓</span>
-                          <span>Meet 3 personally selected matches</span>
+
+                          <span>Meet 1 personally selected matches</span>
                         </li>
 
                         <li className="flex gap-2">
                           <span className="text-[#CA617D]">✓</span>
+
                           <span>Personal 1-2-1 matchmaking service</span>
                         </li>
 
                         <li className="flex gap-2">
                           <span className="text-[#CA617D]">✓</span>
+
                           <span>Hand picked introductions</span>
                         </li>
 
                         <li className="flex gap-2">
                           <span className="text-[#CA617D]">✓</span>
+
                           <span>Experience the service before committing</span>
                         </li>
 
                         <li className="flex gap-2">
                           <span className="text-[#CA617D]">✓</span>
+
                           <span>Continue with 1 month membership</span>
                         </li>
 
                         <li className="flex gap-2">
                           <span className="text-[#CA617D]">✓</span>
+
                           <span>Get 6 months of membership for ฿24,999</span>
                         </li>
                       </ul>
 
                       <Button
                         variant="outline"
-                        size={"lg"}
+                        size="lg"
                         className="mt-7 w-full border-[#CA617D]/40 hover:bg-[#CA617D]/10"
                         onClick={() => {
                           console.log("Try Before You Buy selected")
@@ -497,8 +522,12 @@ export function PricingPageContents({
                   duration: 0.4,
                 }}
               >
+                {/* ================================================= */}
+                {/* REGULAR MEMBERSHIP HEADING */}
+                {/* ================================================= */}
+
                 <div className="mx-auto max-w-3xl">
-                  <h2 className="text-3xl font-bold md:text-4xl">
+                  <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
                     Regular Membership
                   </h2>
 
@@ -509,134 +538,302 @@ export function PricingPageContents({
                 </div>
 
                 {/* ================================================= */}
-                {/* CURRENT PLANS */}
+                {/* REGULAR MEMBERSHIP CARDS */}
                 {/* ================================================= */}
 
-                <div className="mt-12 flex flex-wrap justify-center gap-8">
+                <div className="mt-10 grid gap-6 md:grid-cols-3">
                   {PLANS.map((plan, index) => (
                     <MotionDiv
                       key={plan.name}
                       initial={{
                         opacity: 0,
-                        y: 20,
+                        y: 15,
                       }}
                       animate={{
                         opacity: 1,
                         y: 0,
                       }}
                       transition={{
-                        duration: 0.5,
+                        duration: 0.4,
                         delay: index * 0.1,
                       }}
-                      className={clsx(
-                        "relative flex w-full max-w-sm flex-col rounded-lg border bg-card p-8 text-card-foreground shadow-sm transition-transform duration-300",
-                        plan.popular &&
-                          "border-gold scale-105 transform border-2"
-                      )}
+                      className="relative"
                     >
-                      {plan.popular && (
-                        <div className="btn-gradient absolute -top-4 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold text-white">
-                          <Flame className="size-4" />
-                          <span>Most Popular</span>
-                        </div>
-                      )}
+                      {/* ================================================= */}
+                      {/* MOST POPULAR CARD */}
+                      {/* ================================================= */}
 
-                      <h2 className="mb-4 text-2xl font-semibold">
-                        {plan.name}
-                      </h2>
+                      {plan.popular ? (
+                        <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                          {/* Gradient Border */}
 
-                      <p className="text-4xl font-bold">{plan.price}</p>
+                          <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
-                      <div className="mt-1 text-sm font-semibold text-muted-foreground">
-                        {isAutoRenew ? (
-                          <span>
-                            Subscribe for{" "}
-                            <del>{plan.recurringInterval.paid}</del>, get{" "}
-                            <b>{plan.recurringInterval.total}</b>
-                          </span>
-                        ) : (
-                          <span>
-                            Pay for <del>{plan.duration.paid}</del>, get{" "}
-                            <b>{plan.duration.total}</b>
-                          </span>
-                        )}
-                      </div>
+                          {/* ================================================= */}
+                          {/* INNER CARD */}
+                          {/* ================================================= */}
 
-                      {plan.pricePerMonth && (
-                        <p className="mt-1 mb-6 text-muted-foreground">
-                          {plan.pricePerMonth}
-                        </p>
-                      )}
+                          <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
+                            {/* Most Popular */}
 
-                      <AnimatePresence>
-                        {!isEmbedded || expandedPlan === plan.name ? (
-                          <MotionDiv
-                            initial={{
-                              opacity: 0,
-                              height: 0,
-                            }}
-                            animate={{
-                              opacity: 1,
-                              height: "auto",
-                            }}
-                            exit={{
-                              opacity: 0,
-                              height: 0,
-                            }}
-                            transition={{
-                              duration: 0.3,
-                            }}
-                            className="overflow-hidden"
-                          >
-                            <ul className="my-6 flex-grow list-none p-0 text-left">
-                              {plan.features.map((feature, index) => (
-                                <li
-                                  key={index}
-                                  className={clsx(
-                                    "mb-3",
-                                    index === 0
-                                      ? "text-gradient font-bold"
-                                      : "text-muted-foreground"
-                                  )}
+                            <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
+                              <Flame className="size-4" />
+
+                              <span>Most Popular</span>
+                            </div>
+
+                            {/* ================================================= */}
+                            {/* PLAN NAME */}
+                            {/* ================================================= */}
+
+                            <h3 className="text-gradient mt-2 text-2xl font-bold">
+                              {plan.name}
+                            </h3>
+
+                            {/* ================================================= */}
+                            {/* PRICE */}
+                            {/* ================================================= */}
+
+                            <div className="mt-5">
+                              <div className="text-4xl font-bold">
+                                {plan.price}
+                              </div>
+
+                              {plan.pricePerMonth && (
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                  {plan.pricePerMonth}
+                                </p>
+                              )}
+                            </div>
+
+                            {/* ================================================= */}
+                            {/* MEMBERSHIP VALUE */}
+                            {/* ================================================= */}
+
+                            <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
+                              <p className="font-semibold">
+                                {isAutoRenew
+                                  ? `Subscribe for ${plan.recurringInterval.paid}`
+                                  : `Pay for ${plan.duration.paid}`}
+                              </p>
+
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                {isAutoRenew
+                                  ? `Get ${plan.recurringInterval.total} of membership`
+                                  : `Get ${plan.duration.total} of membership`}
+                              </p>
+                            </div>
+
+                            {/* ================================================= */}
+                            {/* FEATURES */}
+                            {/* ================================================= */}
+
+                            <AnimatePresence>
+                              {!isEmbedded || expandedPlan === plan.name ? (
+                                <MotionDiv
+                                  initial={{
+                                    opacity: 0,
+                                    height: 0,
+                                  }}
+                                  animate={{
+                                    opacity: 1,
+                                    height: "auto",
+                                  }}
+                                  exit={{
+                                    opacity: 0,
+                                    height: 0,
+                                  }}
+                                  transition={{
+                                    duration: 0.3,
+                                  }}
+                                  className="overflow-hidden"
                                 >
-                                  {feature}
-                                </li>
-                              ))}
-                            </ul>
+                                  <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                                    {plan.features.map(
+                                      (feature, featureIndex) => (
+                                        <li
+                                          key={featureIndex}
+                                          className="flex gap-2"
+                                        >
+                                          <span className="shrink-0 text-[#CA617D]">
+                                            ✓
+                                          </span>
 
-                            {isEmbedded && (
+                                          <span>{feature}</span>
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+
+                                  {isEmbedded && (
+                                    <Button
+                                      variant="link"
+                                      className="mt-4 px-0"
+                                      onClick={() => setExpandedPlan(null)}
+                                    >
+                                      Hide features
+                                    </Button>
+                                  )}
+                                </MotionDiv>
+                              ) : null}
+                            </AnimatePresence>
+
+                            {/* ================================================= */}
+                            {/* CHOOSE PLAN */}
+                            {/* ================================================= */}
+
+                            <Button
+                              className="btn-gradient mt-7 w-full text-white"
+                              size="default"
+                              onClick={() => handleChoosePlan(plan)}
+                            >
+                              Choose Plan
+                            </Button>
+
+                            {/* ================================================= */}
+                            {/* SHOW FEATURES */}
+                            {/* ================================================= */}
+
+                            {isEmbedded && expandedPlan !== plan.name && (
                               <Button
                                 variant="link"
-                                className="mb-4"
-                                onClick={() => setExpandedPlan(null)}
+                                className="mt-4"
+                                onClick={() => setExpandedPlan(plan.name)}
                               >
-                                Hide features
+                                Show features
                               </Button>
                             )}
-                          </MotionDiv>
-                        ) : null}
-                      </AnimatePresence>
+                          </div>
+                        </div>
+                      ) : (
+                        /* ================================================= */
+                        /* NORMAL CARD */
+                        /* ================================================= */
 
-                      <button
-                        onClick={() => handleChoosePlan(plan)}
-                        className={clsx(
-                          "mt-auto w-full cursor-pointer rounded-lg px-5 py-3 text-base font-semibold transition-colors duration-300",
-                          plan.popular
-                            ? "btn-gradient border-0 text-white shadow-lg"
-                            : "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-muted-foreground/10"
-                        )}
-                      >
-                        Choose Plan
-                      </button>
+                        <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                          {/* ================================================= */}
+                          {/* PLAN NAME */}
+                          {/* ================================================= */}
 
-                      {isEmbedded && expandedPlan !== plan.name && (
-                        <Button
-                          variant="link"
-                          className="mt-4"
-                          onClick={() => setExpandedPlan(plan.name)}
-                        >
-                          Show features
-                        </Button>
+                          <h3 className="mt-2 text-2xl font-bold">
+                            {plan.name}
+                          </h3>
+
+                          {/* ================================================= */}
+                          {/* PRICE */}
+                          {/* ================================================= */}
+
+                          <div className="mt-5">
+                            <div className="text-4xl font-bold">
+                              {plan.price}
+                            </div>
+
+                            {plan.pricePerMonth && (
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                {plan.pricePerMonth}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* ================================================= */}
+                          {/* MEMBERSHIP VALUE */}
+                          {/* ================================================= */}
+
+                          <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
+                            <p className="font-semibold">
+                              {isAutoRenew
+                                ? `Subscribe for ${plan.recurringInterval.paid}`
+                                : `Pay for ${plan.duration.paid}`}
+                            </p>
+
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {isAutoRenew
+                                ? `Get ${plan.recurringInterval.total} of membership`
+                                : `Get ${plan.duration.total} of membership`}
+                            </p>
+                          </div>
+
+                          {/* ================================================= */}
+                          {/* FEATURES */}
+                          {/* ================================================= */}
+
+                          <AnimatePresence>
+                            {!isEmbedded || expandedPlan === plan.name ? (
+                              <MotionDiv
+                                initial={{
+                                  opacity: 0,
+                                  height: 0,
+                                }}
+                                animate={{
+                                  opacity: 1,
+                                  height: "auto",
+                                }}
+                                exit={{
+                                  opacity: 0,
+                                  height: 0,
+                                }}
+                                transition={{
+                                  duration: 0.3,
+                                }}
+                                className="overflow-hidden"
+                              >
+                                <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                                  {plan.features.map(
+                                    (feature, featureIndex) => (
+                                      <li
+                                        key={featureIndex}
+                                        className="flex gap-2"
+                                      >
+                                        <span className="shrink-0 text-[#D3A753]">
+                                          ✓
+                                        </span>
+
+                                        <span>{feature}</span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+
+                                {isEmbedded && (
+                                  <Button
+                                    variant="link"
+                                    className="mt-4 px-0"
+                                    onClick={() => setExpandedPlan(null)}
+                                  >
+                                    Hide features
+                                  </Button>
+                                )}
+                              </MotionDiv>
+                            ) : null}
+                          </AnimatePresence>
+
+                          {/* ================================================= */}
+                          {/* CHOOSE PLAN */}
+                          {/* ================================================= */}
+
+                          <Button
+                            variant="outline"
+                            size="default"
+                            className="mt-7 w-full border-[#D3A753]/40 hover:border-[#CA617D]/50 hover:bg-[#D3A753]/10"
+                            onClick={() => handleChoosePlan(plan)}
+                          >
+                            Choose Plan
+                          </Button>
+
+                          {/* ================================================= */}
+                          {/* SHOW FEATURES */}
+                          {/* ================================================= */}
+
+                          {isEmbedded && expandedPlan !== plan.name && (
+                            <Button
+                              variant="link"
+                              className="mt-4"
+                              onClick={() => setExpandedPlan(plan.name)}
+                            >
+                              Show features
+                            </Button>
+                          )}
+                        </div>
                       )}
                     </MotionDiv>
                   ))}

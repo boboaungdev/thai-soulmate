@@ -49,8 +49,23 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 
+// Email type
+type MockEmail = {
+  id: string
+  from?: string
+  to?: string
+  subject: string
+  preview: string
+  date: string
+  unread: boolean
+  starred: boolean
+}
+
 // Mock emails data for demo
-const mockEmails = {
+const mockEmails: {
+  inbox: MockEmail[]
+  sent: MockEmail[]
+} = {
   inbox: [
     {
       id: "1",
@@ -83,6 +98,7 @@ const mockEmails = {
       starred: false,
     },
   ],
+
   sent: [
     {
       id: "s1",
@@ -137,19 +153,17 @@ export default function EmailFolderDynamicPage() {
     subject?: string
     body?: string
   }>({})
-  const [selectedEmail, setSelectedEmail] = React.useState<
-    (typeof mockEmails.inbox)[0] | null
-  >(null)
 
+  const [selectedEmail, setSelectedEmail] = React.useState<MockEmail | null>(
+    null
+  )
   const emailList = folderParam === "sent" ? mockEmails.sent : mockEmails.inbox
 
   const filteredEmails = emailList.filter(
     (email) =>
       email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ("from" in email &&
-        email.from?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      ("to" in email &&
-        email.to?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      email.from?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      email.to?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       email.preview.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
@@ -195,7 +209,7 @@ export default function EmailFolderDynamicPage() {
           </Tabs>
 
           <Button
-            className="gap-1.5 btn-gradient"
+            className="btn-gradient gap-1.5"
             onClick={() => {
               setComposeData({})
               setComposeOpen(true)

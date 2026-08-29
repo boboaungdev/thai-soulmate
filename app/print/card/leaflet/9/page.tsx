@@ -361,36 +361,38 @@ export default function MarketingLeafletPrintPage() {
           </div>
 
           {/* ======================================================
-    MODERN HERO IMAGE
+    MODERN HERO IMAGE — PERFECTLY CENTERED
     ====================================================== */}
 
-          <div className="absolute top-[47mm] right-[9mm] left-[9mm] h-[67mm]">
-            {/* Large soft decorative shape */}
+          <div className="absolute top-[46mm] right-0 left-0 h-[70mm]">
+            {/* Decorative background shape */}
+
             <div
-              className="absolute top-[8mm] left-[3mm] h-[57mm] w-[103mm] opacity-30"
+              className="absolute top-[5mm] left-1/2 h-[62mm] w-[110mm] -translate-x-1/2 opacity-25"
               style={{
                 background:
-                  "linear-gradient(135deg, #D3A753 0%, #E791A7 48%, #CA617D 100%)",
-                borderRadius: "48% 52% 45% 55% / 58% 42% 58% 42%",
+                  "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+                borderRadius: "28mm 8mm 28mm 8mm",
                 filter: "blur(1px)",
-                transform: "rotate(-3deg)",
               }}
             />
 
-            {/* Main image frame */}
+            {/* ==================================================
+      MAIN CENTERED IMAGE
+      ================================================== */}
+
             <div
-              className="absolute top-[3mm] left-[4mm] h-[58mm] w-[96mm] p-[0.5mm] shadow-2xl"
+              className="absolute top-[1mm] left-1/2 h-[64mm] w-[106mm] -translate-x-1/2 p-[0.6mm] shadow-2xl"
               style={{
                 background:
-                  "linear-gradient(135deg, #D3A753 0%, #E791A7 48%, #CA617D 100%)",
-                borderRadius: "42% 58% 48% 52% / 48% 42% 58% 52%",
-                transform: "rotate(-2deg)",
+                  "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+                borderRadius: "25mm 6mm 25mm 6mm",
               }}
             >
               <div
                 className="relative h-full w-full overflow-hidden bg-[#FBF8F3]"
                 style={{
-                  borderRadius: "42% 58% 48% 52% / 48% 42% 58% 52%",
+                  borderRadius: "24mm 5.5mm 24mm 5.5mm",
                 }}
               >
                 <Image
@@ -401,110 +403,55 @@ export default function MarketingLeafletPrintPage() {
                   quality={100}
                   unoptimized
                   className="object-cover"
-                  sizes="96mm"
+                  sizes="106mm"
                 />
 
-                {/* Elegant photo overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#39040E]/75 via-transparent to-[#39040E]/5" />
+                {/* Elegant overlay */}
 
-                {/* Bottom message */}
-                <div className="absolute right-[7mm] bottom-[6mm] left-[7mm]">
-                  <p className="font-serif text-[5.2mm] leading-[1.08] text-white italic">
-                    Real People.
+                <div className="absolute inset-0 bg-gradient-to-t from-[#39040E]/85 via-[#39040E]/10 to-transparent" />
+
+                {/* Main message */}
+
+                <div className="absolute right-[7mm] bottom-[5mm] left-[10mm]">
+                  <p className="font-serif text-[5.2mm] leading-[1.08] italic">
+                    {/* Gold */}
+                    <span className="text-[#D3A753]">Real People.</span>
+
                     <br />
-                    <span className="text-[#F5D98C]">Real Relationships.</span>
-                  </p>
 
-                  <div className="mt-[2mm] flex items-center gap-[2mm]">
-                    <div className="h-[0.5px] w-[12mm] bg-[#D3A753]" />
+                    {/* Pink */}
+                    <span className="text-[#E791A7]">Real Relationships.</span>
 
-                    <span className="font-sans text-[2.2mm] font-semibold tracking-[0.18em] text-white/80 uppercase">
+                    <br />
+
+                    {/* Gold → Pink gradient */}
+                    <span className="bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D] bg-clip-text text-transparent">
                       Personally Matched in Thailand.
                     </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ==================================================
-      FLOATING MATCHMAKING BADGE
-      ================================================== */}
-
-            <div
-              className="absolute top-[1mm] right-[1mm] z-20 flex h-[22mm] w-[22mm] items-center justify-center rounded-full p-[0.5mm] shadow-xl"
-              style={{
-                background:
-                  "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
-              }}
-            >
-              <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#5A0816] text-center">
-                <Heart
-                  size={12}
-                  color="#D3A753"
-                  fill="#D3A753"
-                  strokeWidth={1.5}
-                />
-
-                <span className="mt-[1mm] font-sans text-[2mm] font-bold tracking-[0.12em] text-white uppercase">
-                  1-2-1
-                </span>
-
-                <span className="font-sans text-[1.7mm] font-medium tracking-[0.08em] text-white/70 uppercase">
-                  Matchmaking
-                </span>
-              </div>
-            </div>
-
-            {/* ==================================================
-      SMALL FLOATING CARD
-      ================================================== */}
-
-            <div
-              className="absolute right-[8mm] bottom-[0mm] z-30 w-[42mm] rounded-[3mm] border border-white/70 bg-white/95 px-[3mm] py-[2.5mm] shadow-xl"
-              style={{
-                transform: "rotate(3deg)",
-                backdropFilter: "blur(8px)",
-              }}
-            >
-              <div className="flex items-center gap-[2mm]">
-                <div
-                  className="flex h-[8mm] w-[8mm] shrink-0 items-center justify-center rounded-full"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #D3A753, #E791A7, #CA617D)",
-                  }}
-                >
-                  <Heart
-                    size={13}
-                    color="white"
-                    fill="white"
-                    strokeWidth={1.5}
-                  />
-                </div>
-
-                <div>
-                  <p className="font-sans text-[2.4mm] leading-none font-bold text-[#5A0816]">
-                    Personal Matching
-                  </p>
-
-                  <p className="mt-[1mm] font-sans text-[1.9mm] leading-[1.2] text-[#241e2a]/60">
-                    Meaningful introductions,
-                    <br />
-                    thoughtfully made.
                   </p>
                 </div>
               </div>
             </div>
 
             {/* ==================================================
-      DECORATIVE GOLD DOTS
+      LEFT DECORATION
       ================================================== */}
 
-            <div className="absolute top-[28mm] left-[0mm] h-[3mm] w-[3mm] rounded-full bg-[#D3A753]" />
+            <div className="absolute top-[15mm] left-[14mm] h-[7mm] w-[7mm] rounded-full border border-[#D3A753]/60" />
 
-            <div className="absolute top-[34mm] left-[1.5mm] h-[1.5mm] w-[1.5mm] rounded-full bg-[#E791A7]" />
+            <div className="absolute top-[28mm] left-[9mm] h-[2mm] w-[2mm] rounded-full bg-[#E791A7]" />
 
-            <div className="absolute bottom-[13mm] left-[7mm] h-[2mm] w-[2mm] rounded-full bg-[#CA617D]" />
+            <div className="absolute top-[35mm] left-[16mm] h-[1.5mm] w-[1.5mm] rounded-full bg-[#CA617D]" />
+
+            {/* ==================================================
+      RIGHT DECORATION
+      ================================================== */}
+
+            <div className="absolute top-[12mm] right-[14mm] h-[9mm] w-[9mm] rounded-full border border-[#E791A7]/50" />
+
+            <div className="absolute top-[27mm] right-[8mm] h-[2mm] w-[2mm] rounded-full bg-[#D3A753]" />
+
+            <div className="absolute top-[35mm] right-[15mm] h-[1.5mm] w-[1.5mm] rounded-full bg-[#CA617D]" />
           </div>
 
           {/* ======================================================

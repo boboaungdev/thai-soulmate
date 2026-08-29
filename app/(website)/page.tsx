@@ -75,28 +75,24 @@ export default function HomePage() {
               />
 
               <div className="space-y-3">
-  <AppName className="text-3xl font-bold sm:text-4xl md:text-4xl" />
+                <AppName className="text-3xl font-bold sm:text-4xl md:text-4xl" />
 
-  <div className="space-y-0">
-    <p className="text-lg font-bold md:text-xl">
-      <span className="text-[#CA617D]">
-        Exclusive
-      </span>
-    </p>
+                <div className="space-y-0">
+                  <p className="text-lg font-bold md:text-xl">
+                    <span className="text-[#CA617D]">Exclusive</span>
+                  </p>
 
-    <p className="text-lg font-bold md:text-xl">
-      <span className="text-[#D3A753]">
-        {APP_INFO.tagline}
-      </span>
-    </p>
+                  <p className="text-lg font-bold md:text-xl">
+                    <span className="text-[#D3A753]">{APP_INFO.tagline}</span>
+                  </p>
 
-    {/* <p className="pt-4 text-lg font-bold md:text-xl">
-      <span className="text-gradient whitespace-pre-line">
-        {APP_INFO.secondaryTagline}
-      </span>
-    </p> */}
-  </div>
-</div>
+                  <p className="pt-4 text-lg font-bold md:text-xl">
+                    <span className="text-gradient whitespace-pre-line">
+                      {APP_INFO.secondaryTagline}
+                    </span>
+                  </p>
+                </div>
+              </div>
 
               <div className="flex flex-wrap justify-center gap-4">
                 <Button

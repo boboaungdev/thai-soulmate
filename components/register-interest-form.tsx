@@ -1117,7 +1117,7 @@ export function RegisterInterestForm() {
 
               <p className="mt-2 text-xs text-muted-foreground">
                 Business hours are 10:00 – 20:00. Choose a date within the next
-                7 days and a 1-hour time range when we can call you.
+                7 days when we can contact to you.
               </p>
             </MotionDiv>
 

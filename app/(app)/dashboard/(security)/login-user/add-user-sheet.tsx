@@ -77,7 +77,8 @@ export function AddUserSheet({
       name: "",
       email: "",
       password: "",
-      role: Role.MEMBER as Role,
+      role: Role.STAFF as Role,
+      // role: Role.MEMBER as Role,
       avatar: null as string | null, // This will temporarily hold the URL, but the file is in avatarFile state
     },
   })
@@ -317,17 +318,27 @@ export function AddUserSheet({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {Object.values(Role).map((role) => {
-                            const Icon = roleIcons[role]
-                            return (
-                              <SelectItem key={role} value={role}>
-                                <div className="flex items-center gap-2">
-                                  <Icon className="h-4 w-4 text-muted-foreground" />
-                                  {role}
-                                </div>
-                              </SelectItem>
-                            )
-                          })}
+                          {Object.values(Role)
+                            .filter((role) => role !== Role.MEMBER) // Hide MEMBER role for now
+                            .map((role) => {
+                              const Icon = roleIcons[role]
+                              return (
+                                <SelectItem key={role} value={role}>
+                                  <div className="flex items-center gap-2">
+                                    <Icon className="h-4 w-4 text-muted-foreground" />
+                                    {role}
+                                  </div>
+                                </SelectItem>
+                              )
+                            })}
+                          {/* MEMBER role commented out for now
+                          <SelectItem value={Role.MEMBER}>
+                            <div className="flex items-center gap-2">
+                              <User className="h-4 w-4 text-muted-foreground" />
+                              {Role.MEMBER}
+                            </div>
+                          </SelectItem>
+                          */}
                         </SelectContent>
                       </Select>
                     </div>

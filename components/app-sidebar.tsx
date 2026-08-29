@@ -29,10 +29,13 @@ import {
   Calendar1,
   Inbox,
   Mail,
+  ChevronRight,
+  Send,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { APP_INFO } from "@/constants"
+import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
 import { AppName } from "@/components/app-name"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -44,6 +47,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import { Switch } from "@/components/ui/switch"
 import {
   Sidebar,
@@ -56,6 +64,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
 import React from "react"
@@ -165,18 +176,89 @@ const feedbackItems = [
   },
 ]
 
-const EmailItems = [
-  {
-    title: "socials@gmail.com",
-    url: "#",
-    icon: Mail,
-  },
-  {
-    title: "contact@thaisoulmate.com",
-    url: "#",
-    icon: Mail,
-  },
-]
+const emailFolderIcons: Record<string, React.ElementType> = {
+  inbox: Inbox,
+  sent: Send,
+  settings: Settings2,
+}
+
+type EmailNavigationItem = {
+  title: string
+  url: string
+  icon: React.ElementType
+  items?: {
+    title: string
+    url: string
+    icon: React.ElementType
+  }[]
+}
+
+function EmailSidebarMenuItem({
+  item,
+  pathname,
+}: {
+  item: EmailNavigationItem
+  pathname: string
+}) {
+  const hasSubItems = Boolean(item.items && item.items.length > 0)
+  const isAnySubActive = Boolean(
+    item.items?.some((sub) => pathname.startsWith(sub.url))
+  )
+
+  if (!hasSubItems) {
+    return (
+      <SidebarMenuItem key={item.title}>
+        <SidebarMenuButton
+          asChild
+          tooltip={item.title}
+          isActive={pathname === item.url}
+        >
+          <Link href={item.url}>
+            <item.icon />
+            <span>{item.title}</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    )
+  }
+
+  return (
+    <Collapsible
+      key={item.title}
+      asChild
+      defaultOpen={isAnySubActive}
+      className="group/collapsible"
+    >
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton tooltip={item.title}>
+            <item.icon />
+            <span className="truncate">{item.title}</span>
+            <ChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {item.items?.map((subItem) => (
+              <SidebarMenuSubItem key={subItem.title}>
+                <SidebarMenuSubButton
+                  asChild
+                  isActive={pathname === subItem.url}
+                >
+                  <Link href={subItem.url}>
+                    {subItem.icon && <subItem.icon />}
+                    <span>{subItem.title}</span>
+                  </Link>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  )
+}
 
 export function AppSidebar() {
   const { user, logout } = useAuthStore()
@@ -187,6 +269,30 @@ export function AppSidebar() {
   if (!user) {
     return null
   }
+
+  const personalEmailItem: EmailNavigationItem = {
+    title: user.email,
+    url: "/dashboard/email/personal/inbox",
+    icon: Mail,
+    items: EMAIL_FOLDERS.map((folder) => ({
+      title: folder.title,
+      url: `/dashboard/email/personal/${folder.slug}`,
+      icon: emailFolderIcons[folder.id] ?? Mail,
+    })),
+  }
+
+  const workEmailItems: EmailNavigationItem[] = EMAIL_ACCOUNTS.map(
+    (account) => ({
+      title: account.email,
+      url: `/dashboard/email/${account.id}/inbox`,
+      icon: Mail,
+      items: EMAIL_FOLDERS.map((folder) => ({
+        title: folder.title,
+        url: `/dashboard/email/${account.id}/${folder.slug}`,
+        icon: emailFolderIcons[folder.id] ?? Mail,
+      })),
+    })
+  )
 
   return (
     <Sidebar collapsible="icon">
@@ -386,20 +492,28 @@ export function AppSidebar() {
             </SidebarGroupLabel>
 
             <SidebarGroupContent>
+              {/* Personal Section */}
+              <div className="px-2 pt-1 pb-1 text-[11px] font-semibold tracking-wider text-sidebar-foreground/60 uppercase group-data-[collapsible=icon]:hidden">
+                Personal
+              </div>
               <SidebarMenu>
-                {EmailItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={item.title}
-                      isActive={pathname === item.url}
-                    >
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                <EmailSidebarMenuItem
+                  item={personalEmailItem}
+                  pathname={pathname}
+                />
+              </SidebarMenu>
+
+              {/* Work Section */}
+              <div className="px-2 pt-3 pb-1 text-[11px] font-semibold tracking-wider text-sidebar-foreground/60 uppercase group-data-[collapsible=icon]:hidden">
+                Work
+              </div>
+              <SidebarMenu>
+                {workEmailItems.map((item) => (
+                  <EmailSidebarMenuItem
+                    key={item.title}
+                    item={item}
+                    pathname={pathname}
+                  />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>

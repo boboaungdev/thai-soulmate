@@ -135,46 +135,6 @@ function SectionTitle({
 }
 
 /* ============================================================
-   PAGE 1 FEATURE
-   ============================================================ */
-
-function Feature({
-  icon,
-  title,
-  text,
-}: {
-  icon: React.ReactNode
-  title: string
-  text: string
-}) {
-  return (
-    <div className="rounded-[2.5mm] border border-[#D3A753]/25 bg-[#FFF9F3] px-[3mm] py-[2mm]">
-      <div className="flex items-center gap-[2.5mm]">
-        <div
-          className="flex h-[8.5mm] w-[8.5mm] shrink-0 items-center justify-center rounded-full p-[0.3mm]"
-          style={{
-            background:
-              "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
-          }}
-        >
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-[#FFF9F3]">
-            {icon}
-          </div>
-        </div>
-
-        <h3 className="font-sans text-[3mm] leading-[1.15] font-bold text-[#5A0816]">
-          {title}
-        </h3>
-      </div>
-
-      <p className="mt-[2mm] font-sans text-[3mm] leading-[1.4] text-[#241e2a]/65">
-        {text}
-      </p>
-    </div>
-  )
-}
-
-/* ============================================================
    CONTACT ITEM
    ============================================================ */
 

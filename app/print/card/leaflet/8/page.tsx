@@ -17,8 +17,10 @@ import {
 import { QRCodeSVG } from "qrcode.react"
 import {
   FaFacebook,
+  FaFemale,
   FaInstagram,
   FaLine,
+  FaMale,
   FaTiktok,
   FaWhatsapp,
 } from "react-icons/fa"
@@ -538,7 +540,7 @@ export default function MarketingLeafletPrintPage() {
           {/* ======================================================
     WHO WE HELP
     ====================================================== */}
-          <div className="absolute top-[74mm] right-[10mm] left-[10mm] z-20">
+          <div className="absolute top-[72mm] right-[10mm] left-[10mm] z-20">
             <div className="flex items-center justify-center gap-[2.5mm]">
               <div
                 className="h-px w-[22mm] shrink-0"
@@ -574,21 +576,66 @@ export default function MarketingLeafletPrintPage() {
                 }}
               >
                 <div className="flex flex-col items-center text-center">
-                  {/* Heart Icon */}
-                  <div
-                    className="flex h-[9mm] w-[9mm] items-center justify-center rounded-full p-[0.3mm]"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
-                    }}
-                  >
-                    <div className="flex h-full w-full items-center justify-center rounded-full bg-[#FBF8F3]">
-                      <Heart
-                        size={17}
-                        color="#CA617D"
-                        fill="#CA617D"
-                        strokeWidth={1.8}
-                      />
+                  {/* ====================================================
+    FOREIGN GENTLEMEN / THAI LADIES
+    ==================================================== */}
+
+                  <div className="flex items-center justify-center gap-[6mm]">
+                    {/* Foreign Gentlemen */}
+                    <div className="flex flex-col items-center">
+                      <FaMale size={22} color="#D3A753" />
+
+                      <span className="mt-[1mm] text-center font-sans text-[2.8mm] leading-[1.15] font-semibold text-[#5A0816]">
+                        Foreign Gentlemen
+                      </span>
+                    </div>
+
+                    {/* Heart with & */}
+                    <div className="relative flex h-[10mm] w-[10mm] items-center justify-center">
+                      {/* Gradient Heart & */}
+                      <div className="relative flex h-[10mm] w-[10mm] items-center justify-center">
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="absolute h-[10mm] w-[10mm]"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <defs>
+                            <linearGradient
+                              id="heart-gradient"
+                              x1="0%"
+                              y1="0%"
+                              x2="100%"
+                              y2="100%"
+                            >
+                              <stop offset="0%" stopColor="#D3A753" />
+                              <stop offset="50%" stopColor="#E791A7" />
+                              <stop offset="100%" stopColor="#CA617D" />
+                            </linearGradient>
+                          </defs>
+
+                          <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                            fill="url(#heart-gradient)"
+                          />
+                        </svg>
+
+                        <span className="relative z-10 -mt-[0.5mm] font-serif text-[3mm] font-bold text-white">
+                          &amp;
+                        </span>
+                      </div>
+
+                      <span className="relative z-10 -mt-[0.5mm] font-serif text-[3mm] font-bold text-white">
+                        &amp;
+                      </span>
+                    </div>
+
+                    {/* Thai Ladies */}
+                    <div className="flex flex-col items-center">
+                      <FaFemale size={22} color="#CA617D" />
+
+                      <span className="mt-[1mm] text-center font-sans text-[2.8mm] leading-[1.15] font-semibold text-[#5A0816]">
+                        Thai Ladies
+                      </span>
                     </div>
                   </div>
 

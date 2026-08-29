@@ -1,9 +1,8 @@
 "use client"
 
-import clsx from "clsx"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Flame, Sparkles, Crown, Clock, Venus } from "lucide-react"
+import { Flame, Crown, Clock, Venus } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { PLANS } from "@/constants"
 import { MotionDiv } from "@/components/motion"
@@ -31,7 +30,6 @@ export function PricingPageContents({
   const searchParams = useSearchParams()
 
   const isFromApplicationForm = searchParams.get("mode") === "register"
-
   const userDataFromUrl = searchParams.get("userData")
 
   const [userData, setUserData] = useState<User | null>(embeddedUserData)
@@ -176,7 +174,6 @@ export function PricingPageContents({
             {/* ===================================================== */}
 
             <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              {/* Tabs */}
               <div className="w-full overflow-x-auto sm:w-auto">
                 <TabsList className="mx-auto flex w-max min-w-max">
                   <TabsTrigger
@@ -220,6 +217,7 @@ export function PricingPageContents({
               </div>
 
               {/* Auto Renew */}
+
               <div className="flex shrink-0 items-center gap-2">
                 <Label
                   htmlFor="auto-renew-toggle"
@@ -267,8 +265,6 @@ export function PricingPageContents({
                       our 1-2-1 matchmaking service.
                     </p>
 
-                    {/* Limited Availability */}
-
                     <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/10 to-[#CA617D]/10 px-4 py-2 text-sm font-semibold">
                       <Clock className="size-4 animate-spin text-[#CA617D]" />
 
@@ -287,119 +283,56 @@ export function PricingPageContents({
                     {/* 1 MONTH */}
                     {/* ================================================= */}
 
-                    <div className="relative flex flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                      <div className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white">
-                        50% OFF
-                      </div>
-
-                      <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
-                        Launch Offer
-                      </p>
-
-                      <h3 className="mt-2 text-2xl font-bold">1 Month</h3>
-
-                      <div className="mt-5">
-                        <span className="text-sm text-muted-foreground line-through">
-                          ฿29,999
-                        </span>
-
-                        <div className="mt-1 text-4xl font-bold">฿14,999</div>
-                      </div>
-
-                      <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
-                        <p className="font-semibold">
-                          {isAutoRenew
-                            ? "Subscribe for 1 month"
-                            : "Pay for 1 month"}
-                        </p>
-
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          Get 6 months of membership
-                        </p>
-                      </div>
-
-                      <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                        {PLANS[0]?.features?.map((feature, index) => (
-                          <li key={index} className="flex gap-2">
-                            <span className="text-[#D3A753]">✓</span>
-
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <Button
-                        className="mt-7 w-full text-white"
-                        variant="outline"
-                        size="default"
-                        onClick={() => {
-                          const plan = PLANS.find(
-                            (item) => item.id === "1-month"
-                          )
-
-                          if (plan) {
-                            handleChoosePlan(plan)
-                          }
-                        }}
-                      >
-                        Claim Launch Offer
-                      </Button>
-                    </div>
-
-                    {/* ================================================= */}
-                    {/* 3 MONTHS — MOST POPULAR */}
-                    {/* ================================================= */}
-
-                    <div className="relative flex flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-                      <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
-                        {/* Most Popular */}
-
-                        <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
-                          <Flame className="size-4" />
-
-                          <span>Most Popular</span>
+                    <MotionDiv
+                      initial={{
+                        opacity: 0,
+                        y: 15,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0 * 0.1,
+                      }}
+                      className="relative"
+                    >
+                      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                        <div className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white">
+                          50% OFF
                         </div>
 
-                        {/* Discount */}
-
-                        <div className="btn-gradient absolute top-4 right-4 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm">
-                          43% OFF
-                        </div>
-
-                        <p className="text-gradient mt-2 text-sm font-semibold tracking-wider uppercase">
-                          Best Launch Value
+                        <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
+                          Launch Offer
                         </p>
 
-                        <h3 className="mt-2 text-2xl font-bold">3 Months</h3>
+                        <h3 className="mt-2 text-2xl font-bold">1 Month</h3>
 
                         <div className="mt-5">
                           <span className="text-sm text-muted-foreground line-through">
-                            ฿34,999
+                            ฿29,999
                           </span>
 
-                          <div className="mt-1 text-4xl font-bold">฿19,999</div>
+                          <div className="mt-1 text-4xl font-bold">฿14,999</div>
                         </div>
 
-                        <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
+                        <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
                           <p className="font-semibold">
                             {isAutoRenew
-                              ? "Subscribe for 3 months"
-                              : "Pay for 3 months"}
+                              ? "Subscribe for 1 month"
+                              : "Pay for 1 month"}
                           </p>
 
                           <p className="mt-1 text-sm text-muted-foreground">
-                            Get 9 months of membership
+                            Get 6 months of membership
                           </p>
                         </div>
 
                         <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                          {PLANS.find(
-                            (item) => item.id === "3-months"
-                          )?.features?.map((feature, index) => (
+                          {PLANS[0]?.features?.map((feature, index) => (
                             <li key={index} className="flex gap-2">
-                              <span className="text-[#CA617D]">✓</span>
+                              <span className="text-[#D3A753]">✓</span>
 
                               <span>{feature}</span>
                             </li>
@@ -407,11 +340,12 @@ export function PricingPageContents({
                         </ul>
 
                         <Button
-                          className="btn-gradient mt-7 w-full text-white"
+                          className="mt-7 w-full text-white"
+                          variant="outline"
                           size="default"
                           onClick={() => {
                             const plan = PLANS.find(
-                              (item) => item.id === "3-months"
+                              (item) => item.id === "1-month"
                             )
 
                             if (plan) {
@@ -422,99 +356,211 @@ export function PricingPageContents({
                           Claim Launch Offer
                         </Button>
                       </div>
-                    </div>
+                    </MotionDiv>
+
+                    {/* ================================================= */}
+                    {/* 3 MONTHS — MOST POPULAR */}
+                    {/* ================================================= */}
+
+                    <MotionDiv
+                      initial={{
+                        opacity: 0,
+                        y: 15,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 1 * 0.1,
+                      }}
+                      className="relative"
+                    >
+                      <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+
+                        <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
+                          {/* Most Popular */}
+
+                          <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
+                            <Flame className="size-4" />
+
+                            <span>Most Popular</span>
+                          </div>
+
+                          {/* Discount */}
+
+                          <div className="btn-gradient absolute top-4 right-4 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm">
+                            43% OFF
+                          </div>
+
+                          <p className="text-gradient mt-2 text-sm font-semibold tracking-wider uppercase">
+                            Best Launch Value
+                          </p>
+
+                          <h3 className="mt-2 text-2xl font-bold">3 Months</h3>
+
+                          <div className="mt-5">
+                            <span className="text-sm text-muted-foreground line-through">
+                              ฿34,999
+                            </span>
+
+                            <div className="mt-1 text-4xl font-bold">
+                              ฿19,999
+                            </div>
+                          </div>
+
+                          <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
+                            <p className="font-semibold">
+                              {isAutoRenew
+                                ? "Subscribe for 3 months"
+                                : "Pay for 3 months"}
+                            </p>
+
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              Get 9 months of membership
+                            </p>
+                          </div>
+
+                          <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                            {PLANS.find(
+                              (item) => item.id === "3-months"
+                            )?.features?.map((feature, index) => (
+                              <li key={index} className="flex gap-2">
+                                <span className="text-[#CA617D]">✓</span>
+
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+
+                          <Button
+                            className="btn-gradient mt-7 w-full text-white"
+                            size="default"
+                            onClick={() => {
+                              const plan = PLANS.find(
+                                (item) => item.id === "3-months"
+                              )
+
+                              if (plan) {
+                                handleChoosePlan(plan)
+                              }
+                            }}
+                          >
+                            Claim Launch Offer
+                          </Button>
+                        </div>
+                      </div>
+                    </MotionDiv>
 
                     {/* ================================================= */}
                     {/* TRY BEFORE YOU BUY */}
                     {/* ================================================= */}
 
-                    <div className="relative flex flex-col overflow-hidden rounded-2xl border border-[#E791A7]/40 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                      <div className="absolute top-4 right-4 rounded-full bg-[#E791A7]/15 px-3 py-1 text-xs font-bold text-[#CA617D]">
-                        Free Trial
-                      </div>
-
-                      <p className="mt-2 text-sm font-semibold tracking-wider text-[#CA617D] uppercase">
-                        New Member Experience
-                      </p>
-
-                      <h3 className="mt-2 text-2xl font-bold">
-                        Try Before You Buy
-                      </h3>
-
-                      <div className="mt-5">
-                        <span className="text-sm text-muted-foreground line-through">
-                          ฿14,999
-                        </span>
-
-                        <div className="mt-1 text-4xl font-bold">
+                    <MotionDiv
+                      initial={{
+                        opacity: 0,
+                        y: 15,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 2 * 0.1,
+                      }}
+                      className="relative"
+                    >
+                      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                        <div className="absolute top-4 right-4 rounded-full bg-[#D3A753]/15 px-3 py-1 text-xs font-bold text-[#B78D46]">
                           Free Trial
                         </div>
-                      </div>
 
-                      <div className="mt-5 rounded-xl bg-[#E791A7]/10 p-4">
-                        <p className="font-semibold">
-                          {isAutoRenew
-                            ? "Subscribe for 1 month at ฿24,999"
-                            : "Continue with 1 month for ฿24,999"}
+                        <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
+                          New Member Experience
                         </p>
 
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          Get 6 months of membership
-                        </p>
+                        <h3 className="mt-2 text-2xl font-bold">
+                          Try Before You Buy
+                        </h3>
+
+                        <div className="mt-5">
+                          <span className="text-sm text-muted-foreground line-through">
+                            ฿14,999
+                          </span>
+
+                          <div className="mt-1 text-4xl font-bold">
+                            Free Trial
+                          </div>
+                        </div>
+
+                        <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
+                          <p className="font-semibold">
+                            {isAutoRenew
+                              ? "Subscribe for 1 month at ฿24,999"
+                              : "Continue with 1 month for ฿24,999"}
+                          </p>
+
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            Get 6 months of membership
+                          </p>
+                        </div>
+
+                        <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                          <li className="flex gap-2">
+                            <span className="shrink-0 text-[#D3A753]">✓</span>
+
+                            <span>Meet 1 personally selected matches</span>
+                          </li>
+
+                          <li className="flex gap-2">
+                            <span className="shrink-0 text-[#D3A753]">✓</span>
+
+                            <span>Personal 1-2-1 matchmaking service</span>
+                          </li>
+
+                          <li className="flex gap-2">
+                            <span className="shrink-0 text-[#D3A753]">✓</span>
+
+                            <span>Hand picked introductions</span>
+                          </li>
+
+                          <li className="flex gap-2">
+                            <span className="shrink-0 text-[#D3A753]">✓</span>
+
+                            <span>
+                              Experience the service before committing
+                            </span>
+                          </li>
+
+                          <li className="flex gap-2">
+                            <span className="shrink-0 text-[#D3A753]">✓</span>
+
+                            <span>Continue with 1 month membership</span>
+                          </li>
+
+                          <li className="flex gap-2">
+                            <span className="shrink-0 text-[#D3A753]">✓</span>
+
+                            <span>Get 6 months of membership for ฿24,999</span>
+                          </li>
+                        </ul>
+
+                        <Button
+                          variant="outline"
+                          size="default"
+                          className="mt-7 w-full border-[#D3A753]/40 hover:border-[#CA617D]/50 hover:bg-[#D3A753]/10"
+                          onClick={() => {
+                            console.log("Try Before You Buy selected")
+                          }}
+                        >
+                          Try Before You Buy
+                        </Button>
                       </div>
-
-                      <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                        <li className="flex gap-2">
-                          <span className="text-[#CA617D]">✓</span>
-
-                          <span>Meet 1 personally selected matches</span>
-                        </li>
-
-                        <li className="flex gap-2">
-                          <span className="text-[#CA617D]">✓</span>
-
-                          <span>Personal 1-2-1 matchmaking service</span>
-                        </li>
-
-                        <li className="flex gap-2">
-                          <span className="text-[#CA617D]">✓</span>
-
-                          <span>Hand picked introductions</span>
-                        </li>
-
-                        <li className="flex gap-2">
-                          <span className="text-[#CA617D]">✓</span>
-
-                          <span>Experience the service before committing</span>
-                        </li>
-
-                        <li className="flex gap-2">
-                          <span className="text-[#CA617D]">✓</span>
-
-                          <span>Continue with 1 month membership</span>
-                        </li>
-
-                        <li className="flex gap-2">
-                          <span className="text-[#CA617D]">✓</span>
-
-                          <span>Get 6 months of membership for ฿24,999</span>
-                        </li>
-                      </ul>
-
-                      <Button
-                        variant="outline"
-                        size="default"
-                        className="mt-7 w-full border-[#CA617D]/40 hover:bg-[#CA617D]/10"
-                        onClick={() => {
-                          console.log("Try Before You Buy selected")
-                        }}
-                      >
-                        Try Before You Buy
-                      </Button>
-                    </div>
+                    </MotionDiv>
                   </div>
-
-                  {/* Promotion Note */}
 
                   <p className="mt-7 text-sm text-muted-foreground">
                     * Launch promotion is available to the first 15 eligible
@@ -542,8 +588,6 @@ export function PricingPageContents({
                   duration: 0.4,
                 }}
               >
-                {/* Regular Heading */}
-
                 <div className="mx-auto max-w-3xl">
                   <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
                     Regular Membership
@@ -554,8 +598,6 @@ export function PricingPageContents({
                     service.
                   </p>
                 </div>
-
-                {/* Regular Cards */}
 
                 <div className="mt-10 grid gap-6 md:grid-cols-3">
                   {PLANS.map((plan, index) => (
@@ -576,33 +618,19 @@ export function PricingPageContents({
                       className="relative"
                     >
                       {plan.popular ? (
-                        /* ================================================= */
-                        /* MOST POPULAR CARD */
-                        /* ================================================= */
-
                         <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                          {/* Gradient Border */}
-
                           <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
-                          {/* Inner Card */}
-
                           <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
-                            {/* Most Popular */}
-
                             <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
                               <Flame className="size-4" />
 
                               <span>Most Popular</span>
                             </div>
 
-                            {/* Plan Name */}
-
                             <h3 className="text-gradient mt-2 text-2xl font-bold">
                               {plan.name}
                             </h3>
-
-                            {/* Price */}
 
                             <div className="mt-5">
                               <div className="text-4xl font-bold">
@@ -615,8 +643,6 @@ export function PricingPageContents({
                                 </p>
                               )}
                             </div>
-
-                            {/* Membership Value */}
 
                             <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
                               <p className="font-semibold">
@@ -631,8 +657,6 @@ export function PricingPageContents({
                                   : `Get ${plan.duration.total} of membership`}
                               </p>
                             </div>
-
-                            {/* Features */}
 
                             <AnimatePresence>
                               {!isEmbedded || expandedPlan === plan.name ? (
@@ -684,8 +708,6 @@ export function PricingPageContents({
                               ) : null}
                             </AnimatePresence>
 
-                            {/* Choose Plan */}
-
                             <Button
                               className="btn-gradient mt-7 w-full text-white"
                               size="default"
@@ -693,8 +715,6 @@ export function PricingPageContents({
                             >
                               Choose Plan
                             </Button>
-
-                            {/* Show Features */}
 
                             {isEmbedded && expandedPlan !== plan.name && (
                               <Button
@@ -708,18 +728,10 @@ export function PricingPageContents({
                           </div>
                         </div>
                       ) : (
-                        /* ================================================= */
-                        /* NORMAL CARD */
-                        /* ================================================= */
-
                         <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                          {/* Plan Name */}
-
                           <h3 className="mt-2 text-2xl font-bold">
                             {plan.name}
                           </h3>
-
-                          {/* Price */}
 
                           <div className="mt-5">
                             <div className="text-4xl font-bold">
@@ -732,8 +744,6 @@ export function PricingPageContents({
                               </p>
                             )}
                           </div>
-
-                          {/* Membership Value */}
 
                           <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
                             <p className="font-semibold">
@@ -748,8 +758,6 @@ export function PricingPageContents({
                                 : `Get ${plan.duration.total} of membership`}
                             </p>
                           </div>
-
-                          {/* Features */}
 
                           <AnimatePresence>
                             {!isEmbedded || expandedPlan === plan.name ? (
@@ -801,8 +809,6 @@ export function PricingPageContents({
                             ) : null}
                           </AnimatePresence>
 
-                          {/* Choose Plan */}
-
                           <Button
                             variant="outline"
                             size="default"
@@ -811,8 +817,6 @@ export function PricingPageContents({
                           >
                             Choose Plan
                           </Button>
-
-                          {/* Show Features */}
 
                           {isEmbedded && expandedPlan !== plan.name && (
                             <Button
@@ -849,7 +853,7 @@ export function PricingPageContents({
                   duration: 0.4,
                 }}
               >
-                {/* Female VIP Heading */}
+                {/* Female Heading */}
 
                 <div className="mx-auto max-w-3xl">
                   <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
@@ -862,82 +866,185 @@ export function PricingPageContents({
                   </p>
                 </div>
 
-                {/* ================================================= */}
-                {/* FEMALE VIP CARD */}
-                {/* ================================================= */}
+                {/* Female Cards */}
 
                 <div className="mt-10 grid gap-6 md:grid-cols-3">
-                  <div className="relative md:col-start-2">
-                    {/* ================================================= */}
-                    {/* MOST POPULAR STYLE CARD */}
-                    {/* ================================================= */}
+                  {/* ================================================= */}
+                  {/* WELCOME PLAN */}
+                  {/* ================================================= */}
 
-                    <div className="relative flex h-full min-h-[520px] flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                      {/* Gradient Border */}
+                  <MotionDiv
+                    initial={{
+                      opacity: 0,
+                      y: 15,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                      delay: 0 * 0.1,
+                    }}
+                    className="relative"
+                  >
+                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                      <h3 className="py-1.5 text-2xl font-bold">
+                        Welcome Plan
+                      </h3>
 
+                      <div className="mt-5 rounded-xl bg-[#CA617D]/10 p-4">
+                        <p className="font-semibold">
+                          Welcome to Thai Soulmate
+                        </p>
+
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          Start your personalised matchmaking journey with
+                          professional support.
+                        </p>
+                      </div>
+
+                      <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                        {PLANS[0]?.features?.map((feature, index) => (
+                          <li key={index} className="flex gap-2">
+                            <span className="shrink-0 text-[#CA617D]">✓</span>
+
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="default"
+                        className="mt-7 w-full border-[#CA617D]/40 hover:border-[#CA617D]/60 hover:bg-[#CA617D]/10"
+                      >
+                        <Link href="/contact">Contact Us</Link>
+                      </Button>
+                    </div>
+                  </MotionDiv>
+
+                  {/* ================================================= */}
+                  {/* 6 MONTHS — MOST POPULAR */}
+                  {/* ================================================= */}
+
+                  <MotionDiv
+                    initial={{
+                      opacity: 0,
+                      y: 15,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                      delay: 1 * 0.1,
+                    }}
+                    className="relative"
+                  >
+                    <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
                       <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
-                      {/* Inner Card */}
-
                       <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
-                        {/* Most Popular Style Badge */}
+                        {/* Most Popular */}
 
                         <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
-                          <Venus className="size-4" />
+                          <Flame className="size-4" />
 
-                          <span>Female VIP</span>
+                          <span>Most Popular</span>
                         </div>
 
-                        {/* Plan Name */}
-
                         <h3 className="text-gradient mt-2 text-2xl font-bold">
-                          Female VIP Membership
+                          6 Months
                         </h3>
-
-                        {/* VIP Service */}
 
                         <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
                           <p className="font-semibold">
-                            Exclusive Female VIP Service
+                            Personalised Female VIP Service
                           </p>
 
                           <p className="mt-1 text-sm text-muted-foreground">
-                            Personalised matchmaking plans available by
-                            consultation.
+                            Enjoy personalised matchmaking with carefully
+                            selected introductions.
                           </p>
                         </div>
 
-                        {/* Description */}
-
-                        <p className="mt-6 text-sm leading-6 text-muted-foreground">
-                          Female VIP plans are available by consultation. For
-                          female VIP membership plans and pricing, please
-                          contact us for more details.
-                        </p>
-
-                        {/* Features / Service Details */}
-
                         <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                          {PLANS[0].features.map((feature, index) => (
+                          {PLANS[0]?.features?.map((feature, index) => (
                             <li key={index} className="flex gap-2">
                               <span className="shrink-0 text-[#CA617D]">✓</span>
+
                               <span>{feature}</span>
                             </li>
                           ))}
                         </ul>
 
-                        {/* Contact Button */}
-
                         <Button
                           asChild
-                          className="btn-gradient mt-4 w-full text-white"
+                          className="btn-gradient mt-7 w-full text-white"
                           size="default"
                         >
                           <Link href="/contact">Contact Us</Link>
                         </Button>
                       </div>
                     </div>
-                  </div>
+                  </MotionDiv>
+
+                  {/* ================================================= */}
+                  {/* 12 MONTHS */}
+                  {/* ================================================= */}
+
+                  <MotionDiv
+                    initial={{
+                      opacity: 0,
+                      y: 15,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                      delay: 2 * 0.1,
+                    }}
+                    className="relative"
+                  >
+                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                      <h3 className="py-1.5 text-2xl font-bold">12 Months</h3>
+
+                      <div className="mt-5 rounded-xl bg-[#CA617D]/10 p-4">
+                        <p className="font-semibold">
+                          Exclusive Female VIP Service
+                        </p>
+
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          Enjoy ongoing personalised matchmaking and
+                          professional support.
+                        </p>
+                      </div>
+
+                      <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                        {PLANS[0]?.features?.map((feature, index) => (
+                          <li key={index} className="flex gap-2">
+                            <span className="shrink-0 text-[#CA617D]">✓</span>
+
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="default"
+                        className="mt-7 w-full border-[#CA617D]/40 hover:border-[#CA617D]/60 hover:bg-[#CA617D]/10"
+                      >
+                        <Link href="/contact">Contact Us</Link>
+                      </Button>
+                    </div>
+                  </MotionDiv>
                 </div>
               </MotionDiv>
             </TabsContent>

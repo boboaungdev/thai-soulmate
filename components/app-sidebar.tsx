@@ -27,6 +27,8 @@ import {
   Video,
   Calendar,
   Calendar1,
+  Inbox,
+  Mail,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 
@@ -160,6 +162,19 @@ const feedbackItems = [
     title: "Contact",
     url: "/dashboard/contact",
     icon: MessageCircle,
+  },
+]
+
+const EmailItems = [
+  {
+    title: "socials@gmail.com",
+    url: "#",
+    icon: Mail,
+  },
+  {
+    title: "contact@thaisoulmate.com",
+    url: "#",
+    icon: Mail,
   },
 ]
 
@@ -337,7 +352,7 @@ export function AppSidebar() {
           </SidebarGroup>
         )}
 
-        {user?.role !== "MEMBER" && (
+        {/* {user?.role !== "MEMBER" && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
               Feedback
@@ -346,6 +361,33 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {feedbackItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={pathname === item.url}
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )} */}
+
+        {user?.role !== "MEMBER" && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+              Email
+            </SidebarGroupLabel>
+
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {EmailItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild

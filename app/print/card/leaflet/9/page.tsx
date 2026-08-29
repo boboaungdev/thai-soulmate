@@ -548,7 +548,7 @@ export default function MarketingLeafletPrintPage() {
                   />
 
                   <h2 className="font-serif text-[5mm] leading-none font-semibold text-[#5A0816]">
-                    More Than Matching
+                    More Than A Dating App
                   </h2>
                 </div>
 
@@ -883,10 +883,10 @@ export default function MarketingLeafletPrintPage() {
           ====================================================== */}
 
           <div className="absolute top-[15mm] left-[11mm] z-20 w-[66mm]">
-            <h2 className="mt-[3mm] font-serif text-[8.5mm] leading-[0.95] text-white">
-              More than
+            <h2 className="mt-[3mm] font-serif text-[8.5mm] leading-[0.95] text-[#D3A753]">
+              Where It
               <br />
-              <span className="text-[#D3A753] italic">a match.</span>
+              <span className="text-pink italic">Matters More</span>
             </h2>
 
             <p className="mt-[3mm] w-[63mm] font-sans text-[3mm] leading-[1.45] font-medium text-white/75">

@@ -86,7 +86,7 @@ export default function HomePage() {
                     <span className="text-[#D3A753]">{APP_INFO.tagline}</span>
                   </p>
 
-                  <p className="pt-4 text-lg font-bold md:text-xl">
+                  <p className="pt-4 text-lg font-bold md:text-2xl">
                     <span className="text-gradient whitespace-pre-line">
                       {APP_INFO.secondaryTagline}
                     </span>

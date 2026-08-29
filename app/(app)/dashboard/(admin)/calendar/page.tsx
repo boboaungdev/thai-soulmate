@@ -9,7 +9,7 @@ export default function Calendar() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Calendar</h1>
           <p className="text-sm text-muted-foreground">
-            Tasks, events, and register-interest appointments
+            Tasks, events, register-interest appointments and all other schedules.
           </p>
         </div>
       </div>

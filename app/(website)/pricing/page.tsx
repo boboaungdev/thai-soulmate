@@ -3,7 +3,7 @@
 import clsx from "clsx"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Flame, Sparkles, Crown, Clock } from "lucide-react"
+import { Flame, Sparkles, Crown, Clock, Venus } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { PLANS } from "@/constants"
 import { MotionDiv } from "@/components/motion"
@@ -175,30 +175,52 @@ export function PricingPageContents({
             {/* TAB HEADER */}
             {/* ===================================================== */}
 
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <TabsList>
-                <TabsTrigger
-                  value="promotion"
-                  variant="gradient"
-                  className="gap-2 px-5 py-2.5 text-sm font-semibold"
-                >
-                  <Flame className="size-4" />
+            <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              {/* Tabs */}
+              <div className="w-full overflow-x-auto sm:w-auto">
+                <TabsList className="mx-auto flex w-max min-w-max">
+                  <TabsTrigger
+                    value="promotion"
+                    variant="gradient"
+                    className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                  >
+                    <Flame className="size-4 shrink-0" />
 
-                  <span>Special Promotion Offers</span>
-                </TabsTrigger>
+                    <span className="hidden sm:inline">
+                      Special Promotion Offers
+                    </span>
 
-                <TabsTrigger
-                  value="regular"
-                  variant="gradient"
-                  className="gap-2 px-5 py-2.5 text-sm font-semibold"
-                >
-                  <Crown className="size-4" />
+                    <span className="sm:hidden">Promotions</span>
+                  </TabsTrigger>
 
-                  <span>Regular Membership</span>
-                </TabsTrigger>
-              </TabsList>
+                  <TabsTrigger
+                    value="regular"
+                    variant="gradient"
+                    className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                  >
+                    <Crown className="size-4 shrink-0" />
 
-              <div className="flex items-center gap-2">
+                    <span className="hidden sm:inline">Regular Membership</span>
+
+                    <span className="sm:hidden">Regular</span>
+                  </TabsTrigger>
+
+                  <TabsTrigger
+                    value="female"
+                    variant="gradient"
+                    className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                  >
+                    <Venus className="size-4 shrink-0" />
+
+                    <span className="hidden sm:inline">Female VIP</span>
+
+                    <span className="sm:hidden">Female VIP</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              {/* Auto Renew */}
+              <div className="flex shrink-0 items-center gap-2">
                 <Label
                   htmlFor="auto-renew-toggle"
                   className="cursor-pointer text-sm font-semibold"
@@ -233,7 +255,7 @@ export function PricingPageContents({
                     duration: 0.4,
                   }}
                 >
-                  {/* Promotion heading */}
+                  {/* Promotion Heading */}
 
                   <div className="mx-auto max-w-3xl">
                     <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
@@ -245,7 +267,7 @@ export function PricingPageContents({
                       our 1-2-1 matchmaking service.
                     </p>
 
-                    {/* Limited availability */}
+                    {/* Limited Availability */}
 
                     <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/10 to-[#CA617D]/10 px-4 py-2 text-sm font-semibold">
                       <Clock className="size-4 animate-spin text-[#CA617D]" />
@@ -262,7 +284,7 @@ export function PricingPageContents({
 
                   <div className="mt-10 grid gap-6 md:grid-cols-3">
                     {/* ================================================= */}
-                    {/* 1 MONTH — 50% OFF */}
+                    {/* 1 MONTH */}
                     {/* ================================================= */}
 
                     <div className="relative flex flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -309,7 +331,7 @@ export function PricingPageContents({
                       <Button
                         className="mt-7 w-full text-white"
                         variant="outline"
-                        size="lg"
+                        size="default"
                         onClick={() => {
                           const plan = PLANS.find(
                             (item) => item.id === "1-month"
@@ -328,12 +350,10 @@ export function PricingPageContents({
                     {/* 3 MONTHS — MOST POPULAR */}
                     {/* ================================================= */}
 
-                    <div className="relative flex flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1">
-                      {/* Gradient border */}
-
+                    <div className="relative flex flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
                       <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
-                      <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 pt-7 text-left">
+                      <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
                         {/* Most Popular */}
 
                         <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
@@ -388,7 +408,7 @@ export function PricingPageContents({
 
                         <Button
                           className="btn-gradient mt-7 w-full text-white"
-                          size="lg"
+                          size="default"
                           onClick={() => {
                             const plan = PLANS.find(
                               (item) => item.id === "3-months"
@@ -483,7 +503,7 @@ export function PricingPageContents({
 
                       <Button
                         variant="outline"
-                        size="lg"
+                        size="default"
                         className="mt-7 w-full border-[#CA617D]/40 hover:bg-[#CA617D]/10"
                         onClick={() => {
                           console.log("Try Before You Buy selected")
@@ -494,7 +514,7 @@ export function PricingPageContents({
                     </div>
                   </div>
 
-                  {/* Promotion note */}
+                  {/* Promotion Note */}
 
                   <p className="mt-7 text-sm text-muted-foreground">
                     * Launch promotion is available to the first 15 eligible
@@ -522,9 +542,7 @@ export function PricingPageContents({
                   duration: 0.4,
                 }}
               >
-                {/* ================================================= */}
-                {/* REGULAR MEMBERSHIP HEADING */}
-                {/* ================================================= */}
+                {/* Regular Heading */}
 
                 <div className="mx-auto max-w-3xl">
                   <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
@@ -537,9 +555,7 @@ export function PricingPageContents({
                   </p>
                 </div>
 
-                {/* ================================================= */}
-                {/* REGULAR MEMBERSHIP CARDS */}
-                {/* ================================================= */}
+                {/* Regular Cards */}
 
                 <div className="mt-10 grid gap-6 md:grid-cols-3">
                   {PLANS.map((plan, index) => (
@@ -559,19 +575,17 @@ export function PricingPageContents({
                       }}
                       className="relative"
                     >
-                      {/* ================================================= */}
-                      {/* MOST POPULAR CARD */}
-                      {/* ================================================= */}
-
                       {plan.popular ? (
+                        /* ================================================= */
+                        /* MOST POPULAR CARD */
+                        /* ================================================= */
+
                         <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
                           {/* Gradient Border */}
 
                           <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
-                          {/* ================================================= */}
-                          {/* INNER CARD */}
-                          {/* ================================================= */}
+                          {/* Inner Card */}
 
                           <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
                             {/* Most Popular */}
@@ -582,17 +596,13 @@ export function PricingPageContents({
                               <span>Most Popular</span>
                             </div>
 
-                            {/* ================================================= */}
-                            {/* PLAN NAME */}
-                            {/* ================================================= */}
+                            {/* Plan Name */}
 
                             <h3 className="text-gradient mt-2 text-2xl font-bold">
                               {plan.name}
                             </h3>
 
-                            {/* ================================================= */}
-                            {/* PRICE */}
-                            {/* ================================================= */}
+                            {/* Price */}
 
                             <div className="mt-5">
                               <div className="text-4xl font-bold">
@@ -606,9 +616,7 @@ export function PricingPageContents({
                               )}
                             </div>
 
-                            {/* ================================================= */}
-                            {/* MEMBERSHIP VALUE */}
-                            {/* ================================================= */}
+                            {/* Membership Value */}
 
                             <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
                               <p className="font-semibold">
@@ -624,9 +632,7 @@ export function PricingPageContents({
                               </p>
                             </div>
 
-                            {/* ================================================= */}
-                            {/* FEATURES */}
-                            {/* ================================================= */}
+                            {/* Features */}
 
                             <AnimatePresence>
                               {!isEmbedded || expandedPlan === plan.name ? (
@@ -678,9 +684,7 @@ export function PricingPageContents({
                               ) : null}
                             </AnimatePresence>
 
-                            {/* ================================================= */}
-                            {/* CHOOSE PLAN */}
-                            {/* ================================================= */}
+                            {/* Choose Plan */}
 
                             <Button
                               className="btn-gradient mt-7 w-full text-white"
@@ -690,9 +694,7 @@ export function PricingPageContents({
                               Choose Plan
                             </Button>
 
-                            {/* ================================================= */}
-                            {/* SHOW FEATURES */}
-                            {/* ================================================= */}
+                            {/* Show Features */}
 
                             {isEmbedded && expandedPlan !== plan.name && (
                               <Button
@@ -711,17 +713,13 @@ export function PricingPageContents({
                         /* ================================================= */
 
                         <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                          {/* ================================================= */}
-                          {/* PLAN NAME */}
-                          {/* ================================================= */}
+                          {/* Plan Name */}
 
                           <h3 className="mt-2 text-2xl font-bold">
                             {plan.name}
                           </h3>
 
-                          {/* ================================================= */}
-                          {/* PRICE */}
-                          {/* ================================================= */}
+                          {/* Price */}
 
                           <div className="mt-5">
                             <div className="text-4xl font-bold">
@@ -735,9 +733,7 @@ export function PricingPageContents({
                             )}
                           </div>
 
-                          {/* ================================================= */}
-                          {/* MEMBERSHIP VALUE */}
-                          {/* ================================================= */}
+                          {/* Membership Value */}
 
                           <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
                             <p className="font-semibold">
@@ -753,9 +749,7 @@ export function PricingPageContents({
                             </p>
                           </div>
 
-                          {/* ================================================= */}
-                          {/* FEATURES */}
-                          {/* ================================================= */}
+                          {/* Features */}
 
                           <AnimatePresence>
                             {!isEmbedded || expandedPlan === plan.name ? (
@@ -807,9 +801,7 @@ export function PricingPageContents({
                             ) : null}
                           </AnimatePresence>
 
-                          {/* ================================================= */}
-                          {/* CHOOSE PLAN */}
-                          {/* ================================================= */}
+                          {/* Choose Plan */}
 
                           <Button
                             variant="outline"
@@ -820,9 +812,7 @@ export function PricingPageContents({
                             Choose Plan
                           </Button>
 
-                          {/* ================================================= */}
-                          {/* SHOW FEATURES */}
-                          {/* ================================================= */}
+                          {/* Show Features */}
 
                           {isEmbedded && expandedPlan !== plan.name && (
                             <Button
@@ -837,6 +827,117 @@ export function PricingPageContents({
                       )}
                     </MotionDiv>
                   ))}
+                </div>
+              </MotionDiv>
+            </TabsContent>
+
+            {/* ===================================================== */}
+            {/* FEMALE VIP TAB */}
+            {/* ===================================================== */}
+
+            <TabsContent value="female" className="mt-10">
+              <MotionDiv
+                initial={{
+                  opacity: 0,
+                  y: 15,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+              >
+                {/* Female VIP Heading */}
+
+                <div className="mx-auto max-w-3xl">
+                  <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                    Female VIP Membership
+                  </h2>
+
+                  <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+                    Exclusive matchmaking services designed specifically for
+                    female members.
+                  </p>
+                </div>
+
+                {/* ================================================= */}
+                {/* FEMALE VIP CARD */}
+                {/* ================================================= */}
+
+                <div className="mt-10 grid gap-6 md:grid-cols-3">
+                  <div className="relative md:col-start-2">
+                    {/* ================================================= */}
+                    {/* MOST POPULAR STYLE CARD */}
+                    {/* ================================================= */}
+
+                    <div className="relative flex h-full min-h-[520px] flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                      {/* Gradient Border */}
+
+                      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+
+                      {/* Inner Card */}
+
+                      <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
+                        {/* Most Popular Style Badge */}
+
+                        <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
+                          <Venus className="size-4" />
+
+                          <span>Female VIP</span>
+                        </div>
+
+                        {/* Plan Name */}
+
+                        <h3 className="text-gradient mt-2 text-2xl font-bold">
+                          Female VIP Membership
+                        </h3>
+
+                        {/* VIP Service */}
+
+                        <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
+                          <p className="font-semibold">
+                            Exclusive Female VIP Service
+                          </p>
+
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            Personalised matchmaking plans available by
+                            consultation.
+                          </p>
+                        </div>
+
+                        {/* Description */}
+
+                        <p className="mt-6 text-sm leading-6 text-muted-foreground">
+                          Female VIP plans are available by consultation. For
+                          female VIP membership plans and pricing, please
+                          contact us for more details.
+                        </p>
+
+                        {/* Features / Service Details */}
+
+                        <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                          {PLANS[0].features.map((feature, index) => (
+                            <li key={index} className="flex gap-2">
+                              <span className="shrink-0 text-[#CA617D]">✓</span>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        {/* Contact Button */}
+
+                        <Button
+                          asChild
+                          className="btn-gradient mt-4 w-full text-white"
+                          size="default"
+                        >
+                          <Link href="/contact">Contact Us</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </MotionDiv>
             </TabsContent>

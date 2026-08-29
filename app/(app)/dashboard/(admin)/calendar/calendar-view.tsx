@@ -220,7 +220,7 @@ export function CalendarView() {
 
   const [title, setTitle] = useState("Calendar")
 
-  const [viewType, setViewType] = useState("dayGridMonth")
+  const [viewType, setViewType] = useState("timeGridDay")
 
   const [visibleKinds, setVisibleKinds] = useState<CalendarKind[]>(
     calendarKinds.map((kind) => kind.value)
@@ -377,7 +377,7 @@ export function CalendarView() {
                 timeGridPlugin,
                 interactionPlugin,
               ]}
-              initialView="dayGridMonth"
+              initialView="timeGridDay"
               headerToolbar={false}
 
               height="auto"

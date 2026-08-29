@@ -287,15 +287,15 @@ export default function MarketingLeafletPrintPage() {
             PAGE 1
             ======================================================== */}
 
-        <section className="marketing-leaflet-page relative bg-[#FBF8F3] shadow-2xl">
+        <section className="marketing-leaflet-page relative bg-[#FBF8F3]">
           {/* Background */}
 
           <div className="absolute inset-0 bg-[#FBF8F3]" />
 
-          <div className="absolute top-0 right-0 left-0 h-[91mm] bg-gradient-to-br from-[#43050F] via-[#650D20] to-[#8A1E3A]" />
+          <div className="absolute top-0 right-0 left-0 h-[80mm] bg-gradient-to-br from-[#43050F] via-[#650D20] to-[#8A1E3A]" />
 
           <div
-            className="absolute top-[78mm] right-[-10mm] left-[-10mm] h-[25mm] bg-[#FBF8F3]"
+            className="absolute top-[60mm] right-[-10mm] left-[-10mm] h-[25mm] bg-[#FBF8F3]"
             style={{
               borderRadius: "50% 50% 0 0 / 100% 100% 0 0",
             }}
@@ -382,7 +382,7 @@ export default function MarketingLeafletPrintPage() {
       ================================================== */}
 
             <div
-              className="absolute top-[1mm] left-1/2 h-[64mm] w-[106mm] -translate-x-1/2 p-[0.6mm] shadow-2xl"
+              className="absolute top-[1mm] left-1/2 h-[64mm] w-[106mm] -translate-x-1/2 p-[0.6mm]"
               style={{
                 background:
                   "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
@@ -455,50 +455,246 @@ export default function MarketingLeafletPrintPage() {
           </div>
 
           {/* ======================================================
-              MAIN STATEMENT
-              ====================================================== */}
+    MORE THAN MATCHING
+    ====================================================== */}
 
-          <div className="absolute top-[117mm] right-[10mm] left-[10mm]">
-            <SectionTitle>More Than Matching</SectionTitle>
+          <div className="absolute top-[114mm] right-[9mm] left-[9mm]">
+            <div
+              className="relative overflow-hidden rounded-[5mm] px-[6mm] py-[3mm]"
+              style={{
+                background:
+                  "linear-gradient(135deg, #FFF4E1 0%, #FBE8D3 55%, #F8DDE3 100%)",
+                boxShadow: "0 2mm 6mm rgba(90, 8, 22, 0.08)",
+              }}
+            >
+              {/* Decorative gradient circle */}
 
-            <p className="mt-[2.8mm] font-sans text-[3mm] leading-[1.5] text-[#241e2a]/72">
-              Finding the right person is about more than a profile, a
-              photograph or a swipe. We take the time to understand you and
-              create introductions with genuine relationship potential.
-            </p>
+              <div
+                className="absolute top-[-12mm] right-[-12mm] h-[30mm] w-[30mm] rounded-full opacity-30"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #D3A753, #E791A7, #CA617D)",
+                }}
+              />
+
+              <div className="relative z-10">
+                {/* Heading */}
+
+                <div className="flex items-center gap-[2.5mm]">
+                  <div
+                    className="h-[7mm] w-[1.2mm] rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(to bottom, #D3A753, #E791A7, #CA617D)",
+                    }}
+                  />
+
+                  <h2 className="font-serif text-[5mm] leading-none font-semibold text-[#5A0816]">
+                    More Than Matching
+                  </h2>
+                </div>
+
+                {/* Description */}
+
+                <p className="mt-[2.5mm] font-sans text-[2.8mm] leading-[1.45] text-[#241e2a]/75">
+                  Finding the right person is about more than a profile, a
+                  photograph or a swipe. We take the time to understand you and
+                  create introductions with genuine relationship potential.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* ======================================================
-              OUR SERVICE
-              ====================================================== */}
+    OUR SERVICE
+    ====================================================== */}
 
-          <div className="absolute top-[137mm] right-[10mm] left-[10mm]">
-            <SectionTitle>Our Service</SectionTitle>
+          <div className="absolute top-[140mm] right-[9mm] left-[9mm]">
+            {/* Section title */}
 
-            <div className="mt-[3mm] grid grid-cols-2 gap-[3mm]">
-              <Feature
-                icon={<HeartHandshake size={15} color="#D3A753" />}
-                title="Personal Matching"
-                text="Introductions based on personality, lifestyle and relationship goals."
+            <div className="mb-[2mm] flex items-center gap-[2.5mm]">
+              <div
+                className="h-px flex-1"
+                style={{
+                  background: "linear-gradient(to right, transparent, #D3A753)",
+                }}
               />
 
-              <Feature
-                icon={<Users size={15} color="#CA617D" />}
-                title="Real People"
-                text="Meet people who are genuinely interested in meaningful relationships."
-              />
+              <h2 className="font-sans text-[4mm] font-bold tracking-[0.16em] text-[#5A0816] uppercase">
+                Our Service
+              </h2>
 
-              <Feature
-                icon={<ShieldCheck size={15} color="#D3A753" />}
-                title="Private & Discreet"
-                text="Personal information and matchmaking journey are treated with care."
+              <div
+                className="h-px flex-1"
+                style={{
+                  background: "linear-gradient(to left, transparent, #CA617D)",
+                }}
               />
+            </div>
 
-              <Feature
-                icon={<HandHeart size={15} color="#CA617D" />}
-                title="Personal Support"
-                text="Professional guidance throughout your matchmaking journey."
-              />
+            {/* ====================================================
+      SERVICE BOXES
+      ==================================================== */}
+
+            <div className="grid grid-cols-2 gap-[2.5mm]">
+              {/* ==================================================
+        PERSONAL MATCHING
+        ================================================== */}
+
+              <div
+                className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/35 px-[3.5mm] py-[3mm]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #FFF4D9 0%, #F9E5B5 100%)",
+                  boxShadow: "0 1.5mm 4mm rgba(90, 8, 22, 0.07)",
+                }}
+              >
+                {/* Decorative circle */}
+
+                <div className="absolute top-[-5mm] right-[-5mm] h-[15mm] w-[15mm] rounded-full bg-[#D3A753]/20" />
+
+                <div className="relative z-10 flex items-start gap-[2.5mm]">
+                  <div
+                    className="flex h-[10mm] w-[10mm] shrink-0 items-center justify-center rounded-[3mm]"
+                    style={{
+                      background: "linear-gradient(135deg, #B78D46, #D3A753)",
+                      boxShadow: "0 1mm 2mm rgba(90, 8, 22, 0.12)",
+                    }}
+                  >
+                    <HeartHandshake size={18} color="white" strokeWidth={1.7} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <h3 className="font-serif text-[3.1mm] leading-[1.1] font-bold text-[#5A0816]">
+                      Personal Matching
+                    </h3>
+
+                    <p className="mt-[1.5mm] font-sans text-[2.55mm] leading-[1.35] text-[#241e2a]/70">
+                      Introductions based on personality, lifestyle and
+                      relationship goals.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ==================================================
+        REAL PEOPLE
+        ================================================== */}
+
+              <div
+                className="relative overflow-hidden rounded-[4mm] border border-[#CA617D]/30 px-[3.5mm] py-[3mm]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #FCE4EA 0%, #F3C4D0 100%)",
+                  boxShadow: "0 1.5mm 4mm rgba(90, 8, 22, 0.07)",
+                }}
+              >
+                {/* Decorative circle */}
+
+                <div className="absolute top-[-5mm] right-[-5mm] h-[15mm] w-[15mm] rounded-full bg-[#CA617D]/20" />
+
+                <div className="relative z-10 flex items-start gap-[2.5mm]">
+                  <div
+                    className="flex h-[10mm] w-[10mm] shrink-0 items-center justify-center rounded-[3mm]"
+                    style={{
+                      background: "linear-gradient(135deg, #B94E6A, #CA617D)",
+                      boxShadow: "0 1mm 2mm rgba(90, 8, 22, 0.12)",
+                    }}
+                  >
+                    <Users size={18} color="white" strokeWidth={1.7} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <h3 className="font-serif text-[3.1mm] leading-[1.1] font-bold text-[#5A0816]">
+                      Real People
+                    </h3>
+
+                    <p className="mt-[1.5mm] font-sans text-[2.55mm] leading-[1.35] text-[#241e2a]/70">
+                      Meet people who are genuinely interested in meaningful
+                      relationships.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ==================================================
+        PRIVATE & DISCREET
+        ================================================== */}
+
+              <div
+                className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/35 px-[3.5mm] py-[3mm]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #F8EEDB 0%, #EED9B0 100%)",
+                  boxShadow: "0 1.5mm 4mm rgba(90, 8, 22, 0.07)",
+                }}
+              >
+                {/* Decorative circle */}
+
+                <div className="absolute top-[-5mm] right-[-5mm] h-[15mm] w-[15mm] rounded-full bg-[#D3A753]/20" />
+
+                <div className="relative z-10 flex items-start gap-[2.5mm]">
+                  <div
+                    className="flex h-[10mm] w-[10mm] shrink-0 items-center justify-center rounded-[3mm]"
+                    style={{
+                      background: "linear-gradient(135deg, #9F7839, #D3A753)",
+                      boxShadow: "0 1mm 2mm rgba(90, 8, 22, 0.12)",
+                    }}
+                  >
+                    <ShieldCheck size={18} color="white" strokeWidth={1.7} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <h3 className="font-serif text-[3.1mm] leading-[1.1] font-bold text-[#5A0816]">
+                      Private & Discreet
+                    </h3>
+
+                    <p className="mt-[1.5mm] font-sans text-[2.55mm] leading-[1.35] text-[#241e2a]/70">
+                      Personal information and matchmaking journey are treated
+                      with care.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ==================================================
+        PERSONAL SUPPORT
+        ================================================== */}
+
+              <div
+                className="relative overflow-hidden rounded-[4mm] border border-[#CA617D]/30 px-[3.5mm] py-[3mm]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #F9E1E8 0%, #EABBC9 100%)",
+                  boxShadow: "0 1.5mm 4mm rgba(90, 8, 22, 0.07)",
+                }}
+              >
+                {/* Decorative circle */}
+
+                <div className="absolute top-[-5mm] right-[-5mm] h-[15mm] w-[15mm] rounded-full bg-[#CA617D]/20" />
+
+                <div className="relative z-10 flex items-start gap-[2.5mm]">
+                  <div
+                    className="flex h-[10mm] w-[10mm] shrink-0 items-center justify-center rounded-[3mm]"
+                    style={{
+                      background: "linear-gradient(135deg, #B94E6A, #E791A7)",
+                      boxShadow: "0 1mm 2mm rgba(90, 8, 22, 0.12)",
+                    }}
+                  >
+                    <HandHeart size={18} color="white" strokeWidth={1.7} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <h3 className="font-serif text-[3.1mm] leading-[1.1] font-bold text-[#5A0816]">
+                      Personal Support
+                    </h3>
+
+                    <p className="mt-[1.5mm] font-sans text-[2.55mm] leading-[1.35] text-[#241e2a]/70">
+                      Professional guidance throughout your matchmaking journey.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -542,9 +738,9 @@ export default function MarketingLeafletPrintPage() {
           {/* ======================================================
       TOP BURGUNDY SECTION
       ====================================================== */}
-          <div className="absolute top-0 right-0 left-0 h-[91mm] bg-gradient-to-br from-[#43050F] via-[#650D20] to-[#8A1E3A]" />
+          <div className="absolute top-0 right-0 left-0 h-[80mm] bg-gradient-to-br from-[#43050F] via-[#650D20] to-[#8A1E3A]" />
           <div
-            className="absolute top-[78mm] right-[-10mm] left-[-10mm] h-[25mm] bg-[#FBF8F3]"
+            className="absolute top-[60mm] right-[-10mm] left-[-10mm] h-[25mm] bg-[#FBF8F3]"
             style={{
               borderRadius: "50% 50% 0 0 / 100% 100% 0 0",
             }}
@@ -567,7 +763,7 @@ export default function MarketingLeafletPrintPage() {
       CIRCULAR HERO IMAGE
       ====================================================== */}
           <div
-            className="absolute top-[30mm] right-[10mm] z-30 h-[43mm] w-[43mm] rounded-full p-[0.6mm]"
+            className="absolute top-[25mm] right-[10mm] z-30 h-[43mm] w-[43mm] rounded-full p-[0.6mm]"
             style={{
               background:
                 "linear-gradient(135deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
@@ -597,133 +793,134 @@ export default function MarketingLeafletPrintPage() {
           {/* ======================================================
     WHO WE HELP
     ====================================================== */}
-          <div className="absolute top-[72mm] right-[10mm] left-[10mm] z-20">
-            <div className="flex items-center justify-center gap-[2.5mm]">
-              <div
-                className="h-px w-[22mm] shrink-0"
-                style={{
-                  background:
-                    "linear-gradient(to left, #D3A753 0%, #E791A7 55%, transparent 100%)",
-                }}
-              />
-
-              <h2 className="shrink-0 text-center font-sans text-[4.5mm] font-bold tracking-[0.16em] text-[#5A0816] uppercase">
-                Who We Help
-              </h2>
-
-              <div
-                className="h-px w-[22mm] shrink-0"
-                style={{
-                  background:
-                    "linear-gradient(to right, #D3A753 0%, #E791A7 55%, transparent 100%)",
-                }}
-              />
-            </div>
+          <div className="absolute top-[68mm] right-[10mm] left-[10mm] z-20">
+            <SectionTitle>Who We Help</SectionTitle>
 
             {/* ====================================================
-    AUDIENCE CARD
-    ==================================================== */}
+      COMPACT AUDIENCE CARD
+      ==================================================== */}
 
-            <div className="mt-[2mm]">
-              <div
-                className="relative overflow-hidden rounded-[4mm] border border-[#D3A753]/30 px-[6mm] py-[4mm]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #FFFDF9 0%, #FFF7F0 50%, #FCEFF0 100%)",
-                }}
-              >
-                <div className="flex flex-col items-center text-center">
-                  {/* ====================================================
-    FOREIGN GENTLEMEN / THAI LADIES
-    ==================================================== */}
+            <div
+              className="mt-[2.5mm] overflow-hidden rounded-[3mm] border border-[#D3A753]/45 px-[4mm] py-[3mm]"
+              style={{
+                background:
+                  "linear-gradient(135deg, #FFF4E8 0%, #FBE3E8 52%, #F5D1DA 100%)",
+              }}
+            >
+              {/* ==================================================
+        SIMPLE ICON + LABEL
+        ================================================== */}
 
-                  <div className="flex items-center justify-center gap-[6mm]">
-                    {/* Foreign Gentlemen */}
-                    <div className="flex flex-col items-center">
-                      <FaMale size={22} color="#D3A753" />
+              <div className="flex items-start justify-center gap-[8mm]">
+                {/* ==================================================
+      FOREIGN GENTLEMEN
+      ================================================== */}
 
-                      <span className="mt-[1mm] text-center font-sans text-[2.8mm] leading-[1.15] font-semibold text-[#5A0816]">
-                        Foreign Gentlemen
-                      </span>
-                    </div>
+                <div className="flex flex-col items-center">
+                  <div
+                    className="flex h-[8mm] w-[8mm] items-center justify-center rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #D3A753 0%, #C98B45 100%)",
+                    }}
+                  >
+                    <FaMale size={18} color="white" />
+                  </div>
 
-                    {/* Heart with & */}
-                    <div className="relative flex h-[10mm] w-[10mm] items-center justify-center">
-                      {/* Gradient Heart & */}
-                      <div className="relative flex h-[10mm] w-[10mm] items-center justify-center">
-                        <svg
-                          viewBox="0 0 24 24"
-                          className="absolute h-[10mm] w-[10mm]"
-                          xmlns="http://www.w3.org/2000/svg"
+                  <span className="mt-[1.2mm] text-center font-sans text-[2.7mm] leading-none font-bold text-[#5A0816]">
+                    Foreign Gentlemen
+                  </span>
+                </div>
+
+                {/* ==================================================
+      HEART WITH &
+      ================================================== */}
+
+                <div className="mt-[1mm] flex h-[9mm] w-[9mm] shrink-0 items-center justify-center">
+                  <div className="relative flex h-[9mm] w-[9mm] items-center justify-center">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="absolute h-[9mm] w-[9mm]"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <defs>
+                        <linearGradient
+                          id="who-help-heart-gradient"
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="100%"
                         >
-                          <defs>
-                            <linearGradient
-                              id="heart-gradient"
-                              x1="0%"
-                              y1="0%"
-                              x2="100%"
-                              y2="100%"
-                            >
-                              <stop offset="0%" stopColor="#D3A753" />
-                              <stop offset="50%" stopColor="#E791A7" />
-                              <stop offset="100%" stopColor="#CA617D" />
-                            </linearGradient>
-                          </defs>
+                          <stop offset="0%" stopColor="#D3A753" />
+                          <stop offset="50%" stopColor="#E791A7" />
+                          <stop offset="100%" stopColor="#CA617D" />
+                        </linearGradient>
+                      </defs>
 
-                          <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
-                            fill="url(#heart-gradient)"
-                          />
-                        </svg>
+                      <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                        fill="url(#who-help-heart-gradient)"
+                      />
+                    </svg>
 
-                        <span className="relative z-10 -mt-[0.5mm] font-serif text-[3mm] font-bold text-white">
-                          &amp;
-                        </span>
-                      </div>
+                    <span className="relative z-10 -mt-[0.3mm] font-serif text-[2.8mm] font-bold text-white">
+                      &amp;
+                    </span>
+                  </div>
+                </div>
 
-                      <span className="relative z-10 -mt-[0.5mm] font-serif text-[3mm] font-bold text-white">
-                        &amp;
-                      </span>
-                    </div>
+                {/* ==================================================
+      THAI LADIES
+      ================================================== */}
 
-                    {/* Thai Ladies */}
-                    <div className="flex flex-col items-center">
-                      <FaFemale size={22} color="#CA617D" />
-
-                      <span className="mt-[1mm] text-center font-sans text-[2.8mm] leading-[1.15] font-semibold text-[#5A0816]">
-                        Thai Ladies
-                      </span>
-                    </div>
+                <div className="flex flex-col items-center">
+                  <div
+                    className="flex h-[8mm] w-[8mm] items-center justify-center rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #E791A7 0%, #CA617D 100%)",
+                    }}
+                  >
+                    <FaFemale size={18} color="white" />
                   </div>
 
-                  {/* List */}
-                  <div className="mt-[2.5mm] flex flex-col items-center gap-[1.5mm]">
-                    {[
-                      "Individulas looking for a serious future partner",
-                      "Individulas who want carefully matched introductions",
-                      "Individulas looking for a genuine and meaningful relationship",
-                      "Individulas who appreciate personalized, 1-2-1 guidance and support",
-                      "Individulas who prefer a private and discreet matchmaking experience",
-                      "Individulas who value compatibility, shared values, and long-term potential",
-                      "Individulas who value their time and prefer a professional matchmaking service",
-                    ].map((item) => (
+                  <span className="mt-[1.2mm] text-center font-sans text-[2.7mm] leading-none font-bold text-[#5A0816]">
+                    Thai Ladies
+                  </span>
+                </div>
+              </div>
+
+              {/* ==================================================
+        LIST
+        ================================================== */}
+
+              <div className="mt-[3mm] border-t border-[#CA617D]/20 pt-[2.5mm]">
+                <div className="grid gap-[1.2mm]">
+                  {[
+                    "Individulas looking for a serious future partner",
+                    "Individulas who want carefully matched introductions",
+                    "Individulas looking for a genuine and meaningful relationship",
+                    "Individulas who appreciate personalized, 1-2-1 guidance and support",
+                    "Individulas who prefer a private and discreet matchmaking experience",
+                    "Individulas who value compatibility, shared values, and long-term potential",
+                    "Individulas who value their time and prefer a professional matchmaking service",
+                  ].map((item) => (
+                    <div key={item} className="flex items-center gap-[1.5mm]">
                       <div
-                        key={item}
-                        className="flex items-center justify-center gap-[1.1mm]"
+                        className="flex h-[4.5mm] w-[4.5mm] shrink-0 items-center justify-center rounded-full"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #D3A753, #E791A7, #CA617D)",
+                        }}
                       >
-                        <Check
-                          size={9}
-                          color="#CA617D"
-                          strokeWidth={3}
-                          className="shrink-0"
-                        />
-
-                        <p className="text-center font-sans text-[3mm] leading-[1.3] text-[#24141A]/65">
-                          {item}
-                        </p>
+                        <Check size={8} color="white" strokeWidth={3} />
                       </div>
-                    ))}
-                  </div>
+
+                      <p className="font-sans text-[2.8mm] leading-[1.25] text-[#24141A]/75">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

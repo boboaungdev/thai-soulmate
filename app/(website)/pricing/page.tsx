@@ -503,7 +503,7 @@ export function PricingPageContents({
                   </h2>
 
                   <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-                    Choose your membership plan and enjoy our full matchmaking
+                    Choose your membership plan and enjoy our 1-2-1 matchmaking
                     service.
                   </p>
                 </div>

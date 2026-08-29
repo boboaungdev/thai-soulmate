@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import {
@@ -11,7 +11,12 @@ import {
   Eye,
   EyeOff,
   Users2, // Icon for STAFF
+  CheckCircle2,
+  XCircle,
+  Loader2,
 } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { isDisallowedEmail } from "@/constants/email"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -61,6 +66,16 @@ interface AddUserSheetProps {
   viewOnly?: boolean
 }
 
+// Helper to capitalize first letter of each word
+const formatName = (value: string) => {
+  return value
+    .split(" ")
+    .map((word) =>
+      word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ""
+    )
+    .join(" ")
+}
+
 export function AddUserSheet({
   open,
   onOpenChange,
@@ -70,6 +85,9 @@ export function AddUserSheet({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [emailStatus, setEmailStatus] = useState<
+    "idle" | "checking" | "available" | "taken" | "reserved"
+  >("idle")
 
   const form = useForm({
     mode: "onChange",
@@ -82,6 +100,58 @@ export function AddUserSheet({
       avatar: null as string | null, // This will temporarily hold the URL, but the file is in avatarFile state
     },
   })
+
+  const emailValue = form.watch("email")
+
+  // Debounced check for email availability
+  useEffect(() => {
+    const trimmed = emailValue ? emailValue.trim().toLowerCase() : ""
+
+    if (!trimmed || trimmed.length < 2) {
+      setEmailStatus("idle")
+      return
+    }
+
+    // Immediately flag reserved/disallowed system emails
+    if (isDisallowedEmail(trimmed)) {
+      setEmailStatus("reserved")
+      return
+    }
+
+    setEmailStatus("checking")
+    const controller = new AbortController()
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const fullEmail = `${trimmed}@thaisoulmate.org`
+        const res = await fetch(
+          `/api/users/check-email?email=${encodeURIComponent(fullEmail)}`,
+          { signal: controller.signal }
+        )
+        const data = await res.json()
+
+        if (data.success) {
+          if (data.reason === "reserved") {
+            setEmailStatus("reserved")
+          } else {
+            setEmailStatus(data.available ? "available" : "taken")
+          }
+        } else {
+          setEmailStatus("idle")
+        }
+      } catch (err: any) {
+        if (err.name !== "AbortError") {
+          console.error("Failed to check email availability:", err)
+          setEmailStatus("idle")
+        }
+      }
+    }, 500) // 500ms debounce
+
+    return () => {
+      clearTimeout(timeoutId)
+      controller.abort()
+    }
+  }, [emailValue])
 
   const uploadAvatar = async ({
     file,
@@ -112,14 +182,31 @@ export function AddUserSheet({
 
   const onSubmit = async (values: any) => {
     if (viewOnly) return
+
+    if (emailStatus === "reserved" || isDisallowedEmail(values.email)) {
+      toast.error("This email address is reserved and cannot be registered.")
+      return
+    }
+
+    if (emailStatus === "taken") {
+      toast.error(
+        "This email is already taken. Please choose another username."
+      )
+      return
+    }
+
     setIsSubmitting(true)
     let avatarUrl = values.avatar
+
+    const fullEmail = values.email.includes("@")
+      ? values.email.trim().toLowerCase()
+      : `${values.email.trim().toLowerCase()}@thaisoulmate.org`
 
     try {
       if (avatarFile) {
         avatarUrl = await uploadAvatar({
           file: avatarFile,
-          email: values.email,
+          email: fullEmail,
         })
       } else {
         avatarUrl = null
@@ -128,7 +215,11 @@ export function AddUserSheet({
       const response = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, avatar: avatarUrl }),
+        body: JSON.stringify({
+          ...values,
+          email: fullEmail,
+          avatar: avatarUrl,
+        }),
       })
 
       const result = await response.json()
@@ -139,6 +230,7 @@ export function AddUserSheet({
         onOpenChange(false)
         form.reset()
         setAvatarFile(null) // Clear avatar file state
+        setEmailStatus("idle")
       } else {
         toast.error(result.error || "Failed to add user.")
       }
@@ -159,6 +251,7 @@ export function AddUserSheet({
         if (!open) {
           form.reset()
           setAvatarFile(null)
+          setEmailStatus("idle")
         }
         onOpenChange(open)
       }}
@@ -218,6 +311,10 @@ export function AddUserSheet({
                         <Input
                           placeholder="John Doe"
                           {...field}
+                          value={field.value ?? ""}
+                          onChange={(e) => {
+                            field.onChange(formatName(e.target.value))
+                          }}
                           className="pl-10"
                           disabled={viewOnly || isSubmitting}
                         />
@@ -231,27 +328,98 @@ export function AddUserSheet({
                 control={form.control}
                 name="email"
                 rules={{
-                  required: "Email is required",
+                  required: "Email username is required",
                   pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    value: /^[a-z]+$/,
+                    message:
+                      "Only lowercase alphabetical characters (a-z) are allowed",
                   },
                 }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <div className="relative">
-                        <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                          type="email"
-                          placeholder="name@example.com"
-                          {...field}
-                          className="pl-10"
-                          disabled={viewOnly || isSubmitting}
-                        />
+                      <div
+                        className={cn(
+                          "flex items-stretch overflow-hidden rounded-md border border-input transition-colors focus-within:border-ring focus-within:ring-1 focus-within:ring-ring",
+                          emailStatus === "available" &&
+                            "border-emerald-500/70 focus-within:border-emerald-500 focus-within:ring-emerald-500/50",
+                          (emailStatus === "taken" ||
+                            emailStatus === "reserved") &&
+                            "border-destructive focus-within:border-destructive focus-within:ring-destructive/50"
+                        )}
+                      >
+                        <div className="relative flex flex-1 items-center">
+                          <Mail className="pointer-events-none absolute left-3 h-5 w-5 text-muted-foreground" />
+                          <Input
+                            type="text"
+                            placeholder="johndoe"
+                            {...field}
+                            value={field.value ?? ""}
+                            onChange={(e) => {
+                              // Auto-convert to lowercase and keep only alphabetical characters (a-z)
+                              const clean = e.target.value
+                                .toLowerCase()
+                                .replace(/[^a-z]/g, "")
+                              field.onChange(clean)
+                            }}
+                            className="h-9 border-0 pl-10 shadow-none focus-visible:ring-0 focus-visible:outline-none"
+                            disabled={viewOnly || isSubmitting}
+                          />
+                        </div>
+                        <div className="inline-flex shrink-0 items-center border-l bg-muted/60 px-3 text-xs font-medium text-muted-foreground select-none sm:text-sm">
+                          @thaisoulmate.org
+                        </div>
                       </div>
                     </FormControl>
+
+                    {/* Email availability feedback badge/label */}
+                    {emailStatus === "checking" && (
+                      <div className="flex items-center gap-1.5 pt-0.5 text-xs text-muted-foreground">
+                        <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" />
+                        <span className="truncate">
+                          Checking{" "}
+                          <span className="font-medium text-foreground">
+                            {field.value?.trim().toLowerCase()}@thaisoulmate.org
+                          </span>
+                          ...
+                        </span>
+                      </div>
+                    )}
+                    {emailStatus === "available" && (
+                      <div className="flex items-center gap-1.5 pt-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">
+                          <span className="font-semibold">
+                            {field.value?.trim().toLowerCase()}@thaisoulmate.org
+                          </span>{" "}
+                          is available
+                        </span>
+                      </div>
+                    )}
+                    {emailStatus === "taken" && (
+                      <div className="flex items-center gap-1.5 pt-0.5 text-xs font-medium text-destructive">
+                        <XCircle className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">
+                          <span className="font-semibold">
+                            {field.value?.trim().toLowerCase()}@thaisoulmate.org
+                          </span>{" "}
+                          is already taken
+                        </span>
+                      </div>
+                    )}
+                    {emailStatus === "reserved" && (
+                      <div className="flex items-center gap-1.5 pt-0.5 text-xs font-medium text-destructive">
+                        <XCircle className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">
+                          <span className="font-semibold">
+                            {field.value?.trim().toLowerCase()}@thaisoulmate.org
+                          </span>{" "}
+                          is reserved and not allowed
+                        </span>
+                      </div>
+                    )}
+
                     <FormMessage />
                   </FormItem>
                 )}

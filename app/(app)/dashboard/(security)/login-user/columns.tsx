@@ -9,6 +9,7 @@ import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { roles } from "./roles"
 import { useAuthStore } from "@/stores/auth-store"
+import { formatDateTime } from "@/lib/date"
 
 export type User = {
   id: string
@@ -108,9 +109,7 @@ export const columns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title="Joined" />
     ),
     cell: ({ row }) => {
-      return (
-        <span>{new Date(row.original.createdAt).toLocaleDateString()}</span>
-      )
+      return <span>{formatDateTime(row.original.createdAt)}</span>
     },
   },
   {

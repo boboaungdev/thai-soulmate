@@ -39,8 +39,8 @@ import { useAuthStore } from "@/stores/auth-store"
 import {
   ComposeEmailDialog,
   TagEmailInput,
-  extractCleanEmail,
 } from "@/components/email/compose-email-dialog"
+import { extractCleanEmail } from "@/lib/email-utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -67,27 +67,81 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
-// Email type
-type MockEmail = {
+// Database Email type
+export interface DbEmailMessage {
   id: string
-  from?: string
-  to?: string
+  resendId?: string | null
+  mailbox: string
+  folder: "INBOX" | "SENT" | "DRAFT" | "TRASH" | "ARCHIVE" | "SPAM"
+  direction: "INBOUND" | "OUTBOUND"
+  fromEmail: string
+  fromName?: string | null
+  toEmails: string[]
+  ccEmails: string[]
+  bccEmails: string[]
+  replyTo?: string | null
   subject: string
-  preview: string
-  bodyHtml?: string
-  date: string
-  unread: boolean
-  starred: boolean
-  attachments?: { name: string; size: string }[]
+  preview?: string | null
+  bodyText?: string | null
+  bodyHtml: string
+  isRead: boolean
+  isStarred: boolean
+  isArchived: boolean
+  isTrash: boolean
+  attachments: Array<{
+    id: string
+    filename: string
+    contentType: string
+    size: number
+    url: string
+    r2Key: string
+    isInline: boolean
+  }>
+  sentAt?: string | null
+  receivedAt?: string | null
+  createdAt: string
+  updatedAt: string
 }
 
-// Helper to parse name and email from strings like "Liam Walker <liam.walker@example.com>"
-function parseEmailParty(str?: string) {
-  if (!str) return { name: "Unknown", email: "", initials: "U" }
-  const match = str.match(/(.*?)\s*<(.+)>/)
-  if (match) {
-    const name = match[1].trim() || match[2]
-    const email = match[2].trim()
+function formatEmailDate(dateStr?: string | Date | null) {
+  if (!dateStr) return ""
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return ""
+  const now = new Date()
+  const isToday =
+    d.getDate() === now.getDate() &&
+    d.getMonth() === now.getMonth() &&
+    d.getFullYear() === now.getFullYear()
+
+  if (isToday) {
+    return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+  }
+
+  const yesterday = new Date(now)
+  yesterday.setDate(now.getDate() - 1)
+  const isYesterday =
+    d.getDate() === yesterday.getDate() &&
+    d.getMonth() === yesterday.getMonth() &&
+    d.getFullYear() === yesterday.getFullYear()
+
+  if (isYesterday) {
+    return "Yesterday"
+  }
+
+  return d.toLocaleDateString([], { month: "short", day: "numeric" })
+}
+
+function formatFileSize(bytes: number) {
+  if (!bytes || bytes === 0) return "0 B"
+  const k = 1024
+  const sizes = ["B", "KB", "MB", "GB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i]
+}
+
+// Helper to parse name and email
+function parseEmailParty(name?: string | null, email?: string) {
+  if (name && email) {
     const parts = name.split(" ")
     const initials =
       parts.length > 1
@@ -95,75 +149,12 @@ function parseEmailParty(str?: string) {
         : name.slice(0, 2).toUpperCase()
     return { name, email, initials }
   }
-  const initials = str.slice(0, 2).toUpperCase()
-  return { name: str, email: str, initials }
-}
-
-// Mock emails data for demo
-const mockEmails: {
-  inbox: MockEmail[]
-  sent: MockEmail[]
-} = {
-  inbox: [
-    {
-      id: "1",
-      from: "Liam Walker <liam.walker@example.com>",
-      subject: "Inquiry regarding 1-to-1 Matchmaking Service",
-      preview:
-        "Hello team, I recently came across Thai Soulmate and would like to know more about the membership tiers, pricing packages, and how the personalized matchmaking consultation works. Looking forward to your response.",
-      date: "10:42 AM",
-      unread: true,
-      starred: true,
-      attachments: [{ name: "Membership_Interest_Form.pdf", size: "1.2 MB" }],
-    },
-    {
-      id: "2",
-      from: "Sophia Chen <sophia.chen@example.com>",
-      subject: "Follow up: Video consultation schedule",
-      preview:
-        "Hi, can we reschedule our upcoming consultation session to next Tuesday at 3 PM GMT+7? Please let me know if this timing works for your matchmakers.",
-      date: "Yesterday",
-      unread: false,
-      starred: false,
-    },
-    {
-      id: "3",
-      from: "Stripe Billing <notifications@stripe.com>",
-      subject: "Receipt for membership invoice #INV-2026-08",
-      preview:
-        "Your payment of ฿34,999.00 has been successfully processed for Thai Soulmate 3-Month Plan. Thank you for your continued partnership.",
-      date: "Aug 28",
-      unread: false,
-      starred: false,
-      attachments: [{ name: "Receipt_INV-2026-08.pdf", size: "450 KB" }],
-    },
-  ],
-
-  sent: [
-    {
-      id: "s1",
-      to: "Liam Walker <liam.walker@example.com>",
-      subject: "Re: Inquiry regarding 1-to-1 Matchmaking Service",
-      preview:
-        "Hi Liam, thank you for reaching out! We would love to introduce you to our matchmaking programs. Attached is our official overview guide and schedule.",
-      date: "11:15 AM",
-      unread: false,
-      starred: false,
-      attachments: [
-        { name: "Thai_Soulmate_Service_Brochure.pdf", size: "2.4 MB" },
-      ],
-    },
-    {
-      id: "s2",
-      to: "Member Support <support@thaisoulmate.org>",
-      subject: "Monthly System Health & Inquiries Summary",
-      preview:
-        "Here is the monthly log of all verified matches, active consultations, and pending member applications for August 2026.",
-      date: "Aug 25",
-      unread: false,
-      starred: false,
-    },
-  ],
+  if (email) {
+    const clean = extractCleanEmail(email)
+    const initials = clean.slice(0, 2).toUpperCase()
+    return { name: clean.split("@")[0], email: clean, initials }
+  }
+  return { name: "Unknown", email: "", initials: "U" }
 }
 
 export default function EmailFolderDynamicPage() {
@@ -198,14 +189,14 @@ export default function EmailFolderDynamicPage() {
     disableTo?: boolean
   }>({})
 
-  const [selectedEmail, setSelectedEmail] = React.useState<MockEmail | null>(
-    null
-  )
+  const [emails, setEmails] = React.useState<DbEmailMessage[]>([])
+  const [isLoadingEmails, setIsLoadingEmails] = React.useState(true)
+  const [selectedEmail, setSelectedEmail] =
+    React.useState<DbEmailMessage | null>(null)
 
   // Settings State
   const defaultDisplayName = `Thai Soulmate - ${currentAccount?.name}`
-  const defaultSignature = `Best regards,\n${currentAccount?.name}\n${currentAccount?.email}\n\nCONFIDENTIALITY NOTICE: This email and any attachments are intended only for the person or entity to whom they are addressed and may contain confidential information. If you have received this email in error, please notify the sender and delete it. Any unauthorized copying, disclosure, or use of this email or its contents is prohibited.
-`
+  const defaultSignature = `Best regards,\n${currentAccount?.name}\n${currentAccount?.email}\n\nCONFIDENTIALITY NOTICE: This email and any attachments are intended only for the person or entity to whom they are addressed and may contain confidential information. If you have received this email in error, please notify the sender and delete it. Any unauthorized copying, disclosure, or use of this email or its contents is prohibited.`
 
   const [displayName, setDisplayName] = React.useState(defaultDisplayName)
   const [savedDisplayName, setSavedDisplayName] =
@@ -239,24 +230,83 @@ export default function EmailFolderDynamicPage() {
 
   const [isEditingConfig, setIsEditingConfig] = React.useState(false)
   const [isEditingSignature, setIsEditingSignature] = React.useState(false)
+  const [isSavingSettings, setIsSavingSettings] = React.useState(false)
 
-  // Sync settings when current mailbox account changes
+  // Fetch real emails from database API
+  const fetchEmails = React.useCallback(async () => {
+    if (folderParam === "settings") return
+    setIsLoadingEmails(true)
+    try {
+      const res = await fetch(
+        `/api/email?mailbox=${encodeURIComponent(accountParam)}&folder=${encodeURIComponent(
+          folderParam
+        )}&q=${encodeURIComponent(searchQuery)}`
+      )
+      const json = await res.json()
+      if (json.success) {
+        setEmails(json.data || [])
+      }
+    } catch (err) {
+      console.error("Failed to fetch emails from database", err)
+    } finally {
+      setIsLoadingEmails(false)
+    }
+  }, [accountParam, folderParam, searchQuery])
+
   React.useEffect(() => {
-    const newDisplayName = `Thai Soulmate - ${currentAccount?.name}`
-    const newSignature = `Best regards,\n${currentAccount?.name}\n${currentAccount?.email}\n\nCONFIDENTIALITY NOTICE: This email and any attachments are intended only for the person or entity to whom they are addressed and may contain confidential information. If you have received this email in error, please notify the sender and delete it. Any unauthorized copying, disclosure, or use of this email or its contents is prohibited.`
-    setDisplayName(newDisplayName)
-    setSavedDisplayName(newDisplayName)
-    setNotificationEmails([])
-    setSavedNotificationEmails([])
-    setSignature(newSignature)
-    setSavedSignature(newSignature)
-    setSignatureImage(null)
-    setSavedSignatureImage(null)
-    setSignatureSize("md")
-    setSavedSignatureSize("md")
+    fetchEmails()
+  }, [fetchEmails])
+
+  // Fetch mailbox settings from database API
+  const fetchSettings = React.useCallback(async () => {
+    try {
+      const res = await fetch(
+        `/api/email/settings?mailbox=${encodeURIComponent(accountParam)}`
+      )
+      const json = await res.json()
+      if (json.success && json.data) {
+        const s = json.data
+        const loadedDisplayName =
+          s.displayName || `Thai Soulmate - ${currentAccount?.name}`
+        const loadedSignature = s.signatureText || defaultSignature
+        const loadedNotificationEmails = s.notificationEmails || []
+        const loadedSigImg = s.signatureImageUrl || null
+        const loadedSigSize = (s.signatureSize as "sm" | "md" | "lg") || "md"
+
+        setDisplayName(loadedDisplayName)
+        setSavedDisplayName(loadedDisplayName)
+        setNotificationEmails(loadedNotificationEmails)
+        setSavedNotificationEmails(loadedNotificationEmails)
+        setSignature(loadedSignature)
+        setSavedSignature(loadedSignature)
+        setSignatureImage(loadedSigImg)
+        setSavedSignatureImage(loadedSigImg)
+        setSignatureSize(loadedSigSize)
+        setSavedSignatureSize(loadedSigSize)
+      } else {
+        const initDisplayName = `Thai Soulmate - ${currentAccount?.name}`
+        const initSignature = defaultSignature
+        setDisplayName(initDisplayName)
+        setSavedDisplayName(initDisplayName)
+        setNotificationEmails([])
+        setSavedNotificationEmails([])
+        setSignature(initSignature)
+        setSavedSignature(initSignature)
+        setSignatureImage(null)
+        setSavedSignatureImage(null)
+        setSignatureSize("md")
+        setSavedSignatureSize("md")
+      }
+    } catch (err) {
+      console.error("Failed to fetch settings", err)
+    }
+  }, [accountParam, currentAccount?.name, defaultSignature])
+
+  React.useEffect(() => {
+    fetchSettings()
     setIsEditingConfig(false)
     setIsEditingSignature(false)
-  }, [currentAccount?.name, currentAccount?.email])
+  }, [fetchSettings])
 
   const handleSignatureImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -316,16 +366,17 @@ export default function EmailFolderDynamicPage() {
       JSON.stringify(savedNotificationEmails)
 
   const isSaveConfigDisabled =
-    !hasConfigChanged || hasCurrentAccountInNotification
+    !hasConfigChanged || hasCurrentAccountInNotification || isSavingSettings
 
   const hasSignatureChanged =
     signature.trim() !== savedSignature.trim() ||
     signatureImage !== savedSignatureImage ||
     signatureSize !== savedSignatureSize
 
-  const isSaveSignatureDisabled = !hasSignatureChanged
+  const isSaveSignatureDisabled = !hasSignatureChanged || isSavingSettings
 
-  const handleSaveConfig = () => {
+  // Save Mailbox Config to Database
+  const handleSaveConfig = async () => {
     if (hasCurrentAccountInNotification) {
       toast.error(
         "Notification address cannot include the current account email address."
@@ -333,18 +384,69 @@ export default function EmailFolderDynamicPage() {
       return
     }
 
-    setSavedDisplayName(displayName.trim())
-    setSavedNotificationEmails([...notificationEmails])
-    setIsEditingConfig(false)
-    toast.success("Mailbox configuration saved successfully!")
+    setIsSavingSettings(true)
+    try {
+      const res = await fetch("/api/email/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mailbox: accountParam,
+          displayName: displayName.trim(),
+          notificationEmails,
+          signatureText: savedSignature,
+          signatureImage: savedSignatureImage,
+          signatureSize: savedSignatureSize,
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Failed to save configuration")
+      }
+
+      setSavedDisplayName(displayName.trim())
+      setSavedNotificationEmails([...notificationEmails])
+      setIsEditingConfig(false)
+      toast.success("Mailbox configuration saved successfully!")
+    } catch (err: any) {
+      toast.error(err.message || "Failed to save configuration")
+    } finally {
+      setIsSavingSettings(false)
+    }
   }
 
-  const handleSaveSignature = () => {
-    setSavedSignature(signature.trim())
-    setSavedSignatureImage(signatureImage)
-    setSavedSignatureSize(signatureSize)
-    setIsEditingSignature(false)
-    toast.success("Email signature saved successfully!")
+  // Save Email Signature to Database & Cloudflare R2
+  const handleSaveSignature = async () => {
+    setIsSavingSettings(true)
+    try {
+      const res = await fetch("/api/email/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mailbox: accountParam,
+          displayName: savedDisplayName,
+          notificationEmails: savedNotificationEmails,
+          signatureText: signature.trim(),
+          signatureImage: signatureImage,
+          signatureSize: signatureSize,
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Failed to save signature")
+      }
+
+      const finalImgUrl = json.data?.signatureImageUrl || signatureImage
+      setSavedSignature(signature.trim())
+      setSignatureImage(finalImgUrl)
+      setSavedSignatureImage(finalImgUrl)
+      setSavedSignatureSize(signatureSize)
+      setIsEditingSignature(false)
+      toast.success("Email signature saved successfully to database!")
+    } catch (err: any) {
+      toast.error(err.message || "Failed to save signature")
+    } finally {
+      setIsSavingSettings(false)
+    }
   }
 
   const handleCancelSignature = () => {
@@ -354,15 +456,41 @@ export default function EmailFolderDynamicPage() {
     setSignatureSize(savedSignatureSize)
   }
 
-  const emailList = folderParam === "sent" ? mockEmails.sent : mockEmails.inbox
+  // Email Actions
+  const handleToggleStar = async (
+    email: DbEmailMessage,
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation()
+    const nextStarred = !email.isStarred
+    setEmails((prev) =>
+      prev.map((item) =>
+        item.id === email.id ? { ...item, isStarred: nextStarred } : item
+      )
+    )
+    try {
+      await fetch("/api/email", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: email.id, isStarred: nextStarred }),
+      })
+    } catch (err) {
+      console.error("Failed to update star status", err)
+    }
+  }
 
-  const filteredEmails = emailList.filter(
-    (email) =>
-      email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      email.from?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      email.to?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      email.preview.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const handleDeleteEmail = async (emailId: string) => {
+    try {
+      await fetch(`/api/email?id=${emailId}`, { method: "DELETE" })
+      setEmails((prev) => prev.filter((e) => e.id !== emailId))
+      if (selectedEmail?.id === emailId) {
+        setSelectedEmail(null)
+      }
+      toast.success("Email deleted successfully")
+    } catch (err) {
+      toast.error("Failed to delete email")
+    }
+  }
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -422,6 +550,7 @@ export default function EmailFolderDynamicPage() {
           <ComposeEmailDialog
             open={composeOpen}
             onOpenChange={setComposeOpen}
+            mailbox={accountParam}
             fromEmail={currentAccount.email}
             fromName={currentAccount.name}
             initialTo={composeData.to}
@@ -431,6 +560,9 @@ export default function EmailFolderDynamicPage() {
             signatureText={savedSignature}
             signatureImage={savedSignatureImage}
             signatureSize={savedSignatureSize}
+            onEmailSent={() => {
+              fetchEmails()
+            }}
           />
         </div>
       </div>
@@ -560,10 +692,13 @@ export default function EmailFolderDynamicPage() {
                     className="btn-gradient gap-1.5"
                   >
                     <Save className="size-4" />
-                    <span>Save Changes</span>
+                    <span>
+                      {isSavingSettings ? "Saving..." : "Save Changes"}
+                    </span>
                   </Button>
                   <Button
                     variant="outline"
+                    disabled={isSavingSettings}
                     onClick={() => {
                       setIsEditingConfig(false)
                       setDisplayName(savedDisplayName)
@@ -799,9 +934,17 @@ export default function EmailFolderDynamicPage() {
                     className="btn-gradient gap-1.5"
                   >
                     <Save className="size-4" />
-                    <span>Save Changes</span>
+                    <span>
+                      {isSavingSettings
+                        ? "Saving to Database..."
+                        : "Save Changes"}
+                    </span>
                   </Button>
-                  <Button variant="outline" onClick={handleCancelSignature}>
+                  <Button
+                    variant="outline"
+                    disabled={isSavingSettings}
+                    onClick={handleCancelSignature}
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -810,7 +953,7 @@ export default function EmailFolderDynamicPage() {
           </Card>
         </div>
       ) : (
-        /* Email List (Inbox / Sent) View */
+        /* Email List (Inbox / Sent / Trash) View */
         <Card className="flex flex-1 flex-col">
           <CardHeader className="border-b p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -825,21 +968,29 @@ export default function EmailFolderDynamicPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon-sm">
-                  <RefreshCw className="size-4" />
-                </Button>
-                <Button variant="outline" size="icon-sm">
-                  <Archive className="size-4" />
-                </Button>
-                <Button variant="outline" size="icon-sm">
-                  <Trash2 className="size-4" />
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  onClick={fetchEmails}
+                  title="Refresh emails"
+                >
+                  <RefreshCw
+                    className={cn("size-4", isLoadingEmails && "animate-spin")}
+                  />
                 </Button>
               </div>
             </div>
           </CardHeader>
 
           <CardContent className="flex-1 p-0">
-            {filteredEmails.length === 0 ? (
+            {isLoadingEmails ? (
+              <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground">
+                <RefreshCw className="mb-3 size-7 animate-spin text-primary/60" />
+                <p className="text-sm font-medium">
+                  Loading emails from database...
+                </p>
+              </div>
+            ) : emails.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
                 <Inbox className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
                 <p className="font-medium text-foreground">No emails found</p>
@@ -851,46 +1002,75 @@ export default function EmailFolderDynamicPage() {
               </div>
             ) : (
               <div className="divide-y">
-                {filteredEmails.map((email) => (
-                  <div
-                    key={email.id}
-                    onClick={() => setSelectedEmail(email)}
-                    className={`group flex cursor-pointer items-start gap-4 p-4 transition-colors hover:bg-muted/50 ${
-                      "unread" in email && email.unread
-                        ? "bg-muted/30 font-medium"
-                        : ""
-                    }`}
-                  >
-                    <div className="pt-0.5">
-                      <Star
-                        className={`size-4 ${
-                          email.starred
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-muted-foreground/40 group-hover:text-muted-foreground"
-                        }`}
-                      />
-                    </div>
+                {emails.map((email) => {
+                  const isSentFolder = folderParam === "sent"
+                  const displayParty = isSentFolder
+                    ? email.toEmails.join(", ")
+                    : email.fromName
+                      ? `${email.fromName} <${email.fromEmail}>`
+                      : email.fromEmail
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="truncate text-sm">
-                          {"from" in email ? email.from : email.to}
-                        </span>
-                        <span className="shrink-0 text-xs text-muted-foreground">
-                          {email.date}
-                        </span>
+                  return (
+                    <div
+                      key={email.id}
+                      onClick={() => setSelectedEmail(email)}
+                      className={cn(
+                        "group flex cursor-pointer items-start gap-4 p-4 transition-colors hover:bg-muted/50",
+                        !email.isRead &&
+                          !isSentFolder &&
+                          "bg-primary/5 font-medium"
+                      )}
+                    >
+                      <button
+                        type="button"
+                        onClick={(e) => handleToggleStar(email, e)}
+                        className="pt-0.5"
+                        title={email.isStarred ? "Unstar" : "Star"}
+                      >
+                        <Star
+                          className={cn(
+                            "size-4 transition-colors",
+                            email.isStarred
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
+                          )}
+                        />
+                      </button>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate text-sm font-medium">
+                            {displayParty || "(Unknown)"}
+                          </span>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            {formatEmailDate(email.sentAt || email.createdAt)}
+                          </span>
+                        </div>
+
+                        <div className="mt-0.5 flex items-center gap-2 truncate text-sm">
+                          <span
+                            className={cn(
+                              "truncate",
+                              !email.isRead && !isSentFolder
+                                ? "font-semibold text-foreground"
+                                : "font-normal text-foreground/90"
+                            )}
+                          >
+                            {email.subject || "(No Subject)"}
+                          </span>
+                          {email.attachments &&
+                            email.attachments.length > 0 && (
+                              <Paperclip className="size-3.5 shrink-0 text-muted-foreground" />
+                            )}
+                        </div>
+
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                          {email.preview || "(No preview text)"}
+                        </p>
                       </div>
-
-                      <div className="mt-0.5 truncate text-sm font-medium">
-                        {email.subject}
-                      </div>
-
-                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                        {email.preview}
-                      </p>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </CardContent>
@@ -905,12 +1085,12 @@ export default function EmailFolderDynamicPage() {
         <DialogContent className="overflow-hidden p-0 sm:max-w-[700px]">
           {selectedEmail &&
             (() => {
-              const isIncoming =
-                "from" in selectedEmail && Boolean(selectedEmail.from)
-              const partyString = isIncoming
-                ? selectedEmail.from
-                : selectedEmail.to
-              const party = parseEmailParty(partyString)
+              const isIncoming = selectedEmail.direction === "INBOUND"
+              const senderParty = parseEmailParty(
+                selectedEmail.fromName,
+                selectedEmail.fromEmail
+              )
+              const toPartyFormatted = selectedEmail.toEmails.join(", ")
 
               return (
                 <>
@@ -924,7 +1104,7 @@ export default function EmailFolderDynamicPage() {
                         >
                           {folderParam}
                         </Badge>
-                        {selectedEmail.starred && (
+                        {selectedEmail.isStarred && (
                           <Badge
                             variant="secondary"
                             className="gap-1 bg-yellow-50 text-xs text-yellow-600 dark:bg-yellow-950/40 dark:text-yellow-400"
@@ -933,14 +1113,24 @@ export default function EmailFolderDynamicPage() {
                             Starred
                           </Badge>
                         )}
+                        {selectedEmail.resendId && (
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] text-muted-foreground"
+                          >
+                            Resend ID: {selectedEmail.resendId.slice(0, 10)}...
+                          </Badge>
+                        )}
                       </div>
                       <span className="text-xs font-medium text-muted-foreground">
-                        {selectedEmail.date}
+                        {formatEmailDate(
+                          selectedEmail.sentAt || selectedEmail.createdAt
+                        )}
                       </span>
                     </div>
 
                     <h2 className="text-lg leading-snug font-semibold tracking-tight break-words text-foreground">
-                      {selectedEmail.subject}
+                      {selectedEmail.subject || "(No Subject)"}
                     </h2>
 
                     {/* Sender & Recipient Info Card */}
@@ -948,26 +1138,25 @@ export default function EmailFolderDynamicPage() {
                       <div className="flex min-w-0 items-center gap-3">
                         <Avatar className="size-9 border bg-primary/10 text-xs font-semibold text-primary">
                           <AvatarFallback className="bg-primary/10 text-primary">
-                            {party.initials}
+                            {senderParty.initials}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5">
                             <span className="truncate text-sm font-semibold text-foreground">
-                              {party.name}
+                              {selectedEmail.fromName || senderParty.name}
                             </span>
-                            {party.email && (
+                            {selectedEmail.fromEmail && (
                               <span className="truncate text-xs text-muted-foreground">
-                                &lt;{party.email}&gt;
+                                &lt;{selectedEmail.fromEmail}&gt;
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground">
-                            {isIncoming ? "to" : "from"}{" "}
+                          <p className="truncate text-xs text-muted-foreground">
+                            to{" "}
                             <span className="font-medium text-foreground">
-                              {currentAccount.name}
-                            </span>{" "}
-                            &lt;{currentAccount.email}&gt;
+                              {toPartyFormatted}
+                            </span>
                           </p>
                         </div>
                       </div>
@@ -975,56 +1164,63 @@ export default function EmailFolderDynamicPage() {
                   </div>
 
                   {/* Email Body */}
-                  <div className="max-h-[50vh] space-y-4 overflow-y-auto px-6 py-4 text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
+                  <div className="max-h-[50vh] space-y-4 overflow-y-auto px-6 py-4 text-sm leading-relaxed text-foreground/90">
                     {selectedEmail.bodyHtml ? (
                       <div
+                        className="[&_img]:max-w-full [&_img]:rounded-md"
                         dangerouslySetInnerHTML={{
                           __html: selectedEmail.bodyHtml,
                         }}
                       />
                     ) : (
-                      <div>
-                        {selectedEmail.preview}
-                        {"\n\n"}
-                        Thank you for choosing Thai Soulmate! Please feel free
-                        to reach out if you require any additional assistance.
+                      <div className="whitespace-pre-wrap">
+                        {selectedEmail.bodyText ||
+                          selectedEmail.preview ||
+                          "(Empty content)"}
                       </div>
                     )}
 
-                    {/* Attachments list if present */}
+                    {/* Cloudflare R2 Attachments list if present */}
                     {selectedEmail.attachments &&
                       selectedEmail.attachments.length > 0 && (
                         <div className="mt-4 space-y-2 border-t pt-3">
                           <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                             <Paperclip className="size-3.5" />
                             <span>
-                              Attachments ({selectedEmail.attachments.length})
+                              Cloudflare R2 Attachments (
+                              {selectedEmail.attachments.length})
                             </span>
                           </div>
                           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                            {selectedEmail.attachments.map((att, idx) => (
+                            {selectedEmail.attachments.map((att) => (
                               <div
-                                key={idx}
+                                key={att.id}
                                 className="flex items-center justify-between gap-2 rounded-lg border bg-muted/20 p-2.5 transition-colors hover:bg-muted/40"
                               >
                                 <div className="flex min-w-0 items-center gap-2">
                                   <FileText className="size-4 shrink-0 text-primary" />
                                   <div className="min-w-0">
                                     <p className="truncate text-xs font-medium">
-                                      {att.name}
+                                      {att.filename}
                                     </p>
                                     <p className="text-[11px] text-muted-foreground">
-                                      {att.size}
+                                      {formatFileSize(att.size)}
                                     </p>
                                   </div>
                                 </div>
                                 <Button
                                   variant="ghost"
                                   size="icon-xs"
-                                  onClick={() =>
-                                    toast.success(`Downloading ${att.name}...`)
-                                  }
-                                  title="Download attachment"
+                                  onClick={() => {
+                                    if (att.url) {
+                                      window.open(att.url, "_blank")
+                                    } else {
+                                      toast.error(
+                                        "Attachment URL not available"
+                                      )
+                                    }
+                                  }}
+                                  title="Open / Download from Cloudflare R2"
                                 >
                                   <Download className="size-3.5" />
                                 </Button>
@@ -1037,27 +1233,36 @@ export default function EmailFolderDynamicPage() {
 
                   {/* Modal Footer with Actions */}
                   <div className="flex flex-col gap-2 border-t bg-muted/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <Button
-                      variant="outline"
-                      onClick={() => setSelectedEmail(null)}
-                    >
-                      Close
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setSelectedEmail(null)}
+                      >
+                        Close
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => handleDeleteEmail(selectedEmail.id)}
+                        className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                        title="Delete email"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
 
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
                         onClick={() => {
-                          const sender =
-                            selectedEmail.from || currentAccount.email
-                          const recipient =
-                            selectedEmail.to || currentAccount.email
+                          const sender = selectedEmail.fromEmail
+                          const recipient = selectedEmail.toEmails.join(", ")
                           const fwdSubject = selectedEmail.subject.startsWith(
                             "Fwd:"
                           )
                             ? selectedEmail.subject
                             : `Fwd: ${selectedEmail.subject}`
-                          const fwdBody = `<br/><br/>---------- Forwarded message ---------<br/><strong>From:</strong> ${sender}<br/><strong>Date:</strong> ${selectedEmail.date}<br/><strong>Subject:</strong> ${selectedEmail.subject}<br/><strong>To:</strong> ${recipient}<br/><br/>${selectedEmail.preview}<br/><br/>Thank you for choosing Thai Soulmate!`
+                          const fwdBody = `<br/><br/>---------- Forwarded message ---------<br/><strong>From:</strong> ${sender}<br/><strong>Date:</strong> ${formatEmailDate(selectedEmail.sentAt || selectedEmail.createdAt)}<br/><strong>Subject:</strong> ${selectedEmail.subject}<br/><strong>To:</strong> ${recipient}<br/><br/>${selectedEmail.bodyHtml || selectedEmail.preview}`
 
                           setComposeData({
                             to: "",
@@ -1076,17 +1281,13 @@ export default function EmailFolderDynamicPage() {
 
                       <Button
                         onClick={() => {
-                          const rawParty =
-                            "from" in selectedEmail && selectedEmail.from
-                              ? selectedEmail.from
-                              : selectedEmail.to || ""
-                          const replyTo = extractCleanEmail(rawParty)
+                          const replyTo = selectedEmail.fromEmail || ""
                           const replySubject = selectedEmail.subject.startsWith(
                             "Re:"
                           )
                             ? selectedEmail.subject
                             : `Re: ${selectedEmail.subject}`
-                          const replyBody = `<br/><br/><blockquote>On ${selectedEmail.date}, ${rawParty} wrote:<br/>${selectedEmail.preview}</blockquote>`
+                          const replyBody = `<br/><br/><blockquote>On ${formatEmailDate(selectedEmail.sentAt || selectedEmail.createdAt)}, ${selectedEmail.fromEmail} wrote:<br/>${selectedEmail.bodyHtml || selectedEmail.preview}</blockquote>`
 
                           setComposeData({
                             to: replyTo,

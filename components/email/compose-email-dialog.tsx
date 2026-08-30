@@ -61,7 +61,16 @@ export interface AttachedFile {
   previewUrl?: string
 }
 
-export const EMAIL_REGEX = /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/
+export {
+  EMAIL_REGEX,
+  extractCleanEmail,
+  parseEmailsFromInput,
+} from "@/lib/email-utils"
+import {
+  EMAIL_REGEX,
+  extractCleanEmail,
+  parseEmailsFromInput,
+} from "@/lib/email-utils"
 
 export interface TagEmailInputProps {
   value: string[]
@@ -78,35 +87,6 @@ export interface TagEmailInputProps {
   name?: string
   autoFocus?: boolean
   maxEmails?: number
-}
-
-export function extractCleanEmail(input: string): string {
-  if (!input) return ""
-  const match = input.match(/<([^>]+)>/)
-  if (match && match[1]) {
-    return match[1].trim()
-  }
-  return input.trim()
-}
-
-export function parseEmailsFromInput(input?: string | string[]): string[] {
-  if (!input) return []
-  if (Array.isArray(input)) {
-    return input.map(extractCleanEmail).filter(Boolean)
-  }
-
-  const str = input.trim()
-  if (!str) return []
-
-  const angleBracketMatches = [...str.matchAll(/<([^>]+)>/g)]
-  if (angleBracketMatches.length > 0) {
-    return angleBracketMatches.map((m) => m[1].trim()).filter(Boolean)
-  }
-
-  return str
-    .split(/[,\s;]+/)
-    .map((e) => extractCleanEmail(e))
-    .filter(Boolean)
 }
 
 export function TagEmailInput({
@@ -332,6 +312,7 @@ export function TagEmailInput({
 interface ComposeEmailDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  mailbox?: string
   fromEmail: string
   fromName?: string
   initialTo?: string | string[]
@@ -348,12 +329,14 @@ interface ComposeEmailDialogProps {
     subject: string
     bodyHtml: string
     attachments: AttachedFile[]
+    data?: any
   }) => void
 }
 
 export function ComposeEmailDialog({
   open,
   onOpenChange,
+  mailbox,
   fromEmail,
   fromName,
   initialTo = "",
@@ -520,48 +503,83 @@ export function ComposeEmailDialog({
 
     setIsSending(true)
 
-    // Simulate sending email
-    await new Promise((res) => setTimeout(res, 800))
+    try {
+      let bodyHtml = editorRef.current?.innerHTML || ""
 
-    let bodyHtml = editorRef.current?.innerHTML || ""
+      if (includeSignature && hasSignatureConfigured) {
+        const heightPx =
+          signatureSize === "sm" ? 36 : signatureSize === "lg" ? 64 : 48
+        const imgTag = signatureImage
+          ? `<img src="${signatureImage}" style="max-height:${heightPx}px; height:auto; border-radius:4px; display:inline-block; margin:6px 0;" alt="Signature" />`
+          : ""
+        const lines = (signatureText || "").split("\n")
+        const greeting = lines[0] || "Best regards,"
+        const rest = lines.slice(1).join("<br/>")
+        const sigHtml = `${greeting}<br/>${imgTag}${rest ? `<br/>${rest}` : ""}`
+        bodyHtml = `${bodyHtml}<br/><br/>${sigHtml}`
+      }
 
-    if (includeSignature && hasSignatureConfigured) {
-      const heightPx =
-        signatureSize === "sm" ? 36 : signatureSize === "lg" ? 64 : 48
-      const imgTag = signatureImage
-        ? `<img src="${signatureImage}" style="max-height:${heightPx}px; height:auto; border-radius:4px; display:inline-block; margin:6px 0;" alt="Signature" />`
-        : ""
-      const lines = (signatureText || "").split("\n")
-      const greeting = lines[0] || "Best regards,"
-      const rest = lines.slice(1).join("<br/>")
-      const sigHtml = `${greeting}<br/>${imgTag}${rest ? `<br/>${rest}` : ""}`
-      bodyHtml = `${bodyHtml}<br/><br/>${sigHtml}`
+      const formData = new FormData()
+      formData.append("mailbox", mailbox || fromEmail.split("@")[0] || "info")
+      formData.append("fromName", fromName || "")
+      formData.append("fromEmail", fromEmail)
+      formData.append("to", toEmails.join(", "))
+      if (showCc && ccEmails.length > 0) {
+        formData.append("cc", ccEmails.join(", "))
+      }
+      if (showBcc && bccEmails.length > 0) {
+        formData.append("bcc", bccEmails.join(", "))
+      }
+      formData.append("subject", subject || "(No Subject)")
+      formData.append("bodyHtml", bodyHtml)
+
+      // Append attached files
+      for (const att of attachments) {
+        if (att.file) {
+          formData.append("attachments", att.file, att.name)
+        }
+      }
+
+      const res = await fetch("/api/email/send", {
+        method: "POST",
+        body: formData,
+      })
+
+      const result = await res.json()
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || "Failed to send email")
+      }
+
+      const toFormatted = toEmails.join(", ")
+      toast.success(`Email successfully sent to ${toFormatted}!`)
+
+      onEmailSent?.({
+        to: toFormatted,
+        cc: showCc && ccEmails.length > 0 ? ccEmails.join(", ") : undefined,
+        bcc: showBcc && bccEmails.length > 0 ? bccEmails.join(", ") : undefined,
+        subject: subject || "(No Subject)",
+        bodyHtml,
+        attachments,
+        data: result.data,
+      })
+
+      // Clean up
+      setIsSending(false)
+      setToEmails([])
+      setCcEmails([])
+      setBccEmails([])
+      setSubject("")
+      setAttachments([])
+      if (editorRef.current) {
+        editorRef.current.innerHTML = ""
+      }
+      onOpenChange(false)
+    } catch (err: any) {
+      console.error("Error sending email:", err)
+      toast.error(err.message || "Failed to send email. Please try again.")
+      setIsSending(false)
     }
-
-    const toFormatted = toEmails.join(", ")
-
-    onEmailSent?.({
-      to: toFormatted,
-      cc: showCc && ccEmails.length > 0 ? ccEmails.join(", ") : undefined,
-      bcc: showBcc && bccEmails.length > 0 ? bccEmails.join(", ") : undefined,
-      subject: subject || "(No Subject)",
-      bodyHtml,
-      attachments,
-    })
-
-    toast.success(`Email successfully sent to ${toFormatted}!`)
-
-    // Clean up
-    setIsSending(false)
-    setToEmails([])
-    setCcEmails([])
-    setBccEmails([])
-    setSubject("")
-    setAttachments([])
-    if (editorRef.current) {
-      editorRef.current.innerHTML = ""
-    }
-    onOpenChange(false)
   }
 
   const hasUnsavedContent = () => {

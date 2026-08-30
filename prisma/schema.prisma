@@ -19,6 +19,7 @@ model User {
   registerInterest RegisterInterest?
   notes            Note[]
   soulmateNotes    TrackingNote[]
+  emails           EmailMessage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -290,4 +291,93 @@ enum TrackingNoteType {
   THIRD_GOOGLE_MEET
   FINAL_MATCH
   CLOSED
+}
+
+enum EmailFolder {
+  INBOX
+  SENT
+  DRAFT
+  TRASH
+  ARCHIVE
+  SPAM
+}
+
+enum EmailDirection {
+  INBOUND
+  OUTBOUND
+}
+
+model EmailMessage {
+  id          String         @id @default(uuid())
+  resendId    String?        @unique
+  mailbox     String         // e.g. "info", "support", "contact", etc.
+  folder      EmailFolder    @default(INBOX)
+  direction   EmailDirection @default(OUTBOUND)
+
+  fromEmail   String
+  fromName    String?
+  toEmails    String[]
+  ccEmails    String[]       @default([])
+  bccEmails   String[]       @default([])
+  replyTo     String?
+
+  subject     String
+  preview     String?
+  bodyText    String?
+  bodyHtml    String
+
+  isRead      Boolean        @default(false)
+  isStarred   Boolean        @default(false)
+  isArchived  Boolean        @default(false)
+  isTrash     Boolean        @default(false)
+
+  attachments EmailAttachment[]
+
+  userId      String?
+  user        User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  sentAt      DateTime?
+  receivedAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([mailbox, folder])
+  @@index([fromEmail])
+  @@index([createdAt])
+}
+
+model EmailAttachment {
+  id          String       @id @default(uuid())
+  
+  emailId     String
+  email       EmailMessage @relation(fields: [emailId], references: [id], onDelete: Cascade)
+
+  filename    String
+  contentType String
+  size        Int
+  
+  url         String
+  r2Key       String
+  
+  isInline    Boolean      @default(false)
+  contentId   String?
+
+  createdAt   DateTime     @default(now())
+
+  @@index([emailId])
+}
+
+model MailboxSetting {
+  id                 String   @id @default(uuid())
+  mailbox            String   @unique
+  
+  displayName        String?
+  notificationEmails String[] @default([])
+  
+  signatureText      String?
+  signatureImageUrl  String?
+  signatureSize      String   @default("md")
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }

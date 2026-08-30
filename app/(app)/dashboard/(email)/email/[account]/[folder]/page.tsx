@@ -423,11 +423,23 @@ export default function EmailFolderDynamicPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="py-4 text-sm leading-relaxed whitespace-pre-wrap">
-            {selectedEmail?.preview}
-            {"\n\n"}
-            Thank you for choosing Thai Soulmate! Please feel free to reach out
-            if you require any additional assistance.
+          <div className="max-h-[60vh] overflow-y-auto py-4 text-sm leading-relaxed whitespace-pre-wrap [&_img]:my-2 [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:shadow-xs">
+            {selectedEmail &&
+            "bodyHtml" in selectedEmail &&
+            selectedEmail.bodyHtml ? (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: selectedEmail.bodyHtml as string,
+                }}
+              />
+            ) : (
+              <>
+                {selectedEmail?.preview}
+                {"\n\n"}
+                Thank you for choosing Thai Soulmate! Please feel free to reach
+                out if you require any additional assistance.
+              </>
+            )}
           </div>
 
           <DialogFooter>

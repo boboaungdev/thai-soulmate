@@ -304,7 +304,7 @@ export function PricingPageContents({
                         </div>
 
                         <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
-                          Launch Offer
+                          Special Offer
                         </p>
 
                         <h3 className="mt-2 text-2xl font-bold">1 Month</h3>
@@ -353,7 +353,7 @@ export function PricingPageContents({
                             }
                           }}
                         >
-                          Claim Launch Offer
+                          Claim Special Offer
                         </Button>
                       </div>
                     </MotionDiv>
@@ -396,7 +396,7 @@ export function PricingPageContents({
                           </div>
 
                           <p className="text-gradient mt-2 text-sm font-semibold tracking-wider uppercase">
-                            Best Launch Value
+                            Best Special Value
                           </p>
 
                           <h3 className="mt-2 text-2xl font-bold">3 Months</h3>
@@ -448,7 +448,7 @@ export function PricingPageContents({
                               }
                             }}
                           >
-                            Claim Launch Offer
+                            Claim Special Offer
                           </Button>
                         </div>
                       </div>
@@ -563,7 +563,7 @@ export function PricingPageContents({
                   </div>
 
                   <p className="mt-7 text-sm text-muted-foreground">
-                    * Launch promotion is available to the first 15 eligible
+                    Special promotion is available to the first 15 eligible
                     members only. Terms and availability may apply.
                   </p>
                 </MotionDiv>

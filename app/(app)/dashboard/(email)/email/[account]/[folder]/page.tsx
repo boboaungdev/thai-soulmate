@@ -152,12 +152,13 @@ export default function EmailFolderDynamicPage() {
     : (params?.folder as string) || "inbox"
 
   const { user } = useAuthStore()
+  const userEmail = user?.email || ""
 
   const currentAccount = React.useMemo(() => {
     if (accountParam === "personal") {
       return {
         id: "personal",
-        email: user?.email || "personal@thaisoulmate.org",
+        email: userEmail,
         name: user?.name ? `${user.name}` : "Personal",
         description: "Your personal mailbox",
       }
@@ -174,7 +175,7 @@ export default function EmailFolderDynamicPage() {
       name: accountParam.charAt(0).toUpperCase() + accountParam.slice(1),
       description: `Managing emails for ${accountParam}@thaisoulmate.org`,
     }
-  }, [accountParam, user])
+  }, [accountParam, user?.name, userEmail])
 
   const [searchQuery, setSearchQuery] = React.useState("")
   const [composeOpen, setComposeOpen] = React.useState(false)
@@ -240,10 +241,14 @@ export default function EmailFolderDynamicPage() {
     if (folderParam === "settings") return
     setIsLoadingEmails(true)
     try {
+      const userEmailParam =
+        accountParam === "personal" && userEmail
+          ? `&userEmail=${encodeURIComponent(userEmail)}`
+          : ""
       const res = await fetch(
         `/api/email?mailbox=${encodeURIComponent(accountParam)}&folder=${encodeURIComponent(
           folderParam
-        )}&q=${encodeURIComponent(searchQuery)}`
+        )}&q=${encodeURIComponent(searchQuery)}${userEmailParam}`
       )
       const json = await res.json()
       if (json.success) {
@@ -254,7 +259,7 @@ export default function EmailFolderDynamicPage() {
     } finally {
       setIsLoadingEmails(false)
     }
-  }, [accountParam, folderParam, searchQuery])
+  }, [accountParam, folderParam, searchQuery, userEmail])
 
   React.useEffect(() => {
     fetchEmails()

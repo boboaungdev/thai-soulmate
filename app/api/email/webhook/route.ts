@@ -98,16 +98,21 @@ export async function POST(req: Request) {
     const payload = JSON.parse(rawBody || "{}")
     let emailData = payload.data || payload
 
-    if (
-      emailData.email_id &&
-      !emailData.html &&
-      !emailData.text &&
-      !emailData.from
-    ) {
+    // If email_id / id is present, fetch full email payload from Resend
+    const resendEmailId = emailData.email_id || emailData.id
+    if (resendEmailId) {
       try {
-        const fetched = await resend.emails.get(emailData.email_id)
+        const fetched = await resend.emails.get(resendEmailId)
         if (fetched.data) {
-          emailData = { ...emailData, ...fetched.data }
+          const dAny = fetched.data as any
+          emailData = {
+            ...emailData,
+            ...fetched.data,
+            attachments:
+              Array.isArray(dAny.attachments) && dAny.attachments.length > 0
+                ? dAny.attachments
+                : emailData.attachments || [],
+          }
         }
       } catch (fetchErr) {
         console.warn(
@@ -117,7 +122,7 @@ export async function POST(req: Request) {
       }
     }
 
-    const resendId = emailData.email_id || emailData.id || crypto.randomUUID()
+    const resendId = resendEmailId || crypto.randomUUID()
     const fromRaw = emailData.from || "sender@example.com"
     const { name: fromName, email: fromEmail } = parseNameAndEmail(fromRaw)
 
@@ -141,9 +146,12 @@ export async function POST(req: Request) {
       emailData.html ||
       (emailData.text
         ? `<p style="white-space: pre-wrap;">${emailData.text}</p>`
-        : "<p>(No content)</p>")
-    const bodyText = emailData.text || stripHtmlToPlainText(bodyHtml)
-    const preview = stripHtmlToPlainText(bodyHtml).slice(0, 200)
+        : emailData.body
+          ? `<p style="white-space: pre-wrap;">${emailData.body}</p>`
+          : "<p>(No content)</p>")
+    const bodyText =
+      emailData.text || emailData.body || stripHtmlToPlainText(bodyHtml)
+    const preview = (bodyText || stripHtmlToPlainText(bodyHtml)).slice(0, 200)
 
     const { mailboxId, mailboxEmail } = matchMailboxFromEmails(toEmails)
     const emailId = crypto.randomUUID()
@@ -163,16 +171,22 @@ export async function POST(req: Request) {
       for (const att of emailData.attachments) {
         try {
           const filename = att.filename || "attachment"
-          const contentType = att.content_type || "application/octet-stream"
+          const contentType =
+            att.content_type || att.contentType || "application/octet-stream"
           let fileBuffer: Buffer | null = null
 
           if (att.content) {
             fileBuffer = Buffer.from(att.content, "base64")
           } else if (att.data) {
             fileBuffer = Buffer.from(att.data)
+          } else if (att.download_url || att.url) {
+            const fileRes = await fetch(att.download_url || att.url)
+            if (fileRes.ok) {
+              fileBuffer = Buffer.from(await fileRes.arrayBuffer())
+            }
           }
 
-          if (fileBuffer) {
+          if (fileBuffer && fileBuffer.length > 0) {
             const cleanFilename = filename.replace(/[^a-zA-Z0-9._-]/g, "_")
             const r2Key = `emails/${mailboxId}/${emailId}/attachments/${Date.now()}_${cleanFilename}`
             const r2Result = await uploadBufferToR2({
@@ -195,49 +209,87 @@ export async function POST(req: Request) {
       }
     }
 
-    const createdEmail = await prisma.emailMessage.create({
-      data: {
-        id: emailId,
-        resendId,
-        mailbox: mailboxId,
-        folder: "INBOX",
-        direction: "INBOUND",
-        fromEmail,
-        fromName,
-        toEmails,
-        ccEmails,
-        bccEmails,
-        replyTo: emailData.reply_to
-          ? Array.isArray(emailData.reply_to)
-            ? emailData.reply_to.join(", ")
-            : emailData.reply_to
-          : null,
-        subject,
-        preview,
-        bodyText,
-        bodyHtml,
-        isRead: false,
-        isStarred: false,
-        isArchived: false,
-        isTrash: false,
-        receivedAt: emailData.created_at
-          ? new Date(emailData.created_at)
-          : new Date(),
-        attachments: {
-          create: uploadedAttachments.map((att) => ({
-            filename: att.filename,
-            contentType: att.contentType,
-            size: att.size,
-            url: att.url,
-            r2Key: att.r2Key,
-            isInline: false,
-          })),
-        },
-      },
-      include: {
-        attachments: true,
-      },
+    // Upsert Email in Database (update if exists by resendId or create new)
+    const existingMsg = await prisma.emailMessage.findFirst({
+      where: { resendId },
+      include: { attachments: true },
     })
+
+    let createdEmail
+    if (existingMsg) {
+      createdEmail = await prisma.emailMessage.update({
+        where: { id: existingMsg.id },
+        data: {
+          mailbox: mailboxId,
+          fromEmail,
+          fromName,
+          toEmails,
+          ccEmails,
+          bccEmails,
+          subject,
+          preview,
+          bodyText,
+          bodyHtml,
+          attachments: {
+            create: uploadedAttachments.map((att) => ({
+              filename: att.filename,
+              contentType: att.contentType,
+              size: att.size,
+              url: att.url,
+              r2Key: att.r2Key,
+              isInline: false,
+            })),
+          },
+        },
+        include: {
+          attachments: true,
+        },
+      })
+    } else {
+      createdEmail = await prisma.emailMessage.create({
+        data: {
+          id: emailId,
+          resendId,
+          mailbox: mailboxId,
+          folder: "INBOX",
+          direction: "INBOUND",
+          fromEmail,
+          fromName,
+          toEmails,
+          ccEmails,
+          bccEmails,
+          replyTo: emailData.reply_to
+            ? Array.isArray(emailData.reply_to)
+              ? emailData.reply_to.join(", ")
+              : emailData.reply_to
+            : null,
+          subject,
+          preview,
+          bodyText,
+          bodyHtml,
+          isRead: false,
+          isStarred: false,
+          isArchived: false,
+          isTrash: false,
+          receivedAt: emailData.created_at
+            ? new Date(emailData.created_at)
+            : new Date(),
+          attachments: {
+            create: uploadedAttachments.map((att) => ({
+              filename: att.filename,
+              contentType: att.contentType,
+              size: att.size,
+              url: att.url,
+              r2Key: att.r2Key,
+              isInline: false,
+            })),
+          },
+        },
+        include: {
+          attachments: true,
+        },
+      })
+    }
 
     // Check if notification recipients are configured for this mailbox
     try {

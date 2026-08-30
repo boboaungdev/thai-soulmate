@@ -25,22 +25,47 @@ export async function GET(req: Request) {
     else if (folderParam === "DRAFT") folder = EmailFolder.DRAFT
     else if (folderParam === "SPAM") folder = EmailFolder.SPAM
 
+    const userEmail = (searchParams.get("userEmail") || "").trim().toLowerCase()
+    const isPersonal = mailbox.toLowerCase() === "personal"
     const accountConfig = EMAIL_ACCOUNTS.find(
       (a) =>
         a.id.toLowerCase() === mailbox.toLowerCase() ||
         a.email.toLowerCase() === mailbox.toLowerCase()
     )
-    const mailboxEmail = accountConfig
-      ? accountConfig.email.toLowerCase()
-      : `${mailbox.toLowerCase()}@thaisoulmate.org`
+    const mailboxEmail = isPersonal
+      ? userEmail
+      : accountConfig
+        ? accountConfig.email.toLowerCase()
+        : `${mailbox.toLowerCase()}@thaisoulmate.org`
 
     const mailboxFilter = {
       OR: [
         { mailbox },
         { mailbox: mailbox.toLowerCase() },
-        { mailbox: mailboxEmail },
-        { toEmails: { has: mailboxEmail } },
-        ...(accountConfig ? [{ toEmails: { has: accountConfig.email } }] : []),
+        ...(mailboxEmail ? [{ mailbox: mailboxEmail }] : []),
+        ...(folder === EmailFolder.SENT
+          ? [
+              ...(mailboxEmail
+                ? [
+                    {
+                      fromEmail: {
+                        contains: mailboxEmail,
+                        mode: "insensitive" as const,
+                      },
+                    },
+                  ]
+                : []),
+              {
+                fromEmail: { contains: mailbox, mode: "insensitive" as const },
+              },
+            ]
+          : [
+              ...(mailboxEmail ? [{ toEmails: { has: mailboxEmail } }] : []),
+              ...(accountConfig
+                ? [{ toEmails: { has: accountConfig.email } }]
+                : []),
+              ...(isPersonal ? [{ mailbox: "personal" }] : []),
+            ]),
       ],
     }
 

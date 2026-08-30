@@ -29,7 +29,7 @@ export const EMAIL_ACCOUNTS: EmailAccount[] = [
   {
     id: "payments",
     email: "payments@thaisoulmate.org",
-    name: "Socials",
+    name: "Payments",
     description:
       "Payment links, billing, invoices, receipts, and payment-related emails for customers and members",
   },

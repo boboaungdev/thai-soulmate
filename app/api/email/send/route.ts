@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
-import { uploadEmailAttachmentToR2, uploadBase64ImageToR2 } from "@/lib/r2-email"
-import { extractCleanEmail, parseEmailsFromInput } from "@/lib/email-utils"
+import {
+  uploadEmailAttachmentToR2,
+  uploadBase64ImageToR2,
+} from "@/lib/r2-email"
+import {
+  extractCleanEmail,
+  parseEmailsFromInput,
+} from "@/components/email/compose-email-dialog"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
 
 // Helper to strip HTML tags for plain text preview
@@ -20,15 +26,15 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    const mailbox = formData.get("mailbox") as string || "info"
-    const fromName = formData.get("fromName") as string || ""
-    const subject = (formData.get("subject") as string || "").trim()
-    let bodyHtml = formData.get("bodyHtml") as string || ""
-    
+    const mailbox = (formData.get("mailbox") as string) || "info"
+    const fromName = (formData.get("fromName") as string) || ""
+    const subject = ((formData.get("subject") as string) || "").trim()
+    let bodyHtml = (formData.get("bodyHtml") as string) || ""
+
     // Parse Recipients
-    const toRaw = formData.get("to") as string || ""
-    const ccRaw = formData.get("cc") as string || ""
-    const bccRaw = formData.get("bcc") as string || ""
+    const toRaw = (formData.get("to") as string) || ""
+    const ccRaw = (formData.get("cc") as string) || ""
+    const bccRaw = (formData.get("bcc") as string) || ""
 
     const toEmails = parseEmailsFromInput(toRaw)
     const ccEmails = parseEmailsFromInput(ccRaw)
@@ -45,13 +51,17 @@ export async function POST(req: Request) {
     const accountConfig = EMAIL_ACCOUNTS.find(
       (a) => a.id === mailbox || a.email.toLowerCase() === mailbox.toLowerCase()
     )
-    const fromEmail = accountConfig ? accountConfig.email : `${mailbox}@thaisoulmate.org`
+    const fromEmail = accountConfig
+      ? accountConfig.email
+      : `${mailbox}@thaisoulmate.org`
     const senderDisplay = fromName ? `${fromName} <${fromEmail}>` : fromEmail
 
     // Replace base64 inline images in bodyHtml with permanent Cloudflare R2 links
-    const base64Regex = /src=["'](data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,[^"']+)["']/g
+    const base64Regex =
+      /src=["'](data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,[^"']+)["']/g
     let match
-    const inlineUploadPromises: Promise<{ original: string; url: string }>[] = []
+    const inlineUploadPromises: Promise<{ original: string; url: string }>[] =
+      []
 
     while ((match = base64Regex.exec(bodyHtml)) !== null) {
       const originalDataUrl = match[1]
@@ -126,14 +136,18 @@ export async function POST(req: Request) {
         bcc: bccEmails.length > 0 ? bccEmails : undefined,
         subject: subject || "(No Subject)",
         html: bodyHtml,
-        attachments: resendAttachments.length > 0 ? resendAttachments : undefined,
+        attachments:
+          resendAttachments.length > 0 ? resendAttachments : undefined,
       })
 
       if (resendResponse.data?.id) {
         resendId = resendResponse.data.id
       }
     } catch (resendError: any) {
-      console.warn("Resend API send notice:", resendError?.message || resendError)
+      console.warn(
+        "Resend API send notice:",
+        resendError?.message || resendError
+      )
       // We continue saving to database so outbox records exist even in development without live domain verification
     }
 

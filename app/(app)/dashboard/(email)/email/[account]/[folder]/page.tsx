@@ -22,6 +22,12 @@ import {
   Save,
   Pencil,
   Lock,
+  Reply,
+  Forward,
+  Printer,
+  Paperclip,
+  Download,
+  FileText,
 } from "lucide-react"
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
@@ -30,6 +36,7 @@ import { ComposeEmailDialog } from "@/components/email/compose-email-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   Card,
   CardContent,
@@ -59,9 +66,29 @@ type MockEmail = {
   to?: string
   subject: string
   preview: string
+  bodyHtml?: string
   date: string
   unread: boolean
   starred: boolean
+  attachments?: { name: string; size: string }[]
+}
+
+// Helper to parse name and email from strings like "Liam Walker <liam.walker@example.com>"
+function parseEmailParty(str?: string) {
+  if (!str) return { name: "Unknown", email: "", initials: "U" }
+  const match = str.match(/(.*?)\s*<(.+)>/)
+  if (match) {
+    const name = match[1].trim() || match[2]
+    const email = match[2].trim()
+    const parts = name.split(" ")
+    const initials =
+      parts.length > 1
+        ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+        : name.slice(0, 2).toUpperCase()
+    return { name, email, initials }
+  }
+  const initials = str.slice(0, 2).toUpperCase()
+  return { name: str, email: str, initials }
 }
 
 // Mock emails data for demo
@@ -75,17 +102,18 @@ const mockEmails: {
       from: "Liam Walker <liam.walker@example.com>",
       subject: "Inquiry regarding 1-to-1 Matchmaking Service",
       preview:
-        "Hello team, I recently came across Thai Soulmate and would like to know more about the membership tiers...",
+        "Hello team, I recently came across Thai Soulmate and would like to know more about the membership tiers, pricing packages, and how the personalized matchmaking consultation works. Looking forward to your response.",
       date: "10:42 AM",
       unread: true,
       starred: true,
+      attachments: [{ name: "Membership_Interest_Form.pdf", size: "1.2 MB" }],
     },
     {
       id: "2",
       from: "Sophia Chen <sophia.chen@example.com>",
       subject: "Follow up: Video consultation schedule",
       preview:
-        "Hi, can we reschedule our upcoming consultation session to next Tuesday at 3 PM GMT+7?",
+        "Hi, can we reschedule our upcoming consultation session to next Tuesday at 3 PM GMT+7? Please let me know if this timing works for your matchmakers.",
       date: "Yesterday",
       unread: false,
       starred: false,
@@ -95,10 +123,11 @@ const mockEmails: {
       from: "Stripe Billing <notifications@stripe.com>",
       subject: "Receipt for membership invoice #INV-2026-08",
       preview:
-        "Your payment of ฿34,999.00 has been successfully processed for Thai Soulmate 3-Month Plan.",
+        "Your payment of ฿34,999.00 has been successfully processed for Thai Soulmate 3-Month Plan. Thank you for your continued partnership.",
       date: "Aug 28",
       unread: false,
       starred: false,
+      attachments: [{ name: "Receipt_INV-2026-08.pdf", size: "450 KB" }],
     },
   ],
 
@@ -108,17 +137,20 @@ const mockEmails: {
       to: "Liam Walker <liam.walker@example.com>",
       subject: "Re: Inquiry regarding 1-to-1 Matchmaking Service",
       preview:
-        "Hi Liam, thank you for reaching out! We would love to introduce you to our matchmakers. Attached is the overview...",
+        "Hi Liam, thank you for reaching out! We would love to introduce you to our matchmaking programs. Attached is our official overview guide and schedule.",
       date: "11:15 AM",
       unread: false,
       starred: false,
+      attachments: [
+        { name: "Thai_Soulmate_Service_Brochure.pdf", size: "2.4 MB" },
+      ],
     },
     {
       id: "s2",
       to: "Member Support <support@thaisoulmate.org>",
       subject: "Monthly System Health & Inquiries Summary",
       preview:
-        "Here is the monthly log of all verified matches and pending member applications for August 2026...",
+        "Here is the monthly log of all verified matches, active consultations, and pending member applications for August 2026.",
       date: "Aug 25",
       unread: false,
       starred: false,
@@ -144,7 +176,7 @@ export default function EmailFolderDynamicPage() {
       ? {
           id: "personal",
           email: user?.email || "personal@thaisoulmate.org",
-          name: user?.name ? `${user.name} (Personal)` : "Personal",
+          name: user?.name ? `${user.name}` : "Personal",
           description: "Your personal mailbox and correspondence",
         }
       : EMAIL_ACCOUNTS.find((a) => a.id === accountParam) || EMAIL_ACCOUNTS[0]
@@ -266,7 +298,18 @@ export default function EmailFolderDynamicPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Account Selector Dropdown/Switcher */}
+          <Button
+            className="btn-gradient gap-1.5"
+            onClick={() => {
+              setComposeData({})
+              setComposeOpen(true)
+            }}
+          >
+            <Plus className="size-4" />
+            <span>Compose</span>
+          </Button>
+
+          {/* Account Folder Tabs Switcher */}
           <Tabs
             value={folderParam}
             onValueChange={(val) =>
@@ -286,17 +329,6 @@ export default function EmailFolderDynamicPage() {
               ))}
             </TabsList>
           </Tabs>
-
-          <Button
-            className="btn-gradient gap-1.5"
-            onClick={() => {
-              setComposeData({})
-              setComposeOpen(true)
-            }}
-          >
-            <Plus className="size-4" />
-            <span>Compose</span>
-          </Button>
 
           <ComposeEmailDialog
             open={composeOpen}
@@ -633,67 +665,208 @@ export default function EmailFolderDynamicPage() {
         open={Boolean(selectedEmail)}
         onOpenChange={(open) => !open && setSelectedEmail(null)}
       >
-        <DialogContent className="sm:max-w-[650px]">
-          <DialogHeader>
-            <DialogTitle>{selectedEmail?.subject}</DialogTitle>
-            <DialogDescription className="flex items-center justify-between pt-1 text-xs">
-              <span>
-                {selectedEmail && "from" in selectedEmail
-                  ? selectedEmail.from
-                  : selectedEmail?.to}
-              </span>
-              <span>{selectedEmail?.date}</span>
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="overflow-hidden p-0 sm:max-w-[700px]">
+          {selectedEmail &&
+            (() => {
+              const isIncoming =
+                "from" in selectedEmail && Boolean(selectedEmail.from)
+              const partyString = isIncoming
+                ? selectedEmail.from
+                : selectedEmail.to
+              const party = parseEmailParty(partyString)
 
-          <div className="max-h-[60vh] overflow-y-auto py-4 text-sm leading-relaxed whitespace-pre-wrap [&_img]:my-2 [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:shadow-xs">
-            {selectedEmail &&
-            "bodyHtml" in selectedEmail &&
-            selectedEmail.bodyHtml ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: selectedEmail.bodyHtml as string,
-                }}
-              />
-            ) : (
-              <>
-                {selectedEmail?.preview}
-                {"\n\n"}
-                Thank you for choosing Thai Soulmate! Please feel free to reach
-                out if you require any additional assistance.
-              </>
-            )}
-          </div>
+              return (
+                <>
+                  {/* Modal Header */}
+                  <div className="space-y-3 border-b px-6 pt-6 pb-4">
+                    <div className="flex items-center justify-between gap-2 pr-6">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant="outline"
+                          className="text-xs font-normal capitalize"
+                        >
+                          {folderParam}
+                        </Badge>
+                        {selectedEmail.starred && (
+                          <Badge
+                            variant="secondary"
+                            className="gap-1 bg-yellow-50 text-xs text-yellow-600 dark:bg-yellow-950/40 dark:text-yellow-400"
+                          >
+                            <Star className="size-3 fill-current" />
+                            Starred
+                          </Badge>
+                        )}
+                      </div>
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {selectedEmail.date}
+                      </span>
+                    </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedEmail(null)}>
-              Close
-            </Button>
-            <Button
-              onClick={() => {
-                if (selectedEmail) {
-                  const replyTo =
-                    "from" in selectedEmail ? selectedEmail.from : ""
-                  const replySubject = selectedEmail.subject.startsWith("Re:")
-                    ? selectedEmail.subject
-                    : `Re: ${selectedEmail.subject}`
-                  const replyBody = `<br/><br/><blockquote>On ${selectedEmail.date}, ${replyTo} wrote:<br/>${selectedEmail.preview}</blockquote>`
+                    <h2 className="text-lg leading-snug font-semibold tracking-tight break-words text-foreground">
+                      {selectedEmail.subject}
+                    </h2>
 
-                  setComposeData({
-                    to: replyTo,
-                    subject: replySubject,
-                    body: replyBody,
-                  })
-                }
-                setSelectedEmail(null)
-                setComposeOpen(true)
-              }}
-              className="gap-1.5"
-            >
-              <Send className="size-4" />
-              Reply
-            </Button>
-          </DialogFooter>
+                    {/* Sender & Recipient Info Card */}
+                    <div className="flex items-start justify-between gap-3 rounded-lg border bg-muted/30 p-3">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Avatar className="size-9 border bg-primary/10 text-xs font-semibold text-primary">
+                          <AvatarFallback className="bg-primary/10 text-primary">
+                            {party.initials}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="truncate text-sm font-semibold text-foreground">
+                              {party.name}
+                            </span>
+                            {party.email && (
+                              <span className="truncate text-xs text-muted-foreground">
+                                &lt;{party.email}&gt;
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {isIncoming ? "to" : "from"}{" "}
+                            <span className="font-medium text-foreground">
+                              {currentAccount.name}
+                            </span>{" "}
+                            &lt;{currentAccount.email}&gt;
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Email Body */}
+                  <div className="max-h-[50vh] space-y-4 overflow-y-auto px-6 py-4 text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
+                    {selectedEmail.bodyHtml ? (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedEmail.bodyHtml,
+                        }}
+                      />
+                    ) : (
+                      <div>
+                        {selectedEmail.preview}
+                        {"\n\n"}
+                        Thank you for choosing Thai Soulmate! Please feel free
+                        to reach out if you require any additional assistance.
+                      </div>
+                    )}
+
+                    {/* Attachments list if present */}
+                    {selectedEmail.attachments &&
+                      selectedEmail.attachments.length > 0 && (
+                        <div className="mt-4 space-y-2 border-t pt-3">
+                          <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                            <Paperclip className="size-3.5" />
+                            <span>
+                              Attachments ({selectedEmail.attachments.length})
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            {selectedEmail.attachments.map((att, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-center justify-between gap-2 rounded-lg border bg-muted/20 p-2.5 transition-colors hover:bg-muted/40"
+                              >
+                                <div className="flex min-w-0 items-center gap-2">
+                                  <FileText className="size-4 shrink-0 text-primary" />
+                                  <div className="min-w-0">
+                                    <p className="truncate text-xs font-medium">
+                                      {att.name}
+                                    </p>
+                                    <p className="text-[11px] text-muted-foreground">
+                                      {att.size}
+                                    </p>
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="icon-xs"
+                                  onClick={() =>
+                                    toast.success(`Downloading ${att.name}...`)
+                                  }
+                                  title="Download attachment"
+                                >
+                                  <Download className="size-3.5" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                  </div>
+
+                  {/* Modal Footer with Actions */}
+                  <div className="flex flex-col gap-2 border-t bg-muted/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedEmail(null)}
+                    >
+                      Close
+                    </Button>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          const sender =
+                            selectedEmail.from || currentAccount.email
+                          const recipient =
+                            selectedEmail.to || currentAccount.email
+                          const fwdSubject = selectedEmail.subject.startsWith(
+                            "Fwd:"
+                          )
+                            ? selectedEmail.subject
+                            : `Fwd: ${selectedEmail.subject}`
+                          const fwdBody = `<br/><br/>---------- Forwarded message ---------<br/><strong>From:</strong> ${sender}<br/><strong>Date:</strong> ${selectedEmail.date}<br/><strong>Subject:</strong> ${selectedEmail.subject}<br/><strong>To:</strong> ${recipient}<br/><br/>${selectedEmail.preview}<br/><br/>Thank you for choosing Thai Soulmate!`
+
+                          setComposeData({
+                            to: "",
+                            subject: fwdSubject,
+                            body: fwdBody,
+                          })
+                          setSelectedEmail(null)
+                          setComposeOpen(true)
+                        }}
+                        className="gap-1.5"
+                      >
+                        <Forward className="size-4" />
+                        <span>Forward</span>
+                      </Button>
+
+                      <Button
+                        onClick={() => {
+                          const replyTo =
+                            "from" in selectedEmail && selectedEmail.from
+                              ? selectedEmail.from
+                              : selectedEmail.to || ""
+                          const replySubject = selectedEmail.subject.startsWith(
+                            "Re:"
+                          )
+                            ? selectedEmail.subject
+                            : `Re: ${selectedEmail.subject}`
+                          const replyBody = `<br/><br/><blockquote>On ${selectedEmail.date}, ${replyTo} wrote:<br/>${selectedEmail.preview}</blockquote>`
+
+                          setComposeData({
+                            to: replyTo,
+                            subject: replySubject,
+                            body: replyBody,
+                          })
+                          setSelectedEmail(null)
+                          setComposeOpen(true)
+                        }}
+                        className="btn-gradient gap-1.5"
+                      >
+                        <Reply className="size-4" />
+                        <span>Reply</span>
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )
+            })()}
         </DialogContent>
       </Dialog>
     </main>

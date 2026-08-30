@@ -28,3 +28,24 @@ export function parseEmailsFromInput(input?: string | string[]): string[] {
     .map((e) => extractCleanEmail(e))
     .filter(Boolean)
 }
+
+export function parseSenderNameAndEmail(
+  fromRaw?: string | null,
+  headersFrom?: string | null
+): { name: string | null; email: string } {
+  const candidate = headersFrom || fromRaw || ""
+  if (!candidate) return { name: null, email: "unknown@example.com" }
+
+  const match = candidate.match(/(.*?)\s*<(.+)>/)
+  if (match) {
+    const name = match[1].trim().replace(/^["']|["']$/g, "")
+    const email = match[2].trim()
+    return { name: name || null, email }
+  }
+
+  const clean = candidate.trim().replace(/^["']|["']$/g, "")
+  if (clean.includes("@")) {
+    return { name: null, email: clean }
+  }
+  return { name: clean || null, email: fromRaw || clean }
+}

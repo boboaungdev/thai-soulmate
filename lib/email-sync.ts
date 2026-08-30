@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
 import { uploadBufferToR2 } from "@/lib/r2-email"
-import { extractCleanEmail } from "@/lib/email-utils"
+import { extractCleanEmail, parseSenderNameAndEmail } from "@/lib/email-utils"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
 import { EmailFolder, EmailDirection } from "@/lib/generated/prisma/client"
 
@@ -128,7 +128,10 @@ export async function syncEmailsFromResend(
         const dAny = d as any
 
         const fromRaw = d.from || item.from || "unknown@thaisoulmate.org"
-        const { name: fromName, email: fromEmail } = parseNameAndEmail(fromRaw)
+        const { name: fromName, email: fromEmail } = parseSenderNameAndEmail(
+          fromRaw,
+          dAny.headers?.from
+        )
 
         const rawTo = d.to || item.to || []
         const toEmails = (Array.isArray(rawTo) ? rawTo : [rawTo])

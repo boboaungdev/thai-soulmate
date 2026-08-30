@@ -22,19 +22,25 @@ export interface ResendReceivedEmail {
   html?: string
   text?: string
   created_at: string
+  headers?: Record<string, any>
   attachments?: ResendReceivedAttachment[]
 }
 
 /**
  * Fetch received (inbound) email details by ID from Resend API
  */
-export async function getReceivedEmail(emailId: string): Promise<ResendReceivedEmail | null> {
+export async function getReceivedEmail(
+  emailId: string
+): Promise<ResendReceivedEmail | null> {
   try {
-    const res = await fetch(`https://api.resend.com/emails/receiving/${emailId}`, {
-      headers: {
-        Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      },
-    })
+    const res = await fetch(
+      `https://api.resend.com/emails/receiving/${emailId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        },
+      }
+    )
     if (!res.ok) {
       console.warn(`Resend receiving API returned ${res.status} for ${emailId}`)
       return null
@@ -86,13 +92,17 @@ export async function downloadAndUploadAttachment({
     }
 
     if (!downloadUrl) {
-      console.warn(`No download_url found for attachment ${attachment.filename}`)
+      console.warn(
+        `No download_url found for attachment ${attachment.filename}`
+      )
       return null
     }
 
     const fileRes = await fetch(downloadUrl)
     if (!fileRes.ok) {
-      console.warn(`Failed to download attachment file from CDN: ${fileRes.status}`)
+      console.warn(
+        `Failed to download attachment file from CDN: ${fileRes.status}`
+      )
       return null
     }
 

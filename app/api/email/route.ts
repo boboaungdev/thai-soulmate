@@ -5,6 +5,7 @@ import { uploadBufferToR2 } from "@/lib/r2-email"
 import { EmailFolder } from "@/lib/generated/prisma/client"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
 import { syncEmailsFromResend } from "@/lib/email-sync"
+import { parseSenderNameAndEmail } from "@/lib/email-utils"
 import {
   getReceivedEmail,
   downloadAndUploadAttachment,
@@ -174,9 +175,15 @@ export async function GET(req: Request) {
                 }
               }
 
+              const headersFrom = d.headers?.from || null
+              const { name: fromName, email: fromEmail } =
+                parseSenderNameAndEmail(d.from, headersFrom)
+
               const updated = await prisma.emailMessage.update({
                 where: { id: email.id },
                 data: {
+                  fromName: fromName || email.fromName,
+                  fromEmail: fromEmail || email.fromEmail,
                   bodyHtml,
                   bodyText,
                   preview,

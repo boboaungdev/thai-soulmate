@@ -488,6 +488,28 @@ export default function EmailFolderDynamicPage() {
     }
   }
 
+  const handleDownloadFile = (
+    url: string,
+    filename: string,
+    e?: React.MouseEvent
+  ) => {
+    e?.stopPropagation()
+    if (!url) {
+      toast.error("Attachment URL not available")
+      return
+    }
+    const downloadProxyUrl = `/api/email/attachment/download?url=${encodeURIComponent(
+      url
+    )}&filename=${encodeURIComponent(filename)}`
+    const link = document.createElement("a")
+    link.href = downloadProxyUrl
+    link.download = filename || "attachment"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    toast.success(`Downloading ${filename}`)
+  }
+
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       {/* Header */}
@@ -1191,12 +1213,16 @@ export default function EmailFolderDynamicPage() {
                             {selectedEmail.attachments.map((att) => (
                               <div
                                 key={att.id}
-                                className="flex items-center justify-between gap-2 rounded-lg border bg-muted/20 p-2.5 transition-colors hover:bg-muted/40"
+                                onClick={() =>
+                                  handleDownloadFile(att.url, att.filename)
+                                }
+                                className="group flex cursor-pointer items-center justify-between gap-2 rounded-lg border bg-muted/20 p-2.5 transition-colors hover:border-primary/40 hover:bg-muted/40"
+                                title={`Download ${att.filename}`}
                               >
                                 <div className="flex min-w-0 items-center gap-2">
                                   <FileText className="size-4 shrink-0 text-primary" />
                                   <div className="min-w-0">
-                                    <p className="truncate text-xs font-medium">
+                                    <p className="truncate text-xs font-medium group-hover:text-primary">
                                       {att.filename}
                                     </p>
                                     <p className="text-[11px] text-muted-foreground">
@@ -1207,18 +1233,12 @@ export default function EmailFolderDynamicPage() {
                                 <Button
                                   variant="ghost"
                                   size="icon-xs"
-                                  onClick={() => {
-                                    if (att.url) {
-                                      window.open(att.url, "_blank")
-                                    } else {
-                                      toast.error(
-                                        "Attachment URL not available"
-                                      )
-                                    }
-                                  }}
-                                  title="Open / Download from Cloudflare R2"
+                                  onClick={(e) =>
+                                    handleDownloadFile(att.url, att.filename, e)
+                                  }
+                                  title="Download attachment"
                                 >
-                                  <Download className="size-3.5" />
+                                  <Download className="size-3.5 text-muted-foreground group-hover:text-primary" />
                                 </Button>
                               </div>
                             ))}

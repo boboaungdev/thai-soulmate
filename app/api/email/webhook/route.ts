@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
 import { env } from "@/lib/env"
 import { uploadBufferToR2 } from "@/lib/r2-email"
-import { extractCleanEmail } from "@/lib/email-utils"
+import { extractCleanEmail, parseSenderNameAndEmail } from "@/lib/email-utils"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
 import { generateAdminEmailNotificationHtml } from "@/emails/admin-email-notification"
 import {
@@ -126,7 +126,11 @@ export async function POST(req: Request) {
 
     const resendId = resendEmailId || crypto.randomUUID()
     const fromRaw = emailData.from || "sender@example.com"
-    const { name: fromName, email: fromEmail } = parseNameAndEmail(fromRaw)
+    const headersFrom = emailData.headers?.from || null
+    const { name: fromName, email: fromEmail } = parseSenderNameAndEmail(
+      fromRaw,
+      headersFrom
+    )
 
     const rawTo = emailData.to || []
     const toEmails: string[] = (Array.isArray(rawTo) ? rawTo : [rawTo])

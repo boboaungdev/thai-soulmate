@@ -23,8 +23,11 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    const mailbox = (formData.get("mailbox") as string) || "info"
+    const mailbox = (formData.get("mailbox") as string) || "contact"
     const fromName = (formData.get("fromName") as string) || ""
+    const explicitFromEmail = extractCleanEmail(
+      (formData.get("fromEmail") as string) || ""
+    )
     const subject = ((formData.get("subject") as string) || "").trim()
     let bodyHtml = (formData.get("bodyHtml") as string) || ""
 
@@ -48,9 +51,12 @@ export async function POST(req: Request) {
     const accountConfig = EMAIL_ACCOUNTS.find(
       (a) => a.id === mailbox || a.email.toLowerCase() === mailbox.toLowerCase()
     )
-    const fromEmail = accountConfig
-      ? accountConfig.email
-      : `${mailbox}@thaisoulmate.org`
+    const fromEmail =
+      explicitFromEmail && explicitFromEmail.includes("@")
+        ? explicitFromEmail
+        : accountConfig
+          ? accountConfig.email
+          : `${mailbox}@thaisoulmate.org`
     const senderDisplay = fromName ? `${fromName} <${fromEmail}>` : fromEmail
 
     // Replace base64 inline images in bodyHtml with permanent Cloudflare R2 links

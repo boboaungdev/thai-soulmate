@@ -2,10 +2,8 @@
 
 import * as React from "react"
 import { useParams, useRouter } from "next/navigation"
-import Link from "next/link"
 import Image from "next/image"
 import {
-  Mail,
   Inbox,
   Send,
   Settings2,
@@ -14,23 +12,16 @@ import {
   RefreshCw,
   Trash2,
   Star,
-  Archive,
-  ArrowLeft,
-  CheckCircle2,
-  Clock,
   AlertCircle,
-  ExternalLink,
   Save,
   Pencil,
   Lock,
   Reply,
   Forward,
-  Printer,
   Paperclip,
   Download,
   FileText,
   Upload,
-  Image as ImageIcon,
   X,
 } from "lucide-react"
 
@@ -53,15 +44,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
@@ -170,15 +153,28 @@ export default function EmailFolderDynamicPage() {
 
   const { user } = useAuthStore()
 
-  const currentAccount =
-    accountParam === "personal"
-      ? {
-          id: "personal",
-          email: user?.email || "personal@thaisoulmate.org",
-          name: user?.name ? `${user.name}` : "Personal",
-          description: "Your personal mailbox",
-        }
-      : EMAIL_ACCOUNTS.find((a) => a.id === accountParam) || EMAIL_ACCOUNTS[0]
+  const currentAccount = React.useMemo(() => {
+    if (accountParam === "personal") {
+      return {
+        id: "personal",
+        email: user?.email || "personal@thaisoulmate.org",
+        name: user?.name ? `${user.name}` : "Personal",
+        description: "Your personal mailbox",
+      }
+    }
+    const found = EMAIL_ACCOUNTS.find(
+      (a) =>
+        a.id.toLowerCase() === accountParam.toLowerCase() ||
+        a.email.toLowerCase() === accountParam.toLowerCase()
+    )
+    if (found) return found
+    return {
+      id: accountParam,
+      email: `${accountParam}@thaisoulmate.org`,
+      name: accountParam.charAt(0).toUpperCase() + accountParam.slice(1),
+      description: `Managing emails for ${accountParam}@thaisoulmate.org`,
+    }
+  }, [accountParam, user])
 
   const [searchQuery, setSearchQuery] = React.useState("")
   const [composeOpen, setComposeOpen] = React.useState(false)
@@ -195,8 +191,15 @@ export default function EmailFolderDynamicPage() {
     React.useState<DbEmailMessage | null>(null)
 
   // Settings State
-  const defaultDisplayName = `Thai Soulmate - ${currentAccount?.name}`
-  const defaultSignature = `Best regards,\n${currentAccount?.name}\n${currentAccount?.email}\n\nCONFIDENTIALITY NOTICE: This email and any attachments are intended only for the person or entity to whom they are addressed and may contain confidential information. If you have received this email in error, please notify the sender and delete it. Any unauthorized copying, disclosure, or use of this email or its contents is prohibited.`
+  const defaultDisplayName = React.useMemo(
+    () => `Thai Soulmate - ${currentAccount.name}`,
+    [currentAccount.name]
+  )
+  const defaultSignature = React.useMemo(
+    () =>
+      `Best regards,\n${currentAccount.name}\n${currentAccount.email}\n\nCONFIDENTIALITY NOTICE: This email and any attachments are intended only for the person or entity to whom they are addressed and may contain confidential information. If you have received this email in error, please notify the sender and delete it. Any unauthorized copying, disclosure, or use of this email or its contents is prohibited.`,
+    [currentAccount.name, currentAccount.email]
+  )
 
   const [displayName, setDisplayName] = React.useState(defaultDisplayName)
   const [savedDisplayName, setSavedDisplayName] =
@@ -266,8 +269,7 @@ export default function EmailFolderDynamicPage() {
       const json = await res.json()
       if (json.success && json.data) {
         const s = json.data
-        const loadedDisplayName =
-          s.displayName || `Thai Soulmate - ${currentAccount?.name}`
+        const loadedDisplayName = s.displayName || defaultDisplayName
         const loadedSignature = s.signatureText || defaultSignature
         const loadedNotificationEmails = s.notificationEmails || []
         const loadedSigImg = s.signatureImageUrl || null
@@ -284,14 +286,12 @@ export default function EmailFolderDynamicPage() {
         setSignatureSize(loadedSigSize)
         setSavedSignatureSize(loadedSigSize)
       } else {
-        const initDisplayName = `Thai Soulmate - ${currentAccount?.name}`
-        const initSignature = defaultSignature
-        setDisplayName(initDisplayName)
-        setSavedDisplayName(initDisplayName)
+        setDisplayName(defaultDisplayName)
+        setSavedDisplayName(defaultDisplayName)
         setNotificationEmails([])
         setSavedNotificationEmails([])
-        setSignature(initSignature)
-        setSavedSignature(initSignature)
+        setSignature(defaultSignature)
+        setSavedSignature(defaultSignature)
         setSignatureImage(null)
         setSavedSignatureImage(null)
         setSignatureSize("md")
@@ -300,7 +300,7 @@ export default function EmailFolderDynamicPage() {
     } catch (err) {
       console.error("Failed to fetch settings", err)
     }
-  }, [accountParam, currentAccount?.name, defaultSignature])
+  }, [accountParam, defaultDisplayName, defaultSignature])
 
   React.useEffect(() => {
     fetchSettings()
@@ -330,31 +330,6 @@ export default function EmailFolderDynamicPage() {
     reader.readAsDataURL(file)
     e.target.value = ""
   }
-
-  const generateSignatureHtml = React.useCallback(
-    ({
-      text,
-      image,
-      size = "md",
-    }: {
-      text: string
-      image: string | null
-      size?: "sm" | "md" | "lg"
-    }) => {
-      const heightPx = size === "sm" ? 36 : size === "lg" ? 64 : 48
-      if (!image) {
-        return text.replace(/\n/g, "<br/>")
-      }
-
-      const imgTag = `<img src="${image}" style="max-height:${heightPx}px; height:auto; border-radius:4px; display:inline-block; margin:6px 0;" alt="Signature" />`
-
-      const lines = text.split("\n")
-      const greeting = lines[0] || "Best regards,"
-      const rest = lines.slice(1).join("<br/>")
-      return `${greeting}<br/>${imgTag}${rest ? `<br/>${rest}` : ""}`
-    },
-    []
-  )
 
   const hasCurrentAccountInNotification = notificationEmails.some(
     (e) => e.trim().toLowerCase() === currentAccount.email.toLowerCase()

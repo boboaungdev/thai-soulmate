@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { EmailFolder } from "@/lib/generated/prisma/client"
+import { EMAIL_ACCOUNTS } from "@/constants/email"
+import { syncEmailsFromResend } from "@/lib/email-sync"
 
 export async function GET(req: Request) {
   try {
@@ -9,6 +11,13 @@ export async function GET(req: Request) {
     const folderParam = (searchParams.get("folder") || "inbox").toUpperCase()
     const query = (searchParams.get("q") || "").trim()
 
+    // Automatically sync missing emails from Resend into Database
+    try {
+      await syncEmailsFromResend(mailbox)
+    } catch (syncErr) {
+      console.warn("Background Resend sync note:", syncErr)
+    }
+
     let folder: EmailFolder = EmailFolder.INBOX
     if (folderParam === "SENT") folder = EmailFolder.SENT
     else if (folderParam === "TRASH") folder = EmailFolder.TRASH
@@ -16,20 +25,45 @@ export async function GET(req: Request) {
     else if (folderParam === "DRAFT") folder = EmailFolder.DRAFT
     else if (folderParam === "SPAM") folder = EmailFolder.SPAM
 
+    const accountConfig = EMAIL_ACCOUNTS.find(
+      (a) =>
+        a.id.toLowerCase() === mailbox.toLowerCase() ||
+        a.email.toLowerCase() === mailbox.toLowerCase()
+    )
+    const mailboxEmail = accountConfig
+      ? accountConfig.email.toLowerCase()
+      : `${mailbox.toLowerCase()}@thaisoulmate.org`
+
+    const mailboxFilter = {
+      OR: [
+        { mailbox },
+        { mailbox: mailbox.toLowerCase() },
+        { mailbox: mailboxEmail },
+        { toEmails: { has: mailboxEmail } },
+        ...(accountConfig ? [{ toEmails: { has: accountConfig.email } }] : []),
+      ],
+    }
+
     const whereClause: any = {
-      mailbox,
+      ...mailboxFilter,
       folder,
       isTrash: folder === EmailFolder.TRASH,
     }
 
     if (query) {
-      whereClause.OR = [
-        { subject: { contains: query, mode: "insensitive" } },
-        { preview: { contains: query, mode: "insensitive" } },
-        { fromEmail: { contains: query, mode: "insensitive" } },
-        { fromName: { contains: query, mode: "insensitive" } },
-        { toEmails: { has: query } },
+      whereClause.AND = [
+        mailboxFilter,
+        {
+          OR: [
+            { subject: { contains: query, mode: "insensitive" } },
+            { preview: { contains: query, mode: "insensitive" } },
+            { fromEmail: { contains: query, mode: "insensitive" } },
+            { fromName: { contains: query, mode: "insensitive" } },
+            { toEmails: { has: query } },
+          ],
+        },
       ]
+      delete whereClause.OR
     }
 
     const emails = await prisma.emailMessage.findMany({
@@ -61,7 +95,10 @@ export async function PATCH(req: Request) {
     const { id, isStarred, isRead, isArchived, isTrash, folder } = body
 
     if (!id) {
-      return NextResponse.json({ error: "Email ID is required" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Email ID is required" },
+        { status: 400 }
+      )
     }
 
     const dataToUpdate: any = {}
@@ -98,7 +135,10 @@ export async function DELETE(req: Request) {
     const id = searchParams.get("id")
 
     if (!id) {
-      return NextResponse.json({ error: "Email ID is required" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Email ID is required" },
+        { status: 400 }
+      )
     }
 
     await prisma.emailMessage.delete({

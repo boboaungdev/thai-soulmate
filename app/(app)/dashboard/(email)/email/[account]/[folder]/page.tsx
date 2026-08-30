@@ -387,13 +387,8 @@ export default function EmailFolderDynamicPage() {
           <Button
             className="btn-gradient gap-1.5"
             onClick={() => {
-              const defaultSigHtml = generateSignatureHtml({
-                text: savedSignature,
-                image: savedSignatureImage,
-                size: savedSignatureSize,
-              })
               setComposeData({
-                body: `<br/><br/>${defaultSigHtml}`,
+                body: "",
                 disableTo: false,
               })
               setComposeOpen(true)
@@ -433,6 +428,9 @@ export default function EmailFolderDynamicPage() {
             initialSubject={composeData.subject}
             initialBody={composeData.body}
             disableTo={composeData.disableTo}
+            signatureText={savedSignature}
+            signatureImage={savedSignatureImage}
+            signatureSize={savedSignatureSize}
           />
         </div>
       </div>

@@ -47,6 +47,7 @@ import {
   ChevronUp,
   Lock,
   AlertCircle,
+  PenLine,
 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -337,6 +338,9 @@ interface ComposeEmailDialogProps {
   initialSubject?: string
   initialBody?: string
   disableTo?: boolean
+  signatureText?: string
+  signatureImage?: string | null
+  signatureSize?: "sm" | "md" | "lg"
   onEmailSent?: (emailData: {
     to: string
     cc?: string
@@ -356,6 +360,9 @@ export function ComposeEmailDialog({
   initialSubject = "",
   initialBody = "",
   disableTo = false,
+  signatureText = "",
+  signatureImage = null,
+  signatureSize = "md",
   onEmailSent,
 }: ComposeEmailDialogProps) {
   const [toEmails, setToEmails] = React.useState<string[]>(() =>
@@ -371,6 +378,11 @@ export function ComposeEmailDialog({
   const [isSending, setIsSending] = React.useState(false)
   const [showFormatting, setShowFormatting] = React.useState(true)
   const [showDiscardAlert, setShowDiscardAlert] = React.useState(false)
+  const [includeSignature, setIncludeSignature] = React.useState(true)
+
+  const hasSignatureConfigured = Boolean(
+    signatureText?.trim() || signatureImage
+  )
 
   const editorRef = React.useRef<HTMLDivElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
@@ -383,8 +395,9 @@ export function ComposeEmailDialog({
       setCcEmails([])
       setBccEmails([])
       setSubject(initialSubject)
-      if (editorRef.current && initialBody) {
-        editorRef.current.innerHTML = initialBody
+      setIncludeSignature(true)
+      if (editorRef.current) {
+        editorRef.current.innerHTML = initialBody || ""
       }
     }
   }, [open, initialTo, initialSubject, initialBody])
@@ -510,7 +523,21 @@ export function ComposeEmailDialog({
     // Simulate sending email
     await new Promise((res) => setTimeout(res, 800))
 
-    const bodyHtml = editorRef.current?.innerHTML || ""
+    let bodyHtml = editorRef.current?.innerHTML || ""
+
+    if (includeSignature && hasSignatureConfigured) {
+      const heightPx =
+        signatureSize === "sm" ? 36 : signatureSize === "lg" ? 64 : 48
+      const imgTag = signatureImage
+        ? `<img src="${signatureImage}" style="max-height:${heightPx}px; height:auto; border-radius:4px; display:inline-block; margin:6px 0;" alt="Signature" />`
+        : ""
+      const lines = (signatureText || "").split("\n")
+      const greeting = lines[0] || "Best regards,"
+      const rest = lines.slice(1).join("<br/>")
+      const sigHtml = `${greeting}<br/>${imgTag}${rest ? `<br/>${rest}` : ""}`
+      bodyHtml = `${bodyHtml}<br/><br/>${sigHtml}`
+    }
+
     const toFormatted = toEmails.join(", ")
 
     onEmailSent?.({
@@ -887,7 +914,7 @@ export function ComposeEmailDialog({
           )}
 
           {/* WYSIWYG Message Body Editor */}
-          <div className="relative flex-1 overflow-y-auto bg-background p-4 focus-within:outline-none">
+          <div className="relative flex flex-1 flex-col overflow-y-auto bg-background p-4 focus-within:outline-none">
             <div
               ref={editorRef}
               contentEditable
@@ -895,7 +922,7 @@ export function ComposeEmailDialog({
               aria-multiline="true"
               data-placeholder="Write your email here..."
               className={cn(
-                "h-full min-h-[160px] w-full text-sm leading-relaxed whitespace-pre-wrap outline-none",
+                "min-h-[140px] w-full flex-1 text-sm leading-relaxed whitespace-pre-wrap outline-none",
                 "empty:before:pointer-events-none empty:before:text-muted-foreground/60 empty:before:content-[attr(data-placeholder)]",
                 "[&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5",
                 "[&_img]:my-2 [&_img]:inline-block [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-border [&_img]:shadow-xs"
@@ -909,6 +936,81 @@ export function ComposeEmailDialog({
                 }
               }}
             />
+
+            {/* Pinned Live Signature Preview Box at Bottom of Editor */}
+            {hasSignatureConfigured && includeSignature && (
+              <div className="mt-4 animate-in rounded-lg border border-dashed border-primary/30 bg-primary/5 p-3 text-xs duration-150 fade-in-50 select-none">
+                <div className="mb-1.5 flex items-center justify-between border-b border-primary/10 pb-1">
+                  <span className="flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+                    <PenLine className="size-3.5" />
+                    Email Signature Attached
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIncludeSignature(false)}
+                    className="text-[10px] text-muted-foreground transition-colors hover:text-destructive"
+                  >
+                    Remove from this email
+                  </button>
+                </div>
+                <div className="font-sans leading-relaxed text-foreground">
+                  {(() => {
+                    const heightClass =
+                      signatureSize === "sm"
+                        ? "h-8 max-h-8"
+                        : signatureSize === "lg"
+                          ? "h-14 max-h-14"
+                          : "h-10 max-h-10"
+
+                    const lines = (signatureText || "").split("\n")
+                    const greeting = lines[0] || "Best regards,"
+                    const rest = lines.slice(1)
+
+                    return (
+                      <div>
+                        <div className="font-medium text-foreground">
+                          {greeting}
+                        </div>
+                        {signatureImage && (
+                          <div className="my-1.5">
+                            <img
+                              src={signatureImage}
+                              alt="Signature"
+                              className={cn(
+                                "rounded object-contain",
+                                heightClass
+                              )}
+                            />
+                          </div>
+                        )}
+                        {rest.length > 0 && (
+                          <div className="whitespace-pre-line text-muted-foreground">
+                            {rest.join("\n")}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })()}
+                </div>
+              </div>
+            )}
+
+            {/* Signature Not Included Banner */}
+            {hasSignatureConfigured && !includeSignature && (
+              <div className="mt-3 flex items-center justify-between rounded-md border border-dashed bg-muted/20 px-3 py-1.5 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <PenLine className="size-3.5 opacity-50" />
+                  Signature not included
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIncludeSignature(true)}
+                  className="text-[11px] font-medium text-primary hover:underline"
+                >
+                  + Insert Signature
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Attachment Preview Tray */}
@@ -998,6 +1100,31 @@ export function ComposeEmailDialog({
               >
                 <ImageIcon className="size-4" />
               </Button>
+
+              {/* Insert Signature Toggle Button */}
+              {hasSignatureConfigured && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  onClick={() => setIncludeSignature(!includeSignature)}
+                  title={
+                    includeSignature
+                      ? "Signature attached (click to remove)"
+                      : "Insert email signature"
+                  }
+                  className={cn(
+                    "relative size-8 text-muted-foreground transition-colors hover:text-foreground",
+                    includeSignature &&
+                      "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
+                  )}
+                >
+                  <PenLine className="size-4" />
+                  {includeSignature && (
+                    <span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-primary" />
+                  )}
+                </Button>
+              )}
 
               <Button
                 type="button"

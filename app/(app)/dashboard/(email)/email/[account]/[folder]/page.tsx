@@ -467,6 +467,22 @@ export default function EmailFolderDynamicPage() {
     }
   }
 
+  const handleEmailClick = (email: DbEmailMessage) => {
+    setSelectedEmail(email)
+    if (!email.isRead && email.folder === "INBOX") {
+      setEmails((prev) =>
+        prev.map((item) =>
+          item.id === email.id ? { ...item, isRead: true } : item
+        )
+      )
+      fetch("/api/email", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: email.id, isRead: true }),
+      }).catch(console.error)
+    }
+  }
+
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       {/* Header */}
@@ -988,7 +1004,7 @@ export default function EmailFolderDynamicPage() {
                   return (
                     <div
                       key={email.id}
-                      onClick={() => setSelectedEmail(email)}
+                      onClick={() => handleEmailClick(email)}
                       className={cn(
                         "group flex cursor-pointer items-start gap-4 p-4 transition-colors hover:bg-muted/50",
                         !email.isRead &&

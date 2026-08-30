@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
+import crypto from "crypto"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
+import { env } from "@/lib/env"
 import { uploadBufferToR2 } from "@/lib/r2-email"
 import { extractCleanEmail } from "@/lib/email-utils"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
@@ -16,7 +18,10 @@ function stripHtmlToPlainText(html: string): string {
     .trim()
 }
 
-function parseNameAndEmail(str?: string | null): { name: string | null; email: string } {
+function parseNameAndEmail(str?: string | null): {
+  name: string | null
+  email: string
+} {
   if (!str) return { name: null, email: "unknown@example.com" }
   const match = str.match(/(.*?)\s*<(.+)>/)
   if (match) {
@@ -27,35 +32,88 @@ function parseNameAndEmail(str?: string | null): { name: string | null; email: s
   return { name: null, email: str.trim() }
 }
 
-function matchMailboxFromEmails(toEmails: string[]): { mailboxId: string; mailboxEmail: string } {
+function matchMailboxFromEmails(toEmails: string[]): {
+  mailboxId: string
+  mailboxEmail: string
+} {
   for (const rawTo of toEmails) {
     const cleanTo = extractCleanEmail(rawTo).toLowerCase()
     const found = EMAIL_ACCOUNTS.find(
-      (a) => a.email.toLowerCase() === cleanTo || a.id.toLowerCase() === cleanTo.split("@")[0]
+      (a) =>
+        a.email.toLowerCase() === cleanTo ||
+        a.id.toLowerCase() === cleanTo.split("@")[0]
     )
     if (found) {
       return { mailboxId: found.id, mailboxEmail: found.email }
     }
   }
 
-  const first = toEmails[0] ? extractCleanEmail(toEmails[0]).toLowerCase() : "contact@thaisoulmate.org"
+  const first = toEmails[0]
+    ? extractCleanEmail(toEmails[0]).toLowerCase()
+    : "contact@thaisoulmate.org"
   const prefix = first.split("@")[0] || "contact"
   return { mailboxId: prefix, mailboxEmail: first }
 }
 
 export async function POST(req: Request) {
   try {
-    const payload = await req.json()
+    const rawBody = await req.text()
+
+    // Verify webhook signature if RESEND_WEBHOOK_SECRET is configured
+    const webhookSecret = env.RESEND_WEBHOOK_SECRET
+    const svixId = req.headers.get("svix-id")
+    const svixTimestamp = req.headers.get("svix-timestamp")
+    const svixSignature = req.headers.get("svix-signature")
+
+    if (webhookSecret && svixId && svixTimestamp && svixSignature) {
+      try {
+        const secretKey = webhookSecret.startsWith("whsec_")
+          ? Buffer.from(webhookSecret.slice(6), "base64")
+          : Buffer.from(webhookSecret)
+
+        const toSign = `${svixId}.${svixTimestamp}.${rawBody}`
+        const expectedSignature = crypto
+          .createHmac("sha256", secretKey)
+          .update(toSign)
+          .digest("base64")
+
+        const signatures = svixSignature.split(" ")
+        const isValid = signatures.some((sig) => {
+          const [, signature] = sig.split(",")
+          return signature === expectedSignature
+        })
+
+        if (!isValid) {
+          console.warn("Invalid Resend webhook signature")
+          return NextResponse.json(
+            { error: "Invalid webhook signature" },
+            { status: 401 }
+          )
+        }
+      } catch (signErr) {
+        console.warn("Webhook signature check error:", signErr)
+      }
+    }
+
+    const payload = JSON.parse(rawBody || "{}")
     let emailData = payload.data || payload
 
-    if (emailData.email_id && (!emailData.html && !emailData.text && !emailData.from)) {
+    if (
+      emailData.email_id &&
+      !emailData.html &&
+      !emailData.text &&
+      !emailData.from
+    ) {
       try {
         const fetched = await resend.emails.get(emailData.email_id)
         if (fetched.data) {
           emailData = { ...emailData, ...fetched.data }
         }
       } catch (fetchErr) {
-        console.warn("Failed to fetch email details by email_id from Resend:", fetchErr)
+        console.warn(
+          "Failed to fetch email details by email_id from Resend:",
+          fetchErr
+        )
       }
     }
 
@@ -64,16 +122,26 @@ export async function POST(req: Request) {
     const { name: fromName, email: fromEmail } = parseNameAndEmail(fromRaw)
 
     const rawTo = emailData.to || []
-    const toEmails: string[] = (Array.isArray(rawTo) ? rawTo : [rawTo]).map(extractCleanEmail).filter(Boolean)
+    const toEmails: string[] = (Array.isArray(rawTo) ? rawTo : [rawTo])
+      .map(extractCleanEmail)
+      .filter(Boolean)
 
     const rawCc = emailData.cc || []
-    const ccEmails: string[] = (Array.isArray(rawCc) ? rawCc : [rawCc]).map(extractCleanEmail).filter(Boolean)
+    const ccEmails: string[] = (Array.isArray(rawCc) ? rawCc : [rawCc])
+      .map(extractCleanEmail)
+      .filter(Boolean)
 
     const rawBcc = emailData.bcc || []
-    const bccEmails: string[] = (Array.isArray(rawBcc) ? rawBcc : [rawBcc]).map(extractCleanEmail).filter(Boolean)
+    const bccEmails: string[] = (Array.isArray(rawBcc) ? rawBcc : [rawBcc])
+      .map(extractCleanEmail)
+      .filter(Boolean)
 
     const subject = emailData.subject || "(No Subject)"
-    const bodyHtml = emailData.html || (emailData.text ? `<p style="white-space: pre-wrap;">${emailData.text}</p>` : "<p>(No content)</p>")
+    const bodyHtml =
+      emailData.html ||
+      (emailData.text
+        ? `<p style="white-space: pre-wrap;">${emailData.text}</p>`
+        : "<p>(No content)</p>")
     const bodyText = emailData.text || stripHtmlToPlainText(bodyHtml)
     const preview = stripHtmlToPlainText(bodyHtml).slice(0, 200)
 
@@ -88,7 +156,10 @@ export async function POST(req: Request) {
       r2Key: string
     }[] = []
 
-    if (Array.isArray(emailData.attachments) && emailData.attachments.length > 0) {
+    if (
+      Array.isArray(emailData.attachments) &&
+      emailData.attachments.length > 0
+    ) {
       for (const att of emailData.attachments) {
         try {
           const filename = att.filename || "attachment"
@@ -136,7 +207,11 @@ export async function POST(req: Request) {
         toEmails,
         ccEmails,
         bccEmails,
-        replyTo: emailData.reply_to ? (Array.isArray(emailData.reply_to) ? emailData.reply_to.join(", ") : emailData.reply_to) : null,
+        replyTo: emailData.reply_to
+          ? Array.isArray(emailData.reply_to)
+            ? emailData.reply_to.join(", ")
+            : emailData.reply_to
+          : null,
         subject,
         preview,
         bodyText,
@@ -145,7 +220,9 @@ export async function POST(req: Request) {
         isStarred: false,
         isArchived: false,
         isTrash: false,
-        receivedAt: emailData.created_at ? new Date(emailData.created_at) : new Date(),
+        receivedAt: emailData.created_at
+          ? new Date(emailData.created_at)
+          : new Date(),
         attachments: {
           create: uploadedAttachments.map((att) => ({
             filename: att.filename,
@@ -198,7 +275,10 @@ export async function POST(req: Request) {
         })
       }
     } catch (notifErr: any) {
-      console.warn("Failed to dispatch incoming email alert:", notifErr?.message || notifErr)
+      console.warn(
+        "Failed to dispatch incoming email alert:",
+        notifErr?.message || notifErr
+      )
     }
 
     return NextResponse.json({

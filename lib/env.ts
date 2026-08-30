@@ -4,6 +4,7 @@ export const env = {
   DATABASE_URL: process.env.DATABASE_URL,
 
   RESEND_API_KEY: process.env.RESEND_API_KEY,
+  RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
 
   CHROMIUM_EXECUTABLE_PATH:
     process.env.CHROMIUM_EXECUTABLE_PATH || "/usr/bin/brave",

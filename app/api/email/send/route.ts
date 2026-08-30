@@ -5,10 +5,7 @@ import {
   uploadEmailAttachmentToR2,
   uploadBase64ImageToR2,
 } from "@/lib/r2-email"
-import {
-  extractCleanEmail,
-  parseEmailsFromInput,
-} from "@/components/email/compose-email-dialog"
+import { extractCleanEmail, parseEmailsFromInput } from "@/lib/email-utils"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
 
 // Helper to strip HTML tags for plain text preview

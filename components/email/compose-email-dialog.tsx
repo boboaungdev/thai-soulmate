@@ -48,6 +48,7 @@ import {
   Lock,
   AlertCircle,
   PenLine,
+  RefreshCw,
 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -61,11 +62,6 @@ export interface AttachedFile {
   previewUrl?: string
 }
 
-export {
-  EMAIL_REGEX,
-  extractCleanEmail,
-  parseEmailsFromInput,
-} from "@/lib/email-utils"
 import {
   EMAIL_REGEX,
   extractCleanEmail,
@@ -666,6 +662,7 @@ export function ComposeEmailDialog({
               <Button
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => setIsFullScreen(!isFullScreen)}
                 className="size-7 text-muted-foreground hover:text-foreground"
                 title={isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
@@ -680,6 +677,7 @@ export function ComposeEmailDialog({
               <Button
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={handleDiscard}
                 className="size-7 text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:text-foreground"
                 title="Close"
@@ -708,7 +706,7 @@ export function ComposeEmailDialog({
                   value={toEmails}
                   onChange={setToEmails}
                   placeholder="recipient@example.com (comma or space to add)"
-                  disabled={disableTo}
+                  disabled={isSending || disableTo}
                   className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
                 />
               </div>
@@ -717,8 +715,9 @@ export function ComposeEmailDialog({
                   {!showCc && (
                     <button
                       type="button"
+                      disabled={isSending}
                       onClick={() => setShowCc(true)}
-                      className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground"
+                      className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                     >
                       Cc
                     </button>
@@ -726,8 +725,9 @@ export function ComposeEmailDialog({
                   {!showBcc && (
                     <button
                       type="button"
+                      disabled={isSending}
                       onClick={() => setShowBcc(true)}
-                      className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground"
+                      className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                     >
                       Bcc
                     </button>
@@ -751,16 +751,18 @@ export function ComposeEmailDialog({
                     value={ccEmails}
                     onChange={setCcEmails}
                     placeholder="cc@example.com (comma or space to add)"
+                    disabled={isSending}
                     className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
                   />
                 </div>
                 <button
                   type="button"
+                  disabled={isSending}
                   onClick={() => {
                     setShowCc(false)
                     setCcEmails([])
                   }}
-                  className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground"
+                  className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                 >
                   <X className="size-3.5" />
                 </button>
@@ -782,16 +784,18 @@ export function ComposeEmailDialog({
                     value={bccEmails}
                     onChange={setBccEmails}
                     placeholder="bcc@example.com (comma or space to add)"
+                    disabled={isSending}
                     className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
                   />
                 </div>
                 <button
                   type="button"
+                  disabled={isSending}
                   onClick={() => {
                     setShowBcc(false)
                     setBccEmails([])
                   }}
-                  className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground"
+                  className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                 >
                   <X className="size-3.5" />
                 </button>
@@ -809,9 +813,10 @@ export function ComposeEmailDialog({
               <Input
                 id="email-subject"
                 placeholder="Subject"
+                disabled={isSending}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="h-8 flex-1 border-0 px-2 text-sm font-medium shadow-none focus-visible:ring-0"
+                className="h-8 flex-1 border-0 px-2 text-sm font-medium shadow-none focus-visible:ring-0 disabled:opacity-60"
               />
             </div>
           </div>
@@ -823,6 +828,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("bold")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Bold (Ctrl+B)"
@@ -833,6 +839,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("italic")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Italic (Ctrl+I)"
@@ -843,6 +850,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("underline")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Underline (Ctrl+U)"
@@ -853,6 +861,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("strikeThrough")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Strikethrough"
@@ -866,6 +875,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("insertUnorderedList")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Bulleted list"
@@ -876,6 +886,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("insertOrderedList")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Numbered list"
@@ -889,6 +900,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("justifyLeft")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Align Left"
@@ -899,6 +911,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("justifyCenter")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Align Center"
@@ -909,6 +922,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => formatDoc("justifyRight")}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Align Right"
@@ -922,6 +936,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={handleAddLink}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Insert Link"
@@ -935,12 +950,14 @@ export function ComposeEmailDialog({
           <div className="relative flex flex-1 flex-col overflow-y-auto bg-background p-4 focus-within:outline-none">
             <div
               ref={editorRef}
-              contentEditable
+              contentEditable={!isSending}
               role="textbox"
               aria-multiline="true"
               data-placeholder="Write your email here..."
               className={cn(
-                "min-h-[140px] w-full flex-1 text-sm leading-relaxed whitespace-pre-wrap outline-none",
+                "min-h-[140px] w-full flex-1 text-sm leading-relaxed whitespace-pre-wrap transition-opacity outline-none",
+                isSending &&
+                  "pointer-events-none cursor-not-allowed opacity-60 select-none",
                 "empty:before:pointer-events-none empty:before:text-muted-foreground/60 empty:before:content-[attr(data-placeholder)]",
                 "[&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5",
                 "[&_img]:my-2 [&_img]:inline-block [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-border [&_img]:shadow-xs"
@@ -948,7 +965,11 @@ export function ComposeEmailDialog({
               onPaste={handlePaste}
               onKeyDown={(e) => {
                 // Standard keyboard shortcuts
-                if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                if (
+                  !isSending &&
+                  (e.metaKey || e.ctrlKey) &&
+                  e.key === "Enter"
+                ) {
                   e.preventDefault()
                   handleSend()
                 }
@@ -963,13 +984,15 @@ export function ComposeEmailDialog({
                     <PenLine className="size-3.5" />
                     Email Signature Attached
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => setIncludeSignature(false)}
-                    className="text-[10px] text-muted-foreground transition-colors hover:text-destructive"
-                  >
-                    Remove from this email
-                  </button>
+                  {!isSending && (
+                    <button
+                      type="button"
+                      onClick={() => setIncludeSignature(false)}
+                      className="text-[10px] text-muted-foreground transition-colors hover:text-destructive"
+                    >
+                      Remove from this email
+                    </button>
+                  )}
                 </div>
                 <div className="font-sans leading-relaxed text-foreground">
                   {(() => {
@@ -1020,13 +1043,15 @@ export function ComposeEmailDialog({
                   <PenLine className="size-3.5 opacity-50" />
                   Signature not included
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setIncludeSignature(true)}
-                  className="text-[11px] font-medium text-primary hover:underline"
-                >
-                  + Insert Signature
-                </button>
+                {!isSending && (
+                  <button
+                    type="button"
+                    onClick={() => setIncludeSignature(true)}
+                    className="text-[11px] font-medium text-primary hover:underline"
+                  >
+                    + Insert Signature
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -1056,6 +1081,7 @@ export function ComposeEmailDialog({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
+                    disabled={isSending}
                     onClick={() => handleRemoveAttachment(att.id)}
                     className="ml-1 size-5 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                     title="Remove attachment"
@@ -1076,8 +1102,17 @@ export function ComposeEmailDialog({
                 disabled={isSending}
                 className="btn-gradient gap-2 px-4 shadow-sm"
               >
-                <Send className="size-4" />
-                <span>{isSending ? "Sending..." : "Send"}</span>
+                {isSending ? (
+                  <>
+                    <RefreshCw className="size-4 animate-spin" />
+                    <span>Sending...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="size-4" />
+                    <span>Send</span>
+                  </>
+                )}
               </Button>
 
               {/* Hidden file & image inputs */}
@@ -1085,6 +1120,7 @@ export function ComposeEmailDialog({
                 ref={fileInputRef}
                 type="file"
                 multiple
+                disabled={isSending}
                 onChange={handleFileUpload}
                 className="hidden"
               />
@@ -1093,6 +1129,7 @@ export function ComposeEmailDialog({
                 type="file"
                 accept="image/*"
                 multiple
+                disabled={isSending}
                 onChange={handleImageUpload}
                 className="hidden"
               />
@@ -1101,6 +1138,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="outline"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => fileInputRef.current?.click()}
                 title="Attach files (PDF, DOCX, ZIP, etc.)"
                 className="size-8 text-muted-foreground hover:text-foreground"
@@ -1112,6 +1150,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="outline"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => imageInputRef.current?.click()}
                 title="Insert images (PNG, JPG, WebP)"
                 className="size-8 text-muted-foreground hover:text-foreground"
@@ -1125,6 +1164,7 @@ export function ComposeEmailDialog({
                   type="button"
                   variant="outline"
                   size="icon-sm"
+                  disabled={isSending}
                   onClick={() => setIncludeSignature(!includeSignature)}
                   title={
                     includeSignature
@@ -1148,6 +1188,7 @@ export function ComposeEmailDialog({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={() => setShowFormatting(!showFormatting)}
                 title="Toggle formatting options"
                 className={cn(
@@ -1164,12 +1205,15 @@ export function ComposeEmailDialog({
             {/* Discard & Status */}
             <div className="flex items-center gap-2">
               <span className="hidden text-xs text-muted-foreground select-none sm:inline">
-                Press Ctrl+Enter to send
+                {isSending
+                  ? "Dispatching message & attachments..."
+                  : "Press Ctrl+Enter to send"}
               </span>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                disabled={isSending}
                 onClick={handleDiscard}
                 className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                 title="Discard draft"

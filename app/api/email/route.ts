@@ -115,7 +115,8 @@ export async function GET(req: Request) {
           email.resendId &&
           (email.bodyHtml === "<p>(No content)</p>" ||
             !email.bodyHtml ||
-            email.bodyHtml.trim() === "")
+            email.bodyHtml.trim() === "" ||
+            !email.fromName)
         ) {
           try {
             // First attempt to fetch from Inbound Received Emails API

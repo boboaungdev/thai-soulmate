@@ -31,7 +31,7 @@ import {
   ComposeEmailDialog,
   TagEmailInput,
 } from "@/components/email/compose-email-dialog"
-import { extractCleanEmail } from "@/lib/email-utils"
+import { extractCleanEmail, parseSenderNameAndEmail } from "@/lib/email-utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -124,18 +124,23 @@ function formatFileSize(bytes: number) {
 
 // Helper to parse name and email
 function parseEmailParty(name?: string | null, email?: string) {
-  if (name && email) {
-    const parts = name.split(" ")
+  const { name: parsedName, email: cleanEmail } = parseSenderNameAndEmail(
+    email,
+    name
+  )
+  const finalName = (name && name.trim()) || parsedName
+
+  if (finalName && cleanEmail) {
+    const parts = finalName.trim().split(/\s+/)
     const initials =
       parts.length > 1
         ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-        : name.slice(0, 2).toUpperCase()
-    return { name, email, initials }
+        : finalName.slice(0, 2).toUpperCase()
+    return { name: finalName, email: cleanEmail, initials }
   }
-  if (email) {
-    const clean = extractCleanEmail(email)
-    const initials = clean.slice(0, 2).toUpperCase()
-    return { name: clean.split("@")[0], email: clean, initials }
+  if (cleanEmail) {
+    const initials = cleanEmail.slice(0, 2).toUpperCase()
+    return { name: cleanEmail, email: cleanEmail, initials }
   }
   return { name: "Unknown", email: "", initials: "U" }
 }
@@ -1205,7 +1210,7 @@ export default function EmailFolderDynamicPage() {
                           <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                             <Paperclip className="size-3.5" />
                             <span>
-                              Cloudflare R2 Attachments (
+                              Attachments (
                               {selectedEmail.attachments.length})
                             </span>
                           </div>

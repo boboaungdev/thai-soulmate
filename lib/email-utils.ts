@@ -30,22 +30,58 @@ export function parseEmailsFromInput(input?: string | string[]): string[] {
 }
 
 export function parseSenderNameAndEmail(
-  fromRaw?: string | null,
-  headersFrom?: string | null
+  fromRaw?: any,
+  headersFrom?: any
 ): { name: string | null; email: string } {
-  const candidate = headersFrom || fromRaw || ""
-  if (!candidate) return { name: null, email: "unknown@example.com" }
+  let candidate = ""
 
-  const match = candidate.match(/(.*?)\s*<(.+)>/)
+  if (typeof headersFrom === "string") {
+    candidate = headersFrom
+  } else if (Array.isArray(headersFrom) && headersFrom.length > 0) {
+    const first = headersFrom[0]
+    candidate =
+      typeof first === "string"
+        ? first
+        : first?.text || first?.name || first?.value || ""
+  } else if (headersFrom && typeof headersFrom === "object") {
+    if (headersFrom.name && (headersFrom.address || headersFrom.email)) {
+      const name = String(headersFrom.name)
+        .trim()
+        .replace(/^["']|["']$/g, "")
+      const email = extractCleanEmail(headersFrom.address || headersFrom.email)
+      return { name: name || null, email }
+    }
+    candidate = headersFrom.text || headersFrom.value || ""
+  }
+
+  if (!candidate && typeof fromRaw === "string") {
+    candidate = fromRaw
+  }
+
+  if (!candidate) {
+    return { name: null, email: "unknown@example.com" }
+  }
+
+  const match = candidate.match(/(.*?)\s*<([^>]+)>/)
   if (match) {
-    const name = match[1].trim().replace(/^["']|["']$/g, "")
+    const rawName = match[1]
+      .trim()
+      .replace(/^["']|["']$/g, "")
+      .trim()
     const email = match[2].trim()
-    return { name: name || null, email }
+    return {
+      name: rawName || null,
+      email: extractCleanEmail(email),
+    }
   }
 
   const clean = candidate.trim().replace(/^["']|["']$/g, "")
   if (clean.includes("@")) {
-    return { name: null, email: clean }
+    return { name: null, email: extractCleanEmail(clean) }
   }
-  return { name: clean || null, email: fromRaw || clean }
+
+  return {
+    name: clean || null,
+    email: typeof fromRaw === "string" ? extractCleanEmail(fromRaw) : clean,
+  }
 }

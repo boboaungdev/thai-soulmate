@@ -5,6 +5,10 @@ import { uploadBufferToR2 } from "@/lib/r2-email"
 import { EmailFolder } from "@/lib/generated/prisma/client"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
 import { syncEmailsFromResend } from "@/lib/email-sync"
+import {
+  getReceivedEmail,
+  downloadAndUploadAttachment,
+} from "@/lib/resend-inbound"
 
 export async function GET(req: Request) {
   try {
@@ -113,8 +117,15 @@ export async function GET(req: Request) {
             email.bodyHtml.trim() === "")
         ) {
           try {
-            const detailRes = await resend.emails.get(email.resendId)
-            const d = detailRes.data as any
+            // First attempt to fetch from Inbound Received Emails API
+            let d: any = await getReceivedEmail(email.resendId)
+
+            // If not found in receiving API (e.g. outbound email), fetch from regular emails API
+            if (!d) {
+              const detailRes = await resend.emails.get(email.resendId)
+              d = detailRes.data as any
+            }
+
             if (d && (d.html || d.text || d.body)) {
               const bodyHtml =
                 d.html ||
@@ -145,42 +156,15 @@ export async function GET(req: Request) {
               ) {
                 for (const att of d.attachments) {
                   try {
-                    const filename = att.filename || "attachment"
-                    const contentType =
-                      att.content_type ||
-                      att.contentType ||
-                      "application/octet-stream"
-                    let fileBuffer: Buffer | null = null
-
-                    if (att.content) {
-                      fileBuffer = Buffer.from(att.content, "base64")
-                    } else if (att.data) {
-                      fileBuffer = Buffer.from(att.data)
-                    } else if (att.download_url || att.url) {
-                      const fileRes = await fetch(att.download_url || att.url)
-                      if (fileRes.ok) {
-                        fileBuffer = Buffer.from(await fileRes.arrayBuffer())
-                      }
-                    }
-
-                    if (fileBuffer && fileBuffer.length > 0) {
-                      const cleanFilename = filename.replace(
-                        /[^a-zA-Z0-9._-]/g,
-                        "_"
-                      )
-                      const r2Key = `emails/${email.mailbox}/${email.id}/attachments/${Date.now()}_${cleanFilename}`
-                      const r2Result = await uploadBufferToR2({
-                        buffer: fileBuffer,
-                        r2Key,
-                        contentType,
-                      })
-
+                    const uploaded = await downloadAndUploadAttachment({
+                      emailId: email.resendId,
+                      mailboxId: email.mailbox,
+                      dbEmailId: email.id,
+                      attachment: att,
+                    })
+                    if (uploaded) {
                       newAttachments.push({
-                        filename,
-                        contentType,
-                        size: fileBuffer.length,
-                        url: r2Result.url,
-                        r2Key: r2Result.r2Key,
+                        ...uploaded,
                         isInline: false,
                       })
                     }

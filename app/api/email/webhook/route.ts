@@ -7,6 +7,10 @@ import { uploadBufferToR2 } from "@/lib/r2-email"
 import { extractCleanEmail } from "@/lib/email-utils"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
 import { generateAdminEmailNotificationHtml } from "@/emails/admin-email-notification"
+import {
+  getReceivedEmail,
+  downloadAndUploadAttachment,
+} from "@/lib/resend-inbound"
 
 function stripHtmlToPlainText(html: string): string {
   if (!html) return ""
@@ -98,20 +102,18 @@ export async function POST(req: Request) {
     const payload = JSON.parse(rawBody || "{}")
     let emailData = payload.data || payload
 
-    // If email_id / id is present, fetch full email payload from Resend
+    // If email_id / id is present, fetch full received email payload from Resend receiving API
     const resendEmailId = emailData.email_id || emailData.id
     if (resendEmailId) {
       try {
-        const fetched = await resend.emails.get(resendEmailId)
-        if (fetched.data) {
-          const dAny = fetched.data as any
+        const received = await getReceivedEmail(resendEmailId)
+        if (received) {
           emailData = {
             ...emailData,
-            ...fetched.data,
-            attachments:
-              Array.isArray(dAny.attachments) && dAny.attachments.length > 0
-                ? dAny.attachments
-                : emailData.attachments || [],
+            ...received,
+            html: received.html || emailData.html,
+            text: received.text || emailData.text,
+            attachments: received.attachments || emailData.attachments || [],
           }
         }
       } catch (fetchErr) {
@@ -170,38 +172,14 @@ export async function POST(req: Request) {
     ) {
       for (const att of emailData.attachments) {
         try {
-          const filename = att.filename || "attachment"
-          const contentType =
-            att.content_type || att.contentType || "application/octet-stream"
-          let fileBuffer: Buffer | null = null
-
-          if (att.content) {
-            fileBuffer = Buffer.from(att.content, "base64")
-          } else if (att.data) {
-            fileBuffer = Buffer.from(att.data)
-          } else if (att.download_url || att.url) {
-            const fileRes = await fetch(att.download_url || att.url)
-            if (fileRes.ok) {
-              fileBuffer = Buffer.from(await fileRes.arrayBuffer())
-            }
-          }
-
-          if (fileBuffer && fileBuffer.length > 0) {
-            const cleanFilename = filename.replace(/[^a-zA-Z0-9._-]/g, "_")
-            const r2Key = `emails/${mailboxId}/${emailId}/attachments/${Date.now()}_${cleanFilename}`
-            const r2Result = await uploadBufferToR2({
-              buffer: fileBuffer,
-              r2Key,
-              contentType,
-            })
-
-            uploadedAttachments.push({
-              filename,
-              contentType,
-              size: fileBuffer.length,
-              url: r2Result.url,
-              r2Key: r2Result.r2Key,
-            })
+          const uploaded = await downloadAndUploadAttachment({
+            emailId: resendEmailId || emailId,
+            mailboxId,
+            dbEmailId: emailId,
+            attachment: att,
+          })
+          if (uploaded) {
+            uploadedAttachments.push(uploaded)
           }
         } catch (attErr) {
           console.warn("Failed to upload inbound attachment to R2:", attErr)

@@ -20,6 +20,8 @@ import {
   AlertCircle,
   ExternalLink,
   Save,
+  Pencil,
+  Lock,
 } from "lucide-react"
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
@@ -47,7 +49,8 @@ import {
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { toast } from "sonner"
+import { cn } from "@/lib/utils"
 
 // Email type
 type MockEmail = {
@@ -157,6 +160,82 @@ export default function EmailFolderDynamicPage() {
   const [selectedEmail, setSelectedEmail] = React.useState<MockEmail | null>(
     null
   )
+
+  // Settings State
+  const defaultDisplayName = `Thai Soulmate - ${currentAccount?.name}`
+  const defaultSignature = `Best regards,\n${currentAccount?.name}\n${currentAccount?.email}`
+
+  const [displayName, setDisplayName] = React.useState(defaultDisplayName)
+  const [savedDisplayName, setSavedDisplayName] =
+    React.useState(defaultDisplayName)
+
+  const [notificationEmail, setNotificationEmail] = React.useState("")
+  const [savedNotificationEmail, setSavedNotificationEmail] = React.useState("")
+
+  const [signature, setSignature] = React.useState(defaultSignature)
+  const [savedSignature, setSavedSignature] = React.useState(defaultSignature)
+
+  const [isEditingConfig, setIsEditingConfig] = React.useState(false)
+  const [isEditingSignature, setIsEditingSignature] = React.useState(false)
+
+  // Sync settings when current mailbox account changes
+  React.useEffect(() => {
+    const newDisplayName = `Thai Soulmate - ${currentAccount?.name}`
+    const newSignature = `Best regards,\n${newDisplayName}\n${currentAccount?.email}`
+    setDisplayName(newDisplayName)
+    setSavedDisplayName(newDisplayName)
+    setNotificationEmail("")
+    setSavedNotificationEmail("")
+    setSignature(newSignature)
+    setSavedSignature(newSignature)
+    setIsEditingConfig(false)
+    setIsEditingSignature(false)
+  }, [currentAccount?.name, currentAccount?.email])
+
+  const isNotificationSameAsCurrent =
+    notificationEmail.trim().length > 0 &&
+    notificationEmail.trim().toLowerCase() ===
+      currentAccount.email.toLowerCase()
+
+  const isNotificationValid =
+    notificationEmail.trim() === "" ||
+    /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(notificationEmail.trim())
+
+  const hasConfigChanged =
+    displayName.trim() !== savedDisplayName.trim() ||
+    notificationEmail.trim() !== savedNotificationEmail.trim()
+
+  const isSaveConfigDisabled =
+    !hasConfigChanged || isNotificationSameAsCurrent || !isNotificationValid
+
+  const hasSignatureChanged = signature.trim() !== savedSignature.trim()
+  const isSaveSignatureDisabled = !hasSignatureChanged
+
+  const handleSaveConfig = () => {
+    if (isNotificationSameAsCurrent) {
+      toast.error(
+        "Notification address cannot be the same as current email address."
+      )
+      return
+    }
+
+    if (!isNotificationValid) {
+      toast.error("Please enter a single valid notification email address.")
+      return
+    }
+
+    setSavedDisplayName(displayName.trim())
+    setSavedNotificationEmail(notificationEmail.trim())
+    setIsEditingConfig(false)
+    toast.success("Mailbox configuration saved successfully!")
+  }
+
+  const handleSaveSignature = () => {
+    setSavedSignature(signature.trim())
+    setIsEditingSignature(false)
+    toast.success("Email signature saved successfully!")
+  }
+
   const emailList = folderParam === "sent" ? mockEmails.sent : mockEmails.inbox
 
   const filteredEmails = emailList.filter(
@@ -235,85 +314,229 @@ export default function EmailFolderDynamicPage() {
       {folderParam === "settings" ? (
         /* Settings View */
         <div className="grid gap-6 md:grid-cols-2">
+          {/* Mailbox Configuration Card */}
           <Card>
-            <CardHeader>
-              <CardTitle>Mailbox Configuration</CardTitle>
-              <CardDescription>
-                Account settings and server routing for {currentAccount.email}
-              </CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0 border-b p-4 sm:p-5">
+              <div>
+                <CardTitle>Mailbox Configuration</CardTitle>
+                <CardDescription className="pt-1">
+                  Account identity, routing, and alert delivery for{" "}
+                  {currentAccount.email}
+                </CardDescription>
+              </div>
+              {!isEditingConfig && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditingConfig(true)}
+                  className="shrink-0 gap-1.5"
+                >
+                  <Pencil className="size-3.5" />
+                  <span>Edit</span>
+                </Button>
+              )}
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 p-4 sm:p-5">
               <div className="space-y-2">
                 <Label htmlFor="display-name">Display Name</Label>
                 <Input
                   id="display-name"
-                  defaultValue={`Thai Soulmate (${currentAccount.name})`}
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  disabled={!isEditingConfig}
+                  placeholder="Thai Soulmate"
+                  className={cn(
+                    !isEditingConfig && "bg-muted/40 text-muted-foreground"
+                  )}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email-addr">Email Address</Label>
-                <Input
-                  id="email-addr"
-                  defaultValue={currentAccount.email}
-                  disabled
-                />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="email-addr">Email Address</Label>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                    <Lock className="size-3 text-muted-foreground/70" />
+                    <span>Locked</span>
+                  </span>
+                </div>
+                <div className="relative flex items-center">
+                  <Input
+                    id="email-addr"
+                    value={currentAccount.email}
+                    disabled
+                    className="cursor-not-allowed bg-muted/50 pr-8 text-muted-foreground"
+                  />
+                  <Lock className="pointer-events-none absolute right-2.5 size-3.5 text-muted-foreground/50" />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="reply-to">Reply-To Address</Label>
-                <Input
-                  id="reply-to"
-                  defaultValue={currentAccount.email}
-                  placeholder="reply-to@thaisoulmate.org"
-                />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="reply-to">Reply-To Address</Label>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                    <Lock className="size-3 text-muted-foreground/70" />
+                    <span>Locked</span>
+                  </span>
+                </div>
+                <div className="relative flex items-center">
+                  <Input
+                    id="reply-to"
+                    value={currentAccount.email}
+                    disabled
+                    className="cursor-not-allowed bg-muted/50 pr-8 text-muted-foreground"
+                  />
+                  <Lock className="pointer-events-none absolute right-2.5 size-3.5 text-muted-foreground/50" />
+                </div>
               </div>
 
-              <div className="pt-2">
-                <Button className="gap-1.5">
-                  <Save className="size-4" />
-                  Save Changes
-                </Button>
+              <div className="space-y-2">
+                <Label htmlFor="notification-to">Notification To Address</Label>
+                <Input
+                  id="notification-to"
+                  placeholder="e.g. your@example.com"
+                  value={notificationEmail}
+                  onChange={(e) => {
+                    // Strictly single email: disallow commas, semicolons, and spaces
+                    const clean = e.target.value.replace(/[\s,;]/g, "")
+                    setNotificationEmail(clean)
+                  }}
+                  disabled={!isEditingConfig}
+                  className={cn(
+                    !isEditingConfig && "bg-muted/40 text-muted-foreground",
+                    isEditingConfig &&
+                      (isNotificationSameAsCurrent ||
+                        (!isNotificationValid &&
+                          notificationEmail.length > 0)) &&
+                      "border-destructive focus-visible:ring-destructive"
+                  )}
+                />
+                {isEditingConfig && isNotificationSameAsCurrent && (
+                  <div className="flex items-center gap-1.5 pt-0.5 text-xs font-medium text-destructive">
+                    <AlertCircle className="size-3.5 shrink-0" />
+                    <span>
+                      Notification address cannot be the same as current email
+                      address.
+                    </span>
+                  </div>
+                )}
+                {isEditingConfig &&
+                  !isNotificationSameAsCurrent &&
+                  !isNotificationValid &&
+                  notificationEmail.length > 0 && (
+                    <div className="flex items-center gap-1.5 pt-0.5 text-xs font-medium text-destructive">
+                      <AlertCircle className="size-3.5 shrink-0" />
+                      <span>
+                        Only a single valid email address is allowed (no
+                        commas).
+                      </span>
+                    </div>
+                  )}
+                {(!isEditingConfig ||
+                  (!isNotificationSameAsCurrent && isNotificationValid)) && (
+                  <p className="text-xs text-muted-foreground">
+                    Optional single backup email address for receiving delivery
+                    and system alerts (no commas).
+                  </p>
+                )}
               </div>
+
+              {/* Save & Cancel Controls (Under inputs when editing) */}
+              {isEditingConfig && (
+                <div className="flex animate-in items-center gap-2 pt-2 duration-150 fade-in-50">
+                  <Button
+                    onClick={handleSaveConfig}
+                    disabled={isSaveConfigDisabled}
+                    className="btn-gradient gap-1.5"
+                  >
+                    <Save className="size-4" />
+                    <span>Save Changes</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditingConfig(false)
+                      setDisplayName(savedDisplayName)
+                      setNotificationEmail(savedNotificationEmail)
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
 
+          {/* Email Signature Card */}
           <Card>
-            <CardHeader>
-              <CardTitle>Notifications & Automation</CardTitle>
-              <CardDescription>
-                Configure incoming notifications and automated replies
-              </CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0 border-b p-4 sm:p-5">
+              <div>
+                <CardTitle>Email Signature</CardTitle>
+                <CardDescription className="pt-1">
+                  Customize the sign-off automatically appended to outgoing
+                  correspondence
+                </CardDescription>
+              </div>
+              {!isEditingSignature && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditingSignature(true)}
+                  className="shrink-0 gap-1.5"
+                >
+                  <Pencil className="size-3.5" />
+                  <span>Edit</span>
+                </Button>
+              )}
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between space-x-2">
-                <div className="space-y-0.5">
-                  <Label className="text-base">Email Forwarding</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Forward incoming customer inquiries to support staff
-                  </p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-
-              <div className="flex items-center justify-between space-x-2">
-                <div className="space-y-0.5">
-                  <Label className="text-base">Auto-Responder</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Send an automatic confirmation email when received
-                  </p>
-                </div>
-                <Switch />
-              </div>
-
+            <CardContent className="space-y-4 p-4 sm:p-5">
               <div className="space-y-2">
-                <Label htmlFor="signature">Email Signature</Label>
+                <Label htmlFor="signature">Signature Text</Label>
                 <Textarea
                   id="signature"
-                  rows={4}
-                  defaultValue={`Best regards,\nThai Soulmate Team\n${currentAccount.email}\nhttps://thaisoulmate.org`}
+                  rows={5}
+                  value={signature}
+                  onChange={(e) => setSignature(e.target.value)}
+                  disabled={!isEditingSignature}
+                  placeholder={`Best regards,\n${currentAccount.name}\n${currentAccount.email}`}
+                  className={cn(
+                    "font-mono text-xs leading-relaxed",
+                    !isEditingSignature && "bg-muted/40 text-muted-foreground"
+                  )}
                 />
               </div>
+
+              {/* Live Preview Box */}
+              <div className="rounded-lg border bg-muted/20 p-3 text-xs">
+                <div className="mb-1.5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                  Signature Preview
+                </div>
+                <div className="font-sans leading-relaxed whitespace-pre-line text-foreground">
+                  {signature || "(No signature specified)"}
+                </div>
+              </div>
+
+              {/* Save & Cancel Controls (Under inputs when editing) */}
+              {isEditingSignature && (
+                <div className="flex animate-in items-center gap-2 pt-2 duration-150 fade-in-50">
+                  <Button
+                    onClick={handleSaveSignature}
+                    disabled={isSaveSignatureDisabled}
+                    className="btn-gradient gap-1.5"
+                  >
+                    <Save className="size-4" />
+                    <span>Save Changes</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditingSignature(false)
+                      setSignature(savedSignature)
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

@@ -16,19 +16,29 @@ export const EMAIL_ACCOUNTS: EmailAccount[] = [
     id: "contact",
     email: "contact@thaisoulmate.org",
     name: "Contact",
-    description: "Primary business and member inquiries",
+    description:
+      "Primary business inquiries, website contact, and member registration interest emails",
   },
   {
     id: "admin",
     email: "admin@thaisoulmate.org",
     name: "Admin",
-    description: "Administrative notifications and management",
+    description:
+      "Support for active members, including service assistance, profile management, and member requests",
+  },
+  {
+    id: "payments",
+    email: "payments@thaisoulmate.org",
+    name: "Socials",
+    description:
+      "Payment links, billing, invoices, receipts, and payment-related emails for customers and members",
   },
   {
     id: "socials",
     email: "socials@thaisoulmate.org",
     name: "Socials",
-    description: "Social media and public channel inquiries",
+    description:
+      "Social media accounts, OTP codes, verification emails, and account notifications",
   },
 ]
 

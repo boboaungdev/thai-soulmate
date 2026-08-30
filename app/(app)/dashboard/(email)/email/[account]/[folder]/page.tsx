@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import {
   Mail,
   Inbox,
@@ -28,11 +29,18 @@ import {
   Paperclip,
   Download,
   FileText,
+  Upload,
+  Image as ImageIcon,
+  X,
 } from "lucide-react"
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
 import { useAuthStore } from "@/stores/auth-store"
-import { ComposeEmailDialog } from "@/components/email/compose-email-dialog"
+import {
+  ComposeEmailDialog,
+  TagEmailInput,
+  extractCleanEmail,
+} from "@/components/email/compose-email-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -177,7 +185,7 @@ export default function EmailFolderDynamicPage() {
           id: "personal",
           email: user?.email || "personal@thaisoulmate.org",
           name: user?.name ? `${user.name}` : "Personal",
-          description: "Your personal mailbox and correspondence",
+          description: "Your personal mailbox",
         }
       : EMAIL_ACCOUNTS.find((a) => a.id === accountParam) || EMAIL_ACCOUNTS[0]
 
@@ -187,6 +195,7 @@ export default function EmailFolderDynamicPage() {
     to?: string
     subject?: string
     body?: string
+    disableTo?: boolean
   }>({})
 
   const [selectedEmail, setSelectedEmail] = React.useState<MockEmail | null>(
@@ -195,17 +204,38 @@ export default function EmailFolderDynamicPage() {
 
   // Settings State
   const defaultDisplayName = `Thai Soulmate - ${currentAccount?.name}`
-  const defaultSignature = `Best regards,\n${currentAccount?.name}\n${currentAccount?.email}`
+  const defaultSignature = `Best regards,\n${currentAccount?.name}\n${currentAccount?.email}\n\nCONFIDENTIALITY NOTICE: This email and any attachments are intended only for the person or entity to whom they are addressed and may contain confidential information. If you have received this email in error, please notify the sender and delete it. Any unauthorized copying, disclosure, or use of this email or its contents is prohibited.
+`
 
   const [displayName, setDisplayName] = React.useState(defaultDisplayName)
   const [savedDisplayName, setSavedDisplayName] =
     React.useState(defaultDisplayName)
 
-  const [notificationEmail, setNotificationEmail] = React.useState("")
-  const [savedNotificationEmail, setSavedNotificationEmail] = React.useState("")
+  const [notificationEmails, setNotificationEmails] = React.useState<string[]>(
+    []
+  )
+  const [savedNotificationEmails, setSavedNotificationEmails] = React.useState<
+    string[]
+  >([])
 
   const [signature, setSignature] = React.useState(defaultSignature)
   const [savedSignature, setSavedSignature] = React.useState(defaultSignature)
+
+  const [signatureImage, setSignatureImage] = React.useState<string | null>(
+    null
+  )
+  const [savedSignatureImage, setSavedSignatureImage] = React.useState<
+    string | null
+  >(null)
+
+  const [signatureSize, setSignatureSize] = React.useState<"sm" | "md" | "lg">(
+    "md"
+  )
+  const [savedSignatureSize, setSavedSignatureSize] = React.useState<
+    "sm" | "md" | "lg"
+  >("md")
+
+  const signatureFileInputRef = React.useRef<HTMLInputElement>(null)
 
   const [isEditingConfig, setIsEditingConfig] = React.useState(false)
   const [isEditingSignature, setIsEditingSignature] = React.useState(false)
@@ -213,59 +243,115 @@ export default function EmailFolderDynamicPage() {
   // Sync settings when current mailbox account changes
   React.useEffect(() => {
     const newDisplayName = `Thai Soulmate - ${currentAccount?.name}`
-    const newSignature = `Best regards,\n${newDisplayName}\n${currentAccount?.email}`
+    const newSignature = `Best regards,\n${currentAccount?.name}\n${currentAccount?.email}\n\nCONFIDENTIALITY NOTICE: This email and any attachments are intended only for the person or entity to whom they are addressed and may contain confidential information. If you have received this email in error, please notify the sender and delete it. Any unauthorized copying, disclosure, or use of this email or its contents is prohibited.`
     setDisplayName(newDisplayName)
     setSavedDisplayName(newDisplayName)
-    setNotificationEmail("")
-    setSavedNotificationEmail("")
+    setNotificationEmails([])
+    setSavedNotificationEmails([])
     setSignature(newSignature)
     setSavedSignature(newSignature)
+    setSignatureImage(null)
+    setSavedSignatureImage(null)
+    setSignatureSize("md")
+    setSavedSignatureSize("md")
     setIsEditingConfig(false)
     setIsEditingSignature(false)
   }, [currentAccount?.name, currentAccount?.email])
 
-  const isNotificationSameAsCurrent =
-    notificationEmail.trim().length > 0 &&
-    notificationEmail.trim().toLowerCase() ===
-      currentAccount.email.toLowerCase()
+  const handleSignatureImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0]
+    if (!file) return
 
-  const isNotificationValid =
-    notificationEmail.trim() === "" ||
-    /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(notificationEmail.trim())
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Signature image must be less than 2MB")
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const src = event.target?.result as string
+      if (src) {
+        setSignatureImage(src)
+        toast.success("Signature image attached")
+      }
+    }
+    reader.readAsDataURL(file)
+    e.target.value = ""
+  }
+
+  const generateSignatureHtml = React.useCallback(
+    ({
+      text,
+      image,
+      size = "md",
+    }: {
+      text: string
+      image: string | null
+      size?: "sm" | "md" | "lg"
+    }) => {
+      const heightPx = size === "sm" ? 36 : size === "lg" ? 64 : 48
+      if (!image) {
+        return text.replace(/\n/g, "<br/>")
+      }
+
+      const imgTag = `<img src="${image}" style="max-height:${heightPx}px; height:auto; border-radius:4px; display:inline-block; margin:6px 0;" alt="Signature" />`
+
+      const lines = text.split("\n")
+      const greeting = lines[0] || "Best regards,"
+      const rest = lines.slice(1).join("<br/>")
+      return `${greeting}<br/>${imgTag}${rest ? `<br/>${rest}` : ""}`
+    },
+    []
+  )
+
+  const hasCurrentAccountInNotification = notificationEmails.some(
+    (e) => e.trim().toLowerCase() === currentAccount.email.toLowerCase()
+  )
 
   const hasConfigChanged =
     displayName.trim() !== savedDisplayName.trim() ||
-    notificationEmail.trim() !== savedNotificationEmail.trim()
+    JSON.stringify(notificationEmails) !==
+      JSON.stringify(savedNotificationEmails)
 
   const isSaveConfigDisabled =
-    !hasConfigChanged || isNotificationSameAsCurrent || !isNotificationValid
+    !hasConfigChanged || hasCurrentAccountInNotification
 
-  const hasSignatureChanged = signature.trim() !== savedSignature.trim()
+  const hasSignatureChanged =
+    signature.trim() !== savedSignature.trim() ||
+    signatureImage !== savedSignatureImage ||
+    signatureSize !== savedSignatureSize
+
   const isSaveSignatureDisabled = !hasSignatureChanged
 
   const handleSaveConfig = () => {
-    if (isNotificationSameAsCurrent) {
+    if (hasCurrentAccountInNotification) {
       toast.error(
-        "Notification address cannot be the same as current email address."
+        "Notification address cannot include the current account email address."
       )
       return
     }
 
-    if (!isNotificationValid) {
-      toast.error("Please enter a single valid notification email address.")
-      return
-    }
-
     setSavedDisplayName(displayName.trim())
-    setSavedNotificationEmail(notificationEmail.trim())
+    setSavedNotificationEmails([...notificationEmails])
     setIsEditingConfig(false)
     toast.success("Mailbox configuration saved successfully!")
   }
 
   const handleSaveSignature = () => {
     setSavedSignature(signature.trim())
+    setSavedSignatureImage(signatureImage)
+    setSavedSignatureSize(signatureSize)
     setIsEditingSignature(false)
     toast.success("Email signature saved successfully!")
+  }
+
+  const handleCancelSignature = () => {
+    setIsEditingSignature(false)
+    setSignature(savedSignature)
+    setSignatureImage(savedSignatureImage)
+    setSignatureSize(savedSignatureSize)
   }
 
   const emailList = folderParam === "sent" ? mockEmails.sent : mockEmails.inbox
@@ -301,7 +387,15 @@ export default function EmailFolderDynamicPage() {
           <Button
             className="btn-gradient gap-1.5"
             onClick={() => {
-              setComposeData({})
+              const defaultSigHtml = generateSignatureHtml({
+                text: savedSignature,
+                image: savedSignatureImage,
+                size: savedSignatureSize,
+              })
+              setComposeData({
+                body: `<br/><br/>${defaultSigHtml}`,
+                disableTo: false,
+              })
               setComposeOpen(true)
             }}
           >
@@ -338,6 +432,7 @@ export default function EmailFolderDynamicPage() {
             initialTo={composeData.to}
             initialSubject={composeData.subject}
             initialBody={composeData.body}
+            disableTo={composeData.disableTo}
           />
         </div>
       </div>
@@ -423,51 +518,37 @@ export default function EmailFolderDynamicPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="notification-to">Notification To Address</Label>
-                <Input
+                <TagEmailInput
                   id="notification-to"
-                  placeholder="e.g. your@example.com"
-                  value={notificationEmail}
-                  onChange={(e) => {
-                    // Strictly single email: disallow commas, semicolons, and spaces
-                    const clean = e.target.value.replace(/[\s,;]/g, "")
-                    setNotificationEmail(clean)
-                  }}
+                  value={notificationEmails}
+                  onChange={setNotificationEmails}
                   disabled={!isEditingConfig}
+                  placeholder="Enter email and press comma or space..."
+                  disallowedEmails={[currentAccount.email]}
+                  validateEmail={(email) =>
+                    email.toLowerCase() === currentAccount.email.toLowerCase()
+                      ? "Notification address cannot be the same as current email address."
+                      : null
+                  }
                   className={cn(
                     !isEditingConfig && "bg-muted/40 text-muted-foreground",
                     isEditingConfig &&
-                      (isNotificationSameAsCurrent ||
-                        (!isNotificationValid &&
-                          notificationEmail.length > 0)) &&
-                      "border-destructive focus-visible:ring-destructive"
+                      hasCurrentAccountInNotification &&
+                      "border-destructive focus-within:ring-destructive/20"
                   )}
                 />
-                {isEditingConfig && isNotificationSameAsCurrent && (
+                {isEditingConfig && hasCurrentAccountInNotification ? (
                   <div className="flex items-center gap-1.5 pt-0.5 text-xs font-medium text-destructive">
                     <AlertCircle className="size-3.5 shrink-0" />
                     <span>
-                      Notification address cannot be the same as current email
-                      address.
+                      Notification address cannot include the current account
+                      email address.
                     </span>
                   </div>
-                )}
-                {isEditingConfig &&
-                  !isNotificationSameAsCurrent &&
-                  !isNotificationValid &&
-                  notificationEmail.length > 0 && (
-                    <div className="flex items-center gap-1.5 pt-0.5 text-xs font-medium text-destructive">
-                      <AlertCircle className="size-3.5 shrink-0" />
-                      <span>
-                        Only a single valid email address is allowed (no
-                        commas).
-                      </span>
-                    </div>
-                  )}
-                {(!isEditingConfig ||
-                  (!isNotificationSameAsCurrent && isNotificationValid)) && (
+                ) : (
                   <p className="text-xs text-muted-foreground">
-                    Optional single backup email address for receiving delivery
-                    and system alerts (no commas).
+                    Enter one or multiple notification addresses separated by
+                    comma, space, or Enter.
                   </p>
                 )}
               </div>
@@ -488,7 +569,7 @@ export default function EmailFolderDynamicPage() {
                     onClick={() => {
                       setIsEditingConfig(false)
                       setDisplayName(savedDisplayName)
-                      setNotificationEmail(savedNotificationEmail)
+                      setNotificationEmails(savedNotificationEmails)
                     }}
                   >
                     Cancel
@@ -525,7 +606,7 @@ export default function EmailFolderDynamicPage() {
                 <Label htmlFor="signature">Signature Text</Label>
                 <Textarea
                   id="signature"
-                  rows={5}
+                  rows={4}
                   value={signature}
                   onChange={(e) => setSignature(e.target.value)}
                   disabled={!isEditingSignature}
@@ -537,14 +618,178 @@ export default function EmailFolderDynamicPage() {
                 />
               </div>
 
+              {/* Signature Image Upload Section */}
+              <div className="space-y-3 rounded-lg border bg-muted/10 p-3.5">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-xs font-semibold">
+                      Signature Image / Logo
+                    </Label>
+                    <p className="text-[11px] text-muted-foreground">
+                      Add a hand-written signature, company logo, or profile
+                      image
+                    </p>
+                  </div>
+                  {isEditingSignature && signatureImage && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSignatureImage(null)}
+                      className="h-7 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <Trash2 className="mr-1 size-3.5" />
+                      Remove
+                    </Button>
+                  )}
+                </div>
+
+                <input
+                  ref={signatureFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSignatureImageUpload}
+                  className="hidden"
+                />
+
+                {signatureImage ? (
+                  <div className="space-y-3">
+                    {/* Uploaded image preview and replace button */}
+                    <div className="flex items-center gap-3 rounded-md border bg-background p-2.5">
+                      <div className="relative flex h-14 w-28 items-center justify-center rounded bg-muted/40 p-1">
+                        <Image
+                          src={signatureImage}
+                          alt="Uploaded signature"
+                          width={112}
+                          height={56}
+                          unoptimized
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-xs font-medium">Image attached</p>
+                        {isEditingSignature && (
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                signatureFileInputRef.current?.click()
+                              }
+                              className="h-6 text-[11px]"
+                            >
+                              <Upload className="mr-1 size-3" />
+                              Replace
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Size Selector (Editable mode) */}
+                    {isEditingSignature && (
+                      <div className="flex items-center justify-between pt-1">
+                        <Label className="text-[11px] font-medium text-muted-foreground">
+                          Image Display Size
+                        </Label>
+                        <div className="flex items-center gap-1 rounded-md border bg-background p-0.5 text-xs">
+                          {(["sm", "md", "lg"] as const).map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              onClick={() => setSignatureSize(s)}
+                              className={cn(
+                                "rounded px-2.5 py-0.5 text-xs capitalize transition-colors",
+                                signatureSize === s
+                                  ? "bg-primary font-medium text-primary-foreground"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                            >
+                              {s === "sm"
+                                ? "Small"
+                                : s === "md"
+                                  ? "Medium"
+                                  : "Large"}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    {isEditingSignature ? (
+                      <button
+                        type="button"
+                        onClick={() => signatureFileInputRef.current?.click()}
+                        className="flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-muted-foreground/30 bg-background p-4 text-center transition-colors hover:border-primary hover:bg-primary/5"
+                      >
+                        <div className="flex size-9 items-center justify-center rounded-full bg-muted/60 text-muted-foreground">
+                          <Upload className="size-4" />
+                        </div>
+                        <div className="mt-2 text-xs font-medium">
+                          Click to upload signature image or logo
+                        </div>
+                        <div className="text-[11px] text-muted-foreground">
+                          PNG, JPG, WebP, or SVG up to 2MB
+                        </div>
+                      </button>
+                    ) : (
+                      <div className="rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+                        No signature image or logo attached.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {/* Live Preview Box */}
-              <div className="rounded-lg border bg-muted/20 p-3 text-xs">
-                <div className="mb-1.5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                  Signature Preview
+              <div className="rounded-lg border bg-muted/20 p-3.5 text-xs">
+                <div className="mb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                  Signature Live Preview
                 </div>
-                <div className="font-sans leading-relaxed whitespace-pre-line text-foreground">
-                  {signature || "(No signature specified)"}
-                </div>
+                {(() => {
+                  const heightClass =
+                    signatureSize === "sm"
+                      ? "h-9 max-h-9"
+                      : signatureSize === "lg"
+                        ? "h-16 max-h-16"
+                        : "h-12 max-h-12"
+
+                  if (!signatureImage) {
+                    return (
+                      <div className="font-sans leading-relaxed whitespace-pre-line text-foreground">
+                        {signature || "(No signature specified)"}
+                      </div>
+                    )
+                  }
+
+                  const lines = signature.split("\n")
+                  const greeting = lines[0] || "Best regards,"
+                  const rest = lines.slice(1)
+                  return (
+                    <div className="font-sans leading-relaxed text-foreground">
+                      <div>{greeting}</div>
+                      <div className="my-2">
+                        <Image
+                          src={signatureImage}
+                          alt="Signature logo"
+                          width={200}
+                          height={64}
+                          unoptimized
+                          className={cn(
+                            "w-auto rounded object-contain",
+                            heightClass
+                          )}
+                        />
+                      </div>
+                      <div className="whitespace-pre-line">
+                        {rest.join("\n")}
+                      </div>
+                    </div>
+                  )
+                })()}
               </div>
 
               {/* Save & Cancel Controls (Under inputs when editing) */}
@@ -558,13 +803,7 @@ export default function EmailFolderDynamicPage() {
                     <Save className="size-4" />
                     <span>Save Changes</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsEditingSignature(false)
-                      setSignature(savedSignature)
-                    }}
-                  >
+                  <Button variant="outline" onClick={handleCancelSignature}>
                     Cancel
                   </Button>
                 </div>
@@ -826,6 +1065,7 @@ export default function EmailFolderDynamicPage() {
                             to: "",
                             subject: fwdSubject,
                             body: fwdBody,
+                            disableTo: false,
                           })
                           setSelectedEmail(null)
                           setComposeOpen(true)
@@ -838,21 +1078,23 @@ export default function EmailFolderDynamicPage() {
 
                       <Button
                         onClick={() => {
-                          const replyTo =
+                          const rawParty =
                             "from" in selectedEmail && selectedEmail.from
                               ? selectedEmail.from
                               : selectedEmail.to || ""
+                          const replyTo = extractCleanEmail(rawParty)
                           const replySubject = selectedEmail.subject.startsWith(
                             "Re:"
                           )
                             ? selectedEmail.subject
                             : `Re: ${selectedEmail.subject}`
-                          const replyBody = `<br/><br/><blockquote>On ${selectedEmail.date}, ${replyTo} wrote:<br/>${selectedEmail.preview}</blockquote>`
+                          const replyBody = `<br/><br/><blockquote>On ${selectedEmail.date}, ${rawParty} wrote:<br/>${selectedEmail.preview}</blockquote>`
 
                           setComposeData({
                             to: replyTo,
                             subject: replySubject,
                             body: replyBody,
+                            disableTo: true,
                           })
                           setSelectedEmail(null)
                           setComposeOpen(true)

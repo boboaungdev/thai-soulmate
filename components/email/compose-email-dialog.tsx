@@ -45,6 +45,8 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  Lock,
+  AlertCircle,
 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -58,14 +60,283 @@ export interface AttachedFile {
   previewUrl?: string
 }
 
+export const EMAIL_REGEX = /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/
+
+export interface TagEmailInputProps {
+  value: string[]
+  onChange: (emails: string[]) => void
+  placeholder?: string
+  disabled?: boolean
+  className?: string
+  inputClassName?: string
+  badgeVariant?: "default" | "secondary" | "outline"
+  validateEmail?: (email: string) => string | null
+  onInvalidEmail?: (email: string, reason: string) => void
+  disallowedEmails?: string[]
+  id?: string
+  name?: string
+  autoFocus?: boolean
+  maxEmails?: number
+}
+
+export function extractCleanEmail(input: string): string {
+  if (!input) return ""
+  const match = input.match(/<([^>]+)>/)
+  if (match && match[1]) {
+    return match[1].trim()
+  }
+  return input.trim()
+}
+
+export function parseEmailsFromInput(input?: string | string[]): string[] {
+  if (!input) return []
+  if (Array.isArray(input)) {
+    return input.map(extractCleanEmail).filter(Boolean)
+  }
+
+  const str = input.trim()
+  if (!str) return []
+
+  const angleBracketMatches = [...str.matchAll(/<([^>]+)>/g)]
+  if (angleBracketMatches.length > 0) {
+    return angleBracketMatches.map((m) => m[1].trim()).filter(Boolean)
+  }
+
+  return str
+    .split(/[,\s;]+/)
+    .map((e) => extractCleanEmail(e))
+    .filter(Boolean)
+}
+
+export function TagEmailInput({
+  value = [],
+  onChange,
+  placeholder = "Enter email and press comma or space...",
+  disabled = false,
+  className,
+  inputClassName,
+  badgeVariant = "secondary",
+  validateEmail,
+  onInvalidEmail,
+  disallowedEmails = [],
+  id,
+  autoFocus = false,
+  maxEmails,
+}: TagEmailInputProps) {
+  const [inputValue, setInputValue] = React.useState("")
+  const [inputError, setInputError] = React.useState<string | null>(null)
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  const normalizeEmail = (email: string) => email.trim().toLowerCase()
+
+  const addEmails = React.useCallback(
+    (rawEmails: string[]) => {
+      if (disabled) return
+      let newEmails = [...value]
+      let errorEncountered: string | null = null
+
+      for (const raw of rawEmails) {
+        const email = extractCleanEmail(raw)
+        if (!email) continue
+
+        // Check format
+        if (!EMAIL_REGEX.test(email)) {
+          errorEncountered = `"${email}" is not a valid email address.`
+          onInvalidEmail?.(email, "invalid_format")
+          continue
+        }
+
+        const normalized = normalizeEmail(email)
+
+        // Check duplicate
+        if (newEmails.some((e) => normalizeEmail(e) === normalized)) {
+          continue
+        }
+
+        // Check disallowed
+        if (disallowedEmails.some((d) => normalizeEmail(d) === normalized)) {
+          errorEncountered = `"${email}" cannot be used.`
+          onInvalidEmail?.(email, "disallowed")
+          continue
+        }
+
+        // Custom validator
+        if (validateEmail) {
+          const customError = validateEmail(email)
+          if (customError) {
+            errorEncountered = customError
+            onInvalidEmail?.(email, "custom_validation")
+            continue
+          }
+        }
+
+        // Check max
+        if (maxEmails && newEmails.length >= maxEmails) {
+          errorEncountered = `Maximum ${maxEmails} email addresses allowed.`
+          break
+        }
+
+        newEmails.push(email)
+      }
+
+      setInputError(errorEncountered)
+      if (newEmails.length !== value.length) {
+        onChange(newEmails)
+      }
+    },
+    [
+      value,
+      disabled,
+      disallowedEmails,
+      validateEmail,
+      maxEmails,
+      onChange,
+      onInvalidEmail,
+    ]
+  )
+
+  const removeEmail = (indexToRemove: number) => {
+    if (disabled) return
+    const updated = value.filter((_, idx) => idx !== indexToRemove)
+    onChange(updated)
+    setInputError(null)
+    inputRef.current?.focus()
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (disabled) return
+
+    if (
+      e.key === "," ||
+      e.key === " " ||
+      e.key === "Enter" ||
+      e.key === "Tab"
+    ) {
+      if (inputValue.trim()) {
+        e.preventDefault()
+        addEmails([inputValue])
+        setInputValue("")
+      }
+    } else if (e.key === "Backspace" && !inputValue && value.length > 0) {
+      e.preventDefault()
+      removeEmail(value.length - 1)
+    }
+  }
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    if (disabled) return
+    e.preventDefault()
+    const pastedText = e.clipboardData.getData("text")
+    if (!pastedText) return
+
+    const tokens = parseEmailsFromInput(pastedText)
+    if (tokens.length > 0) {
+      addEmails(tokens)
+      setInputValue("")
+    }
+  }
+
+  const handleBlur = () => {
+    if (inputValue.trim()) {
+      addEmails([inputValue])
+      setInputValue("")
+    }
+  }
+
+  return (
+    <div className="w-full space-y-1.5">
+      <div
+        onClick={() => inputRef.current?.focus()}
+        className={cn(
+          "flex min-h-9 w-full flex-wrap items-center gap-1.5 rounded-md border border-input bg-transparent px-2.5 py-1 text-sm shadow-xs transition-colors focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50",
+          disabled &&
+            "cursor-not-allowed bg-muted/40 text-muted-foreground opacity-90",
+          inputError && "border-destructive focus-within:ring-destructive/20",
+          className
+        )}
+      >
+        {/* Rendered Email Badges */}
+        {value.map((email, idx) => (
+          <Badge
+            key={`${email}-${idx}`}
+            variant={badgeVariant}
+            className={cn(
+              "flex h-6 items-center gap-1 pr-1 pl-2 text-xs font-normal transition-all",
+              disabled && "pr-2 opacity-80"
+            )}
+          >
+            <span className="max-w-[200px] truncate sm:max-w-[280px]">
+              {email}
+            </span>
+            {!disabled && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  removeEmail(idx)
+                }}
+                className="rounded-full p-0.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-hidden"
+                aria-label={`Remove ${email}`}
+              >
+                <X className="size-3" />
+              </button>
+            )}
+          </Badge>
+        ))}
+
+        {/* Text input for typing new emails */}
+        {!disabled && (
+          <input
+            ref={inputRef}
+            id={id}
+            type="text"
+            value={inputValue}
+            onChange={(e) => {
+              const val = e.target.value
+              if (val.includes(",") || val.includes(" ") || val.includes(";")) {
+                const parts = val.split(/[,\s;]+/).filter(Boolean)
+                if (parts.length > 0) {
+                  addEmails(parts)
+                  setInputValue("")
+                  return
+                }
+              }
+              setInputValue(val)
+              if (inputError) setInputError(null)
+            }}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            onBlur={handleBlur}
+            placeholder={value.length === 0 ? placeholder : ""}
+            autoFocus={autoFocus}
+            className={cn(
+              "min-w-[120px] flex-1 bg-transparent px-1 py-0.5 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed",
+              inputClassName
+            )}
+          />
+        )}
+      </div>
+
+      {/* Inline validation error note */}
+      {inputError && (
+        <div className="flex items-center gap-1 px-1 text-xs text-destructive">
+          <AlertCircle className="size-3.5 shrink-0" />
+          <span>{inputError}</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
 interface ComposeEmailDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   fromEmail: string
   fromName?: string
-  initialTo?: string
+  initialTo?: string | string[]
   initialSubject?: string
   initialBody?: string
+  disableTo?: boolean
   onEmailSent?: (emailData: {
     to: string
     cc?: string
@@ -84,13 +355,16 @@ export function ComposeEmailDialog({
   initialTo = "",
   initialSubject = "",
   initialBody = "",
+  disableTo = false,
   onEmailSent,
 }: ComposeEmailDialogProps) {
-  const [to, setTo] = React.useState(initialTo)
+  const [toEmails, setToEmails] = React.useState<string[]>(() =>
+    parseEmailsFromInput(initialTo)
+  )
   const [showCc, setShowCc] = React.useState(false)
   const [showBcc, setShowBcc] = React.useState(false)
-  const [cc, setCc] = React.useState("")
-  const [bcc, setBcc] = React.useState("")
+  const [ccEmails, setCcEmails] = React.useState<string[]>([])
+  const [bccEmails, setBccEmails] = React.useState<string[]>([])
   const [subject, setSubject] = React.useState(initialSubject)
   const [attachments, setAttachments] = React.useState<AttachedFile[]>([])
   const [isFullScreen, setIsFullScreen] = React.useState(false)
@@ -102,10 +376,12 @@ export function ComposeEmailDialog({
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const imageInputRef = React.useRef<HTMLInputElement>(null)
 
-  // Initialize body text when opened or changed
+  // Initialize body text & emails when opened or changed
   React.useEffect(() => {
     if (open) {
-      setTo(initialTo)
+      setToEmails(parseEmailsFromInput(initialTo))
+      setCcEmails([])
+      setBccEmails([])
       setSubject(initialSubject)
       if (editorRef.current && initialBody) {
         editorRef.current.innerHTML = initialBody
@@ -224,17 +500,8 @@ export function ComposeEmailDialog({
   }
 
   const handleSend = async () => {
-    if (!to.trim()) {
+    if (toEmails.length === 0) {
       toast.error("Please provide at least one recipient email address.")
-      return
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const recipients = to.split(",").map((s) => s.trim())
-    const invalidRecipient = recipients.find((r) => !emailRegex.test(r))
-
-    if (invalidRecipient) {
-      toast.error(`Invalid email format: "${invalidRecipient}"`)
       return
     }
 
@@ -244,23 +511,24 @@ export function ComposeEmailDialog({
     await new Promise((res) => setTimeout(res, 800))
 
     const bodyHtml = editorRef.current?.innerHTML || ""
+    const toFormatted = toEmails.join(", ")
 
     onEmailSent?.({
-      to,
-      cc: showCc ? cc : undefined,
-      bcc: showBcc ? bcc : undefined,
+      to: toFormatted,
+      cc: showCc && ccEmails.length > 0 ? ccEmails.join(", ") : undefined,
+      bcc: showBcc && bccEmails.length > 0 ? bccEmails.join(", ") : undefined,
       subject: subject || "(No Subject)",
       bodyHtml,
       attachments,
     })
 
-    toast.success(`Email successfully sent to ${to}!`)
+    toast.success(`Email successfully sent to ${toFormatted}!`)
 
     // Clean up
     setIsSending(false)
-    setTo("")
-    setCc("")
-    setBcc("")
+    setToEmails([])
+    setCcEmails([])
+    setBccEmails([])
     setSubject("")
     setAttachments([])
     if (editorRef.current) {
@@ -270,10 +538,10 @@ export function ComposeEmailDialog({
   }
 
   const hasUnsavedContent = () => {
-    const hasTo = Boolean(to && to.trim())
+    const hasTo = toEmails.length > 0
     const hasSubject = Boolean(subject && subject.trim())
-    const hasCc = Boolean(cc && cc.trim())
-    const hasBcc = Boolean(bcc && bcc.trim())
+    const hasCc = ccEmails.length > 0
+    const hasBcc = bccEmails.length > 0
     const hasText = Boolean(
       editorRef.current?.innerText &&
       editorRef.current.innerText.trim().length > 0
@@ -293,9 +561,9 @@ export function ComposeEmailDialog({
   }
 
   const forceClose = () => {
-    setTo("")
-    setCc("")
-    setBcc("")
+    setToEmails([])
+    setCcEmails([])
+    setBccEmails([])
     setSubject("")
     setAttachments([])
     if (editorRef.current) {
@@ -379,65 +647,75 @@ export function ComposeEmailDialog({
           {/* Recipients & Subject Bar */}
           <div className="flex flex-col divide-y border-b bg-background text-sm">
             {/* To Field */}
-            <div className="flex items-center gap-2 px-4 py-1.5">
+            <div className="flex items-start gap-2 px-4 py-1.5">
               <Label
                 htmlFor="email-to"
-                className="w-14 shrink-0 text-xs font-medium text-muted-foreground"
+                className="flex w-14 shrink-0 items-center gap-1 pt-1.5 text-xs font-medium text-muted-foreground"
               >
-                To
+                <span>To</span>
+                {disableTo && (
+                  <Lock className="size-3 text-muted-foreground/70" />
+                )}
               </Label>
-              <Input
-                id="email-to"
-                placeholder="recipient@example.com, user2@example.com"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                className="h-8 flex-1 border-0 px-2 text-sm shadow-none focus-visible:ring-0"
-              />
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                {!showCc && (
-                  <button
-                    type="button"
-                    onClick={() => setShowCc(true)}
-                    className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground"
-                  >
-                    Cc
-                  </button>
-                )}
-                {!showBcc && (
-                  <button
-                    type="button"
-                    onClick={() => setShowBcc(true)}
-                    className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground"
-                  >
-                    Bcc
-                  </button>
-                )}
+              <div className="min-w-0 flex-1">
+                <TagEmailInput
+                  id="email-to"
+                  value={toEmails}
+                  onChange={setToEmails}
+                  placeholder="recipient@example.com (comma or space to add)"
+                  disabled={disableTo}
+                  className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
+                />
               </div>
+              {!disableTo && (
+                <div className="flex items-center gap-1 pt-1 text-xs text-muted-foreground">
+                  {!showCc && (
+                    <button
+                      type="button"
+                      onClick={() => setShowCc(true)}
+                      className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      Cc
+                    </button>
+                  )}
+                  {!showBcc && (
+                    <button
+                      type="button"
+                      onClick={() => setShowBcc(true)}
+                      className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      Bcc
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Cc Field (Optional) */}
             {showCc && (
-              <div className="flex animate-in items-center gap-2 bg-muted/10 px-4 py-1.5 duration-150 fade-in-50">
+              <div className="flex animate-in items-start gap-2 bg-muted/10 px-4 py-1.5 duration-150 fade-in-50">
                 <Label
                   htmlFor="email-cc"
-                  className="w-14 shrink-0 text-xs font-medium text-muted-foreground"
+                  className="w-14 shrink-0 pt-1.5 text-xs font-medium text-muted-foreground"
                 >
                   Cc
                 </Label>
-                <Input
-                  id="email-cc"
-                  placeholder="cc@example.com"
-                  value={cc}
-                  onChange={(e) => setCc(e.target.value)}
-                  className="h-8 flex-1 border-0 px-2 text-sm shadow-none focus-visible:ring-0"
-                />
+                <div className="min-w-0 flex-1">
+                  <TagEmailInput
+                    id="email-cc"
+                    value={ccEmails}
+                    onChange={setCcEmails}
+                    placeholder="cc@example.com (comma or space to add)"
+                    className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => {
                     setShowCc(false)
-                    setCc("")
+                    setCcEmails([])
                   }}
-                  className="p-1 text-xs text-muted-foreground hover:text-foreground"
+                  className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground"
                 >
                   <X className="size-3.5" />
                 </button>
@@ -446,27 +724,29 @@ export function ComposeEmailDialog({
 
             {/* Bcc Field (Optional) */}
             {showBcc && (
-              <div className="flex animate-in items-center gap-2 bg-muted/10 px-4 py-1.5 duration-150 fade-in-50">
+              <div className="flex animate-in items-start gap-2 bg-muted/10 px-4 py-1.5 duration-150 fade-in-50">
                 <Label
                   htmlFor="email-bcc"
-                  className="w-14 shrink-0 text-xs font-medium text-muted-foreground"
+                  className="w-14 shrink-0 pt-1.5 text-xs font-medium text-muted-foreground"
                 >
                   Bcc
                 </Label>
-                <Input
-                  id="email-bcc"
-                  placeholder="bcc@example.com"
-                  value={bcc}
-                  onChange={(e) => setBcc(e.target.value)}
-                  className="h-8 flex-1 border-0 px-2 text-sm shadow-none focus-visible:ring-0"
-                />
+                <div className="min-w-0 flex-1">
+                  <TagEmailInput
+                    id="email-bcc"
+                    value={bccEmails}
+                    onChange={setBccEmails}
+                    placeholder="bcc@example.com (comma or space to add)"
+                    className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => {
                     setShowBcc(false)
-                    setBcc("")
+                    setBccEmails([])
                   }}
-                  className="p-1 text-xs text-muted-foreground hover:text-foreground"
+                  className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground"
                 >
                   <X className="size-3.5" />
                 </button>

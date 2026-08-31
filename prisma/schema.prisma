@@ -37,7 +37,7 @@ model RegisterInterest {
   currentLocation       String
   currentLocationRegion String
 
-  email                String   @unique
+  email                String    @unique
   phoneCountry         String
   phone                String
   preferredContactDate DateTime?
@@ -173,16 +173,6 @@ model TrackingNote {
   updatedAt DateTime @updatedAt
 }
 
-model Contact {
-  id        String   @id @default(uuid())
-  name      String
-  email     String
-  subject   String
-  message   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model WebsiteReview {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -308,38 +298,38 @@ enum EmailDirection {
 }
 
 model EmailMessage {
-  id          String         @id @default(uuid())
-  resendId    String?        @unique
-  mailbox     String         // e.g. "info", "support", "contact", etc.
-  folder      EmailFolder    @default(INBOX)
-  direction   EmailDirection @default(OUTBOUND)
+  id        String         @id @default(uuid())
+  resendId  String?        @unique
+  mailbox   String // e.g. "info", "support", "contact", etc.
+  folder    EmailFolder    @default(INBOX)
+  direction EmailDirection @default(OUTBOUND)
 
-  fromEmail   String
-  fromName    String?
-  toEmails    String[]
-  ccEmails    String[]       @default([])
-  bccEmails   String[]       @default([])
-  replyTo     String?
+  fromEmail String
+  fromName  String?
+  toEmails  String[]
+  ccEmails  String[] @default([])
+  bccEmails String[] @default([])
+  replyTo   String?
 
-  subject     String
-  preview     String?
-  bodyText    String?
-  bodyHtml    String
+  subject  String
+  preview  String?
+  bodyText String?
+  bodyHtml String
 
-  isRead      Boolean        @default(false)
-  isStarred   Boolean        @default(false)
-  isArchived  Boolean        @default(false)
-  isTrash     Boolean        @default(false)
+  isRead     Boolean @default(false)
+  isStarred  Boolean @default(false)
+  isArchived Boolean @default(false)
+  isTrash    Boolean @default(false)
 
   attachments EmailAttachment[]
 
-  userId      String?
-  user        User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-  sentAt      DateTime?
-  receivedAt  DateTime?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  sentAt     DateTime?
+  receivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@index([mailbox, folder])
   @@index([fromEmail])
@@ -347,37 +337,37 @@ model EmailMessage {
 }
 
 model EmailAttachment {
-  id          String       @id @default(uuid())
-  
-  emailId     String
-  email       EmailMessage @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  id String @id @default(uuid())
+
+  emailId String
+  email   EmailMessage @relation(fields: [emailId], references: [id], onDelete: Cascade)
 
   filename    String
   contentType String
   size        Int
-  
-  url         String
-  r2Key       String
-  
-  isInline    Boolean      @default(false)
-  contentId   String?
 
-  createdAt   DateTime     @default(now())
+  url   String
+  r2Key String
+
+  isInline  Boolean @default(false)
+  contentId String?
+
+  createdAt DateTime @default(now())
 
   @@index([emailId])
 }
 
 model MailboxSetting {
-  id                 String   @id @default(uuid())
-  mailbox            String   @unique
-  
+  id      String @id @default(uuid())
+  mailbox String @unique
+
   displayName        String?
   notificationEmails String[] @default([])
-  
-  signatureText      String?
-  signatureImageUrl  String?
-  signatureSize      String   @default("md")
 
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  signatureText     String?
+  signatureImageUrl String?
+  signatureSize     String  @default("md")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -150,10 +150,12 @@ export const FONT_FAMILIES = [
 
 export interface AttachedFile {
   id: string
-  file: File
+  file?: File
   name: string
   size: number
   type: string
+  url?: string
+  r2Key?: string
   previewUrl?: string
 }
 

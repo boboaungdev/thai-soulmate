@@ -1694,6 +1694,22 @@ export default function EmailFolderDynamicPage() {
                               <Button
                                 variant="ghost"
                                 size="icon-xs"
+                                onClick={(e) => handleSpamThread(thread, e)}
+                                title={
+                                  folderParam === "spam" ||
+                                  thread.messages.some(
+                                    (m) => m.folder === "SPAM"
+                                  )
+                                    ? "Not spam / Move to Inbox"
+                                    : "Report spam"
+                                }
+                                className="size-7 text-muted-foreground hover:text-foreground"
+                              >
+                                <ShieldAlert className="size-3.5" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon-xs"
                                 onClick={(e) => handleTrashThread(thread, e)}
                                 title={
                                   folderParam === "trash" ||

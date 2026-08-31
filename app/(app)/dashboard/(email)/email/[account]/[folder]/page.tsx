@@ -1723,7 +1723,7 @@ export default function EmailFolderDynamicPage() {
                               <div className="text-sm leading-relaxed text-foreground/90">
                                 {msg.bodyHtml ? (
                                   <div
-                                    className="overflow-x-auto [&_img]:max-w-full [&_img]:rounded-md"
+                                    className="overflow-x-auto text-foreground dark:[&_*]:!text-foreground [&_img]:max-w-full [&_img]:rounded-md"
                                     dangerouslySetInnerHTML={{
                                       __html: msg.bodyHtml,
                                     }}

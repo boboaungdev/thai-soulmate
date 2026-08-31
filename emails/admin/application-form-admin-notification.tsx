@@ -4,78 +4,55 @@ import {
   Head,
   Hr,
   Html,
-  Img,
   Preview,
   Section,
   Text,
 } from "react-email"
 import * as React from "react"
-import { APP_INFO } from "@/constants"
-import { env } from "@/lib/env"
 
 type AdminNotificationDetails = {
-  nickname: string
-  prefix: string
+  prefix?: string
   name: string
-  gender: string
   email: string
-  phone: string
+  [key: string]: any
 }
 
-const currentYear = new Date().getFullYear()
-
 export const ApplicationFormAdminNotificationEmail = ({
-  ...details
+  prefix,
+  name,
+  email,
 }: AdminNotificationDetails) => (
   <Html>
     <Head />
-    <Preview>
-      [New Application] New application received from {details.prefix}{" "}
-      {details.name}
-    </Preview>
+    <Preview>[New Application Form] New application received from {name}</Preview>
+
     <Body style={main}>
       <Container style={container}>
-        <Section style={signature}>
-          <Container style={signatureContainer}>
-            <Img
-              src={`${env.BASE_URL}/logo.png`}
-              width="70"
-              alt={APP_INFO.name}
-              style={signatureLogo}
-            />
-            <Text style={appName}>{APP_INFO.name}</Text>
-            <Text style={tagline}>{APP_INFO.tagline}</Text>
-          </Container>
+        <Section style={badgeSection}>
+          <Text style={badgeText}>NEW APPLICATION FORM</Text>
         </Section>
-        <Text style={paragraph}>
+
+        <Text style={introText}>
           A new application has been submitted on the website.
         </Text>
-        <Section>
-          {details.nickname && (
-            <Text style={paragraph}>
-              <strong>Nickname:</strong> {details.nickname}
-            </Text>
-          )}
-          <Text style={paragraph}>
-            <strong>Name:</strong> {details.prefix} {details.name}
+
+        <Section style={infoSection}>
+          <Text style={infoText}>
+            <strong>Name:</strong> {prefix ? `${prefix} ` : ""}{name}
           </Text>
-          <Text style={paragraph}>
-            <strong>Gender:</strong> {details.gender}
-          </Text>
-          <Text style={paragraph}>
-            <strong>Email:</strong> {details.email}
-          </Text>
-          <Text style={paragraph}>
-            <strong>Phone:</strong> {details.phone}
+          <Text style={infoText}>
+            <strong>Email:</strong> {email}
           </Text>
         </Section>
+
         <Hr style={hr} />
-        <Text style={autoMessage}>
-          This is an automated notification from your website.
-        </Text>
-        <Section style={copyrightSection}>
-          <Text style={copyright}>
-            Copyright &copy; {currentYear} {APP_INFO.name}. All rights reserved.
+
+        <Section style={footerSection}>
+          <Text style={noReplyText}>
+            Please do not reply directly to this automated notification email.
+          </Text>
+          <Text style={copyrightText}>
+            Thai Soulmate Admin Notifications
           </Text>
         </Section>
       </Container>
@@ -86,70 +63,73 @@ export const ApplicationFormAdminNotificationEmail = ({
 export default ApplicationFormAdminNotificationEmail
 
 const main = {
-  backgroundColor: "#ffffff",
+  backgroundColor: "#f8fafc",
   fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif',
+  padding: "24px 0",
 }
 
 const container = {
+  backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "20px 0 48px",
+  padding: "28px",
+  borderRadius: "8px",
+  border: "1px solid #e2e8f0",
+  maxWidth: "560px",
 }
 
-const paragraph = {
-  fontSize: "16px",
-  lineHeight: "26px",
+const badgeSection = {
+  marginBottom: "16px",
+}
+
+const badgeText = {
+  fontSize: "11px",
+  fontWeight: "700",
+  letterSpacing: "0.08em",
+  color: "#6366f1",
+  margin: "0",
+}
+
+const introText = {
+  fontSize: "15px",
+  lineHeight: "22px",
+  color: "#334155",
+  margin: "0 0 16px 0",
+}
+
+const infoSection = {
+  backgroundColor: "#f8fafc",
+  padding: "12px 16px",
+  borderRadius: "6px",
+  border: "1px solid #e2e8f0",
+  marginBottom: "20px",
+}
+
+const infoText = {
+  fontSize: "13px",
+  lineHeight: "20px",
+  color: "#475569",
+  margin: "2px 0",
 }
 
 const hr = {
-  borderColor: "#cccccc",
-  margin: "20px 0",
+  borderColor: "#e2e8f0",
+  margin: "20px 0 14px 0",
 }
 
-const signature = {
-  marginBottom: "24px",
+const footerSection = {
+  textAlign: "center" as const,
 }
 
-const signatureContainer = {
-  width: "220px",
-  margin: "0 auto",
+const noReplyText = {
+  fontSize: "12px",
+  color: "#e11d48",
+  margin: "0 0 4px 0",
+  fontWeight: "500",
 }
 
-const signatureLogo = {
-  display: "block",
-  margin: "0 auto 16px",
-}
-
-const appName = {
-  fontSize: "20px",
-  fontWeight: "700",
-  color: "#222222",
-  lineHeight: "30px",
+const copyrightText = {
+  fontSize: "11px",
+  color: "#94a3b8",
   margin: "0",
-  textAlign: "center" as const,
-}
-
-const tagline = {
-  fontSize: "14px",
-  color: "#666666",
-  lineHeight: "22px",
-  margin: "4px 0 0",
-  textAlign: "center" as const,
-}
-
-const autoMessage = {
-  color: "#8898aa",
-  fontSize: "12px",
-  fontStyle: "italic",
-}
-
-const copyrightSection = {
-  textAlign: "center" as const,
-}
-
-const copyright = {
-  color: "#8898aa",
-  fontSize: "12px",
-  marginTop: "8px",
-  textAlign: "center" as const,
 }

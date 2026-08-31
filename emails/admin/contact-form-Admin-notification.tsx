@@ -25,23 +25,36 @@ export const ContactFormAdminNotificationEmail = ({
 }: ContactFormNotificationDetails) => (
   <Html>
     <Head />
-    <Preview>{subject}</Preview>
+    <Preview>[Contact Form] New Message from {name}: {subject}</Preview>
 
     <Body style={main}>
       <Container style={container}>
+        <Section style={badgeSection}>
+          <Text style={badgeText}>NEW CONTACT MESSAGE</Text>
+        </Section>
+
         <Section style={contentSection}>
-          <Text style={messageParagraph}>{message}</Text>
+          <Text style={headingText}>{subject}</Text>
+          <Text style={messageText}>{message}</Text>
+        </Section>
+
+        <Section style={infoSection}>
+          <Text style={infoText}>
+            <strong>Name:</strong> {name}
+          </Text>
+          <Text style={infoText}>
+            <strong>Email:</strong> {email}
+          </Text>
         </Section>
 
         <Hr style={hr} />
 
-        <Section style={metaSection}>
-          <Text style={metaText}>
-            <strong>From:</strong> {name} &lt;{email}&gt;
+        <Section style={footerSection}>
+          <Text style={noReplyText}>
+            Please do not reply directly to this automated notification email.
           </Text>
-          <Text style={subMetaText}>
-            Submitted via Thai Soulmate Website Contact Form &bull; Reply
-            directly to this email to respond to {name}.
+          <Text style={copyrightText}>
+            Thai Soulmate Admin Notifications
           </Text>
         </Section>
       </Container>
@@ -61,42 +74,77 @@ const main = {
 const container = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "32px",
+  padding: "28px",
   borderRadius: "8px",
   border: "1px solid #e2e8f0",
-  maxWidth: "600px",
+  maxWidth: "560px",
+}
+
+const badgeSection = {
+  marginBottom: "16px",
+}
+
+const badgeText = {
+  fontSize: "11px",
+  fontWeight: "700",
+  letterSpacing: "0.08em",
+  color: "#6366f1",
+  margin: "0",
 }
 
 const contentSection = {
-  marginBottom: "24px",
+  marginBottom: "20px",
 }
 
-const messageParagraph = {
-  fontSize: "15px",
+const headingText = {
+  fontSize: "18px",
+  fontWeight: "600",
+  color: "#0f172a",
+  margin: "0 0 12px 0",
   lineHeight: "24px",
-  color: "#1e293b",
+}
+
+const messageText = {
+  fontSize: "14px",
+  lineHeight: "22px",
+  color: "#334155",
   whiteSpace: "pre-wrap" as const,
   margin: "0",
 }
 
+const infoSection = {
+  backgroundColor: "#f8fafc",
+  padding: "12px 16px",
+  borderRadius: "6px",
+  border: "1px solid #e2e8f0",
+  marginBottom: "20px",
+}
+
+const infoText = {
+  fontSize: "13px",
+  lineHeight: "20px",
+  color: "#475569",
+  margin: "2px 0",
+}
+
 const hr = {
   borderColor: "#e2e8f0",
-  margin: "24px 0 16px 0",
+  margin: "20px 0 14px 0",
 }
 
-const metaSection = {
-  color: "#64748b",
+const footerSection = {
+  textAlign: "center" as const,
 }
 
-const metaText = {
-  fontSize: "13px",
-  color: "#475569",
-  margin: "0 0 4px 0",
-}
-
-const subMetaText = {
+const noReplyText = {
   fontSize: "12px",
+  color: "#e11d48",
+  margin: "0 0 4px 0",
+  fontWeight: "500",
+}
+
+const copyrightText = {
+  fontSize: "11px",
   color: "#94a3b8",
   margin: "0",
-  lineHeight: "18px",
 }

@@ -4,140 +4,55 @@ import {
   Head,
   Hr,
   Html,
-  Img,
   Preview,
   Section,
   Text,
 } from "react-email"
-
-import { APP_INFO } from "@/constants"
-import { env } from "@/lib/env"
+import * as React from "react"
 
 type AdminNotificationDetails = {
-  prefix: string
+  prefix?: string
   name: string
-  dob: string
-  age: number
-  gender: string
-  nationality: string
-  location: string
   email: string
-  phoneCountry: string
-  phone: string
-  source: string
-  otherSource?: string
-  preferredContactDate?: string
-  preferredContactTime?: string
+  [key: string]: any
 }
 
-const currentYear = new Date().getFullYear()
-
 export const RegisterInterestAdminNotificationEmail = ({
-  ...details
+  prefix,
+  name,
+  email,
 }: AdminNotificationDetails) => (
   <Html>
     <Head />
-
-    <Preview>
-      [Register Interest] New user registration from {details.prefix} {details.name}
-    </Preview>
+    <Preview>[Register Interest] New Interest Registration from {name}</Preview>
 
     <Body style={main}>
       <Container style={container}>
-        {/* HEADER */}
-        <Section style={signature}>
-          <Container style={signatureContainer}>
-            <Img
-              src={`${env.BASE_URL}/logo.png`}
-              width="70"
-              alt={APP_INFO.name}
-              style={signatureLogo}
-            />
-
-            <Text style={appName}>{APP_INFO.name}</Text>
-
-            <Text style={tagline}>{APP_INFO.tagline}</Text>
-          </Container>
+        <Section style={badgeSection}>
+          <Text style={badgeText}>NEW INTEREST REGISTRATION</Text>
         </Section>
 
-        {/* INTRO */}
-        <Text style={paragraph}>
+        <Text style={introText}>
           A new user has registered their interest on the website.
         </Text>
 
-        {/* DETAILS */}
-        <Section>
-          <Text style={paragraph}>
-            <strong>Name:</strong> {details.prefix} {details.name}
+        <Section style={infoSection}>
+          <Text style={infoText}>
+            <strong>Name:</strong> {prefix ? `${prefix} ` : ""}{name}
           </Text>
-
-          <Text style={paragraph}>
-            <strong>Date of Birth:</strong> {details.dob}{" "}
-            <span style={ageStyle}>(Age: {details.age})</span>
+          <Text style={infoText}>
+            <strong>Email:</strong> {email}
           </Text>
-
-          <Text style={paragraph}>
-            <strong>Gender:</strong> {details.gender}
-          </Text>
-
-          <Text style={paragraph}>
-            <strong>Nationality:</strong> {details.nationality}
-          </Text>
-
-          <Text style={paragraph}>
-            <strong>Location:</strong> {details.location}
-          </Text>
-
-          <Text style={paragraph}>
-            <strong>Email:</strong> {details.email}
-          </Text>
-
-          <Text style={paragraph}>
-            <strong>Phone:</strong> {details.phoneCountry} {details.phone}
-          </Text>
-
-          <Hr style={smallHr} />
-
-          {/* PREFERRED CONTACT */}
-          <Text style={sectionTitle}>Preferred Contact</Text>
-
-          <Text style={paragraph}>
-            <strong>Preferred contact date:</strong>{" "}
-            {details.preferredContactDate || "-"}
-          </Text>
-
-          <Text style={paragraph}>
-            <strong>Preferred contact time:</strong>{" "}
-            {details.preferredContactTime || "-"}
-          </Text>
-
-          <Hr style={smallHr} />
-
-          {/* SOURCE */}
-          <Text style={sectionTitle}>Registration Source</Text>
-
-          <Text style={paragraph}>
-            <strong>How did you hear about us:</strong> {details.source}
-          </Text>
-
-          {details.source === "Other" && (
-            <Text style={paragraph}>
-              <strong>Other source:</strong> {details.otherSource || "-"}
-            </Text>
-          )}
         </Section>
 
         <Hr style={hr} />
 
-        {/* AUTOMATED MESSAGE */}
-        <Text style={autoMessage}>
-          This is an automated notification from your website.
-        </Text>
-
-        {/* COPYRIGHT */}
-        <Section style={copyrightSection}>
-          <Text style={copyright}>
-            Copyright &copy; {currentYear} {APP_INFO.name}. All rights reserved.
+        <Section style={footerSection}>
+          <Text style={noReplyText}>
+            Please do not reply directly to this automated notification email.
+          </Text>
+          <Text style={copyrightText}>
+            Thai Soulmate Admin Notifications
           </Text>
         </Section>
       </Container>
@@ -148,90 +63,73 @@ export const RegisterInterestAdminNotificationEmail = ({
 export default RegisterInterestAdminNotificationEmail
 
 const main = {
-  backgroundColor: "#ffffff",
+  backgroundColor: "#f8fafc",
   fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif',
+  padding: "24px 0",
 }
 
 const container = {
+  backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "20px 0 48px",
-  maxWidth: "600px",
+  padding: "28px",
+  borderRadius: "8px",
+  border: "1px solid #e2e8f0",
+  maxWidth: "560px",
 }
 
-const paragraph = {
-  fontSize: "16px",
-  lineHeight: "26px",
-  margin: "8px 0",
+const badgeSection = {
+  marginBottom: "16px",
 }
 
-const sectionTitle = {
-  fontSize: "17px",
+const badgeText = {
+  fontSize: "11px",
   fontWeight: "700",
-  lineHeight: "26px",
-  margin: "18px 0 8px",
-  color: "#222222",
+  letterSpacing: "0.08em",
+  color: "#6366f1",
+  margin: "0",
 }
 
-const ageStyle = {
-  color: "#666666",
+const introText = {
+  fontSize: "15px",
+  lineHeight: "22px",
+  color: "#334155",
+  margin: "0 0 16px 0",
+}
+
+const infoSection = {
+  backgroundColor: "#f8fafc",
+  padding: "12px 16px",
+  borderRadius: "6px",
+  border: "1px solid #e2e8f0",
+  marginBottom: "20px",
+}
+
+const infoText = {
+  fontSize: "13px",
+  lineHeight: "20px",
+  color: "#475569",
+  margin: "2px 0",
 }
 
 const hr = {
-  borderColor: "#cccccc",
-  margin: "24px 0",
+  borderColor: "#e2e8f0",
+  margin: "20px 0 14px 0",
 }
 
-const smallHr = {
-  borderColor: "#eeeeee",
-  margin: "18px 0",
+const footerSection = {
+  textAlign: "center" as const,
 }
 
-const signature = {
-  marginBottom: "24px",
+const noReplyText = {
+  fontSize: "12px",
+  color: "#e11d48",
+  margin: "0 0 4px 0",
+  fontWeight: "500",
 }
 
-const signatureContainer = {
-  width: "220px",
-  margin: "0 auto",
-}
-
-const signatureLogo = {
-  display: "block",
-  margin: "0 auto 16px",
-}
-
-const appName = {
-  fontSize: "20px",
-  fontWeight: "700",
-  color: "#222222",
-  lineHeight: "30px",
+const copyrightText = {
+  fontSize: "11px",
+  color: "#94a3b8",
   margin: "0",
-  textAlign: "center" as const,
-}
-
-const tagline = {
-  fontSize: "14px",
-  color: "#666666",
-  lineHeight: "22px",
-  margin: "4px 0 0",
-  textAlign: "center" as const,
-}
-
-const autoMessage = {
-  color: "#8898aa",
-  fontSize: "12px",
-  fontStyle: "italic",
-  lineHeight: "18px",
-}
-
-const copyrightSection = {
-  textAlign: "center" as const,
-}
-
-const copyright = {
-  color: "#8898aa",
-  fontSize: "12px",
-  marginTop: "8px",
-  textAlign: "center" as const,
 }

@@ -25,9 +25,7 @@ export async function POST(req: Request) {
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
 
-    const bodyHtml = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #1e293b;">
-  <p style="margin: 0; white-space: pre-wrap;">${escapedMessage}</p>
-</div>`
+    const bodyHtml = `<p style="margin: 0; white-space: pre-wrap; font-family: inherit; font-size: inherit; line-height: inherit; color: inherit;">${escapedMessage}</p>`
 
     // Send email to contact@thaisoulmate.org via Resend using React Email component
     let resendEmailId: string | null = null
@@ -37,7 +35,7 @@ export async function POST(req: Request) {
         to: EMAIL.NOTIFICATIONS,
         // to: [targetContactEmail],
         replyTo: validatedData.email,
-        subject: validatedData.subject,
+        subject: `[Contact Form] New Message from ${validatedData.name}: ${validatedData.subject}`,
         react: ContactFormAdminNotificationEmail(validatedData),
       })
 

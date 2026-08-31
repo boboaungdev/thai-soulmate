@@ -27,9 +27,11 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
+  email: z
+    .email({
+      message: "Please enter a valid email address.",
+    })
+    .transform((val) => val.trim().toLowerCase()),
   subject: z.string().min(5, {
     message: "Subject must be at least 5 characters.",
   }),
@@ -58,7 +60,10 @@ export function ContactForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          email: values.email.toLowerCase().trim(),
+        }),
       })
 
       if (!response.ok) {
@@ -108,7 +113,14 @@ export function ContactForm() {
                     <Mail className="h-4 w-4" />
                   </InputGroupAddon>
                   <FormControl>
-                    <InputGroupInput placeholder="Your Email" {...field} />
+                    <InputGroupInput
+                      type="email"
+                      placeholder="Your Email"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.toLowerCase())
+                      }
+                    />
                   </FormControl>
                 </InputGroup>
                 <FormMessage />

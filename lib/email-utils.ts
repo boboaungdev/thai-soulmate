@@ -4,9 +4,9 @@ export function extractCleanEmail(input: string): string {
   if (!input) return ""
   const match = input.match(/<([^>]+)>/)
   if (match && match[1]) {
-    return match[1].trim()
+    return match[1].trim().toLowerCase()
   }
-  return input.trim()
+  return input.trim().toLowerCase()
 }
 
 export function parseEmailsFromInput(input?: string | string[]): string[] {

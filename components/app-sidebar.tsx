@@ -31,6 +31,11 @@ import {
   Mail,
   ChevronRight,
   Send,
+  Star,
+  FileText,
+  Archive,
+  ShieldAlert,
+  Trash2,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 
@@ -178,7 +183,12 @@ const feedbackItems = [
 
 const emailFolderIcons: Record<string, React.ElementType> = {
   inbox: Inbox,
+  starred: Star,
   sent: Send,
+  draft: FileText,
+  archive: Archive,
+  spam: ShieldAlert,
+  trash: Trash2,
   settings: Settings2,
 }
 

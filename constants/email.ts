@@ -51,9 +51,34 @@ export const EMAIL_FOLDERS: EmailFolder[] = [
     slug: "inbox",
   },
   {
+    id: "starred",
+    title: "Starred",
+    slug: "starred",
+  },
+  {
     id: "sent",
     title: "Sent",
     slug: "sent",
+  },
+  {
+    id: "draft",
+    title: "Drafts",
+    slug: "draft",
+  },
+  {
+    id: "archive",
+    title: "Archive",
+    slug: "archive",
+  },
+  {
+    id: "spam",
+    title: "Spam",
+    slug: "spam",
+  },
+  {
+    id: "trash",
+    title: "Trash",
+    slug: "trash",
   },
   {
     id: "settings",

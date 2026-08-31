@@ -41,7 +41,18 @@ export async function GET(req: Request) {
         return NextResponse.json({ success: true, data: [] })
       }
 
-      if (folder === EmailFolder.TRASH) {
+      if (folderParam === "STARRED") {
+        whereClause = {
+          OR: [
+            { fromEmail: { equals: userEmail, mode: "insensitive" } },
+            { toEmails: { has: userEmail } },
+            { ccEmails: { has: userEmail } },
+            { bccEmails: { has: userEmail } },
+          ],
+          isStarred: true,
+          isTrash: false,
+        }
+      } else if (folder === EmailFolder.TRASH) {
         whereClause = {
           OR: [
             { fromEmail: { equals: userEmail, mode: "insensitive" } },
@@ -51,13 +62,41 @@ export async function GET(req: Request) {
           ],
           isTrash: true,
         }
+      } else if (folder === EmailFolder.ARCHIVE) {
+        whereClause = {
+          OR: [
+            { fromEmail: { equals: userEmail, mode: "insensitive" } },
+            { toEmails: { has: userEmail } },
+            { ccEmails: { has: userEmail } },
+            { bccEmails: { has: userEmail } },
+          ],
+          isArchived: true,
+          isTrash: false,
+        }
+      } else if (folder === EmailFolder.SPAM) {
+        whereClause = {
+          OR: [
+            { fromEmail: { equals: userEmail, mode: "insensitive" } },
+            { toEmails: { has: userEmail } },
+            { ccEmails: { has: userEmail } },
+            { bccEmails: { has: userEmail } },
+          ],
+          folder: EmailFolder.SPAM,
+          isTrash: false,
+        }
+      } else if (folder === EmailFolder.DRAFT) {
+        whereClause = {
+          fromEmail: { equals: userEmail, mode: "insensitive" },
+          folder: EmailFolder.DRAFT,
+          isTrash: false,
+        }
       } else if (folder === EmailFolder.SENT) {
         whereClause = {
           fromEmail: { equals: userEmail, mode: "insensitive" },
           isTrash: false,
         }
       } else {
-        // INBOX (and conversation messages for this personal user)
+        // INBOX
         whereClause = {
           OR: [
             { toEmails: { has: userEmail } },
@@ -65,6 +104,7 @@ export async function GET(req: Request) {
             { bccEmails: { has: userEmail } },
             { fromEmail: { equals: userEmail, mode: "insensitive" } },
           ],
+          isArchived: false,
           isTrash: false,
         }
       }
@@ -80,7 +120,18 @@ export async function GET(req: Request) {
         : `${mailbox.toLowerCase()}@thaisoulmate.org`
       const mailboxNames = [mailbox, mailbox.toLowerCase(), mailboxEmail]
 
-      if (folder === EmailFolder.TRASH) {
+      if (folderParam === "STARRED") {
+        whereClause = {
+          OR: [
+            { mailbox: { in: mailboxNames } },
+            { toEmails: { has: mailboxEmail } },
+            { ccEmails: { has: mailboxEmail } },
+            { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
+          ],
+          isStarred: true,
+          isTrash: false,
+        }
+      } else if (folder === EmailFolder.TRASH) {
         whereClause = {
           OR: [
             { mailbox: { in: mailboxNames } },
@@ -89,6 +140,39 @@ export async function GET(req: Request) {
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
           ],
           isTrash: true,
+        }
+      } else if (folder === EmailFolder.ARCHIVE) {
+        whereClause = {
+          OR: [
+            { mailbox: { in: mailboxNames } },
+            { toEmails: { has: mailboxEmail } },
+            { ccEmails: { has: mailboxEmail } },
+            { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
+          ],
+          isArchived: true,
+          isTrash: false,
+        }
+      } else if (folder === EmailFolder.SPAM) {
+        whereClause = {
+          OR: [
+            { mailbox: { in: mailboxNames } },
+            { toEmails: { has: mailboxEmail } },
+            { ccEmails: { has: mailboxEmail } },
+            { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
+          ],
+          folder: EmailFolder.SPAM,
+          isTrash: false,
+        }
+      } else if (folder === EmailFolder.DRAFT) {
+        whereClause = {
+          OR: [
+            { mailbox: { in: mailboxNames }, folder: EmailFolder.DRAFT },
+            {
+              fromEmail: { contains: mailboxEmail, mode: "insensitive" },
+              folder: EmailFolder.DRAFT,
+            },
+          ],
+          isTrash: false,
         }
       } else if (folder === EmailFolder.SENT) {
         whereClause = {
@@ -107,6 +191,7 @@ export async function GET(req: Request) {
             { ccEmails: { has: mailboxEmail } },
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
           ],
+          isArchived: false,
           isTrash: false,
         }
       }

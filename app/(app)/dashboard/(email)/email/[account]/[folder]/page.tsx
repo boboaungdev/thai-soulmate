@@ -20,6 +20,8 @@ import {
   Paperclip,
   Download,
   FileText,
+  Archive,
+  ShieldAlert,
   Upload,
   X,
   ChevronDown,
@@ -564,14 +566,24 @@ export default function EmailFolderDynamicPage() {
         (t) => t.isStarred && !t.messages.every((m) => m.isTrash)
       )
     }
-    if (folderParam === "trash") {
+    if (folderParam === "draft") {
       return allThreads.filter((t) =>
-        t.messages.some((m) => m.isTrash || m.folder === "TRASH")
+        t.messages.some((m) => m.folder === "DRAFT" && !m.isTrash)
       )
     }
     if (folderParam === "archive") {
       return allThreads.filter((t) =>
         t.messages.some((m) => m.isArchived || m.folder === "ARCHIVE")
+      )
+    }
+    if (folderParam === "spam") {
+      return allThreads.filter((t) =>
+        t.messages.some((m) => m.folder === "SPAM" && !m.isTrash)
+      )
+    }
+    if (folderParam === "trash") {
+      return allThreads.filter((t) =>
+        t.messages.some((m) => m.isTrash || m.folder === "TRASH")
       )
     }
     return allThreads
@@ -780,7 +792,14 @@ export default function EmailFolderDynamicPage() {
               {EMAIL_FOLDERS.map((f) => (
                 <TabsTrigger key={f.id} value={f.slug} className="capitalize">
                   {f.id === "inbox" && <Inbox className="mr-1.5 size-4" />}
+                  {f.id === "starred" && (
+                    <Star className="mr-1.5 size-4 fill-yellow-400 text-yellow-400" />
+                  )}
                   {f.id === "sent" && <Send className="mr-1.5 size-4" />}
+                  {f.id === "draft" && <FileText className="mr-1.5 size-4" />}
+                  {f.id === "archive" && <Archive className="mr-1.5 size-4" />}
+                  {f.id === "spam" && <ShieldAlert className="mr-1.5 size-4" />}
+                  {f.id === "trash" && <Trash2 className="mr-1.5 size-4" />}
                   {f.id === "settings" && (
                     <Settings2 className="mr-1.5 size-4" />
                   )}
@@ -1201,14 +1220,27 @@ export default function EmailFolderDynamicPage() {
         <Card className="flex flex-1 flex-col">
           <CardHeader className="border-b p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="relative max-w-md flex-1">
-                <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
-                <Input
-                  placeholder={`Search ${folderParam}...`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-9 pl-9"
-                />
+              <div className="flex max-w-md flex-1 items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  onClick={fetchEmails}
+                  title="Refresh emails"
+                  className="shrink-0"
+                >
+                  <RefreshCw
+                    className={cn("size-4", isFetchingEmails && "animate-spin")}
+                  />
+                </Button>
+                <div className="relative flex-1">
+                  <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
+                  <Input
+                    placeholder={`Search ${folderParam}...`}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-9 pl-9"
+                  />
+                </div>
               </div>
 
               <div className="flex items-center gap-3">
@@ -1246,17 +1278,6 @@ export default function EmailFolderDynamicPage() {
                     </div>
                   </div>
                 )}
-
-                <Button
-                  variant="outline"
-                  size="icon-sm"
-                  onClick={fetchEmails}
-                  title="Refresh emails"
-                >
-                  <RefreshCw
-                    className={cn("size-4", isFetchingEmails && "animate-spin")}
-                  />
-                </Button>
               </div>
             </div>
           </CardHeader>
@@ -1291,14 +1312,42 @@ export default function EmailFolderDynamicPage() {
               </div>
             ) : filteredThreads.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-                <Inbox className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
+                {folderParam === "starred" ? (
+                  <Star className="mb-3 size-12 fill-yellow-400/20 stroke-[1.2] text-yellow-500/70" />
+                ) : folderParam === "sent" ? (
+                  <Send className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
+                ) : folderParam === "draft" ? (
+                  <FileText className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
+                ) : folderParam === "archive" ? (
+                  <Archive className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
+                ) : folderParam === "spam" ? (
+                  <ShieldAlert className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
+                ) : folderParam === "trash" ? (
+                  <Trash2 className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
+                ) : (
+                  <Inbox className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
+                )}
                 <p className="font-medium text-foreground">
-                  No conversations found
+                  {folderParam === "starred"
+                    ? "No starred conversations"
+                    : folderParam === "sent"
+                      ? "No sent emails"
+                      : folderParam === "draft"
+                        ? "No draft emails"
+                        : folderParam === "archive"
+                          ? "No archived emails"
+                          : folderParam === "spam"
+                            ? "No spam emails"
+                            : folderParam === "trash"
+                              ? "Trash is empty"
+                              : "No conversations found"}
                 </p>
                 <p className="text-xs">
                   {searchQuery
                     ? "Try adjusting your search criteria."
-                    : `Your ${folderParam} folder is empty.`}
+                    : folderParam === "starred"
+                      ? "Star important conversations to find them quickly here."
+                      : `Your ${folderParam} folder is empty.`}
                 </p>
               </div>
             ) : (
@@ -1319,27 +1368,34 @@ export default function EmailFolderDynamicPage() {
                       key={thread.threadId}
                       onClick={() => handleThreadClick(thread)}
                       className={cn(
-                        "group flex cursor-pointer items-start gap-4 p-4 transition-colors hover:bg-muted/50",
-                        !thread.isRead &&
-                          !isSentFolder &&
-                          "bg-primary/5 font-medium"
+                        "group flex cursor-pointer items-start gap-4 border-l-4 p-4 transition-all",
+                        !thread.isRead && !isSentFolder
+                          ? "border-l-indigo-600 bg-slate-100/90 hover:bg-slate-200/70 dark:border-l-indigo-400 dark:bg-slate-800/90 dark:hover:bg-slate-800"
+                          : "border-l-transparent bg-card text-muted-foreground hover:bg-muted/50"
                       )}
                     >
-                      <button
-                        type="button"
-                        onClick={(e) => handleToggleStarThread(thread, e)}
-                        className="pt-0.5"
-                        title={thread.isStarred ? "Unstar" : "Star"}
-                      >
-                        <Star
-                          className={cn(
-                            "size-4 transition-colors",
-                            thread.isStarred
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
-                          )}
-                        />
-                      </button>
+                      <div className="flex items-center gap-2 pt-0.5">
+                        {!thread.isRead && !isSentFolder && (
+                          <span
+                            className="size-2.5 shrink-0 rounded-full bg-indigo-600 ring-2 ring-indigo-500/25 dark:bg-indigo-400 dark:ring-indigo-400/30"
+                            title="Unread"
+                          />
+                        )}
+                        <button
+                          type="button"
+                          onClick={(e) => handleToggleStarThread(thread, e)}
+                          title={thread.isStarred ? "Unstar" : "Star"}
+                        >
+                          <Star
+                            className={cn(
+                              "size-4 transition-colors",
+                              thread.isStarred
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-muted-foreground/40 group-hover:text-muted-foreground"
+                            )}
+                          />
+                        </button>
+                      </div>
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
@@ -1348,20 +1404,34 @@ export default function EmailFolderDynamicPage() {
                               className={cn(
                                 "truncate text-sm",
                                 !thread.isRead && !isSentFolder
-                                  ? "font-bold text-foreground"
-                                  : "font-medium text-foreground/90"
+                                  ? "font-bold text-slate-900 dark:text-white"
+                                  : "font-normal text-muted-foreground"
                               )}
                             >
                               {senderNames || "(Unknown)"}
                             </span>
                             {messageCount > 1 && (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                              <span
+                                className={cn(
+                                  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold",
+                                  !thread.isRead && !isSentFolder
+                                    ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300"
+                                    : "bg-muted text-muted-foreground"
+                                )}
+                              >
                                 <MessageSquare className="size-3" />
                                 {messageCount}
                               </span>
                             )}
                           </div>
-                          <span className="shrink-0 text-xs text-muted-foreground">
+                          <span
+                            className={cn(
+                              "shrink-0 text-xs",
+                              !thread.isRead && !isSentFolder
+                                ? "font-semibold text-indigo-600 dark:text-indigo-400"
+                                : "text-muted-foreground"
+                            )}
+                          >
                             {formatEmailDate(thread.lastActivityAt)}
                           </span>
                         </div>
@@ -1371,18 +1441,32 @@ export default function EmailFolderDynamicPage() {
                             className={cn(
                               "truncate",
                               !thread.isRead && !isSentFolder
-                                ? "font-semibold text-foreground"
-                                : "font-normal text-foreground/90"
+                                ? "font-bold text-slate-900 dark:text-white"
+                                : "font-normal text-muted-foreground"
                             )}
                           >
                             {thread.subject || "(No Subject)"}
                           </span>
                           {thread.hasAttachments && (
-                            <Paperclip className="size-3.5 shrink-0 text-muted-foreground" />
+                            <Paperclip
+                              className={cn(
+                                "size-3.5 shrink-0",
+                                !thread.isRead && !isSentFolder
+                                  ? "text-slate-700 dark:text-slate-200"
+                                  : "text-muted-foreground"
+                              )}
+                            />
                           )}
                         </div>
 
-                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                        <p
+                          className={cn(
+                            "mt-0.5 truncate text-xs",
+                            !thread.isRead && !isSentFolder
+                              ? "font-medium text-slate-700 dark:text-slate-200"
+                              : "text-muted-foreground/75"
+                          )}
+                        >
                           {thread.latestMessage.preview || "(No preview text)"}
                         </p>
                       </div>

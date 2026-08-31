@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { NextResponse } from "next/server"
 import { resend } from "@/lib/resend"
-import { CONTACT, EMAIL } from "@/constants"
+import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 import { ContactFormAdminNotificationEmail } from "@/emails"
 import { prisma } from "@/lib/prisma"
 
@@ -31,10 +31,9 @@ export async function POST(req: Request) {
     let resendEmailId: string | null = null
     try {
       const { data, error } = await resend.emails.send({
-        from: `"${validatedData.name}" <${EMAIL.notify}>`,
+        from: `"${APP_INFO.name} - Notification" <${EMAIL.notify}>`,
         to: EMAIL.NOTIFICATIONS,
         // to: [targetContactEmail],
-        replyTo: validatedData.email,
         subject: `[Contact Form] New Message from ${validatedData.name}: ${validatedData.subject}`,
         react: ContactFormAdminNotificationEmail(validatedData),
       })

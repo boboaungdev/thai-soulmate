@@ -6,7 +6,7 @@ import { env } from "@/lib/env"
 import { uploadBufferToR2 } from "@/lib/r2-email"
 import { extractCleanEmail, parseSenderNameAndEmail } from "@/lib/email-utils"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
-import { generateAdminEmailNotificationHtml } from "@/emails/admin-email-notification"
+import { generateAdminEmailNotificationHtml } from "@/emails/admin/admin-email-notification"
 import {
   getReceivedEmail,
   downloadAndUploadAttachment,

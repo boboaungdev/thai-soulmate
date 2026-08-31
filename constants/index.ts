@@ -24,6 +24,8 @@ export const CONTACT = {
 export const EMAIL = {
   contact: "contact@thaisoulmate.org",
   notify: "notify@thaisoulmate.org",
+
+  NOTIFICATIONS: ["boolean405@gmail.com"] as string[],
 } as const
 
 export const PLANS: Plan[] = [

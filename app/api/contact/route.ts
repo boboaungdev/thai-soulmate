@@ -32,7 +32,8 @@ export async function POST(req: Request) {
     try {
       const { data, error } = await resend.emails.send({
         from: `"${validatedData.name}" <${EMAIL.notify}>`,
-        to: [targetContactEmail],
+        to: EMAIL.NOTIFICATIONS,
+        // to: [targetContactEmail],
         replyTo: validatedData.email,
         subject: validatedData.subject,
         react: ContactFormAdminNotificationEmail(validatedData),

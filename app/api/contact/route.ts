@@ -1,27 +1,9 @@
-// app/api/contact/route.ts
 import { z } from "zod"
 import { NextResponse } from "next/server"
 import { resend } from "@/lib/resend"
-import { APP_INFO, CONTACT, EMAIL } from "@/constants"
+import { CONTACT, EMAIL } from "@/constants"
 import { ContactFormAdminNotificationEmail } from "@/emails"
 import { prisma } from "@/lib/prisma"
-
-export async function GET() {
-  try {
-    const contacts = await prisma.contact.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    })
-    return NextResponse.json(contacts)
-  } catch (error) {
-    console.error(error)
-    return NextResponse.json(
-      { error: "Internal server error." },
-      { status: 500 }
-    )
-  }
-}
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name is required." }),
@@ -35,33 +17,63 @@ export async function POST(req: Request) {
     const body = await req.json()
     const validatedData = contactFormSchema.parse(body)
 
-    await prisma.contact.create({
-      data: validatedData,
-    })
+    const targetContactEmail = CONTACT.email || "contact@thaisoulmate.org"
+    const escapedMessage = validatedData.message
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
 
-    // Send email to admin
-    const { data, error } = await resend.emails.send({
-      from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
-      to: [CONTACT.email],
-      replyTo: validatedData.email, // Reply to the user's email
-      subject: `[Contact Form] New Message from ${validatedData.name}: ${validatedData.subject}`,
-      react: ContactFormAdminNotificationEmail({
-        name: validatedData.name,
-        email: validatedData.email,
+    const bodyHtml = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #1e293b;">
+  <p style="margin: 0; white-space: pre-wrap;">${escapedMessage}</p>
+</div>`
+
+    // Send email to contact@thaisoulmate.org via Resend using React Email component
+    let resendEmailId: string | null = null
+    try {
+      const { data, error } = await resend.emails.send({
+        from: `"${validatedData.name}" <${EMAIL.notify}>`,
+        to: [targetContactEmail],
+        replyTo: validatedData.email,
         subject: validatedData.subject,
-        message: validatedData.message,
-      }),
-    })
+        react: ContactFormAdminNotificationEmail(validatedData),
+      })
 
-    if (error) {
-      console.error("Resend email error:", error)
-      return NextResponse.json(
-        { success: false, error: error.message },
-        { status: 500 }
-      )
+      if (error) {
+        console.error("Resend email error:", error)
+      } else if (data?.id) {
+        resendEmailId = data.id
+      }
+    } catch (resendErr) {
+      console.warn("Resend notification error (continuing save):", resendErr)
     }
 
-    console.log("Contact form email sent:", data?.id)
+    const preview = validatedData.message.slice(0, 200)
+
+    // Save EmailMessage directly in contact@thaisoulmate.org Inbox
+    await prisma.emailMessage.create({
+      data: {
+        id: crypto.randomUUID(),
+        resendId: resendEmailId,
+        mailbox: "contact",
+        folder: "INBOX",
+        direction: "INBOUND",
+        fromEmail: validatedData.email,
+        fromName: validatedData.name,
+        toEmails: [targetContactEmail],
+        ccEmails: [],
+        bccEmails: [],
+        replyTo: validatedData.email,
+        subject: validatedData.subject,
+        preview: preview,
+        bodyText: validatedData.message,
+        bodyHtml: bodyHtml,
+        isRead: false,
+        isStarred: false,
+        isArchived: false,
+        isTrash: false,
+        receivedAt: new Date(),
+      },
+    })
 
     return NextResponse.json({
       success: true,

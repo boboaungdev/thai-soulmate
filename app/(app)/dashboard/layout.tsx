@@ -21,10 +21,9 @@ const allowedRoutes = {
     "/dashboard/tracking",
     "/dashboard/profiles",
     "/dashboard/website-review",
-    "/dashboard/contact",
     "/dashboard/login-user",
     "/dashboard/google-meet",
-    '/dashboard/email'
+    "/dashboard/email",
   ],
   STAFF: [
     "/dashboard/admin-dashboard",
@@ -36,8 +35,7 @@ const allowedRoutes = {
     "/dashboard/tracking",
     "/dashboard/profiles",
     "/dashboard/website-review",
-    "/dashboard/contact",
-    '/dashboard/email'
+    "/dashboard/email",
   ],
   MEMBER: [
     "/dashboard/member-dashboard",

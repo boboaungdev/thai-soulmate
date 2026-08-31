@@ -4,15 +4,11 @@ import {
   Head,
   Hr,
   Html,
-  Img,
   Preview,
   Section,
   Text,
 } from "react-email"
 import * as React from "react"
-
-import { APP_INFO } from "@/constants"
-import { env } from "@/lib/env"
 
 type ContactFormNotificationDetails = {
   name: string
@@ -21,68 +17,31 @@ type ContactFormNotificationDetails = {
   message: string
 }
 
-const currentYear = new Date().getFullYear()
-
 export const ContactFormAdminNotificationEmail = ({
-  ...details
+  name,
+  email,
+  subject,
+  message,
 }: ContactFormNotificationDetails) => (
   <Html>
     <Head />
-
-    <Preview>
-      [Contact Form] New Message from {details.name}: {details.subject}
-    </Preview>
+    <Preview>{subject}</Preview>
 
     <Body style={main}>
       <Container style={container}>
-        <Section style={signature}>
-          <Container style={signatureContainer}>
-            <Img
-              src={`${env.BASE_URL}/logo.png`}
-              width="70"
-              alt={APP_INFO.name}
-              style={signatureLogo}
-            />
-
-            <Text style={appName}>{APP_INFO.name}</Text>
-            <Text style={tagline}>{APP_INFO.tagline}</Text>
-          </Container>
-        </Section>
-
-        <Text style={paragraph}>
-          A new message has been submitted via the contact form.
-        </Text>
-
-        <Section>
-          <Text style={paragraph}>
-            <strong>Name:</strong> {details.name}
-          </Text>
-
-          <Text style={paragraph}>
-            <strong>Email:</strong> {details.email}
-          </Text>
-
-          <Text style={paragraph}>
-            <strong>Subject:</strong> {details.subject}
-          </Text>
-
-          <Text style={paragraph}>
-            <strong>Message:</strong>
-            <br />
-            {details.message}
-          </Text>
+        <Section style={contentSection}>
+          <Text style={messageParagraph}>{message}</Text>
         </Section>
 
         <Hr style={hr} />
 
-        <Text style={autoMessage}>
-          This is an automated notification from your website. You can reply to
-          this email directly to contact {details.name}.
-        </Text>
-
-        <Section style={copyrightSection}>
-          <Text style={copyright}>
-            Copyright &copy; {currentYear} {APP_INFO.name}. All rights reserved.
+        <Section style={metaSection}>
+          <Text style={metaText}>
+            <strong>From:</strong> {name} &lt;{email}&gt;
+          </Text>
+          <Text style={subMetaText}>
+            Submitted via Thai Soulmate Website Contact Form &bull; Reply
+            directly to this email to respond to {name}.
           </Text>
         </Section>
       </Container>
@@ -93,70 +52,51 @@ export const ContactFormAdminNotificationEmail = ({
 export default ContactFormAdminNotificationEmail
 
 const main = {
-  backgroundColor: "#ffffff",
+  backgroundColor: "#f8fafc",
   fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif',
+  padding: "24px 0",
 }
 
 const container = {
+  backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "20px 0 48px",
+  padding: "32px",
+  borderRadius: "8px",
+  border: "1px solid #e2e8f0",
+  maxWidth: "600px",
 }
 
-const paragraph = {
-  fontSize: "16px",
-  lineHeight: "26px",
-}
-
-const hr = {
-  borderColor: "#cccccc",
-  margin: "20px 0",
-}
-
-const signature = {
+const contentSection = {
   marginBottom: "24px",
 }
 
-const signatureContainer = {
-  width: "220px",
-  margin: "0 auto",
-}
-
-const signatureLogo = {
-  display: "block",
-  margin: "0 auto 16px",
-}
-
-const appName = {
-  fontSize: "20px",
-  fontWeight: "700",
-  color: "#222222",
-  lineHeight: "30px",
+const messageParagraph = {
+  fontSize: "15px",
+  lineHeight: "24px",
+  color: "#1e293b",
+  whiteSpace: "pre-wrap" as const,
   margin: "0",
-  textAlign: "center" as const,
 }
 
-const tagline = {
-  fontSize: "14px",
-  color: "#666666",
-  lineHeight: "22px",
-  margin: "4px 0 0",
-  textAlign: "center" as const,
+const hr = {
+  borderColor: "#e2e8f0",
+  margin: "24px 0 16px 0",
 }
 
-const autoMessage = {
-  color: "#8898aa",
+const metaSection = {
+  color: "#64748b",
+}
+
+const metaText = {
+  fontSize: "13px",
+  color: "#475569",
+  margin: "0 0 4px 0",
+}
+
+const subMetaText = {
   fontSize: "12px",
-  fontStyle: "italic",
-}
-
-const copyrightSection = {
-  textAlign: "center" as const,
-}
-
-const copyright = {
-  color: "#8898aa",
-  fontSize: "12px",
-  marginTop: "8px",
-  textAlign: "center" as const,
+  color: "#94a3b8",
+  margin: "0",
+  lineHeight: "18px",
 }

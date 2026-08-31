@@ -3,10 +3,9 @@ import crypto from "crypto"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
 import { env } from "@/lib/env"
-import { uploadBufferToR2 } from "@/lib/r2-email"
 import { extractCleanEmail, parseSenderNameAndEmail } from "@/lib/email-utils"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
-import { generateAdminEmailNotificationHtml } from "@/emails/admin/admin-email-notification"
+import { AdminEmailNotificationEmail } from "@/emails/admin/admin-email-notification"
 import {
   getReceivedEmail,
   downloadAndUploadAttachment,
@@ -284,28 +283,26 @@ export async function POST(req: Request) {
         .filter((e) => e && e.toLowerCase() !== mailboxEmail.toLowerCase())
 
       if (notificationRecipients.length > 0) {
-        const adminNotificationHtml = generateAdminEmailNotificationHtml({
-          mailbox: mailboxId,
-          mailboxEmail: fromEmail,
-          senderName: fromName || null,
-          toEmails,
-          ccEmails,
-          bccEmails,
-          subject: `[New Inbound Email] from ${fromEmail}: ${subject}`,
-          bodyHtml,
-          attachments: uploadedAttachments.map((a) => ({
-            filename: a.filename,
-            size: a.size,
-            url: a.url,
-          })),
-          sentAt: createdEmail.receivedAt || new Date(),
-        })
-
         await resend.emails.send({
           from: "Thai Soulmate Notifications <notify@thaisoulmate.org>",
           to: notificationRecipients,
           subject: `[Inbound Alert] New email for ${mailboxEmail} from ${fromEmail}: ${subject}`,
-          html: adminNotificationHtml,
+          react: AdminEmailNotificationEmail({
+            mailbox: mailboxId,
+            mailboxEmail: fromEmail,
+            senderName: fromName || null,
+            toEmails,
+            ccEmails,
+            bccEmails,
+            subject: `[New Inbound Email] from ${fromEmail}: ${subject}`,
+            bodyHtml,
+            attachments: uploadedAttachments.map((a) => ({
+              filename: a.filename,
+              size: a.size,
+              url: a.url,
+            })),
+            sentAt: createdEmail.receivedAt || new Date(),
+          }),
         })
       }
     } catch (notifErr: any) {

@@ -1,3 +1,5 @@
+import { APP_INFO } from "."
+
 export interface EmailAccount {
   id: string
   email: string
@@ -15,28 +17,28 @@ export const EMAIL_ACCOUNTS: EmailAccount[] = [
   {
     id: "contact",
     email: "contact@thaisoulmate.org",
-    name: "Contact",
+    name: `${APP_INFO.name} - Contact`,
     description:
       "Primary business inquiries, website contact, and member registration interest emails",
   },
   {
     id: "admin",
     email: "admin@thaisoulmate.org",
-    name: "Admin",
+    name: `${APP_INFO.name} - Admin`,
     description:
       "Support for active members, including service assistance, profile management, and member requests",
   },
   {
     id: "payments",
     email: "payments@thaisoulmate.org",
-    name: "Payments",
+    name: `${APP_INFO.name} - Payment`,
     description:
       "Payment links, billing, invoices, receipts, and payment-related emails for customers and members",
   },
   {
     id: "socials",
     email: "socials@thaisoulmate.org",
-    name: "Socials",
+    name: `${APP_INFO.name} - Socila`,
     description:
       "Social media accounts, OTP codes, verification emails, and account notifications",
   },

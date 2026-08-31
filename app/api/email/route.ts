@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
-import { uploadBufferToR2 } from "@/lib/r2-email"
 import { EmailFolder } from "@/lib/generated/prisma/client"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
 import { syncEmailsFromResend } from "@/lib/email-sync"

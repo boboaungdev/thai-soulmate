@@ -487,11 +487,16 @@ export function ComposeEmailDialog({
     }
   }, [open, initialTo, initialSubject, initialBody])
 
-  const formatDoc = (cmd: string, value: string | undefined = undefined) => {
+  const formatDoc = (
+    cmd: string,
+    value: string | undefined = undefined
+  ): boolean => {
     if (typeof document !== "undefined") {
-      document.execCommand(cmd, false, value)
+      const res = document.execCommand(cmd, false, value)
       editorRef.current?.focus()
+      return res
     }
+    return false
   }
 
   const handleAddLink = () => {
@@ -1148,8 +1153,9 @@ export function ComposeEmailDialog({
                             if (c.color === "transparent") {
                               formatDoc("removeFormat")
                             } else {
-                              formatDoc("hiliteColor", c.color) ||
+                              if (!formatDoc("hiliteColor", c.color)) {
                                 formatDoc("backColor", c.color)
+                              }
                             }
                           }}
                           style={{

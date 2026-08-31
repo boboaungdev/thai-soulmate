@@ -434,7 +434,31 @@ interface ComposeEmailDialogProps {
   }) => void
 }
 
-export function ComposeEmailDialog({
+export function ComposeEmailDialog(props: ComposeEmailDialogProps) {
+  const { open, onOpenChange } = props
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          onOpenChange(false)
+        } else {
+          onOpenChange(true)
+        }
+      }}
+    >
+      {open && (
+        <ComposeEmailDialogContent
+          key={`${props.initialTo}-${props.initialSubject}-${open}`}
+          {...props}
+        />
+      )}
+    </Dialog>
+  )
+}
+
+function ComposeEmailDialogContent({
   open,
   onOpenChange,
   mailbox,
@@ -473,19 +497,12 @@ export function ComposeEmailDialog({
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const imageInputRef = React.useRef<HTMLInputElement>(null)
 
-  // Initialize body text & emails when opened or changed
+  // Initialize editor HTML on mount without calling setState
   React.useEffect(() => {
-    if (open) {
-      setToEmails(parseEmailsFromInput(initialTo))
-      setCcEmails([])
-      setBccEmails([])
-      setSubject(initialSubject)
-      setIncludeSignature(true)
-      if (editorRef.current) {
-        editorRef.current.innerHTML = initialBody || ""
-      }
+    if (editorRef.current) {
+      editorRef.current.innerHTML = initialBody || ""
     }
-  }, [open, initialTo, initialSubject, initialBody])
+  }, [initialBody])
 
   const formatDoc = (
     cmd: string,
@@ -754,862 +771,845 @@ export function ComposeEmailDialog({
 
   return (
     <>
-      <Dialog
-        open={open}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            handleAttemptClose()
-          } else {
-            onOpenChange(true)
-          }
-        }}
+      <DialogContent
+        className={cn(
+          "flex flex-col gap-0 overflow-hidden p-0 shadow-2xl transition-all duration-200 [&>button]:hidden",
+          isFullScreen
+            ? "fixed inset-2 !h-[calc(100vh-1rem)] !max-w-[calc(100vw-1rem)] rounded-xl"
+            : "h-[680px] max-h-[90vh] rounded-xl sm:max-w-[720px]"
+        )}
       >
-        <DialogContent
-          className={cn(
-            "flex flex-col gap-0 overflow-hidden p-0 shadow-2xl transition-all duration-200 [&>button]:hidden",
-            isFullScreen
-              ? "fixed inset-2 !h-[calc(100vh-1rem)] !max-w-[calc(100vw-1rem)] rounded-xl"
-              : "h-[680px] max-h-[90vh] rounded-xl sm:max-w-[720px]"
-          )}
-        >
-          {/* Custom Modal Top Header */}
-          <div className="flex items-center justify-between border-b bg-muted/50 px-4 py-3 select-none">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">New Message</span>
-              <Badge
-                variant="outline"
-                className="h-5 py-0 text-[11px] font-normal"
-              >
-                From: {fromEmail}
-              </Badge>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                disabled={isSending}
-                onClick={() => setIsFullScreen(!isFullScreen)}
-                className="size-7 text-muted-foreground hover:text-foreground"
-                title={isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
-              >
-                {isFullScreen ? (
-                  <Minimize2 className="size-3.5" />
-                ) : (
-                  <Maximize2 className="size-3.5" />
-                )}
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                disabled={isSending}
-                onClick={handleDiscard}
-                className="size-7 text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:text-foreground"
-                title="Close"
-              >
-                <X className="size-4" />
-              </Button>
-            </div>
+        {/* Custom Modal Top Header */}
+        <div className="flex items-center justify-between border-b bg-muted/50 px-4 py-3 select-none">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold">New Message</span>
+            <Badge
+              variant="outline"
+              className="h-5 py-0 text-[11px] font-normal"
+            >
+              From: {fromEmail}
+            </Badge>
           </div>
 
-          {/* Recipients & Subject Bar */}
-          <div className="flex flex-col divide-y border-b bg-background text-sm">
-            {/* To Field */}
-            <div className="flex items-start gap-2 px-4 py-1.5">
-              <Label
-                htmlFor="email-to"
-                className="flex w-14 shrink-0 items-center gap-1 pt-1.5 text-xs font-medium text-muted-foreground"
-              >
-                <span>To</span>
-                {disableTo && (
-                  <Lock className="size-3 text-muted-foreground/70" />
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              disabled={isSending}
+              onClick={() => setIsFullScreen(!isFullScreen)}
+              className="size-7 text-muted-foreground hover:text-foreground"
+              title={isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
+            >
+              {isFullScreen ? (
+                <Minimize2 className="size-3.5" />
+              ) : (
+                <Maximize2 className="size-3.5" />
+              )}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              disabled={isSending}
+              onClick={handleDiscard}
+              className="size-7 text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:text-foreground"
+              title="Close"
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Recipients & Subject Bar */}
+        <div className="flex flex-col divide-y border-b bg-background text-sm">
+          {/* To Field */}
+          <div className="flex items-start gap-2 px-4 py-1.5">
+            <Label
+              htmlFor="email-to"
+              className="flex w-14 shrink-0 items-center gap-1 pt-1.5 text-xs font-medium text-muted-foreground"
+            >
+              <span>To</span>
+              {disableTo && (
+                <Lock className="size-3 text-muted-foreground/70" />
+              )}
+            </Label>
+            <div className="min-w-0 flex-1">
+              <TagEmailInput
+                id="email-to"
+                value={toEmails}
+                onChange={setToEmails}
+                placeholder="recipient@example.com (comma or space to add)"
+                disabled={isSending || disableTo}
+                className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
+              />
+            </div>
+            {!disableTo && (
+              <div className="flex items-center gap-1 pt-1 text-xs text-muted-foreground">
+                {!showCc && (
+                  <button
+                    type="button"
+                    disabled={isSending}
+                    onClick={() => setShowCc(true)}
+                    className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
+                  >
+                    Cc
+                  </button>
                 )}
+                {!showBcc && (
+                  <button
+                    type="button"
+                    disabled={isSending}
+                    onClick={() => setShowBcc(true)}
+                    className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
+                  >
+                    Bcc
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Cc Field (Optional) */}
+          {showCc && (
+            <div className="flex animate-in items-start gap-2 bg-muted/10 px-4 py-1.5 duration-150 fade-in-50">
+              <Label
+                htmlFor="email-cc"
+                className="w-14 shrink-0 pt-1.5 text-xs font-medium text-muted-foreground"
+              >
+                Cc
               </Label>
               <div className="min-w-0 flex-1">
                 <TagEmailInput
-                  id="email-to"
-                  value={toEmails}
-                  onChange={setToEmails}
-                  placeholder="recipient@example.com (comma or space to add)"
-                  disabled={isSending || disableTo}
+                  id="email-cc"
+                  value={ccEmails}
+                  onChange={setCcEmails}
+                  placeholder="cc@example.com (comma or space to add)"
+                  disabled={isSending}
                   className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
                 />
               </div>
-              {!disableTo && (
-                <div className="flex items-center gap-1 pt-1 text-xs text-muted-foreground">
-                  {!showCc && (
-                    <button
-                      type="button"
-                      disabled={isSending}
-                      onClick={() => setShowCc(true)}
-                      className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
-                    >
-                      Cc
-                    </button>
-                  )}
-                  {!showBcc && (
-                    <button
-                      type="button"
-                      disabled={isSending}
-                      onClick={() => setShowBcc(true)}
-                      className="rounded px-1.5 py-0.5 transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
-                    >
-                      Bcc
-                    </button>
-                  )}
-                </div>
-              )}
+              <button
+                type="button"
+                disabled={isSending}
+                onClick={() => {
+                  setShowCc(false)
+                  setCcEmails([])
+                }}
+                className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
+              >
+                <X className="size-3.5" />
+              </button>
             </div>
+          )}
 
-            {/* Cc Field (Optional) */}
-            {showCc && (
-              <div className="flex animate-in items-start gap-2 bg-muted/10 px-4 py-1.5 duration-150 fade-in-50">
-                <Label
-                  htmlFor="email-cc"
-                  className="w-14 shrink-0 pt-1.5 text-xs font-medium text-muted-foreground"
-                >
-                  Cc
-                </Label>
-                <div className="min-w-0 flex-1">
-                  <TagEmailInput
-                    id="email-cc"
-                    value={ccEmails}
-                    onChange={setCcEmails}
-                    placeholder="cc@example.com (comma or space to add)"
-                    disabled={isSending}
-                    className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
-                  />
-                </div>
-                <button
-                  type="button"
-                  disabled={isSending}
-                  onClick={() => {
-                    setShowCc(false)
-                    setCcEmails([])
-                  }}
-                  className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
-                >
-                  <X className="size-3.5" />
-                </button>
-              </div>
-            )}
-
-            {/* Bcc Field (Optional) */}
-            {showBcc && (
-              <div className="flex animate-in items-start gap-2 bg-muted/10 px-4 py-1.5 duration-150 fade-in-50">
-                <Label
-                  htmlFor="email-bcc"
-                  className="w-14 shrink-0 pt-1.5 text-xs font-medium text-muted-foreground"
-                >
-                  Bcc
-                </Label>
-                <div className="min-w-0 flex-1">
-                  <TagEmailInput
-                    id="email-bcc"
-                    value={bccEmails}
-                    onChange={setBccEmails}
-                    placeholder="bcc@example.com (comma or space to add)"
-                    disabled={isSending}
-                    className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
-                  />
-                </div>
-                <button
-                  type="button"
-                  disabled={isSending}
-                  onClick={() => {
-                    setShowBcc(false)
-                    setBccEmails([])
-                  }}
-                  className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
-                >
-                  <X className="size-3.5" />
-                </button>
-              </div>
-            )}
-
-            {/* Subject Field */}
-            <div className="flex items-center gap-2 px-4 py-1.5">
+          {/* Bcc Field (Optional) */}
+          {showBcc && (
+            <div className="flex animate-in items-start gap-2 bg-muted/10 px-4 py-1.5 duration-150 fade-in-50">
               <Label
-                htmlFor="email-subject"
-                className="w-14 shrink-0 text-xs font-medium text-muted-foreground"
+                htmlFor="email-bcc"
+                className="w-14 shrink-0 pt-1.5 text-xs font-medium text-muted-foreground"
               >
-                Subject
+                Bcc
               </Label>
-              <div className="flex flex-1 items-center gap-2">
-                <Input
-                  id="email-subject"
-                  placeholder="Subject"
-                  disabled={isSending || disableSubject}
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  className={cn(
-                    "h-8 flex-1 border-0 px-2 text-sm font-medium shadow-none focus-visible:ring-0",
-                    (disableSubject || isSending) &&
-                      "cursor-not-allowed bg-muted/20 text-muted-foreground opacity-80 select-none"
-                  )}
+              <div className="min-w-0 flex-1">
+                <TagEmailInput
+                  id="email-bcc"
+                  value={bccEmails}
+                  onChange={setBccEmails}
+                  placeholder="bcc@example.com (comma or space to add)"
+                  disabled={isSending}
+                  className="min-h-7 border-0 p-0 shadow-none focus-within:ring-0"
                 />
-                {disableSubject && (
-                  <span className="inline-flex shrink-0 items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[11px] font-normal text-muted-foreground">
-                    <Lock className="size-2.5" />
-                    Locked for thread
+              </div>
+              <button
+                type="button"
+                disabled={isSending}
+                onClick={() => {
+                  setShowBcc(false)
+                  setBccEmails([])
+                }}
+                className="p-1 pt-1.5 text-xs text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
+              >
+                <X className="size-3.5" />
+              </button>
+            </div>
+          )}
+
+          {/* Subject Field */}
+          <div className="flex items-center gap-2 px-4 py-1.5">
+            <Label
+              htmlFor="email-subject"
+              className="w-14 shrink-0 text-xs font-medium text-muted-foreground"
+            >
+              Subject
+            </Label>
+            <div className="flex flex-1 items-center gap-2">
+              <Input
+                id="email-subject"
+                placeholder="Subject"
+                disabled={isSending || disableSubject}
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                className={cn(
+                  "h-8 flex-1 border-0 px-2 text-sm font-medium shadow-none focus-visible:ring-0",
+                  (disableSubject || isSending) &&
+                    "cursor-not-allowed bg-muted/20 text-muted-foreground opacity-80 select-none"
+                )}
+              />
+              {disableSubject && (
+                <span className="inline-flex shrink-0 items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[11px] font-normal text-muted-foreground">
+                  <Lock className="size-2.5" />
+                  Locked for thread
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Text Formatting Toolbar */}
+        {showFormatting && (
+          <div className="flex flex-wrap items-center gap-1 border-b bg-muted/30 px-3 py-1.5 text-muted-foreground select-none">
+            {/* Undo / Redo */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("undo")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Undo (Ctrl+Z)"
+            >
+              <Undo className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("redo")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Redo (Ctrl+Y)"
+            >
+              <Redo className="size-3.5" />
+            </Button>
+
+            <Separator orientation="vertical" className="mx-1 h-4" />
+
+            {/* Font Family Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={isSending}
+                  className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                  title="Font Family"
+                >
+                  <span>Font</span>
+                  <ChevronDown className="size-3 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-44 text-xs">
+                <DropdownMenuLabel className="text-[11px] text-muted-foreground">
+                  Font Family
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {FONT_FAMILIES.map((f) => (
+                  <DropdownMenuItem
+                    key={f.label}
+                    onClick={() => formatDoc("fontName", f.font)}
+                    style={{ fontFamily: f.font }}
+                    className="cursor-pointer"
+                  >
+                    {f.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Font Size Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={isSending}
+                  className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                  title="Font Size"
+                >
+                  <Type className="size-3.5" />
+                  <span>Size</span>
+                  <ChevronDown className="size-3 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-36 text-xs">
+                <DropdownMenuLabel className="text-[11px] text-muted-foreground">
+                  Font Size
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {FONT_SIZES.map((s) => (
+                  <DropdownMenuItem
+                    key={s.label}
+                    onClick={() => formatDoc("fontSize", s.size)}
+                    className="flex cursor-pointer items-center justify-between"
+                  >
+                    <span>{s.label}</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {s.px}
+                    </span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Separator orientation="vertical" className="mx-1 h-4" />
+
+            {/* Bold, Italic, Underline, Strikethrough */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("bold")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Bold (Ctrl+B)"
+            >
+              <Bold className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("italic")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Italic (Ctrl+I)"
+            >
+              <Italic className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("underline")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Underline (Ctrl+U)"
+            >
+              <UnderlineIcon className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("strikeThrough")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Strikethrough"
+            >
+              <Strikethrough className="size-3.5" />
+            </Button>
+
+            <Separator orientation="vertical" className="mx-1 h-4" />
+
+            {/* Text Color & Highlight Popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  disabled={isSending}
+                  className="size-7 hover:bg-muted hover:text-foreground"
+                  title="Text color & Highlight"
+                >
+                  <Palette className="size-3.5 text-primary" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-64 space-y-3 p-3">
+                <div>
+                  <div className="mb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                    Text Color
+                  </div>
+                  <div className="grid grid-cols-6 gap-1.5">
+                    {TEXT_COLORS.map((c) => (
+                      <button
+                        key={c.name}
+                        type="button"
+                        onClick={() => formatDoc("foreColor", c.color)}
+                        style={{ backgroundColor: c.color }}
+                        className="size-6 rounded-md border border-border/40 shadow-xs transition-transform hover:scale-110"
+                        title={c.name}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <div className="mb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                    Highlight Color
+                  </div>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {HIGHLIGHT_COLORS.map((c) => (
+                      <button
+                        key={c.name}
+                        type="button"
+                        onClick={() => {
+                          if (c.color === "transparent") {
+                            formatDoc("removeFormat")
+                          } else {
+                            if (!formatDoc("hiliteColor", c.color)) {
+                              formatDoc("backColor", c.color)
+                            }
+                          }
+                        }}
+                        style={{
+                          backgroundColor:
+                            c.color === "transparent" ? "#ffffff" : c.color,
+                        }}
+                        className={cn(
+                          "flex h-6 items-center justify-center rounded-md border border-border/40 text-[10px] font-medium text-foreground shadow-xs transition-transform hover:scale-105",
+                          c.color === "transparent" &&
+                            "border-dashed text-muted-foreground"
+                        )}
+                        title={c.name}
+                      >
+                        {c.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <Separator orientation="vertical" className="mx-1 h-4" />
+
+            {/* Alignments */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("justifyLeft")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Align Left"
+            >
+              <AlignLeft className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("justifyCenter")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Align Center"
+            >
+              <AlignCenter className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("justifyRight")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Align Right"
+            >
+              <AlignRight className="size-3.5" />
+            </Button>
+
+            <Separator orientation="vertical" className="mx-1 h-4" />
+
+            {/* Lists */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("insertUnorderedList")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Bulleted list"
+            >
+              <List className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("insertOrderedList")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Numbered list"
+            >
+              <ListOrdered className="size-3.5" />
+            </Button>
+
+            <Separator orientation="vertical" className="mx-1 h-4" />
+
+            {/* Indent / Outdent */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("outdent")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Decrease indent"
+            >
+              <Outdent className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("indent")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Increase indent"
+            >
+              <Indent className="size-3.5" />
+            </Button>
+
+            <Separator orientation="vertical" className="mx-1 h-4" />
+
+            {/* Quote block */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("formatBlock", "<blockquote>")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Quote"
+            >
+              <Quote className="size-3.5" />
+            </Button>
+
+            {/* Insert Horizontal Rule Divider */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("insertHorizontalRule")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Divider Line"
+            >
+              <Minus className="size-3.5" />
+            </Button>
+
+            {/* Insert Link */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={handleAddLink}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Insert Link"
+            >
+              <LinkIcon className="size-3.5" />
+            </Button>
+
+            {/* Clear Formatting */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={isSending}
+              onClick={() => formatDoc("removeFormat")}
+              className="size-7 hover:bg-muted hover:text-foreground"
+              title="Clear formatting"
+            >
+              <RemoveFormatting className="size-3.5" />
+            </Button>
+          </div>
+        )}
+
+        {/* WYSIWYG Message Body Editor */}
+        <div className="relative flex flex-1 flex-col overflow-y-auto bg-background p-4 focus-within:outline-none">
+          <div
+            ref={editorRef}
+            contentEditable={!isSending}
+            role="textbox"
+            aria-multiline="true"
+            data-placeholder="Write your email here..."
+            className={cn(
+              "min-h-[140px] w-full flex-1 text-sm leading-relaxed whitespace-pre-wrap transition-opacity outline-none",
+              isSending &&
+                "pointer-events-none cursor-not-allowed opacity-60 select-none",
+              "empty:before:pointer-events-none empty:before:text-muted-foreground/60 empty:before:content-[attr(data-placeholder)]",
+              "[&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5",
+              "[&_img]:my-2 [&_img]:inline-block [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-border [&_img]:shadow-xs"
+            )}
+            onPaste={handlePaste}
+            onKeyDown={(e) => {
+              // Standard keyboard shortcuts
+              if (!isSending && (e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                e.preventDefault()
+                handleSend()
+              }
+            }}
+          />
+        </div>
+
+        {/* Bottom Email Signature Preview Bar */}
+        {hasSignatureConfigured && (
+          <div className="border-t bg-muted/15 px-4 py-2 text-xs">
+            {includeSignature ? (
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                    <PenLine className="size-3" />
+                    Signature attached
                   </span>
+                  <span className="truncate text-[11px] text-muted-foreground">
+                    {(signatureText || "").split("\n")[0] ||
+                      "Custom signature configured"}
+                  </span>
+                  {signatureImage && (
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                      <ImageIcon className="size-2.5" />
+                      Logo attached
+                    </span>
+                  )}
+                </div>
+                {!isSending && (
+                  <button
+                    type="button"
+                    onClick={() => setIncludeSignature(false)}
+                    className="shrink-0 text-[11px] font-medium text-muted-foreground transition-colors hover:text-destructive"
+                  >
+                    Remove
+                  </button>
                 )}
               </div>
-            </div>
-          </div>
-
-          {/* Text Formatting Toolbar */}
-          {showFormatting && (
-            <div className="flex flex-wrap items-center gap-1 border-b bg-muted/30 px-3 py-1.5 text-muted-foreground select-none">
-              {/* Undo / Redo */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("undo")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Undo (Ctrl+Z)"
-              >
-                <Undo className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("redo")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Redo (Ctrl+Y)"
-              >
-                <Redo className="size-3.5" />
-              </Button>
-
-              <Separator orientation="vertical" className="mx-1 h-4" />
-
-              {/* Font Family Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={isSending}
-                    className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
-                    title="Font Family"
-                  >
-                    <span>Font</span>
-                    <ChevronDown className="size-3 opacity-60" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-44 text-xs">
-                  <DropdownMenuLabel className="text-[11px] text-muted-foreground">
-                    Font Family
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {FONT_FAMILIES.map((f) => (
-                    <DropdownMenuItem
-                      key={f.label}
-                      onClick={() => formatDoc("fontName", f.font)}
-                      style={{ fontFamily: f.font }}
-                      className="cursor-pointer"
-                    >
-                      {f.label}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Font Size Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={isSending}
-                    className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
-                    title="Font Size"
-                  >
-                    <Type className="size-3.5" />
-                    <span>Size</span>
-                    <ChevronDown className="size-3 opacity-60" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-36 text-xs">
-                  <DropdownMenuLabel className="text-[11px] text-muted-foreground">
-                    Font Size
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {FONT_SIZES.map((s) => (
-                    <DropdownMenuItem
-                      key={s.label}
-                      onClick={() => formatDoc("fontSize", s.size)}
-                      className="flex cursor-pointer items-center justify-between"
-                    >
-                      <span>{s.label}</span>
-                      <span className="text-[10px] text-muted-foreground">
-                        {s.px}
-                      </span>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <Separator orientation="vertical" className="mx-1 h-4" />
-
-              {/* Bold, Italic, Underline, Strikethrough */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("bold")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Bold (Ctrl+B)"
-              >
-                <Bold className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("italic")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Italic (Ctrl+I)"
-              >
-                <Italic className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("underline")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Underline (Ctrl+U)"
-              >
-                <UnderlineIcon className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("strikeThrough")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Strikethrough"
-              >
-                <Strikethrough className="size-3.5" />
-              </Button>
-
-              <Separator orientation="vertical" className="mx-1 h-4" />
-
-              {/* Text Color & Highlight Popover */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
+            ) : (
+              <div className="flex items-center justify-between gap-2 text-muted-foreground">
+                <span className="flex items-center gap-1.5 text-[11px]">
+                  <PenLine className="size-3 opacity-60" />
+                  Signature disabled for this email
+                </span>
+                {!isSending && (
+                  <button
                     type="button"
-                    variant="ghost"
-                    size="icon-xs"
-                    disabled={isSending}
-                    className="size-7 hover:bg-muted hover:text-foreground"
-                    title="Text color & Highlight"
+                    onClick={() => setIncludeSignature(true)}
+                    className="text-[11px] font-medium text-primary hover:underline"
                   >
-                    <Palette className="size-3.5 text-primary" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-64 space-y-3 p-3">
-                  <div>
-                    <div className="mb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                      Text Color
-                    </div>
-                    <div className="grid grid-cols-6 gap-1.5">
-                      {TEXT_COLORS.map((c) => (
-                        <button
-                          key={c.name}
-                          type="button"
-                          onClick={() => formatDoc("foreColor", c.color)}
-                          style={{ backgroundColor: c.color }}
-                          className="size-6 rounded-md border border-border/40 shadow-xs transition-transform hover:scale-110"
-                          title={c.name}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <div>
-                    <div className="mb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                      Highlight Color
-                    </div>
-                    <div className="grid grid-cols-4 gap-1.5">
-                      {HIGHLIGHT_COLORS.map((c) => (
-                        <button
-                          key={c.name}
-                          type="button"
-                          onClick={() => {
-                            if (c.color === "transparent") {
-                              formatDoc("removeFormat")
-                            } else {
-                              if (!formatDoc("hiliteColor", c.color)) {
-                                formatDoc("backColor", c.color)
-                              }
-                            }
-                          }}
-                          style={{
-                            backgroundColor:
-                              c.color === "transparent" ? "#ffffff" : c.color,
-                          }}
-                          className={cn(
-                            "flex h-6 items-center justify-center rounded-md border border-border/40 text-[10px] font-medium text-foreground shadow-xs transition-transform hover:scale-105",
-                            c.color === "transparent" &&
-                              "border-dashed text-muted-foreground"
-                          )}
-                          title={c.name}
-                        >
-                          {c.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-
-              <Separator orientation="vertical" className="mx-1 h-4" />
-
-              {/* Alignments */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("justifyLeft")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Align Left"
-              >
-                <AlignLeft className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("justifyCenter")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Align Center"
-              >
-                <AlignCenter className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("justifyRight")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Align Right"
-              >
-                <AlignRight className="size-3.5" />
-              </Button>
-
-              <Separator orientation="vertical" className="mx-1 h-4" />
-
-              {/* Lists */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("insertUnorderedList")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Bulleted list"
-              >
-                <List className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("insertOrderedList")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Numbered list"
-              >
-                <ListOrdered className="size-3.5" />
-              </Button>
-
-              <Separator orientation="vertical" className="mx-1 h-4" />
-
-              {/* Indent / Outdent */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("outdent")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Decrease indent"
-              >
-                <Outdent className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("indent")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Increase indent"
-              >
-                <Indent className="size-3.5" />
-              </Button>
-
-              <Separator orientation="vertical" className="mx-1 h-4" />
-
-              {/* Quote block */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("formatBlock", "<blockquote>")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Quote"
-              >
-                <Quote className="size-3.5" />
-              </Button>
-
-              {/* Insert Horizontal Rule Divider */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("insertHorizontalRule")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Divider Line"
-              >
-                <Minus className="size-3.5" />
-              </Button>
-
-              {/* Insert Link */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={handleAddLink}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Insert Link"
-              >
-                <LinkIcon className="size-3.5" />
-              </Button>
-
-              {/* Clear Formatting */}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                disabled={isSending}
-                onClick={() => formatDoc("removeFormat")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Clear formatting"
-              >
-                <RemoveFormatting className="size-3.5" />
-              </Button>
-            </div>
-          )}
-
-          {/* WYSIWYG Message Body Editor */}
-          <div className="relative flex flex-1 flex-col overflow-y-auto bg-background p-4 focus-within:outline-none">
-            <div
-              ref={editorRef}
-              contentEditable={!isSending}
-              role="textbox"
-              aria-multiline="true"
-              data-placeholder="Write your email here..."
-              className={cn(
-                "min-h-[140px] w-full flex-1 text-sm leading-relaxed whitespace-pre-wrap transition-opacity outline-none",
-                isSending &&
-                  "pointer-events-none cursor-not-allowed opacity-60 select-none",
-                "empty:before:pointer-events-none empty:before:text-muted-foreground/60 empty:before:content-[attr(data-placeholder)]",
-                "[&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5",
-                "[&_img]:my-2 [&_img]:inline-block [&_img]:max-w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-border [&_img]:shadow-xs"
-              )}
-              onPaste={handlePaste}
-              onKeyDown={(e) => {
-                // Standard keyboard shortcuts
-                if (
-                  !isSending &&
-                  (e.metaKey || e.ctrlKey) &&
-                  e.key === "Enter"
-                ) {
-                  e.preventDefault()
-                  handleSend()
-                }
-              }}
-            />
+                    + Attach Signature
+                  </button>
+                )}
+              </div>
+            )}
           </div>
+        )}
 
-          {/* Bottom Email Signature Preview Bar */}
-          {hasSignatureConfigured && (
-            <div className="border-t bg-muted/15 px-4 py-2 text-xs">
-              {includeSignature ? (
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-                      <PenLine className="size-3" />
-                      Signature attached
-                    </span>
-                    <span className="truncate text-[11px] text-muted-foreground">
-                      {(signatureText || "").split("\n")[0] ||
-                        "Custom signature configured"}
-                    </span>
-                    {signatureImage && (
-                      <span className="inline-flex shrink-0 items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                        <ImageIcon className="size-2.5" />
-                        Logo attached
-                      </span>
-                    )}
-                  </div>
-                  {!isSending && (
-                    <button
-                      type="button"
-                      onClick={() => setIncludeSignature(false)}
-                      className="shrink-0 text-[11px] font-medium text-muted-foreground transition-colors hover:text-destructive"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="flex items-center justify-between gap-2 text-muted-foreground">
-                  <span className="flex items-center gap-1.5 text-[11px]">
-                    <PenLine className="size-3 opacity-60" />
-                    Signature disabled for this email
-                  </span>
-                  {!isSending && (
-                    <button
-                      type="button"
-                      onClick={() => setIncludeSignature(true)}
-                      className="text-[11px] font-medium text-primary hover:underline"
-                    >
-                      + Attach Signature
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Attachment Preview Tray */}
-          {attachments.length > 0 && (
-            <div className="flex max-h-36 flex-wrap gap-2 overflow-y-auto border-t bg-muted/20 px-4 py-2">
-              {attachments.map((att) => (
-                <div
-                  key={att.id}
-                  className="group flex items-center gap-2 rounded-md border bg-background py-1 pr-1.5 pl-2 text-xs shadow-xs transition-colors hover:border-foreground/30"
-                >
-                  {att.type.includes("pdf") ? (
-                    <FileText className="size-4 shrink-0 text-red-500" />
-                  ) : (
-                    <File className="size-4 shrink-0 text-blue-500" />
-                  )}
-
-                  <div className="flex max-w-[140px] flex-col truncate">
-                    <span className="truncate font-medium">{att.name}</span>
-                    <span className="text-[10px] text-muted-foreground">
-                      {formatFileSize(att.size)}
-                    </span>
-                  </div>
-
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    disabled={isSending}
-                    onClick={() => handleRemoveAttachment(att.id)}
-                    className="ml-1 size-5 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                    title="Remove attachment"
-                  >
-                    <X className="size-3" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Bottom Actions Bar */}
-          <div className="flex items-center justify-between border-t bg-muted/40 px-4 py-3">
-            {/* Send & Attachment Controls */}
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={handleSend}
-                disabled={isSending}
-                className="btn-gradient gap-2 px-4 shadow-sm"
+        {/* Attachment Preview Tray */}
+        {attachments.length > 0 && (
+          <div className="flex max-h-36 flex-wrap gap-2 overflow-y-auto border-t bg-muted/20 px-4 py-2">
+            {attachments.map((att) => (
+              <div
+                key={att.id}
+                className="group flex items-center gap-2 rounded-md border bg-background py-1 pr-1.5 pl-2 text-xs shadow-xs transition-colors hover:border-foreground/30"
               >
-                {isSending ? (
-                  <>
-                    <RefreshCw className="size-4 animate-spin" />
-                    <span>Sending...</span>
-                  </>
+                {att.type.includes("pdf") ? (
+                  <FileText className="size-4 shrink-0 text-red-500" />
                 ) : (
-                  <>
-                    <Send className="size-4" />
-                    <span>Send</span>
-                  </>
+                  <File className="size-4 shrink-0 text-blue-500" />
+                )}
+
+                <div className="flex max-w-[140px] flex-col truncate">
+                  <span className="truncate font-medium">{att.name}</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {formatFileSize(att.size)}
+                  </span>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  disabled={isSending}
+                  onClick={() => handleRemoveAttachment(att.id)}
+                  className="ml-1 size-5 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  title="Remove attachment"
+                >
+                  <X className="size-3" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Bottom Actions Bar */}
+        <div className="flex items-center justify-between border-t bg-muted/40 px-4 py-3">
+          {/* Send & Attachment Controls */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleSend}
+              disabled={isSending}
+              className="btn-gradient gap-2 px-4 shadow-sm"
+            >
+              {isSending ? (
+                <>
+                  <RefreshCw className="size-4 animate-spin" />
+                  <span>Sending...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="size-4" />
+                  <span>Send</span>
+                </>
+              )}
+            </Button>
+
+            {/* Hidden file & image inputs */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              disabled={isSending}
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              disabled={isSending}
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              disabled={isSending}
+              onClick={() => fileInputRef.current?.click()}
+              title="Attach files (PDF, DOCX, ZIP, etc.)"
+              className="size-8 text-muted-foreground hover:text-foreground"
+            >
+              <Paperclip className="size-4" />
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              disabled={isSending}
+              onClick={() => imageInputRef.current?.click()}
+              title="Insert images (PNG, JPG, WebP)"
+              className="size-8 text-muted-foreground hover:text-foreground"
+            >
+              <ImageIcon className="size-4" />
+            </Button>
+
+            {/* Insert Signature Toggle Button */}
+            {hasSignatureConfigured && (
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                disabled={isSending}
+                onClick={() => setIncludeSignature(!includeSignature)}
+                title={
+                  includeSignature
+                    ? "Signature attached (click to remove)"
+                    : "Insert email signature"
+                }
+                className={cn(
+                  "relative size-8 text-muted-foreground transition-colors hover:text-foreground",
+                  includeSignature &&
+                    "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
+                )}
+              >
+                <PenLine className="size-4" />
+                {includeSignature && (
+                  <span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-primary" />
                 )}
               </Button>
+            )}
 
-              {/* Hidden file & image inputs */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                disabled={isSending}
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-              <input
-                ref={imageInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                disabled={isSending}
-                onChange={handleImageUpload}
-                className="hidden"
-              />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              disabled={isSending}
+              onClick={() => setShowFormatting(!showFormatting)}
+              title="Toggle formatting options"
+              className={cn(
+                "size-8 text-muted-foreground hover:text-foreground",
+                showFormatting && "bg-muted text-foreground"
+              )}
+            >
+              <span className="font-serif text-xs font-bold underline">A</span>
+            </Button>
 
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                disabled={isSending}
-                onClick={() => fileInputRef.current?.click()}
-                title="Attach files (PDF, DOCX, ZIP, etc.)"
-                className="size-8 text-muted-foreground hover:text-foreground"
-              >
-                <Paperclip className="size-4" />
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                disabled={isSending}
-                onClick={() => imageInputRef.current?.click()}
-                title="Insert images (PNG, JPG, WebP)"
-                className="size-8 text-muted-foreground hover:text-foreground"
-              >
-                <ImageIcon className="size-4" />
-              </Button>
-
-              {/* Insert Signature Toggle Button */}
-              {hasSignatureConfigured && (
+            {/* Quick Templates Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button
                   type="button"
                   variant="outline"
-                  size="icon-sm"
+                  size="sm"
                   disabled={isSending}
-                  onClick={() => setIncludeSignature(!includeSignature)}
-                  title={
-                    includeSignature
-                      ? "Signature attached (click to remove)"
-                      : "Insert email signature"
-                  }
-                  className={cn(
-                    "relative size-8 text-muted-foreground transition-colors hover:text-foreground",
-                    includeSignature &&
-                      "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
-                  )}
+                  className="h-8 gap-1.5 px-2.5 text-xs text-muted-foreground hover:text-foreground"
+                  title="Insert Email Template"
                 >
-                  <PenLine className="size-4" />
-                  {includeSignature && (
-                    <span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-primary" />
-                  )}
+                  <Sparkles className="size-3.5 text-amber-500" />
+                  <span className="hidden sm:inline">Templates</span>
                 </Button>
-              )}
-
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                disabled={isSending}
-                onClick={() => setShowFormatting(!showFormatting)}
-                title="Toggle formatting options"
-                className={cn(
-                  "size-8 text-muted-foreground hover:text-foreground",
-                  showFormatting && "bg-muted text-foreground"
-                )}
-              >
-                <span className="font-serif text-xs font-bold underline">
-                  A
-                </span>
-              </Button>
-
-              {/* Quick Templates Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={isSending}
-                    className="h-8 gap-1.5 px-2.5 text-xs text-muted-foreground hover:text-foreground"
-                    title="Insert Email Template"
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-72">
+                <DropdownMenuLabel className="flex items-center gap-1.5 text-xs">
+                  <Sparkles className="size-3.5 text-amber-500" />
+                  <span>Quick Email Templates</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {EMAIL_TEMPLATES.map((tpl) => (
+                  <DropdownMenuItem
+                    key={tpl.id}
+                    onClick={() => handleApplyTemplate(tpl)}
+                    className="flex cursor-pointer flex-col items-start gap-0.5 py-2"
                   >
-                    <Sparkles className="size-3.5 text-amber-500" />
-                    <span className="hidden sm:inline">Templates</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-72">
-                  <DropdownMenuLabel className="flex items-center gap-1.5 text-xs">
-                    <Sparkles className="size-3.5 text-amber-500" />
-                    <span>Quick Email Templates</span>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {EMAIL_TEMPLATES.map((tpl) => (
-                    <DropdownMenuItem
-                      key={tpl.id}
-                      onClick={() => handleApplyTemplate(tpl)}
-                      className="flex cursor-pointer flex-col items-start gap-0.5 py-2"
-                    >
-                      <span className="text-xs font-medium text-foreground">
-                        {tpl.title}
-                      </span>
-                      <span className="text-[11px] leading-tight text-muted-foreground">
-                        {tpl.description}
-                      </span>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            {/* Discard & Status */}
-            <div className="flex items-center gap-2">
-              <span className="hidden text-xs text-muted-foreground select-none sm:inline">
-                {isSending
-                  ? "Dispatching message & attachments..."
-                  : "Press Ctrl+Enter to send"}
-              </span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                disabled={isSending}
-                onClick={handleDiscard}
-                className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                title="Discard draft"
-              >
-                <Trash2 className="size-4" />
-              </Button>
-            </div>
+                    <span className="text-xs font-medium text-foreground">
+                      {tpl.title}
+                    </span>
+                    <span className="text-[11px] leading-tight text-muted-foreground">
+                      {tpl.description}
+                    </span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        </DialogContent>
-      </Dialog>
+
+          {/* Discard & Status */}
+          <div className="flex items-center gap-2">
+            <span className="hidden text-xs text-muted-foreground select-none sm:inline">
+              {isSending
+                ? "Dispatching message & attachments..."
+                : "Press Ctrl+Enter to send"}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              disabled={isSending}
+              onClick={handleDiscard}
+              className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+              title="Discard draft"
+            >
+              <Trash2 className="size-4" />
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
 
       {/* Shadcn UI Alert Dialog for Discard Confirmation */}
       <AlertDialog open={showDiscardAlert} onOpenChange={setShowDiscardAlert}>

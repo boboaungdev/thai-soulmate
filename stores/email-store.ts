@@ -65,6 +65,19 @@ interface EmailStoreState {
   fetchSettings: (account: string) => Promise<void>
 }
 
+export function getEmailCacheKey(
+  account: string,
+  folder: string = "inbox",
+  userEmail: string = ""
+): string {
+  const normAccount = (account || "contact").toLowerCase()
+  const normFolder = (folder || "inbox").toLowerCase()
+  if (normAccount === "personal") {
+    return `personal:${(userEmail || "").toLowerCase()}:${normFolder}`
+  }
+  return `${normAccount}:${normFolder}`
+}
+
 export const useEmailStore = create<EmailStoreState>()(
   persist(
     (set, get) => ({
@@ -130,11 +143,13 @@ export const useEmailStore = create<EmailStoreState>()(
       ) => {
         if (folder === "settings") return
 
+        const cacheKey = getEmailCacheKey(account, folder, userEmail)
+
         const state = get()
-        if (state.isFetchingByAccount[account]) return
+        if (state.isFetchingByAccount[cacheKey]) return
 
         set((s) => ({
-          isFetchingByAccount: { ...s.isFetchingByAccount, [account]: true },
+          isFetchingByAccount: { ...s.isFetchingByAccount, [cacheKey]: true },
         }))
 
         try {
@@ -154,11 +169,11 @@ export const useEmailStore = create<EmailStoreState>()(
             set((s) => ({
               emailsByAccount: {
                 ...s.emailsByAccount,
-                [account]: json.data,
+                [cacheKey]: json.data,
               },
               hasInitialLoaded: {
                 ...s.hasInitialLoaded,
-                [account]: true,
+                [cacheKey]: true,
               },
             }))
           }
@@ -166,7 +181,10 @@ export const useEmailStore = create<EmailStoreState>()(
           console.error(`Failed to fetch emails for ${account}:`, err)
         } finally {
           set((s) => ({
-            isFetchingByAccount: { ...s.isFetchingByAccount, [account]: false },
+            isFetchingByAccount: {
+              ...s.isFetchingByAccount,
+              [cacheKey]: false,
+            },
           }))
         }
       },

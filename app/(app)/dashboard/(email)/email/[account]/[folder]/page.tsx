@@ -34,7 +34,11 @@ import {
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
 import { useAuthStore } from "@/stores/auth-store"
-import { useEmailStore, type DbEmailMessage } from "@/stores/email-store"
+import {
+  useEmailStore,
+  getEmailCacheKey,
+  type DbEmailMessage,
+} from "@/stores/email-store"
 import {
   ComposeEmailDialog,
   TagEmailInput,
@@ -273,21 +277,25 @@ export default function EmailFolderDynamicPage() {
     disableSubject?: boolean
   }>({})
 
+  // Account & folder cache key (partitioned by user for personal mailbox)
+  const cacheKey = getEmailCacheKey(accountParam, folderParam, userEmail)
+
   // Zustand Store Integration
-  const accountEmails = useEmailStore((s) => s.emailsByAccount[accountParam])
+  const accountEmails = useEmailStore((s) => s.emailsByAccount[cacheKey])
   const emails = accountEmails ?? EMPTY_EMAILS
   const isFetchingEmails = useEmailStore((s) =>
-    Boolean(s.isFetchingByAccount[accountParam])
+    Boolean(s.isFetchingByAccount[cacheKey])
   )
   const hasInitialLoaded = useEmailStore((s) =>
-    Boolean(s.hasInitialLoaded[accountParam])
+    Boolean(s.hasInitialLoaded[cacheKey])
   )
   const storeFetchEmails = useEmailStore((s) => s.fetchEmails)
   const storeUpdateEmail = useEmailStore((s) => s.updateEmail)
   const storeDeleteEmails = useEmailStore((s) => s.deleteEmails)
 
-  // Show skeleton ONLY on the very first cold load if no cached emails exist yet
-  const isLoadingEmails = !hasInitialLoaded && emails.length === 0
+  // Show skeleton loading state while fetching or before data is loaded
+  const isLoadingEmails =
+    isFetchingEmails || (!hasInitialLoaded && emails.length === 0)
 
   const [selectedThread, setSelectedThread] =
     React.useState<EmailThread | null>(null)

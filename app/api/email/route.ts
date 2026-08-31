@@ -34,68 +34,100 @@ export async function GET(req: Request) {
 
     const userEmail = (searchParams.get("userEmail") || "").trim().toLowerCase()
     const isPersonal = mailbox.toLowerCase() === "personal"
-    const accountConfig = EMAIL_ACCOUNTS.find(
-      (a) =>
-        a.id.toLowerCase() === mailbox.toLowerCase() ||
-        a.email.toLowerCase() === mailbox.toLowerCase()
-    )
-    const mailboxEmail = isPersonal
-      ? userEmail
-      : accountConfig
+
+    let whereClause: any = {}
+
+    if (isPersonal) {
+      if (!userEmail) {
+        return NextResponse.json({ success: true, data: [] })
+      }
+
+      if (folder === EmailFolder.TRASH) {
+        whereClause = {
+          OR: [
+            { fromEmail: { equals: userEmail, mode: "insensitive" } },
+            { toEmails: { has: userEmail } },
+            { ccEmails: { has: userEmail } },
+            { bccEmails: { has: userEmail } },
+          ],
+          isTrash: true,
+        }
+      } else if (folder === EmailFolder.SENT) {
+        whereClause = {
+          fromEmail: { equals: userEmail, mode: "insensitive" },
+          isTrash: false,
+        }
+      } else {
+        // INBOX (and conversation messages for this personal user)
+        whereClause = {
+          OR: [
+            { toEmails: { has: userEmail } },
+            { ccEmails: { has: userEmail } },
+            { bccEmails: { has: userEmail } },
+            { fromEmail: { equals: userEmail, mode: "insensitive" } },
+          ],
+          isTrash: false,
+        }
+      }
+    } else {
+      // Shared work account (contact, admin, payments, socials)
+      const accountConfig = EMAIL_ACCOUNTS.find(
+        (a) =>
+          a.id.toLowerCase() === mailbox.toLowerCase() ||
+          a.email.toLowerCase() === mailbox.toLowerCase()
+      )
+      const mailboxEmail = accountConfig
         ? accountConfig.email.toLowerCase()
         : `${mailbox.toLowerCase()}@thaisoulmate.org`
+      const mailboxNames = [mailbox, mailbox.toLowerCase(), mailboxEmail]
 
-    const mailboxFilter = {
-      OR: [
-        { mailbox },
-        { mailbox: mailbox.toLowerCase() },
-        ...(mailboxEmail ? [{ mailbox: mailboxEmail }] : []),
-        ...(folder === EmailFolder.SENT
-          ? [
-              ...(mailboxEmail
-                ? [
-                    {
-                      fromEmail: {
-                        contains: mailboxEmail,
-                        mode: "insensitive" as const,
-                      },
-                    },
-                  ]
-                : []),
-              {
-                fromEmail: { contains: mailbox, mode: "insensitive" as const },
-              },
-            ]
-          : [
-              ...(mailboxEmail ? [{ toEmails: { has: mailboxEmail } }] : []),
-              ...(accountConfig
-                ? [{ toEmails: { has: accountConfig.email } }]
-                : []),
-              ...(isPersonal ? [{ mailbox: "personal" }] : []),
-            ]),
-      ],
-    }
-
-    const whereClause: any = {
-      ...mailboxFilter,
-      folder,
-      isTrash: folder === EmailFolder.TRASH,
+      if (folder === EmailFolder.TRASH) {
+        whereClause = {
+          OR: [
+            { mailbox: { in: mailboxNames } },
+            { toEmails: { has: mailboxEmail } },
+            { ccEmails: { has: mailboxEmail } },
+            { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
+          ],
+          isTrash: true,
+        }
+      } else if (folder === EmailFolder.SENT) {
+        whereClause = {
+          OR: [
+            { mailbox: { in: mailboxNames }, folder: EmailFolder.SENT },
+            { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
+          ],
+          isTrash: false,
+        }
+      } else {
+        // INBOX
+        whereClause = {
+          OR: [
+            { mailbox: { in: mailboxNames }, folder: EmailFolder.INBOX },
+            { toEmails: { has: mailboxEmail } },
+            { ccEmails: { has: mailboxEmail } },
+            { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
+          ],
+          isTrash: false,
+        }
+      }
     }
 
     if (query) {
-      whereClause.AND = [
-        mailboxFilter,
-        {
-          OR: [
-            { subject: { contains: query, mode: "insensitive" } },
-            { preview: { contains: query, mode: "insensitive" } },
-            { fromEmail: { contains: query, mode: "insensitive" } },
-            { fromName: { contains: query, mode: "insensitive" } },
-            { toEmails: { has: query } },
-          ],
-        },
-      ]
-      delete whereClause.OR
+      whereClause = {
+        AND: [
+          whereClause,
+          {
+            OR: [
+              { subject: { contains: query, mode: "insensitive" } },
+              { preview: { contains: query, mode: "insensitive" } },
+              { fromEmail: { contains: query, mode: "insensitive" } },
+              { fromName: { contains: query, mode: "insensitive" } },
+              { toEmails: { has: query } },
+            ],
+          },
+        ],
+      }
     }
 
     const rawEmails = await prisma.emailMessage.findMany({

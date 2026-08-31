@@ -32,6 +32,9 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Mail,
+  MailOpen,
+  RotateCcw,
 } from "lucide-react"
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
@@ -272,9 +275,13 @@ export default function EmailFolderDynamicPage() {
   const [searchQuery, setSearchQuery] = React.useState("")
   const [composeOpen, setComposeOpen] = React.useState(false)
   const [composeData, setComposeData] = React.useState<{
-    to?: string
+    draftId?: string
+    to?: string | string[]
+    cc?: string | string[]
+    bcc?: string | string[]
     subject?: string
     body?: string
+    attachments?: any[]
     disableTo?: boolean
     disableSubject?: boolean
   }>({})
@@ -623,9 +630,9 @@ export default function EmailFolderDynamicPage() {
   // Email & Thread Actions
   const handleToggleStarThread = async (
     thread: EmailThread,
-    e: React.MouseEvent
+    e?: React.MouseEvent
   ) => {
-    e.stopPropagation()
+    if (e) e.stopPropagation()
     const nextStarred = !thread.isStarred
     // Optimistic update in Zustand store
     thread.messages.forEach((m) => {
@@ -657,10 +664,186 @@ export default function EmailFolderDynamicPage() {
     }
   }
 
-  const handleDeleteThread = async (thread: EmailThread) => {
+  const handleToggleReadThread = async (
+    thread: EmailThread,
+    e?: React.MouseEvent
+  ) => {
+    if (e) e.stopPropagation()
+    const nextRead = !thread.isRead
+    thread.messages.forEach((m) => {
+      storeUpdateEmail(m.id, { isRead: nextRead })
+    })
+
+    if (selectedThread && selectedThread.threadId === thread.threadId) {
+      setSelectedThread({
+        ...selectedThread,
+        isRead: nextRead,
+        messages: selectedThread.messages.map((m) => ({
+          ...m,
+          isRead: nextRead,
+        })),
+      })
+    }
+    try {
+      await Promise.all(
+        thread.messages.map((m) =>
+          fetch("/api/email", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: m.id, isRead: nextRead }),
+          })
+        )
+      )
+      toast.success(nextRead ? "Marked as read" : "Marked as unread")
+    } catch (err) {
+      console.error("Failed to toggle read status", err)
+      toast.error("Failed to update status")
+    }
+  }
+
+  const handleArchiveThread = async (
+    thread: EmailThread,
+    e?: React.MouseEvent
+  ) => {
+    if (e) e.stopPropagation()
+    const isCurrentlyArchived =
+      folderParam === "archive" || thread.messages.some((m) => m.isArchived)
+    const nextArchived = !isCurrentlyArchived
+    const nextFolder = nextArchived ? "ARCHIVE" : "INBOX"
+
+    thread.messages.forEach((m) => {
+      storeUpdateEmail(m.id, {
+        isArchived: nextArchived,
+        isTrash: false,
+        folder: nextFolder,
+      })
+    })
+
+    if (selectedThread?.threadId === thread.threadId) {
+      setSelectedThread(null)
+    }
+
+    try {
+      await Promise.all(
+        thread.messages.map((m) =>
+          fetch("/api/email", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: m.id,
+              isArchived: nextArchived,
+              isTrash: false,
+              folder: nextFolder,
+            }),
+          })
+        )
+      )
+      toast.success(nextArchived ? "Conversation archived" : "Moved to Inbox")
+    } catch (err) {
+      console.error("Failed to archive conversation", err)
+      toast.error("Failed to update conversation")
+      fetchEmails()
+    }
+  }
+
+  const handleTrashThread = async (
+    thread: EmailThread,
+    e?: React.MouseEvent
+  ) => {
+    if (e) e.stopPropagation()
+    const isCurrentlyTrash =
+      folderParam === "trash" || thread.messages.some((m) => m.isTrash)
+    const nextTrash = !isCurrentlyTrash
+    const nextFolder = nextTrash ? "TRASH" : "INBOX"
+
+    thread.messages.forEach((m) => {
+      storeUpdateEmail(m.id, {
+        isTrash: nextTrash,
+        isArchived: false,
+        folder: nextFolder,
+      })
+    })
+
+    if (selectedThread?.threadId === thread.threadId) {
+      setSelectedThread(null)
+    }
+
+    try {
+      await Promise.all(
+        thread.messages.map((m) =>
+          fetch("/api/email", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: m.id,
+              isTrash: nextTrash,
+              isArchived: false,
+              folder: nextFolder,
+            }),
+          })
+        )
+      )
+      toast.success(nextTrash ? "Moved to Trash" : "Restored to Inbox")
+    } catch (err) {
+      console.error("Failed to update trash status", err)
+      toast.error("Failed to update conversation")
+      fetchEmails()
+    }
+  }
+
+  const handleSpamThread = async (
+    thread: EmailThread,
+    e?: React.MouseEvent
+  ) => {
+    if (e) e.stopPropagation()
+    const isCurrentlySpam =
+      folderParam === "spam" || thread.messages.some((m) => m.folder === "SPAM")
+    const nextFolder = isCurrentlySpam ? "INBOX" : "SPAM"
+
+    thread.messages.forEach((m) => {
+      storeUpdateEmail(m.id, {
+        folder: nextFolder,
+        isTrash: false,
+        isArchived: false,
+      })
+    })
+
+    if (selectedThread?.threadId === thread.threadId) {
+      setSelectedThread(null)
+    }
+
+    try {
+      await Promise.all(
+        thread.messages.map((m) =>
+          fetch("/api/email", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: m.id,
+              folder: nextFolder,
+              isTrash: false,
+              isArchived: false,
+            }),
+          })
+        )
+      )
+      toast.success(
+        nextFolder === "SPAM" ? "Reported as spam" : "Moved to Inbox"
+      )
+    } catch (err) {
+      console.error("Failed to report spam", err)
+      toast.error("Failed to update conversation")
+      fetchEmails()
+    }
+  }
+
+  const handleDeletePermanently = async (
+    thread: EmailThread,
+    e?: React.MouseEvent
+  ) => {
+    if (e) e.stopPropagation()
     try {
       const msgIds = thread.messages.map((m) => m.id)
-      // Optimistic delete in Zustand store
       storeDeleteEmails(msgIds)
 
       if (selectedThread?.threadId === thread.threadId) {
@@ -671,7 +854,7 @@ export default function EmailFolderDynamicPage() {
           fetch(`/api/email?id=${m.id}`, { method: "DELETE" })
         )
       )
-      toast.success("Conversation deleted successfully")
+      toast.success("Conversation deleted permanently")
     } catch (err) {
       toast.error("Failed to delete conversation")
       fetchEmails()
@@ -679,10 +862,34 @@ export default function EmailFolderDynamicPage() {
   }
 
   const handleThreadClick = (thread: EmailThread) => {
+    // If standalone draft in draft folder with no previous conversation history, open compose directly
+    const isStandaloneDraft =
+      folderParam === "draft" &&
+      thread.messages.length === 1 &&
+      thread.messages[0].folder === "DRAFT"
+
+    if (isStandaloneDraft) {
+      const draftMsg = thread.messages[0]
+      setComposeData({
+        draftId: draftMsg.id,
+        to: draftMsg.toEmails,
+        cc: draftMsg.ccEmails,
+        bcc: draftMsg.bccEmails,
+        subject: draftMsg.subject === "(Draft)" ? "" : draftMsg.subject,
+        body: draftMsg.bodyHtml || draftMsg.bodyText || "",
+        attachments: draftMsg.attachments || [],
+        disableTo: false,
+        disableSubject: false,
+      })
+      setComposeOpen(true)
+      return
+    }
+
     setSelectedThread(thread)
     const initialExpanded: Record<string, boolean> = {}
     thread.messages.forEach((m, idx) => {
-      initialExpanded[m.id] = idx === thread.messages.length - 1
+      initialExpanded[m.id] =
+        idx === thread.messages.length - 1 || m.folder === "DRAFT"
     })
     setExpandedMessageIds(initialExpanded)
 
@@ -771,8 +978,14 @@ export default function EmailFolderDynamicPage() {
             className="btn-gradient gap-1.5"
             onClick={() => {
               setComposeData({
+                draftId: undefined,
+                to: "",
+                cc: "",
+                bcc: "",
+                subject: "",
                 body: "",
                 disableTo: false,
+                disableSubject: false,
               })
               setComposeOpen(true)
             }}
@@ -815,14 +1028,21 @@ export default function EmailFolderDynamicPage() {
             mailbox={accountParam}
             fromEmail={currentAccount.email}
             fromName={currentAccount.name}
+            draftId={composeData.draftId}
             initialTo={composeData.to}
+            initialCc={composeData.cc}
+            initialBcc={composeData.bcc}
             initialSubject={composeData.subject}
             initialBody={composeData.body}
+            initialAttachments={composeData.attachments}
             disableTo={composeData.disableTo}
             disableSubject={composeData.disableSubject}
             signatureText={savedSignature}
             signatureImage={savedSignatureImage}
             signatureSize={savedSignatureSize}
+            onDraftSaved={() => {
+              fetchEmails()
+            }}
             onEmailSent={() => {
               fetchEmails()
             }}
@@ -1424,19 +1644,87 @@ export default function EmailFolderDynamicPage() {
                               </span>
                             )}
                           </div>
-                          <span
-                            className={cn(
-                              "shrink-0 text-xs",
-                              !thread.isRead && !isSentFolder
-                                ? "font-semibold text-indigo-600 dark:text-indigo-400"
-                                : "text-muted-foreground"
-                            )}
-                          >
-                            {formatEmailDate(thread.lastActivityAt)}
-                          </span>
+                          <div className="flex shrink-0 items-center gap-1">
+                            <span
+                              className={cn(
+                                "shrink-0 text-xs transition-opacity group-hover:hidden",
+                                !thread.isRead && !isSentFolder
+                                  ? "font-semibold text-indigo-600 dark:text-indigo-400"
+                                  : "text-muted-foreground"
+                              )}
+                            >
+                              {formatEmailDate(thread.lastActivityAt)}
+                            </span>
+
+                            {/* Quick Row Actions on Hover */}
+                            <div className="hidden items-center gap-1 group-hover:flex">
+                              <Button
+                                variant="ghost"
+                                size="icon-xs"
+                                onClick={(e) =>
+                                  handleToggleReadThread(thread, e)
+                                }
+                                title={
+                                  thread.isRead
+                                    ? "Mark as unread"
+                                    : "Mark as read"
+                                }
+                                className="size-7 text-muted-foreground hover:text-foreground"
+                              >
+                                {thread.isRead ? (
+                                  <Mail className="size-3.5" />
+                                ) : (
+                                  <MailOpen className="size-3.5" />
+                                )}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon-xs"
+                                onClick={(e) => handleArchiveThread(thread, e)}
+                                title={
+                                  folderParam === "archive" ||
+                                  thread.messages.some((m) => m.isArchived)
+                                    ? "Move to Inbox"
+                                    : "Archive"
+                                }
+                                className="size-7 text-muted-foreground hover:text-foreground"
+                              >
+                                <Archive className="size-3.5" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon-xs"
+                                onClick={(e) => handleTrashThread(thread, e)}
+                                title={
+                                  folderParam === "trash" ||
+                                  thread.messages.some((m) => m.isTrash)
+                                    ? "Restore to Inbox"
+                                    : "Move to Trash"
+                                }
+                                className="size-7 text-muted-foreground hover:text-destructive"
+                              >
+                                {folderParam === "trash" ||
+                                thread.messages.some((m) => m.isTrash) ? (
+                                  <RotateCcw className="size-3.5" />
+                                ) : (
+                                  <Trash2 className="size-3.5" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
                         </div>
 
                         <div className="mt-1 flex items-center gap-2 truncate text-sm">
+                          {thread.messages.some(
+                            (m) => m.folder === "DRAFT"
+                          ) && (
+                            <Badge
+                              variant="outline"
+                              className="h-4.5 shrink-0 border-amber-500/40 bg-amber-500/10 px-1.5 py-0 text-[10px] font-semibold text-amber-600 dark:text-amber-400"
+                            >
+                              Draft
+                            </Badge>
+                          )}
                           <span
                             className={cn(
                               "truncate",
@@ -1655,17 +1943,125 @@ export default function EmailFolderDynamicPage() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        {/* Toggle Star */}
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={() => handleToggleStarThread(selectedThread)}
+                          title={selectedThread.isStarred ? "Unstar" : "Star"}
+                          className="size-8 text-muted-foreground hover:text-foreground"
+                        >
+                          <Star
+                            className={cn(
+                              "size-4",
+                              selectedThread.isStarred
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-muted-foreground"
+                            )}
+                          />
+                        </Button>
+
+                        {/* Mark Read / Unread */}
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={() => handleToggleReadThread(selectedThread)}
+                          title={
+                            selectedThread.isRead
+                              ? "Mark as unread"
+                              : "Mark as read"
+                          }
+                          className="size-8 text-muted-foreground hover:text-foreground"
+                        >
+                          {selectedThread.isRead ? (
+                            <Mail className="size-4" />
+                          ) : (
+                            <MailOpen className="size-4" />
+                          )}
+                        </Button>
+
+                        {/* Archive / Move to Inbox */}
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={() => handleArchiveThread(selectedThread)}
+                          title={
+                            folderParam === "archive" ||
+                            selectedThread.messages.some((m) => m.isArchived)
+                              ? "Move to Inbox"
+                              : "Archive"
+                          }
+                          className="size-8 text-muted-foreground hover:text-foreground"
+                        >
+                          <Archive className="size-4" />
+                        </Button>
+
+                        {/* Report Spam / Not Spam */}
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={() => handleSpamThread(selectedThread)}
+                          title={
+                            folderParam === "spam" ||
+                            selectedThread.messages.some(
+                              (m) => m.folder === "SPAM"
+                            )
+                              ? "Not spam / Move to Inbox"
+                              : "Report spam"
+                          }
+                          className="size-8 text-muted-foreground hover:text-foreground"
+                        >
+                          <ShieldAlert className="size-4" />
+                        </Button>
+
+                        {/* Move to Trash / Restore */}
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={() => handleTrashThread(selectedThread)}
+                          title={
+                            folderParam === "trash" ||
+                            selectedThread.messages.some((m) => m.isTrash)
+                              ? "Restore to Inbox"
+                              : "Move to Trash"
+                          }
+                          className="size-8 text-muted-foreground hover:text-destructive"
+                        >
+                          {folderParam === "trash" ||
+                          selectedThread.messages.some((m) => m.isTrash) ? (
+                            <RotateCcw className="size-4" />
+                          ) : (
+                            <Trash2 className="size-4" />
+                          )}
+                        </Button>
+
+                        {/* Permanent Delete when in Trash */}
+                        {(folderParam === "trash" ||
+                          selectedThread.messages.some((m) => m.isTrash)) && (
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() =>
+                              handleDeletePermanently(selectedThread)
+                            }
+                            title="Delete permanently"
+                            className="size-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash2 className="size-4" />
+                          </Button>
+                        )}
+
                         {totalMessages > 1 && (
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={toggleExpandAll}
-                            className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
+                            className="ml-1 h-8 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
                           >
                             <ChevronsUpDown className="size-3.5" />
                             <span>
-                              {isAllExpanded ? "Collapse older" : "Expand all"}
+                              {isAllExpanded ? "Collapse" : "Expand all"}
                             </span>
                           </Button>
                         )}
@@ -1706,15 +2102,20 @@ export default function EmailFolderDynamicPage() {
                       const isExpanded = Boolean(expandedMessageIds[msg.id])
                       const party = parseEmailParty(msg.fromName, msg.fromEmail)
                       const isIncoming = msg.direction === "INBOUND"
+                      const isDraft = msg.folder === "DRAFT"
 
                       return (
                         <div
                           key={msg.id}
                           className={cn(
                             "rounded-xl border transition-all duration-200",
-                            isExpanded
-                              ? "border-border bg-card shadow-sm"
-                              : "cursor-pointer border-muted bg-muted/20 hover:border-primary/30 hover:bg-muted/40"
+                            isDraft
+                              ? isExpanded
+                                ? "border-amber-500/50 bg-amber-500/[0.04] shadow-sm ring-1 ring-amber-500/20"
+                                : "cursor-pointer border-amber-500/30 bg-amber-500/[0.02] hover:border-amber-500/50 hover:bg-amber-500/[0.06]"
+                              : isExpanded
+                                ? "border-border bg-card shadow-sm"
+                                : "cursor-pointer border-muted bg-muted/20 hover:border-primary/30 hover:bg-muted/40"
                           )}
                         >
                           {/* Message Bar / Header */}
@@ -1722,22 +2123,44 @@ export default function EmailFolderDynamicPage() {
                             onClick={() => toggleMessageExpansion(msg.id)}
                             className={cn(
                               "flex cursor-pointer items-center justify-between gap-3 p-3.5 select-none",
-                              isExpanded && "border-b bg-muted/10"
+                              isExpanded && "border-b bg-muted/10",
+                              isDraft &&
+                                isExpanded &&
+                                "border-amber-500/20 bg-amber-500/10"
                             )}
                           >
                             <div className="flex min-w-0 items-center gap-3">
-                              <Avatar className="size-8 shrink-0 border bg-primary/10 text-xs font-semibold text-primary">
-                                <AvatarFallback className="bg-primary/10 text-primary">
-                                  {party.initials}
+                              <Avatar
+                                className={cn(
+                                  "size-8 shrink-0 border text-xs font-semibold",
+                                  isDraft
+                                    ? "border-amber-500/30 bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                                    : "bg-primary/10 text-primary"
+                                )}
+                              >
+                                <AvatarFallback
+                                  className={cn(
+                                    isDraft
+                                      ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                                      : "bg-primary/10 text-primary"
+                                  )}
+                                >
+                                  {isDraft ? (
+                                    <FileText className="size-3.5" />
+                                  ) : (
+                                    party.initials
+                                  )}
                                 </AvatarFallback>
                               </Avatar>
 
                               <div className="min-w-0 flex-1">
                                 <div className="flex flex-wrap items-center gap-1.5">
                                   <span className="truncate text-xs font-bold text-foreground">
-                                    {msg.fromName || party.name}
+                                    {isDraft
+                                      ? "Draft Message"
+                                      : msg.fromName || party.name}
                                   </span>
-                                  {msg.fromEmail && (
+                                  {msg.fromEmail && !isDraft && (
                                     <span className="truncate text-[11px] text-muted-foreground">
                                       &lt;{msg.fromEmail}&gt;
                                     </span>
@@ -1746,12 +2169,18 @@ export default function EmailFolderDynamicPage() {
                                     variant="outline"
                                     className={cn(
                                       "h-4 px-1.5 py-0 text-[10px] font-normal",
-                                      isIncoming
-                                        ? "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
-                                        : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
+                                      isDraft
+                                        ? "border-amber-500/40 bg-amber-500/15 font-semibold text-amber-700 dark:text-amber-300"
+                                        : isIncoming
+                                          ? "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                                          : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
                                     )}
                                   >
-                                    {isIncoming ? "Received" : "Sent"}
+                                    {isDraft
+                                      ? "Draft"
+                                      : isIncoming
+                                        ? "Received"
+                                        : "Sent"}
                                   </Badge>
                                 </div>
 
@@ -1764,6 +2193,73 @@ export default function EmailFolderDynamicPage() {
                             </div>
 
                             <div className="flex shrink-0 items-center gap-2">
+                              {isDraft && (
+                                <div className="flex items-center gap-1.5">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-6 gap-1 border-amber-500/40 bg-amber-500/10 px-2 text-[11px] font-semibold text-amber-700 hover:bg-amber-500/20 dark:text-amber-300"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      setComposeData({
+                                        draftId: msg.id,
+                                        to: msg.toEmails,
+                                        cc: msg.ccEmails,
+                                        bcc: msg.bccEmails,
+                                        subject:
+                                          msg.subject === "(Draft)"
+                                            ? ""
+                                            : msg.subject,
+                                        body:
+                                          msg.bodyHtml || msg.bodyText || "",
+                                        attachments: msg.attachments || [],
+                                        disableTo: false,
+                                        disableSubject: false,
+                                      })
+                                      setSelectedThread(null)
+                                      setComposeOpen(true)
+                                    }}
+                                  >
+                                    <Pencil className="size-3" />
+                                    <span>Edit</span>
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon-xs"
+                                    className="size-6 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                                    onClick={async (e) => {
+                                      e.stopPropagation()
+                                      const deleteToast =
+                                        toast.loading("Discarding draft...")
+                                      try {
+                                        storeDeleteEmails([msg.id])
+                                        setSelectedThread((prev) =>
+                                          prev
+                                            ? {
+                                                ...prev,
+                                                messages: prev.messages.filter(
+                                                  (m) => m.id !== msg.id
+                                                ),
+                                              }
+                                            : null
+                                        )
+                                        await fetch(`/api/email?id=${msg.id}`, {
+                                          method: "DELETE",
+                                        })
+                                        toast.dismiss(deleteToast)
+                                        toast.success("Draft discarded")
+                                        fetchEmails()
+                                      } catch (err) {
+                                        toast.dismiss(deleteToast)
+                                        toast.error("Failed to discard draft")
+                                      }
+                                    }}
+                                    title="Discard draft"
+                                  >
+                                    <Trash2 className="size-3.5" />
+                                  </Button>
+                                </div>
+                              )}
                               {msg.attachments &&
                                 msg.attachments.length > 0 && (
                                   <div className="flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
@@ -1881,9 +2377,9 @@ export default function EmailFolderDynamicPage() {
                     })}
                   </div>
 
-                  {/* Modal Footer with Actions (Reply / Forward / Delete) */}
+                  {/* Modal Footer with Actions (Reply / Forward / Archive / Trash) */}
                   <div className="flex shrink-0 flex-col gap-2 border-t bg-muted/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Button
                         variant="outline"
                         onClick={() => setSelectedThread(null)}
@@ -1891,13 +2387,37 @@ export default function EmailFolderDynamicPage() {
                         Close
                       </Button>
                       <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        onClick={() => handleDeleteThread(selectedThread)}
-                        className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                        title="Delete conversation"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleArchiveThread(selectedThread)}
+                        className="gap-1.5 text-muted-foreground hover:text-foreground"
                       >
-                        <Trash2 className="size-4" />
+                        <Archive className="size-3.5" />
+                        <span>
+                          {folderParam === "archive" ||
+                          selectedThread.messages.some((m) => m.isArchived)
+                            ? "Move to Inbox"
+                            : "Archive"}
+                        </span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleTrashThread(selectedThread)}
+                        className="gap-1.5 text-muted-foreground hover:text-destructive"
+                      >
+                        {folderParam === "trash" ||
+                        selectedThread.messages.some((m) => m.isTrash) ? (
+                          <>
+                            <RotateCcw className="size-3.5" />
+                            <span>Restore to Inbox</span>
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 className="size-3.5" />
+                            <span>Move to Trash</span>
+                          </>
+                        )}
                       </Button>
                     </div>
 
@@ -1932,47 +2452,90 @@ export default function EmailFolderDynamicPage() {
                         <span>Forward</span>
                       </Button>
 
-                      <Button
-                        onClick={() => {
-                          const latest = selectedThread.latestMessage
-                          const isFromUs =
-                            latest.fromEmail
-                              .toLowerCase()
-                              .includes(currentAccount.email.toLowerCase()) ||
-                            latest.direction === "OUTBOUND"
-                          const replyTo = isFromUs
-                            ? latest.toEmails.find(
-                                (e) =>
-                                  !e
-                                    .toLowerCase()
-                                    .includes(
-                                      currentAccount.email.toLowerCase()
-                                    )
-                              ) ||
-                              latest.toEmails[0] ||
-                              ""
-                            : latest.fromEmail
+                      {(() => {
+                        const pendingDraft = selectedThread.messages.find(
+                          (m) => m.folder === "DRAFT"
+                        )
+                        if (pendingDraft) {
+                          return (
+                            <Button
+                              onClick={() => {
+                                setComposeData({
+                                  draftId: pendingDraft.id,
+                                  to: pendingDraft.toEmails,
+                                  cc: pendingDraft.ccEmails,
+                                  bcc: pendingDraft.bccEmails,
+                                  subject:
+                                    pendingDraft.subject === "(Draft)"
+                                      ? ""
+                                      : pendingDraft.subject,
+                                  body:
+                                    pendingDraft.bodyHtml ||
+                                    pendingDraft.bodyText ||
+                                    "",
+                                  attachments: pendingDraft.attachments || [],
+                                  disableTo: false,
+                                  disableSubject: false,
+                                })
+                                setSelectedThread(null)
+                                setComposeOpen(true)
+                              }}
+                              className="btn-gradient gap-1.5"
+                            >
+                              <Pencil className="size-4" />
+                              <span>Continue Draft</span>
+                            </Button>
+                          )
+                        }
 
-                          const replySubject = latest.subject.startsWith("Re:")
-                            ? latest.subject
-                            : `Re: ${selectedThread.subject}`
-                          const replyBody = `<br/><br/><blockquote>On ${formatEmailDate(latest.sentAt || latest.createdAt)}, ${latest.fromName || latest.fromEmail} wrote:<br/>${latest.bodyHtml || latest.preview}</blockquote>`
+                        return (
+                          <Button
+                            onClick={() => {
+                              const latest = selectedThread.latestMessage
+                              const isFromUs =
+                                latest.fromEmail
+                                  .toLowerCase()
+                                  .includes(
+                                    currentAccount.email.toLowerCase()
+                                  ) || latest.direction === "OUTBOUND"
+                              const replyTo = isFromUs
+                                ? latest.toEmails.find(
+                                    (e) =>
+                                      !e
+                                        .toLowerCase()
+                                        .includes(
+                                          currentAccount.email.toLowerCase()
+                                        )
+                                  ) ||
+                                  latest.toEmails[0] ||
+                                  ""
+                                : latest.fromEmail
 
-                          setComposeData({
-                            to: replyTo,
-                            subject: replySubject,
-                            body: replyBody,
-                            disableTo: true,
-                            disableSubject: true,
-                          })
-                          setSelectedThread(null)
-                          setComposeOpen(true)
-                        }}
-                        className="btn-gradient gap-1.5"
-                      >
-                        <Reply className="size-4" />
-                        <span>Reply</span>
-                      </Button>
+                              const replySubject = latest.subject.startsWith(
+                                "Re:"
+                              )
+                                ? latest.subject
+                                : `Re: ${selectedThread.subject}`
+                              const replyBody = "" // Clean blank editor area like Gmail
+
+                              setComposeData({
+                                draftId: undefined,
+                                to: replyTo,
+                                subject: replySubject,
+                                body: replyBody,
+                                disableTo: true,
+                                disableSubject: true,
+                              })
+                              setSelectedThread(null)
+                              setComposeOpen(true)
+                            }}
+                            className="btn-gradient gap-1.5"
+                          >
+                            <Reply className="size-4" />
+                            <span>Reply</span>
+                          </Button>
+                        )
+                      })()}
                     </div>
                   </div>
                 </>

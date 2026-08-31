@@ -23,6 +23,7 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
+    const draftId = (formData.get("draftId") as string) || null
     const mailbox = (formData.get("mailbox") as string) || "contact"
     const fromName = (formData.get("fromName") as string) || ""
     const explicitFromEmail = extractCleanEmail(
@@ -123,6 +124,33 @@ export async function POST(req: Request) {
       }
     }
 
+    const rawExistingAtt = formData.get("existingAttachments") as string
+    if (rawExistingAtt) {
+      try {
+        const parsedExisting = JSON.parse(rawExistingAtt)
+        for (const att of parsedExisting) {
+          if (att.url) {
+            let buffer: Buffer = Buffer.from("")
+            try {
+              const fetchRes = await fetch(att.url)
+              if (fetchRes.ok) {
+                buffer = Buffer.from(await fetchRes.arrayBuffer())
+              }
+            } catch {}
+            uploadedAttachments.push({
+              filename: att.filename || att.name || "attachment",
+              contentType:
+                att.contentType || att.type || "application/octet-stream",
+              size: att.size || 0,
+              url: att.url,
+              r2Key: att.r2Key || "",
+              buffer,
+            })
+          }
+        }
+      } catch {}
+    }
+
     // Prepare attachments payload for Resend API
     const resendAttachments = uploadedAttachments.map((att) => ({
       filename: att.filename,
@@ -188,6 +216,13 @@ export async function POST(req: Request) {
         attachments: true,
       },
     })
+
+    // If sending an existing draft, remove it from the draft folder
+    if (draftId) {
+      await prisma.emailMessage
+        .delete({ where: { id: draftId } })
+        .catch(() => {})
+    }
 
     return NextResponse.json({
       success: true,

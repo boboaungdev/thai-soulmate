@@ -7,16 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -37,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
   Send,
+  Save,
   Paperclip,
   Image as ImageIcon,
   Trash2,
@@ -213,7 +204,7 @@ export function TagEmailInput({
   const addEmails = React.useCallback(
     (rawEmails: string[]) => {
       if (disabled) return
-      let newEmails = [...value]
+      const newEmails = [...value]
       let errorEncountered: string | null = null
 
       for (const raw of rawEmails) {
@@ -415,14 +406,19 @@ interface ComposeEmailDialogProps {
   mailbox?: string
   fromEmail: string
   fromName?: string
+  draftId?: string
   initialTo?: string | string[]
+  initialCc?: string | string[]
+  initialBcc?: string | string[]
   initialSubject?: string
   initialBody?: string
+  initialAttachments?: any[]
   disableTo?: boolean
   disableSubject?: boolean
   signatureText?: string
   signatureImage?: string | null
   signatureSize?: "sm" | "md" | "lg"
+  onDraftSaved?: (draft: any) => void
   onEmailSent?: (emailData: {
     to: string
     cc?: string
@@ -437,6 +433,10 @@ interface ComposeEmailDialogProps {
 export function ComposeEmailDialog(props: ComposeEmailDialogProps) {
   const { open, onOpenChange } = props
 
+  const toStr = Array.isArray(props.initialTo)
+    ? props.initialTo.join(",")
+    : props.initialTo || ""
+
   return (
     <Dialog
       open={open}
@@ -450,7 +450,7 @@ export function ComposeEmailDialog(props: ComposeEmailDialogProps) {
     >
       {open && (
         <ComposeEmailDialogContent
-          key={`${props.initialTo}-${props.initialSubject}-${open}`}
+          key={`${props.draftId || "new"}-${toStr}-${props.initialSubject || ""}-${(props.initialBody || "").slice(0, 50)}-${(props.initialAttachments || []).length}`}
           {...props}
         />
       )}
@@ -464,40 +464,81 @@ function ComposeEmailDialogContent({
   mailbox,
   fromEmail,
   fromName,
+  draftId,
   initialTo = "",
+  initialCc = "",
+  initialBcc = "",
   initialSubject = "",
   initialBody = "",
+  initialAttachments = [],
   disableTo = false,
   disableSubject = false,
   signatureText = "",
   signatureImage = null,
   signatureSize = "md",
+  onDraftSaved,
   onEmailSent,
 }: ComposeEmailDialogProps) {
+  const [currentDraftId, setCurrentDraftId] = React.useState<string | null>(
+    draftId || null
+  )
+  const [isSavingDraft, setIsSavingDraft] = React.useState(false)
+  const [isDeletingDraft, setIsDeletingDraft] = React.useState(false)
   const [toEmails, setToEmails] = React.useState<string[]>(() =>
     parseEmailsFromInput(initialTo)
   )
-  const [showCc, setShowCc] = React.useState(false)
-  const [showBcc, setShowBcc] = React.useState(false)
-  const [ccEmails, setCcEmails] = React.useState<string[]>([])
-  const [bccEmails, setBccEmails] = React.useState<string[]>([])
+  const initialParsedCc = parseEmailsFromInput(initialCc)
+  const initialParsedBcc = parseEmailsFromInput(initialBcc)
+  const [showCc, setShowCc] = React.useState(initialParsedCc.length > 0)
+  const [showBcc, setShowBcc] = React.useState(initialParsedBcc.length > 0)
+  const [ccEmails, setCcEmails] = React.useState<string[]>(initialParsedCc)
+  const [bccEmails, setBccEmails] = React.useState<string[]>(initialParsedBcc)
   const [subject, setSubject] = React.useState(initialSubject)
-  const [attachments, setAttachments] = React.useState<AttachedFile[]>([])
+  const [attachments, setAttachments] = React.useState<AttachedFile[]>(() => {
+    if (!initialAttachments) return []
+    return initialAttachments.map((att: any) => ({
+      id: att.id || Math.random().toString(36).substring(2, 9),
+      name: att.filename || att.name || "attachment",
+      size: att.size || 0,
+      type: att.contentType || att.type || "application/octet-stream",
+      url: att.url,
+      r2Key: att.r2Key,
+      previewUrl: att.url,
+    }))
+  })
   const [isFullScreen, setIsFullScreen] = React.useState(false)
   const [isSending, setIsSending] = React.useState(false)
   const [showFormatting, setShowFormatting] = React.useState(true)
-  const [showDiscardAlert, setShowDiscardAlert] = React.useState(false)
   const [includeSignature, setIncludeSignature] = React.useState(true)
+
+  // Track initial state fingerprint to prevent duplicate saves when closing without edits
+  const initialFingerprint = React.useRef({
+    to: parseEmailsFromInput(initialTo).join(","),
+    cc: initialParsedCc.join(","),
+    bcc: initialParsedBcc.join(","),
+    subject: (initialSubject || "").trim(),
+    body: (initialBody || "").trim(),
+    attachmentsCount: (initialAttachments || []).length,
+  })
 
   const hasSignatureConfigured = Boolean(
     signatureText?.trim() || signatureImage
   )
 
   const editorRef = React.useRef<HTMLDivElement>(null)
+  const setEditorRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      if (node) {
+        node.innerHTML = initialBody || ""
+        ;(editorRef as any).current = node
+      }
+    },
+    [initialBody]
+  )
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const imageInputRef = React.useRef<HTMLInputElement>(null)
 
-  // Initialize editor HTML on mount without calling setState
+  // Initialize editor HTML on mount or when initialBody changes
   React.useEffect(() => {
     if (editorRef.current) {
       editorRef.current.innerHTML = initialBody || ""
@@ -622,8 +663,23 @@ function ComposeEmailDialogContent({
     e.target.value = ""
   }
 
-  const handleRemoveAttachment = (id: string) => {
+  const handleRemoveAttachment = async (id: string) => {
+    const removedAtt = attachments.find((a) => a.id === id)
     setAttachments((prev) => prev.filter((a) => a.id !== id))
+
+    // If this attachment was already uploaded to Cloudflare R2, delete from R2 in background
+    if (removedAtt && (removedAtt.r2Key || removedAtt.url)) {
+      try {
+        await fetch(
+          `/api/email/attachment?id=${removedAtt.id}&r2Key=${encodeURIComponent(
+            removedAtt.r2Key || ""
+          )}&url=${encodeURIComponent(removedAtt.url || "")}`,
+          { method: "DELETE" }
+        )
+      } catch (err) {
+        console.error("Failed to delete attachment from R2:", err)
+      }
+    }
   }
 
   const formatFileSize = (bytes: number) => {
@@ -672,6 +728,10 @@ function ComposeEmailDialogContent({
       formData.append("subject", subject || "(No Subject)")
       formData.append("bodyHtml", bodyHtml)
 
+      if (currentDraftId) {
+        formData.append("draftId", currentDraftId)
+      }
+
       // Append attached files
       for (const att of attachments) {
         if (att.file) {
@@ -705,6 +765,7 @@ function ComposeEmailDialogContent({
 
       // Clean up
       setIsSending(false)
+      setCurrentDraftId(null)
       setToEmails([])
       setCcEmails([])
       setBccEmails([])
@@ -721,30 +782,145 @@ function ComposeEmailDialogContent({
     }
   }
 
-  const hasUnsavedContent = () => {
-    const hasTo = toEmails.length > 0
-    const hasSubject = Boolean(subject && subject.trim())
-    const hasCc = ccEmails.length > 0
-    const hasBcc = bccEmails.length > 0
-    const hasText = Boolean(
-      editorRef.current?.innerText &&
-      editorRef.current.innerText.trim().length > 0
-    )
-    const hasImages = Boolean(editorRef.current?.querySelector("img") !== null)
-    const hasAttachments = attachments.length > 0
+  const isContentDirty = () => {
+    const curTo = toEmails.join(",")
+    const curCc = ccEmails.join(",")
+    const curBcc = bccEmails.join(",")
+    const curSubject = subject.trim()
+    const curBody = (editorRef.current?.innerHTML || "").trim()
+    const curAttCount = attachments.length
 
     return (
-      hasTo ||
-      hasSubject ||
-      hasCc ||
-      hasBcc ||
-      hasText ||
-      hasImages ||
-      hasAttachments
+      curTo !== initialFingerprint.current.to ||
+      curCc !== initialFingerprint.current.cc ||
+      curBcc !== initialFingerprint.current.bcc ||
+      curSubject !== initialFingerprint.current.subject ||
+      curBody !== initialFingerprint.current.body ||
+      curAttCount !== initialFingerprint.current.attachmentsCount
     )
   }
 
-  const forceClose = () => {
+  const hasAnyDraftContent = () => {
+    const rawBody = editorRef.current?.innerHTML || ""
+    const textOnly = rawBody
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .trim()
+    const hasImages = Boolean(editorRef.current?.querySelector("img") !== null)
+    const hasAttachments = attachments.length > 0
+    const hasTo = toEmails.length > 0 && !disableTo
+    const hasSubject = Boolean(
+      subject && subject.trim() && subject !== "(Draft)"
+    )
+
+    // In a reply (locked To/subject), user MUST have typed text, added images, or added attachments
+    if (disableTo || disableSubject || subject.startsWith("Re:")) {
+      return textOnly.length > 0 || hasImages || hasAttachments
+    }
+
+    return (
+      textOnly.length > 0 ||
+      hasImages ||
+      hasAttachments ||
+      (hasTo && hasSubject)
+    )
+  }
+
+  const handleSaveDraft = async () => {
+    try {
+      setIsSavingDraft(true)
+      const rawBody = editorRef.current ? editorRef.current.innerHTML : ""
+      const rawText = editorRef.current ? editorRef.current.innerText : ""
+
+      const existingAtts = attachments
+        .filter((a) => a.url && !a.file)
+        .map((a) => ({
+          id: a.id,
+          filename: a.name,
+          contentType: a.type,
+          size: a.size,
+          url: a.url,
+          r2Key: a.r2Key || "",
+        }))
+
+      const newAttFiles = attachments
+        .filter((a) => a.file)
+        .map((a) => a.file as File)
+
+      const formData = new FormData()
+      if (currentDraftId) formData.append("id", currentDraftId)
+      formData.append(
+        "mailbox",
+        mailbox || fromEmail.split("@")[0] || "contact"
+      )
+      formData.append("fromEmail", fromEmail)
+      if (fromName) formData.append("fromName", fromName)
+      formData.append("toEmails", JSON.stringify(toEmails))
+      formData.append("ccEmails", JSON.stringify(ccEmails))
+      formData.append("bccEmails", JSON.stringify(bccEmails))
+      formData.append("subject", subject || "(Draft)")
+      formData.append("bodyHtml", rawBody)
+      formData.append("bodyText", rawText)
+      formData.append("existingAttachments", JSON.stringify(existingAtts))
+
+      for (const file of newAttFiles) {
+        formData.append("attachments", file)
+      }
+
+      const res = await fetch("/api/email/draft", {
+        method: "POST",
+        body: formData,
+      })
+      const json = await res.json()
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Failed to save draft")
+      }
+      if (json.data?.id) {
+        setCurrentDraftId(json.data.id)
+      }
+
+      // Update initial fingerprint so subsequent close without changes won't re-save
+      initialFingerprint.current = {
+        to: toEmails.join(","),
+        cc: ccEmails.join(","),
+        bcc: bccEmails.join(","),
+        subject: subject.trim(),
+        body: rawBody.trim(),
+        attachmentsCount: attachments.length,
+      }
+
+      toast.success("Draft saved")
+      onDraftSaved?.(json.data)
+      onEmailSent?.({
+        to: toEmails.join(", "),
+        subject: subject || "(Draft)",
+        bodyHtml: rawBody,
+        attachments,
+        data: json.data,
+      })
+    } catch (err: any) {
+      console.error("Failed to save draft:", err)
+      toast.error(err.message || "Failed to save draft")
+    } finally {
+      setIsSavingDraft(false)
+    }
+  }
+
+  const forceClose = async () => {
+    if (currentDraftId) {
+      try {
+        setIsDeletingDraft(true)
+        await fetch(`/api/email?id=${currentDraftId}`, { method: "DELETE" })
+        toast.success("Draft discarded")
+        onEmailSent?.({ to: "", subject: "", bodyHtml: "", attachments: [] })
+        onDraftSaved?.(null)
+      } catch (err) {
+        console.error("Failed to delete discarded draft:", err)
+      } finally {
+        setIsDeletingDraft(false)
+      }
+    }
+    setCurrentDraftId(null)
     setToEmails([])
     setCcEmails([])
     setBccEmails([])
@@ -753,25 +929,56 @@ function ComposeEmailDialogContent({
     if (editorRef.current) {
       editorRef.current.innerHTML = ""
     }
-    setShowDiscardAlert(false)
     onOpenChange(false)
   }
 
-  const handleAttemptClose = () => {
-    if (hasUnsavedContent()) {
-      setShowDiscardAlert(true)
-    } else {
-      forceClose()
+  const handleAttemptClose = async () => {
+    const hasContent = hasAnyDraftContent()
+
+    // 1. If user cleared all content from an existing draft, delete it from the server DB!
+    if (!hasContent) {
+      if (currentDraftId) {
+        try {
+          setIsDeletingDraft(true)
+          await fetch(`/api/email?id=${currentDraftId}`, { method: "DELETE" })
+          toast.success("Empty draft deleted")
+          onDraftSaved?.(null)
+        } catch (err) {
+          console.error("Failed to delete cleared draft:", err)
+        } finally {
+          setIsDeletingDraft(false)
+        }
+      }
+      onOpenChange(false)
+      return
     }
+
+    // 2. If content is unchanged from what was originally loaded, do NOT save again!
+    if (!isContentDirty()) {
+      onOpenChange(false)
+      return
+    }
+
+    // 3. Otherwise, save the modified draft to DB
+    await handleSaveDraft()
+    onOpenChange(false)
   }
 
-  const handleDiscard = () => {
-    handleAttemptClose()
+  const handleDiscard = async () => {
+    await forceClose()
   }
 
   return (
     <>
       <DialogContent
+        onPointerDownOutside={(e) => {
+          e.preventDefault()
+          handleAttemptClose()
+        }}
+        onEscapeKeyDown={(e) => {
+          e.preventDefault()
+          handleAttemptClose()
+        }}
         className={cn(
           "flex flex-col gap-0 overflow-hidden p-0 shadow-2xl transition-all duration-200 [&>button]:hidden",
           isFullScreen
@@ -782,13 +989,37 @@ function ComposeEmailDialogContent({
         {/* Custom Modal Top Header */}
         <div className="flex items-center justify-between border-b bg-muted/50 px-4 py-3 select-none">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">New Message</span>
+            <span className="text-sm font-semibold">
+              {disableSubject || subject.startsWith("Re:")
+                ? "Reply"
+                : "New Message"}
+            </span>
             <Badge
               variant="outline"
               className="h-5 py-0 text-[11px] font-normal"
             >
               From: {fromEmail}
             </Badge>
+
+            {/* Live status indicators */}
+            {isSavingDraft && (
+              <Badge
+                variant="outline"
+                className="h-5 animate-pulse gap-1 border-amber-500/40 bg-amber-500/10 px-2 py-0 text-[11px] font-medium text-amber-600 dark:text-amber-400"
+              >
+                <RefreshCw className="size-3 animate-spin" />
+                <span>Saving draft...</span>
+              </Badge>
+            )}
+            {isDeletingDraft && (
+              <Badge
+                variant="outline"
+                className="h-5 animate-pulse gap-1 border-destructive/40 bg-destructive/10 px-2 py-0 text-[11px] font-medium text-destructive"
+              >
+                <RefreshCw className="size-3 animate-spin" />
+                <span>Deleting draft...</span>
+              </Badge>
+            )}
           </div>
 
           <div className="flex items-center gap-1">
@@ -811,9 +1042,9 @@ function ComposeEmailDialogContent({
               variant="ghost"
               size="icon-sm"
               disabled={isSending}
-              onClick={handleDiscard}
-              className="size-7 text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:text-foreground"
-              title="Close"
+              onClick={handleAttemptClose}
+              className="size-7 text-muted-foreground hover:bg-muted hover:text-foreground"
+              title="Close & save draft"
             >
               <X className="size-4" />
             </Button>
@@ -1332,11 +1563,15 @@ function ComposeEmailDialogContent({
         {/* WYSIWYG Message Body Editor */}
         <div className="relative flex flex-1 flex-col overflow-y-auto bg-background p-4 focus-within:outline-none">
           <div
-            ref={editorRef}
+            ref={setEditorRef}
             contentEditable={!isSending}
             role="textbox"
             aria-multiline="true"
-            data-placeholder="Write your email here..."
+            data-placeholder={
+              disableSubject || subject.startsWith("Re:")
+                ? "Write your reply here..."
+                : "Write your email here..."
+            }
             className={cn(
               "min-h-[140px] w-full flex-1 text-sm leading-relaxed whitespace-pre-wrap transition-opacity outline-none",
               isSending &&
@@ -1450,7 +1685,7 @@ function ComposeEmailDialogContent({
           <div className="flex items-center gap-2">
             <Button
               onClick={handleSend}
-              disabled={isSending}
+              disabled={isSending || isSavingDraft}
               className="btn-gradient gap-2 px-4 shadow-sm"
             >
               {isSending ? (
@@ -1464,6 +1699,23 @@ function ComposeEmailDialogContent({
                   <span>Send</span>
                 </>
               )}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isSending || isSavingDraft}
+              onClick={handleSaveDraft}
+              className="h-9 gap-1.5 px-3 text-xs shadow-xs"
+              title="Save email draft"
+            >
+              {isSavingDraft ? (
+                <RefreshCw className="size-3.5 animate-spin" />
+              ) : (
+                <Save className="size-3.5" />
+              )}
+              <span>{isSavingDraft ? "Saving..." : "Save Draft"}</span>
             </Button>
 
             {/* Hidden file & image inputs */}
@@ -1594,43 +1846,30 @@ function ComposeEmailDialogContent({
             <span className="hidden text-xs text-muted-foreground select-none sm:inline">
               {isSending
                 ? "Dispatching message & attachments..."
-                : "Press Ctrl+Enter to send"}
+                : isSavingDraft
+                  ? "Saving draft to server..."
+                  : isDeletingDraft
+                    ? "Deleting draft from server..."
+                    : "Press Ctrl+Enter to send"}
             </span>
             <Button
               type="button"
               variant="ghost"
               size="icon-sm"
-              disabled={isSending}
+              disabled={isSending || isSavingDraft || isDeletingDraft}
               onClick={handleDiscard}
               className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
               title="Discard draft"
             >
-              <Trash2 className="size-4" />
+              {isDeletingDraft ? (
+                <RefreshCw className="size-4 animate-spin text-destructive" />
+              ) : (
+                <Trash2 className="size-4" />
+              )}
             </Button>
           </div>
         </div>
       </DialogContent>
-
-      {/* Shadcn UI Alert Dialog for Discard Confirmation */}
-      <AlertDialog open={showDiscardAlert} onOpenChange={setShowDiscardAlert}>
-        <AlertDialogContent className="sm:max-w-[420px]">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Discard email draft?</AlertDialogTitle>
-            <AlertDialogDescription>
-              You have unsaved text or attachments in this email draft. If you
-              discard now, your message will be lost.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowDiscardAlert(false)}>
-              Keep Editing
-            </AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={forceClose}>
-              Discard Draft
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   )
 }

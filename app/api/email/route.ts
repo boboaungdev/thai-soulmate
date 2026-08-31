@@ -9,6 +9,7 @@ import {
   getReceivedEmail,
   downloadAndUploadAttachment,
 } from "@/lib/resend-inbound"
+import { deleteEmailR2Assets } from "@/lib/r2-email"
 
 export async function GET(req: Request) {
   try {
@@ -86,8 +87,15 @@ export async function GET(req: Request) {
         }
       } else if (folder === EmailFolder.DRAFT) {
         whereClause = {
-          fromEmail: { equals: userEmail, mode: "insensitive" },
-          folder: EmailFolder.DRAFT,
+          OR: [
+            { fromEmail: { equals: userEmail, mode: "insensitive" } },
+            { toEmails: { has: userEmail } },
+            { ccEmails: { has: userEmail } },
+            { bccEmails: { has: userEmail } },
+          ],
+          folder: {
+            notIn: [EmailFolder.TRASH, EmailFolder.ARCHIVE, EmailFolder.SPAM],
+          },
           isTrash: false,
         }
       } else if (folder === EmailFolder.SENT) {
@@ -104,6 +112,9 @@ export async function GET(req: Request) {
             { bccEmails: { has: userEmail } },
             { fromEmail: { equals: userEmail, mode: "insensitive" } },
           ],
+          folder: {
+            notIn: [EmailFolder.TRASH, EmailFolder.ARCHIVE, EmailFolder.SPAM],
+          },
           isArchived: false,
           isTrash: false,
         }
@@ -166,12 +177,14 @@ export async function GET(req: Request) {
       } else if (folder === EmailFolder.DRAFT) {
         whereClause = {
           OR: [
-            { mailbox: { in: mailboxNames }, folder: EmailFolder.DRAFT },
-            {
-              fromEmail: { contains: mailboxEmail, mode: "insensitive" },
-              folder: EmailFolder.DRAFT,
-            },
+            { mailbox: { in: mailboxNames } },
+            { toEmails: { has: mailboxEmail } },
+            { ccEmails: { has: mailboxEmail } },
+            { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
           ],
+          folder: {
+            notIn: [EmailFolder.TRASH, EmailFolder.ARCHIVE, EmailFolder.SPAM],
+          },
           isTrash: false,
         }
       } else if (folder === EmailFolder.SENT) {
@@ -191,6 +204,9 @@ export async function GET(req: Request) {
             { ccEmails: { has: mailboxEmail } },
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
           ],
+          folder: {
+            notIn: [EmailFolder.TRASH, EmailFolder.ARCHIVE, EmailFolder.SPAM],
+          },
           isArchived: false,
           isTrash: false,
         }
@@ -392,9 +408,22 @@ export async function DELETE(req: Request) {
       )
     }
 
-    await prisma.emailMessage.delete({
+    const existing = await prisma.emailMessage.findUnique({
       where: { id },
+      include: { attachments: true },
     })
+
+    if (existing) {
+      // Clean up all Cloudflare R2 files (attachments + inline images)
+      await deleteEmailR2Assets({
+        bodyHtml: existing.bodyHtml,
+        attachments: existing.attachments,
+      })
+
+      await prisma.emailMessage.delete({
+        where: { id },
+      })
+    }
 
     return NextResponse.json({
       success: true,

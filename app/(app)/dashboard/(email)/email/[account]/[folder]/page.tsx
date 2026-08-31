@@ -8,7 +8,6 @@ import {
   Send,
   Settings2,
   Search,
-  Plus,
   RefreshCw,
   Trash2,
   Star,
@@ -23,6 +22,10 @@ import {
   FileText,
   Upload,
   X,
+  ChevronDown,
+  ChevronUp,
+  ChevronsUpDown,
+  MessageSquare,
 } from "lucide-react"
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
@@ -84,6 +87,109 @@ export interface DbEmailMessage {
   receivedAt?: string | null
   createdAt: string
   updatedAt: string
+}
+
+export interface EmailThread {
+  threadId: string
+  subject: string
+  normalizedSubject: string
+  messages: DbEmailMessage[]
+  latestMessage: DbEmailMessage
+  firstMessage: DbEmailMessage
+  participants: Array<{ name?: string | null; email: string }>
+  isRead: boolean
+  isStarred: boolean
+  hasAttachments: boolean
+  lastActivityAt: string
+}
+
+export function normalizeEmailSubject(subject: string = ""): string {
+  let s = (subject || "").trim()
+  while (true) {
+    const next = s
+      .replace(/^(re|fwd|fw|aw|sv|vs|reply)\s*:\s*/i, "")
+      .replace(
+        /^\[(inbound alert|new inbound email|alert|notification)\]\s*/i,
+        ""
+      )
+      .trim()
+    if (next === s) break
+    s = next
+  }
+  return s.toLowerCase()
+}
+
+export function groupEmailsIntoThreads(
+  emails: DbEmailMessage[]
+): EmailThread[] {
+  const threadMap = new Map<string, DbEmailMessage[]>()
+
+  for (const email of emails) {
+    const normSub = normalizeEmailSubject(email.subject) || email.id
+    if (!threadMap.has(normSub)) {
+      threadMap.set(normSub, [])
+    }
+    threadMap.get(normSub)!.push(email)
+  }
+
+  const threads: EmailThread[] = []
+
+  for (const [key, msgList] of threadMap.entries()) {
+    const sorted = [...msgList].sort((a, b) => {
+      const timeA = new Date(
+        a.createdAt || a.sentAt || a.receivedAt || 0
+      ).getTime()
+      const timeB = new Date(
+        b.createdAt || b.sentAt || b.receivedAt || 0
+      ).getTime()
+      return timeA - timeB
+    })
+
+    const first = sorted[0]
+    const latest = sorted[sorted.length - 1]
+    const isRead = sorted.every((m) => m.isRead)
+    const isStarred = sorted.some((m) => m.isStarred)
+    const hasAttachments = sorted.some(
+      (m) => m.attachments && m.attachments.length > 0
+    )
+
+    const participantMap = new Map<string, string | null>()
+    for (const m of sorted) {
+      if (m.fromEmail) {
+        participantMap.set(m.fromEmail.toLowerCase(), m.fromName || null)
+      }
+    }
+    const participants = Array.from(participantMap.entries()).map(
+      ([email, name]) => ({ name, email })
+    )
+
+    threads.push({
+      threadId: key,
+      subject:
+        sorted.find((m) => m.subject)?.subject ||
+        latest.subject ||
+        "(No Subject)",
+      normalizedSubject: key,
+      messages: sorted,
+      latestMessage: latest,
+      firstMessage: first,
+      participants,
+      isRead,
+      isStarred,
+      hasAttachments,
+      lastActivityAt:
+        latest.createdAt ||
+        latest.sentAt ||
+        latest.receivedAt ||
+        new Date().toISOString(),
+    })
+  }
+
+  return threads.sort((a, b) => {
+    const timeA = new Date(a.lastActivityAt).getTime()
+    const timeB = new Date(b.lastActivityAt).getTime()
+    return timeB - timeA
+  })
 }
 
 function formatEmailDate(dateStr?: string | Date | null) {
@@ -193,8 +299,11 @@ export default function EmailFolderDynamicPage() {
 
   const [emails, setEmails] = React.useState<DbEmailMessage[]>([])
   const [isLoadingEmails, setIsLoadingEmails] = React.useState(true)
-  const [selectedEmail, setSelectedEmail] =
-    React.useState<DbEmailMessage | null>(null)
+  const [selectedThread, setSelectedThread] =
+    React.useState<EmailThread | null>(null)
+  const [expandedMessageIds, setExpandedMessageIds] = React.useState<
+    Record<string, boolean>
+  >({})
 
   // Settings State
   const defaultDisplayName = React.useMemo(
@@ -441,56 +550,169 @@ export default function EmailFolderDynamicPage() {
     setSignatureSize(savedSignatureSize)
   }
 
-  // Email Actions
-  const handleToggleStar = async (
-    email: DbEmailMessage,
+  const threads = React.useMemo(() => {
+    const allThreads = groupEmailsIntoThreads(emails)
+
+    if (folderParam === "inbox") {
+      return allThreads.filter((t) =>
+        t.messages.some(
+          (m) =>
+            (m.folder === "INBOX" || m.direction === "INBOUND") &&
+            !m.isTrash &&
+            !m.isArchived
+        )
+      )
+    }
+    if (folderParam === "sent") {
+      return allThreads.filter((t) =>
+        t.messages.some(
+          (m) =>
+            (m.folder === "SENT" || m.direction === "OUTBOUND") &&
+            !m.isTrash &&
+            !m.isArchived
+        )
+      )
+    }
+    if (folderParam === "starred") {
+      return allThreads.filter(
+        (t) => t.isStarred && !t.messages.every((m) => m.isTrash)
+      )
+    }
+    if (folderParam === "trash") {
+      return allThreads.filter((t) =>
+        t.messages.some((m) => m.isTrash || m.folder === "TRASH")
+      )
+    }
+    if (folderParam === "archive") {
+      return allThreads.filter((t) =>
+        t.messages.some((m) => m.isArchived || m.folder === "ARCHIVE")
+      )
+    }
+    return allThreads
+  }, [emails, folderParam])
+
+  const filteredThreads = React.useMemo(() => {
+    if (!searchQuery.trim()) return threads
+    const q = searchQuery.toLowerCase()
+    return threads.filter(
+      (t) =>
+        t.subject.toLowerCase().includes(q) ||
+        t.participants.some(
+          (p) =>
+            p.email.toLowerCase().includes(q) ||
+            (p.name && p.name.toLowerCase().includes(q))
+        ) ||
+        t.messages.some(
+          (m) =>
+            (m.preview && m.preview.toLowerCase().includes(q)) ||
+            (m.bodyText && m.bodyText.toLowerCase().includes(q))
+        )
+    )
+  }, [threads, searchQuery])
+
+  // Email & Thread Actions
+  const handleToggleStarThread = async (
+    thread: EmailThread,
     e: React.MouseEvent
   ) => {
     e.stopPropagation()
-    const nextStarred = !email.isStarred
+    const nextStarred = !thread.isStarred
+    const msgIds = new Set(thread.messages.map((m) => m.id))
     setEmails((prev) =>
       prev.map((item) =>
-        item.id === email.id ? { ...item, isStarred: nextStarred } : item
+        msgIds.has(item.id) ? { ...item, isStarred: nextStarred } : item
       )
     )
-    try {
-      await fetch("/api/email", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: email.id, isStarred: nextStarred }),
+    if (selectedThread && selectedThread.threadId === thread.threadId) {
+      setSelectedThread({
+        ...selectedThread,
+        isStarred: nextStarred,
+        messages: selectedThread.messages.map((m) => ({
+          ...m,
+          isStarred: nextStarred,
+        })),
       })
+    }
+    try {
+      await Promise.all(
+        thread.messages.map((m) =>
+          fetch("/api/email", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: m.id, isStarred: nextStarred }),
+          })
+        )
+      )
     } catch (err) {
       console.error("Failed to update star status", err)
     }
   }
 
-  const handleDeleteEmail = async (emailId: string) => {
+  const handleDeleteThread = async (thread: EmailThread) => {
     try {
-      await fetch(`/api/email?id=${emailId}`, { method: "DELETE" })
-      setEmails((prev) => prev.filter((e) => e.id !== emailId))
-      if (selectedEmail?.id === emailId) {
-        setSelectedEmail(null)
+      await Promise.all(
+        thread.messages.map((m) =>
+          fetch(`/api/email?id=${m.id}`, { method: "DELETE" })
+        )
+      )
+      const msgIds = new Set(thread.messages.map((m) => m.id))
+      setEmails((prev) => prev.filter((e) => !msgIds.has(e.id)))
+      if (selectedThread?.threadId === thread.threadId) {
+        setSelectedThread(null)
       }
-      toast.success("Email deleted successfully")
+      toast.success("Conversation deleted successfully")
     } catch (err) {
-      toast.error("Failed to delete email")
+      toast.error("Failed to delete conversation")
     }
   }
 
-  const handleEmailClick = (email: DbEmailMessage) => {
-    setSelectedEmail(email)
-    if (!email.isRead && email.folder === "INBOX") {
+  const handleThreadClick = (thread: EmailThread) => {
+    setSelectedThread(thread)
+    const initialExpanded: Record<string, boolean> = {}
+    thread.messages.forEach((m, idx) => {
+      initialExpanded[m.id] = idx === thread.messages.length - 1
+    })
+    setExpandedMessageIds(initialExpanded)
+
+    const unreadMsgs = thread.messages.filter((m) => !m.isRead)
+    if (unreadMsgs.length > 0) {
+      const unreadIds = new Set(unreadMsgs.map((m) => m.id))
       setEmails((prev) =>
         prev.map((item) =>
-          item.id === email.id ? { ...item, isRead: true } : item
+          unreadIds.has(item.id) ? { ...item, isRead: true } : item
         )
       )
-      fetch("/api/email", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: email.id, isRead: true }),
-      }).catch(console.error)
+      Promise.all(
+        unreadMsgs.map((m) =>
+          fetch("/api/email", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: m.id, isRead: true }),
+          }).catch(console.error)
+        )
+      )
     }
+  }
+
+  const toggleMessageExpansion = (msgId: string) => {
+    setExpandedMessageIds((prev) => ({
+      ...prev,
+      [msgId]: !prev[msgId],
+    }))
+  }
+
+  const toggleExpandAll = () => {
+    if (!selectedThread) return
+    const allExpanded = selectedThread.messages.every(
+      (m) => expandedMessageIds[m.id]
+    )
+    const nextState: Record<string, boolean> = {}
+    selectedThread.messages.forEach((m, idx) => {
+      nextState[m.id] = allExpanded
+        ? idx === selectedThread.messages.length - 1
+        : true
+    })
+    setExpandedMessageIds(nextState)
   }
 
   const handleDownloadFile = (
@@ -545,7 +767,7 @@ export default function EmailFolderDynamicPage() {
               setComposeOpen(true)
             }}
           >
-            <Plus className="size-4" />
+            <Send className="size-4" />
             <span>Compose</span>
           </Button>
 
@@ -1013,10 +1235,12 @@ export default function EmailFolderDynamicPage() {
                   Loading emails from database...
                 </p>
               </div>
-            ) : emails.length === 0 ? (
+            ) : filteredThreads.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
                 <Inbox className="mb-3 size-12 stroke-[1.2] text-muted-foreground/50" />
-                <p className="font-medium text-foreground">No emails found</p>
+                <p className="font-medium text-foreground">
+                  No conversations found
+                </p>
                 <p className="text-xs">
                   {searchQuery
                     ? "Try adjusting your search criteria."
@@ -1025,35 +1249,38 @@ export default function EmailFolderDynamicPage() {
               </div>
             ) : (
               <div className="divide-y">
-                {emails.map((email) => {
+                {filteredThreads.map((thread) => {
                   const isSentFolder = folderParam === "sent"
-                  const displayParty = isSentFolder
-                    ? email.toEmails.join(", ")
-                    : email.fromName
-                      ? `${email.fromName} <${email.fromEmail}>`
-                      : email.fromEmail
+                  const messageCount = thread.messages.length
+
+                  const senderNames = isSentFolder
+                    ? thread.latestMessage.toEmails.join(", ")
+                    : thread.participants
+                        .map((p) => p.name || p.email)
+                        .filter(Boolean)
+                        .join(", ")
 
                   return (
                     <div
-                      key={email.id}
-                      onClick={() => handleEmailClick(email)}
+                      key={thread.threadId}
+                      onClick={() => handleThreadClick(thread)}
                       className={cn(
                         "group flex cursor-pointer items-start gap-4 p-4 transition-colors hover:bg-muted/50",
-                        !email.isRead &&
+                        !thread.isRead &&
                           !isSentFolder &&
                           "bg-primary/5 font-medium"
                       )}
                     >
                       <button
                         type="button"
-                        onClick={(e) => handleToggleStar(email, e)}
+                        onClick={(e) => handleToggleStarThread(thread, e)}
                         className="pt-0.5"
-                        title={email.isStarred ? "Unstar" : "Star"}
+                        title={thread.isStarred ? "Unstar" : "Star"}
                       >
                         <Star
                           className={cn(
                             "size-4 transition-colors",
-                            email.isStarred
+                            thread.isStarred
                               ? "fill-yellow-400 text-yellow-400"
                               : "text-muted-foreground/40 group-hover:text-muted-foreground"
                           )}
@@ -1062,33 +1289,47 @@ export default function EmailFolderDynamicPage() {
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="truncate text-sm font-medium">
-                            {displayParty || "(Unknown)"}
-                          </span>
+                          <div className="flex min-w-0 items-center gap-2">
+                            <span
+                              className={cn(
+                                "truncate text-sm",
+                                !thread.isRead && !isSentFolder
+                                  ? "font-bold text-foreground"
+                                  : "font-medium text-foreground/90"
+                              )}
+                            >
+                              {senderNames || "(Unknown)"}
+                            </span>
+                            {messageCount > 1 && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                                <MessageSquare className="size-3" />
+                                {messageCount}
+                              </span>
+                            )}
+                          </div>
                           <span className="shrink-0 text-xs text-muted-foreground">
-                            {formatEmailDate(email.sentAt || email.createdAt)}
+                            {formatEmailDate(thread.lastActivityAt)}
                           </span>
                         </div>
 
-                        <div className="mt-0.5 flex items-center gap-2 truncate text-sm">
+                        <div className="mt-1 flex items-center gap-2 truncate text-sm">
                           <span
                             className={cn(
                               "truncate",
-                              !email.isRead && !isSentFolder
+                              !thread.isRead && !isSentFolder
                                 ? "font-semibold text-foreground"
                                 : "font-normal text-foreground/90"
                             )}
                           >
-                            {email.subject || "(No Subject)"}
+                            {thread.subject || "(No Subject)"}
                           </span>
-                          {email.attachments &&
-                            email.attachments.length > 0 && (
-                              <Paperclip className="size-3.5 shrink-0 text-muted-foreground" />
-                            )}
+                          {thread.hasAttachments && (
+                            <Paperclip className="size-3.5 shrink-0 text-muted-foreground" />
+                          )}
                         </div>
 
                         <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                          {email.preview || "(No preview text)"}
+                          {thread.latestMessage.preview || "(No preview text)"}
                         </p>
                       </div>
                     </div>
@@ -1100,34 +1341,32 @@ export default function EmailFolderDynamicPage() {
         </Card>
       )}
 
-      {/* Email Viewer Dialog */}
+      {/* Conversation Threading Dialog (Full Chatting History with Open/Hide Style) */}
       <Dialog
-        open={Boolean(selectedEmail)}
-        onOpenChange={(open) => !open && setSelectedEmail(null)}
+        open={Boolean(selectedThread)}
+        onOpenChange={(open) => !open && setSelectedThread(null)}
       >
-        <DialogContent className="overflow-hidden p-0 sm:max-w-[700px]">
-          {selectedEmail &&
+        <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden p-0 sm:max-w-[780px]">
+          {selectedThread &&
             (() => {
-              const isIncoming = selectedEmail.direction === "INBOUND"
-              const senderParty = parseEmailParty(
-                selectedEmail.fromName,
-                selectedEmail.fromEmail
+              const isAllExpanded = selectedThread.messages.every(
+                (m) => expandedMessageIds[m.id]
               )
-              const toPartyFormatted = selectedEmail.toEmails.join(", ")
+              const totalMessages = selectedThread.messages.length
 
               return (
                 <>
-                  {/* Modal Header */}
-                  <div className="space-y-3 border-b px-6 pt-6 pb-4">
+                  {/* Conversation Header */}
+                  <div className="shrink-0 space-y-3 border-b bg-background px-6 pt-6 pb-4">
                     <div className="flex items-center justify-between gap-2 pr-6">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Badge
                           variant="outline"
                           className="text-xs font-normal capitalize"
                         >
                           {folderParam}
                         </Badge>
-                        {selectedEmail.isStarred && (
+                        {selectedThread.isStarred && (
                           <Badge
                             variant="secondary"
                             className="gap-1 bg-yellow-50 text-xs text-yellow-600 dark:bg-yellow-950/40 dark:text-yellow-400"
@@ -1136,137 +1375,255 @@ export default function EmailFolderDynamicPage() {
                             Starred
                           </Badge>
                         )}
-                        {selectedEmail.resendId && (
-                          <Badge
-                            variant="outline"
-                            className="text-[10px] text-muted-foreground"
-                          >
-                            Resend ID: {selectedEmail.resendId.slice(0, 10)}...
+                        {totalMessages > 1 && (
+                          <Badge variant="secondary" className="gap-1 text-xs">
+                            <MessageSquare className="size-3 text-primary" />
+                            {totalMessages} messages in thread
                           </Badge>
                         )}
                       </div>
-                      <span className="text-xs font-medium text-muted-foreground">
-                        {formatEmailDate(
-                          selectedEmail.sentAt || selectedEmail.createdAt
+
+                      <div className="flex items-center gap-2">
+                        {totalMessages > 1 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={toggleExpandAll}
+                            className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
+                          >
+                            <ChevronsUpDown className="size-3.5" />
+                            <span>
+                              {isAllExpanded ? "Collapse older" : "Expand all"}
+                            </span>
+                          </Button>
                         )}
-                      </span>
+                      </div>
                     </div>
 
-                    <h2 className="text-lg leading-snug font-semibold tracking-tight break-words text-foreground">
-                      {selectedEmail.subject || "(No Subject)"}
+                    <h2 className="text-lg leading-snug font-bold tracking-tight break-words text-foreground">
+                      {selectedThread.subject || "(No Subject)"}
                     </h2>
 
-                    {/* Sender & Recipient Info Card */}
-                    <div className="flex items-start justify-between gap-3 rounded-lg border bg-muted/30 p-3">
-                      <div className="flex min-w-0 items-center gap-3">
-                        <Avatar className="size-9 border bg-primary/10 text-xs font-semibold text-primary">
-                          <AvatarFallback className="bg-primary/10 text-primary">
-                            {senderParty.initials}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="truncate text-sm font-semibold text-foreground">
-                              {selectedEmail.fromName || senderParty.name}
+                    {/* Participants list */}
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+                      <span className="font-semibold text-foreground/80">
+                        Participants:
+                      </span>
+                      {selectedThread.participants.map((p, idx) => (
+                        <span
+                          key={p.email}
+                          className="inline-flex items-center gap-1 rounded bg-muted/60 px-2 py-0.5"
+                        >
+                          <span className="font-medium text-foreground">
+                            {p.name || p.email}
+                          </span>
+                          {p.name && (
+                            <span className="text-[10px] text-muted-foreground">
+                              &lt;{p.email}&gt;
                             </span>
-                            {selectedEmail.fromEmail && (
-                              <span className="truncate text-xs text-muted-foreground">
-                                &lt;{selectedEmail.fromEmail}&gt;
-                              </span>
-                            )}
-                          </div>
-                          <p className="truncate text-xs text-muted-foreground">
-                            to{" "}
-                            <span className="font-medium text-foreground">
-                              {toPartyFormatted}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
+                          )}
+                          {idx < selectedThread.participants.length - 1 && ""}
+                        </span>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Email Body */}
-                  <div className="max-h-[50vh] space-y-4 overflow-y-auto px-6 py-4 text-sm leading-relaxed text-foreground/90">
-                    {selectedEmail.bodyHtml ? (
-                      <div
-                        className="[&_img]:max-w-full [&_img]:rounded-md"
-                        dangerouslySetInnerHTML={{
-                          __html: selectedEmail.bodyHtml,
-                        }}
-                      />
-                    ) : (
-                      <div className="whitespace-pre-wrap">
-                        {selectedEmail.bodyText ||
-                          selectedEmail.preview ||
-                          "(Empty content)"}
-                      </div>
-                    )}
+                  {/* Messages Timeline (Chatting History with Open/Hide Style) */}
+                  <div className="flex-1 space-y-3 overflow-y-auto p-6">
+                    {selectedThread.messages.map((msg) => {
+                      const isExpanded = Boolean(expandedMessageIds[msg.id])
+                      const party = parseEmailParty(msg.fromName, msg.fromEmail)
+                      const isIncoming = msg.direction === "INBOUND"
 
-                    {/* Cloudflare R2 Attachments list if present */}
-                    {selectedEmail.attachments &&
-                      selectedEmail.attachments.length > 0 && (
-                        <div className="mt-4 space-y-2 border-t pt-3">
-                          <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                            <Paperclip className="size-3.5" />
-                            <span>
-                              Attachments (
-                              {selectedEmail.attachments.length})
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                            {selectedEmail.attachments.map((att) => (
-                              <div
-                                key={att.id}
-                                onClick={() =>
-                                  handleDownloadFile(att.url, att.filename)
-                                }
-                                className="group flex cursor-pointer items-center justify-between gap-2 rounded-lg border bg-muted/20 p-2.5 transition-colors hover:border-primary/40 hover:bg-muted/40"
-                                title={`Download ${att.filename}`}
-                              >
-                                <div className="flex min-w-0 items-center gap-2">
-                                  <FileText className="size-4 shrink-0 text-primary" />
-                                  <div className="min-w-0">
-                                    <p className="truncate text-xs font-medium group-hover:text-primary">
-                                      {att.filename}
-                                    </p>
-                                    <p className="text-[11px] text-muted-foreground">
-                                      {formatFileSize(att.size)}
-                                    </p>
-                                  </div>
+                      return (
+                        <div
+                          key={msg.id}
+                          className={cn(
+                            "rounded-xl border transition-all duration-200",
+                            isExpanded
+                              ? "border-border bg-card shadow-sm"
+                              : "cursor-pointer border-muted bg-muted/20 hover:border-primary/30 hover:bg-muted/40"
+                          )}
+                        >
+                          {/* Message Bar / Header */}
+                          <div
+                            onClick={() => toggleMessageExpansion(msg.id)}
+                            className={cn(
+                              "flex cursor-pointer items-center justify-between gap-3 p-3.5 select-none",
+                              isExpanded && "border-b bg-muted/10"
+                            )}
+                          >
+                            <div className="flex min-w-0 items-center gap-3">
+                              <Avatar className="size-8 shrink-0 border bg-primary/10 text-xs font-semibold text-primary">
+                                <AvatarFallback className="bg-primary/10 text-primary">
+                                  {party.initials}
+                                </AvatarFallback>
+                              </Avatar>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <span className="truncate text-xs font-bold text-foreground">
+                                    {msg.fromName || party.name}
+                                  </span>
+                                  {msg.fromEmail && (
+                                    <span className="truncate text-[11px] text-muted-foreground">
+                                      &lt;{msg.fromEmail}&gt;
+                                    </span>
+                                  )}
+                                  <Badge
+                                    variant="outline"
+                                    className={cn(
+                                      "h-4 px-1.5 py-0 text-[10px] font-normal",
+                                      isIncoming
+                                        ? "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                                        : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
+                                    )}
+                                  >
+                                    {isIncoming ? "Received" : "Sent"}
+                                  </Badge>
                                 </div>
-                                <Button
-                                  variant="ghost"
-                                  size="icon-xs"
-                                  onClick={(e) =>
-                                    handleDownloadFile(att.url, att.filename, e)
-                                  }
-                                  title="Download attachment"
-                                >
-                                  <Download className="size-3.5 text-muted-foreground group-hover:text-primary" />
-                                </Button>
+
+                                {!isExpanded && (
+                                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                                    {msg.preview || "(Empty content)"}
+                                  </p>
+                                )}
                               </div>
-                            ))}
+                            </div>
+
+                            <div className="flex shrink-0 items-center gap-2">
+                              {msg.attachments &&
+                                msg.attachments.length > 0 && (
+                                  <div className="flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+                                    <Paperclip className="size-3" />
+                                    <span className="text-[10px] font-medium">
+                                      {msg.attachments.length}
+                                    </span>
+                                  </div>
+                                )}
+                              <span className="text-xs text-muted-foreground">
+                                {formatEmailDate(msg.sentAt || msg.createdAt)}
+                              </span>
+                              {isExpanded ? (
+                                <ChevronUp className="size-4 text-muted-foreground" />
+                              ) : (
+                                <ChevronDown className="size-4 text-muted-foreground" />
+                              )}
+                            </div>
                           </div>
+
+                          {/* Expanded Message Content */}
+                          {isExpanded && (
+                            <div className="space-y-4 p-4">
+                              {/* Recipient meta line */}
+                              <div className="text-xs text-muted-foreground">
+                                <span>to </span>
+                                <span className="font-medium text-foreground">
+                                  {msg.toEmails.join(", ")}
+                                </span>
+                                {msg.ccEmails && msg.ccEmails.length > 0 && (
+                                  <span className="ml-2">
+                                    cc:{" "}
+                                    <span className="font-medium text-foreground">
+                                      {msg.ccEmails.join(", ")}
+                                    </span>
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* HTML or Text Body */}
+                              <div className="text-sm leading-relaxed text-foreground/90">
+                                {msg.bodyHtml ? (
+                                  <div
+                                    className="overflow-x-auto [&_img]:max-w-full [&_img]:rounded-md"
+                                    dangerouslySetInnerHTML={{
+                                      __html: msg.bodyHtml,
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="whitespace-pre-wrap">
+                                    {msg.bodyText ||
+                                      msg.preview ||
+                                      "(Empty content)"}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Attachments list with download */}
+                              {msg.attachments &&
+                                msg.attachments.length > 0 && (
+                                  <div className="space-y-2 border-t pt-3">
+                                    <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                                      <Paperclip className="size-3.5" />
+                                      <span>
+                                        Attachments ({msg.attachments.length})
+                                      </span>
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                      {msg.attachments.map((att) => (
+                                        <div
+                                          key={att.id}
+                                          onClick={() =>
+                                            handleDownloadFile(
+                                              att.url,
+                                              att.filename
+                                            )
+                                          }
+                                          className="group flex cursor-pointer items-center justify-between gap-2 rounded-lg border bg-muted/20 p-2.5 transition-colors hover:border-primary/40 hover:bg-muted/40"
+                                          title={`Download ${att.filename}`}
+                                        >
+                                          <div className="flex min-w-0 items-center gap-2">
+                                            <FileText className="size-4 shrink-0 text-primary" />
+                                            <div className="min-w-0">
+                                              <p className="truncate text-xs font-medium group-hover:text-primary">
+                                                {att.filename}
+                                              </p>
+                                              <p className="text-[11px] text-muted-foreground">
+                                                {formatFileSize(att.size)}
+                                              </p>
+                                            </div>
+                                          </div>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon-xs"
+                                            onClick={(e) =>
+                                              handleDownloadFile(
+                                                att.url,
+                                                att.filename,
+                                                e
+                                              )
+                                            }
+                                            title="Download attachment"
+                                          >
+                                            <Download className="size-3.5 text-muted-foreground group-hover:text-primary" />
+                                          </Button>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                            </div>
+                          )}
                         </div>
-                      )}
+                      )
+                    })}
                   </div>
 
-                  {/* Modal Footer with Actions */}
-                  <div className="flex flex-col gap-2 border-t bg-muted/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                  {/* Modal Footer with Actions (Reply / Forward / Delete) */}
+                  <div className="flex shrink-0 flex-col gap-2 border-t bg-muted/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
-                        onClick={() => setSelectedEmail(null)}
+                        onClick={() => setSelectedThread(null)}
                       >
                         Close
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        onClick={() => handleDeleteEmail(selectedEmail.id)}
+                        onClick={() => handleDeleteThread(selectedThread)}
                         className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                        title="Delete email"
+                        title="Delete conversation"
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -1276,14 +1633,16 @@ export default function EmailFolderDynamicPage() {
                       <Button
                         variant="outline"
                         onClick={() => {
-                          const sender = selectedEmail.fromEmail
-                          const recipient = selectedEmail.toEmails.join(", ")
-                          const fwdSubject = selectedEmail.subject.startsWith(
-                            "Fwd:"
-                          )
-                            ? selectedEmail.subject
-                            : `Fwd: ${selectedEmail.subject}`
-                          const fwdBody = `<br/><br/>---------- Forwarded message ---------<br/><strong>From:</strong> ${sender}<br/><strong>Date:</strong> ${formatEmailDate(selectedEmail.sentAt || selectedEmail.createdAt)}<br/><strong>Subject:</strong> ${selectedEmail.subject}<br/><strong>To:</strong> ${recipient}<br/><br/>${selectedEmail.bodyHtml || selectedEmail.preview}`
+                          const latest = selectedThread.latestMessage
+                          const fwdSubject = latest.subject.startsWith("Fwd:")
+                            ? latest.subject
+                            : `Fwd: ${selectedThread.subject}`
+                          const fwdBody = `<br/><br/>---------- Forwarded conversation ---------<br/>${selectedThread.messages
+                            .map(
+                              (m) =>
+                                `<br/><strong>From:</strong> ${m.fromName ? `${m.fromName} &lt;${m.fromEmail}&gt;` : m.fromEmail}<br/><strong>Date:</strong> ${formatEmailDate(m.sentAt || m.createdAt)}<br/><strong>Subject:</strong> ${m.subject}<br/><strong>To:</strong> ${m.toEmails.join(", ")}<br/><br/>${m.bodyHtml || m.preview}`
+                            )
+                            .join("<hr/>")}`
 
                           setComposeData({
                             to: "",
@@ -1291,7 +1650,7 @@ export default function EmailFolderDynamicPage() {
                             body: fwdBody,
                             disableTo: false,
                           })
-                          setSelectedEmail(null)
+                          setSelectedThread(null)
                           setComposeOpen(true)
                         }}
                         className="gap-1.5"
@@ -1302,13 +1661,29 @@ export default function EmailFolderDynamicPage() {
 
                       <Button
                         onClick={() => {
-                          const replyTo = selectedEmail.fromEmail || ""
-                          const replySubject = selectedEmail.subject.startsWith(
-                            "Re:"
-                          )
-                            ? selectedEmail.subject
-                            : `Re: ${selectedEmail.subject}`
-                          const replyBody = `<br/><br/><blockquote>On ${formatEmailDate(selectedEmail.sentAt || selectedEmail.createdAt)}, ${selectedEmail.fromEmail} wrote:<br/>${selectedEmail.bodyHtml || selectedEmail.preview}</blockquote>`
+                          const latest = selectedThread.latestMessage
+                          const isFromUs =
+                            latest.fromEmail
+                              .toLowerCase()
+                              .includes(currentAccount.email.toLowerCase()) ||
+                            latest.direction === "OUTBOUND"
+                          const replyTo = isFromUs
+                            ? latest.toEmails.find(
+                                (e) =>
+                                  !e
+                                    .toLowerCase()
+                                    .includes(
+                                      currentAccount.email.toLowerCase()
+                                    )
+                              ) ||
+                              latest.toEmails[0] ||
+                              ""
+                            : latest.fromEmail
+
+                          const replySubject = latest.subject.startsWith("Re:")
+                            ? latest.subject
+                            : `Re: ${selectedThread.subject}`
+                          const replyBody = `<br/><br/><blockquote>On ${formatEmailDate(latest.sentAt || latest.createdAt)}, ${latest.fromName || latest.fromEmail} wrote:<br/>${latest.bodyHtml || latest.preview}</blockquote>`
 
                           setComposeData({
                             to: replyTo,
@@ -1316,7 +1691,7 @@ export default function EmailFolderDynamicPage() {
                             body: replyBody,
                             disableTo: true,
                           })
-                          setSelectedEmail(null)
+                          setSelectedThread(null)
                           setComposeOpen(true)
                         }}
                         className="btn-gradient gap-1.5"

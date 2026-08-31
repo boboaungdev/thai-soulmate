@@ -23,6 +23,19 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu"
+import {
   Send,
   Paperclip,
   Image as ImageIcon,
@@ -49,9 +62,100 @@ import {
   AlertCircle,
   PenLine,
   RefreshCw,
+  Palette,
+  Quote,
+  Code,
+  Minus,
+  RemoveFormatting,
+  Indent,
+  Outdent,
+  Undo,
+  Redo,
+  Sparkles,
+  Type,
 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
+
+export const EMAIL_TEMPLATES = [
+  {
+    id: "follow_up",
+    title: "General Follow-Up",
+    description: "Polite follow-up on previous discussion",
+    subject: "Following up on our conversation",
+    body: `<p>Dear [Recipient Name],</p><p><br></p><p>I hope this email finds you well.</p><p><br></p><p>I am following up on our previous conversation regarding <strong>[topic/project]</strong>. Please let me know if you have had a chance to review the details or if there is any additional information you need from our end.</p><p><br></p><p>Looking forward to hearing from you soon.</p>`,
+  },
+  {
+    id: "meeting_invite",
+    title: "Meeting Request",
+    description: "Schedule a discussion or call",
+    subject: "Invitation to connect: [Meeting Subject]",
+    body: `<p>Hi [Recipient Name],</p><p><br></p><p>I would like to propose a brief 15-30 minute meeting to discuss <strong>[agenda / topics]</strong>.</p><p><br></p><p><strong>Suggested details:</strong></p><ul><li><strong>Proposed Date:</strong> [e.g. Tomorrow or Friday]</li><li><strong>Proposed Time:</strong> [e.g. 2:00 PM - 2:30 PM]</li><li><strong>Location / Platform:</strong> Google Meet / Zoom</li></ul><p><br></p><p>Please let me know if this time works for you or feel free to suggest an alternative time that fits your schedule.</p>`,
+  },
+  {
+    id: "thank_you",
+    title: "Thank You & Next Steps",
+    description: "Post-meeting summary and next actions",
+    subject: "Thank you for your time & Next Steps",
+    body: `<p>Dear [Recipient Name],</p><p><br></p><p>Thank you very much for taking the time to meet with us today. It was great discussing <strong>[topic]</strong> and aligning on our goals.</p><p><br></p><p><strong>Summary of Action Items:</strong></p><ol><li>[Action item 1 - Assigned to Name]</li><li>[Action item 2 - Assigned to Name]</li></ol><p><br></p><p>We will keep you posted as we make progress. Please reach out if you have any questions in the meantime.</p>`,
+  },
+  {
+    id: "support_resolution",
+    title: "Customer Support Resolution",
+    description: "Official solution and closure for customer inquiries",
+    subject: "Update on your inquiry [Ref: Support Ticket]",
+    body: `<p>Dear [Customer Name],</p><p><br></p><p>Thank you for contacting Thai Soulmate Support.</p><p><br></p><p>We have thoroughly reviewed your request regarding <strong>[issue description]</strong>. We are pleased to inform you that the issue has been resolved.</p><p><br></p><p><strong>Resolution Details:</strong></p><blockquote>[Explain resolution steps or actions taken here]</blockquote><p><br></p><p>If you experience any further issues or have additional questions, please feel free to reply directly to this email and our team will be happy to assist.</p>`,
+  },
+  {
+    id: "introduction",
+    title: "Formal Introduction",
+    description: "Introducing team & services",
+    subject: "Introduction: Thai Soulmate & [Topic]",
+    body: `<p>Dear [Recipient Name],</p><p><br></p><p>My name is [Your Name] from <strong>Thai Soulmate</strong>. I am reaching out to introduce our team and discuss how we can assist with <strong>[topic/area of interest]</strong>.</p><p><br></p><p>We specialize in providing top-tier matching and support services tailored to your needs.</p><p><br></p><p>Would you be open to a brief introductory call sometime this week? Looking forward to connecting.</p>`,
+  },
+]
+
+export const TEXT_COLORS = [
+  { name: "Default", color: "#111827" },
+  { name: "Muted Gray", color: "#6b7280" },
+  { name: "Red", color: "#ef4444" },
+  { name: "Orange", color: "#f97316" },
+  { name: "Amber", color: "#d97706" },
+  { name: "Green", color: "#10b981" },
+  { name: "Teal", color: "#14b8a6" },
+  { name: "Blue", color: "#2563eb" },
+  { name: "Indigo", color: "#6366f1" },
+  { name: "Purple", color: "#8b5cf6" },
+  { name: "Pink", color: "#ec4899" },
+]
+
+export const HIGHLIGHT_COLORS = [
+  { name: "None", color: "transparent" },
+  { name: "Yellow", color: "#fef08a" },
+  { name: "Green", color: "#bbf7d0" },
+  { name: "Cyan", color: "#a5f3fc" },
+  { name: "Blue", color: "#bfdbfe" },
+  { name: "Purple", color: "#e9d5ff" },
+  { name: "Pink", color: "#fbcfe8" },
+  { name: "Orange", color: "#fed7aa" },
+]
+
+export const FONT_SIZES = [
+  { label: "Small", size: "1", px: "12px" },
+  { label: "Normal", size: "3", px: "14px" },
+  { label: "Large", size: "5", px: "18px" },
+  { label: "Huge", size: "7", px: "24px" },
+]
+
+export const FONT_FAMILIES = [
+  { label: "Sans Serif", font: "ui-sans-serif, system-ui, sans-serif" },
+  { label: "Serif (Georgia)", font: "Georgia, serif" },
+  { label: "Monospace", font: "ui-monospace, monospace" },
+  { label: "Arial", font: "Arial, sans-serif" },
+  { label: "Times New Roman", font: "'Times New Roman', serif" },
+  { label: "Trebuchet MS", font: "'Trebuchet MS', sans-serif" },
+  { label: "Verdana", font: "Verdana, sans-serif" },
+]
 
 export interface AttachedFile {
   id: string
@@ -315,6 +419,7 @@ interface ComposeEmailDialogProps {
   initialSubject?: string
   initialBody?: string
   disableTo?: boolean
+  disableSubject?: boolean
   signatureText?: string
   signatureImage?: string | null
   signatureSize?: "sm" | "md" | "lg"
@@ -339,6 +444,7 @@ export function ComposeEmailDialog({
   initialSubject = "",
   initialBody = "",
   disableTo = false,
+  disableSubject = false,
   signatureText = "",
   signatureImage = null,
   signatureSize = "md",
@@ -414,6 +520,21 @@ export function ComposeEmailDialog({
         editorRef.current.innerHTML += imgHtml
       }
     }
+  }
+
+  const handleApplyTemplate = (tpl: (typeof EMAIL_TEMPLATES)[0]) => {
+    if (!subject.trim()) {
+      setSubject(tpl.subject)
+    }
+    if (editorRef.current) {
+      if (!editorRef.current.innerText.trim()) {
+        editorRef.current.innerHTML = tpl.body
+      } else {
+        editorRef.current.innerHTML = `${editorRef.current.innerHTML}<br/><br/>${tpl.body}`
+      }
+      editorRef.current.focus()
+    }
+    toast.success(`Applied "${tpl.title}" template!`)
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -810,24 +931,132 @@ export function ComposeEmailDialog({
               >
                 Subject
               </Label>
-              <Input
-                id="email-subject"
-                placeholder="Subject"
-                disabled={isSending}
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="h-8 flex-1 border-0 px-2 text-sm font-medium shadow-none focus-visible:ring-0 disabled:opacity-60"
-              />
+              <div className="flex flex-1 items-center gap-2">
+                <Input
+                  id="email-subject"
+                  placeholder="Subject"
+                  disabled={isSending || disableSubject}
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  className={cn(
+                    "h-8 flex-1 border-0 px-2 text-sm font-medium shadow-none focus-visible:ring-0",
+                    (disableSubject || isSending) &&
+                      "cursor-not-allowed bg-muted/20 text-muted-foreground opacity-80 select-none"
+                  )}
+                />
+                {disableSubject && (
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[11px] font-normal text-muted-foreground">
+                    <Lock className="size-2.5" />
+                    Locked for thread
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Text Formatting Toolbar */}
           {showFormatting && (
-            <div className="flex flex-wrap items-center gap-0.5 border-b bg-muted/30 px-3 py-1.5 text-muted-foreground select-none">
+            <div className="flex flex-wrap items-center gap-1 border-b bg-muted/30 px-3 py-1.5 text-muted-foreground select-none">
+              {/* Undo / Redo */}
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("undo")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Undo (Ctrl+Z)"
+              >
+                <Undo className="size-3.5" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("redo")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Redo (Ctrl+Y)"
+              >
+                <Redo className="size-3.5" />
+              </Button>
+
+              <Separator orientation="vertical" className="mx-1 h-4" />
+
+              {/* Font Family Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={isSending}
+                    className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                    title="Font Family"
+                  >
+                    <span>Font</span>
+                    <ChevronDown className="size-3 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-44 text-xs">
+                  <DropdownMenuLabel className="text-[11px] text-muted-foreground">
+                    Font Family
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {FONT_FAMILIES.map((f) => (
+                    <DropdownMenuItem
+                      key={f.label}
+                      onClick={() => formatDoc("fontName", f.font)}
+                      style={{ fontFamily: f.font }}
+                      className="cursor-pointer"
+                    >
+                      {f.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Font Size Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={isSending}
+                    className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                    title="Font Size"
+                  >
+                    <Type className="size-3.5" />
+                    <span>Size</span>
+                    <ChevronDown className="size-3 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-36 text-xs">
+                  <DropdownMenuLabel className="text-[11px] text-muted-foreground">
+                    Font Size
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {FONT_SIZES.map((s) => (
+                    <DropdownMenuItem
+                      key={s.label}
+                      onClick={() => formatDoc("fontSize", s.size)}
+                      className="flex cursor-pointer items-center justify-between"
+                    >
+                      <span>{s.label}</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {s.px}
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Separator orientation="vertical" className="mx-1 h-4" />
+
+              {/* Bold, Italic, Underline, Strikethrough */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
                 disabled={isSending}
                 onClick={() => formatDoc("bold")}
                 className="size-7 hover:bg-muted hover:text-foreground"
@@ -838,7 +1067,7 @@ export function ComposeEmailDialog({
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon-xs"
                 disabled={isSending}
                 onClick={() => formatDoc("italic")}
                 className="size-7 hover:bg-muted hover:text-foreground"
@@ -849,7 +1078,7 @@ export function ComposeEmailDialog({
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon-xs"
                 disabled={isSending}
                 onClick={() => formatDoc("underline")}
                 className="size-7 hover:bg-muted hover:text-foreground"
@@ -860,7 +1089,7 @@ export function ComposeEmailDialog({
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon-xs"
                 disabled={isSending}
                 onClick={() => formatDoc("strikeThrough")}
                 className="size-7 hover:bg-muted hover:text-foreground"
@@ -871,35 +1100,84 @@ export function ComposeEmailDialog({
 
               <Separator orientation="vertical" className="mx-1 h-4" />
 
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                disabled={isSending}
-                onClick={() => formatDoc("insertUnorderedList")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Bulleted list"
-              >
-                <List className="size-3.5" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                disabled={isSending}
-                onClick={() => formatDoc("insertOrderedList")}
-                className="size-7 hover:bg-muted hover:text-foreground"
-                title="Numbered list"
-              >
-                <ListOrdered className="size-3.5" />
-              </Button>
+              {/* Text Color & Highlight Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    disabled={isSending}
+                    className="size-7 hover:bg-muted hover:text-foreground"
+                    title="Text color & Highlight"
+                  >
+                    <Palette className="size-3.5 text-primary" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-64 space-y-3 p-3">
+                  <div>
+                    <div className="mb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                      Text Color
+                    </div>
+                    <div className="grid grid-cols-6 gap-1.5">
+                      {TEXT_COLORS.map((c) => (
+                        <button
+                          key={c.name}
+                          type="button"
+                          onClick={() => formatDoc("foreColor", c.color)}
+                          style={{ backgroundColor: c.color }}
+                          className="size-6 rounded-md border border-border/40 shadow-xs transition-transform hover:scale-110"
+                          title={c.name}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <div className="mb-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                      Highlight Color
+                    </div>
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {HIGHLIGHT_COLORS.map((c) => (
+                        <button
+                          key={c.name}
+                          type="button"
+                          onClick={() => {
+                            if (c.color === "transparent") {
+                              formatDoc("removeFormat")
+                            } else {
+                              formatDoc("hiliteColor", c.color) ||
+                                formatDoc("backColor", c.color)
+                            }
+                          }}
+                          style={{
+                            backgroundColor:
+                              c.color === "transparent" ? "#ffffff" : c.color,
+                          }}
+                          className={cn(
+                            "flex h-6 items-center justify-center rounded-md border border-border/40 text-[10px] font-medium text-foreground shadow-xs transition-transform hover:scale-105",
+                            c.color === "transparent" &&
+                              "border-dashed text-muted-foreground"
+                          )}
+                          title={c.name}
+                        >
+                          {c.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
 
               <Separator orientation="vertical" className="mx-1 h-4" />
 
+              {/* Alignments */}
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon-xs"
                 disabled={isSending}
                 onClick={() => formatDoc("justifyLeft")}
                 className="size-7 hover:bg-muted hover:text-foreground"
@@ -910,7 +1188,7 @@ export function ComposeEmailDialog({
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon-xs"
                 disabled={isSending}
                 onClick={() => formatDoc("justifyCenter")}
                 className="size-7 hover:bg-muted hover:text-foreground"
@@ -921,7 +1199,7 @@ export function ComposeEmailDialog({
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon-xs"
                 disabled={isSending}
                 onClick={() => formatDoc("justifyRight")}
                 className="size-7 hover:bg-muted hover:text-foreground"
@@ -932,16 +1210,108 @@ export function ComposeEmailDialog({
 
               <Separator orientation="vertical" className="mx-1 h-4" />
 
+              {/* Lists */}
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("insertUnorderedList")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Bulleted list"
+              >
+                <List className="size-3.5" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("insertOrderedList")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Numbered list"
+              >
+                <ListOrdered className="size-3.5" />
+              </Button>
+
+              <Separator orientation="vertical" className="mx-1 h-4" />
+
+              {/* Indent / Outdent */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("outdent")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Decrease indent"
+              >
+                <Outdent className="size-3.5" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("indent")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Increase indent"
+              >
+                <Indent className="size-3.5" />
+              </Button>
+
+              <Separator orientation="vertical" className="mx-1 h-4" />
+
+              {/* Quote block */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("formatBlock", "<blockquote>")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Quote"
+              >
+                <Quote className="size-3.5" />
+              </Button>
+
+              {/* Insert Horizontal Rule Divider */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("insertHorizontalRule")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Divider Line"
+              >
+                <Minus className="size-3.5" />
+              </Button>
+
+              {/* Insert Link */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
                 disabled={isSending}
                 onClick={handleAddLink}
                 className="size-7 hover:bg-muted hover:text-foreground"
                 title="Insert Link"
               >
                 <LinkIcon className="size-3.5" />
+              </Button>
+
+              {/* Clear Formatting */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={isSending}
+                onClick={() => formatDoc("removeFormat")}
+                className="size-7 hover:bg-muted hover:text-foreground"
+                title="Clear formatting"
+              >
+                <RemoveFormatting className="size-3.5" />
               </Button>
             </div>
           )}
@@ -975,86 +1345,58 @@ export function ComposeEmailDialog({
                 }
               }}
             />
+          </div>
 
-            {/* Pinned Live Signature Preview Box at Bottom of Editor */}
-            {hasSignatureConfigured && includeSignature && (
-              <div className="mt-4 animate-in rounded-lg border border-dashed border-primary/30 bg-primary/5 p-3 text-xs duration-150 fade-in-50 select-none">
-                <div className="mb-1.5 flex items-center justify-between border-b border-primary/10 pb-1">
-                  <span className="flex items-center gap-1.5 text-[11px] font-semibold text-primary">
-                    <PenLine className="size-3.5" />
-                    Email Signature Attached
-                  </span>
+          {/* Bottom Email Signature Preview Bar */}
+          {hasSignatureConfigured && (
+            <div className="border-t bg-muted/15 px-4 py-2 text-xs">
+              {includeSignature ? (
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                      <PenLine className="size-3" />
+                      Signature attached
+                    </span>
+                    <span className="truncate text-[11px] text-muted-foreground">
+                      {(signatureText || "").split("\n")[0] ||
+                        "Custom signature configured"}
+                    </span>
+                    {signatureImage && (
+                      <span className="inline-flex shrink-0 items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                        <ImageIcon className="size-2.5" />
+                        Logo attached
+                      </span>
+                    )}
+                  </div>
                   {!isSending && (
                     <button
                       type="button"
                       onClick={() => setIncludeSignature(false)}
-                      className="text-[10px] text-muted-foreground transition-colors hover:text-destructive"
+                      className="shrink-0 text-[11px] font-medium text-muted-foreground transition-colors hover:text-destructive"
                     >
-                      Remove from this email
+                      Remove
                     </button>
                   )}
                 </div>
-                <div className="font-sans leading-relaxed text-foreground">
-                  {(() => {
-                    const heightClass =
-                      signatureSize === "sm"
-                        ? "h-8 max-h-8"
-                        : signatureSize === "lg"
-                          ? "h-14 max-h-14"
-                          : "h-10 max-h-10"
-
-                    const lines = (signatureText || "").split("\n")
-                    const greeting = lines[0] || "Best regards,"
-                    const rest = lines.slice(1)
-
-                    return (
-                      <div>
-                        <div className="font-medium text-foreground">
-                          {greeting}
-                        </div>
-                        {signatureImage && (
-                          <div className="my-1.5">
-                            <img
-                              src={signatureImage}
-                              alt="Signature"
-                              className={cn(
-                                "rounded object-contain",
-                                heightClass
-                              )}
-                            />
-                          </div>
-                        )}
-                        {rest.length > 0 && (
-                          <div className="whitespace-pre-line text-muted-foreground">
-                            {rest.join("\n")}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })()}
+              ) : (
+                <div className="flex items-center justify-between gap-2 text-muted-foreground">
+                  <span className="flex items-center gap-1.5 text-[11px]">
+                    <PenLine className="size-3 opacity-60" />
+                    Signature disabled for this email
+                  </span>
+                  {!isSending && (
+                    <button
+                      type="button"
+                      onClick={() => setIncludeSignature(true)}
+                      className="text-[11px] font-medium text-primary hover:underline"
+                    >
+                      + Attach Signature
+                    </button>
+                  )}
                 </div>
-              </div>
-            )}
-
-            {/* Signature Not Included Banner */}
-            {hasSignatureConfigured && !includeSignature && (
-              <div className="mt-3 flex items-center justify-between rounded-md border border-dashed bg-muted/20 px-3 py-1.5 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1.5">
-                  <PenLine className="size-3.5 opacity-50" />
-                  Signature not included
-                </span>
-                {!isSending && (
-                  <button
-                    type="button"
-                    onClick={() => setIncludeSignature(true)}
-                    className="text-[11px] font-medium text-primary hover:underline"
-                  >
-                    + Insert Signature
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           {/* Attachment Preview Tray */}
           {attachments.length > 0 && (
@@ -1200,6 +1542,44 @@ export function ComposeEmailDialog({
                   A
                 </span>
               </Button>
+
+              {/* Quick Templates Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={isSending}
+                    className="h-8 gap-1.5 px-2.5 text-xs text-muted-foreground hover:text-foreground"
+                    title="Insert Email Template"
+                  >
+                    <Sparkles className="size-3.5 text-amber-500" />
+                    <span className="hidden sm:inline">Templates</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-72">
+                  <DropdownMenuLabel className="flex items-center gap-1.5 text-xs">
+                    <Sparkles className="size-3.5 text-amber-500" />
+                    <span>Quick Email Templates</span>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {EMAIL_TEMPLATES.map((tpl) => (
+                    <DropdownMenuItem
+                      key={tpl.id}
+                      onClick={() => handleApplyTemplate(tpl)}
+                      className="flex cursor-pointer flex-col items-start gap-0.5 py-2"
+                    >
+                      <span className="text-xs font-medium text-foreground">
+                        {tpl.title}
+                      </span>
+                      <span className="text-[11px] leading-tight text-muted-foreground">
+                        {tpl.description}
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {/* Discard & Status */}

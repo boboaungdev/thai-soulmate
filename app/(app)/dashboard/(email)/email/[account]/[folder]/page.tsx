@@ -26,6 +26,10 @@ import {
   ChevronUp,
   ChevronsUpDown,
   MessageSquare,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react"
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
@@ -43,9 +47,11 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
@@ -295,6 +301,7 @@ export default function EmailFolderDynamicPage() {
     subject?: string
     body?: string
     disableTo?: boolean
+    disableSubject?: boolean
   }>({})
 
   const [emails, setEmails] = React.useState<DbEmailMessage[]>([])
@@ -304,6 +311,13 @@ export default function EmailFolderDynamicPage() {
   const [expandedMessageIds, setExpandedMessageIds] = React.useState<
     Record<string, boolean>
   >({})
+  const [currentPage, setCurrentPage] = React.useState(1)
+  const [pageSize, setPageSize] = React.useState(15)
+
+  // Reset pagination when folder, account, or search changes
+  React.useEffect(() => {
+    setCurrentPage(1)
+  }, [folderParam, accountParam, searchQuery])
 
   // Settings State
   const defaultDisplayName = React.useMemo(
@@ -610,6 +624,18 @@ export default function EmailFolderDynamicPage() {
     )
   }, [threads, searchQuery])
 
+  // Pagination Calculations
+  const totalItems = filteredThreads.length
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize))
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages)
+  const startIndex = totalItems === 0 ? 0 : (safeCurrentPage - 1) * pageSize + 1
+  const endIndex = Math.min(safeCurrentPage * pageSize, totalItems)
+
+  const paginatedThreads = React.useMemo(() => {
+    const start = (safeCurrentPage - 1) * pageSize
+    return filteredThreads.slice(start, start + pageSize)
+  }, [filteredThreads, safeCurrentPage, pageSize])
+
   // Email & Thread Actions
   const handleToggleStarThread = async (
     thread: EmailThread,
@@ -802,6 +828,7 @@ export default function EmailFolderDynamicPage() {
             initialSubject={composeData.subject}
             initialBody={composeData.body}
             disableTo={composeData.disableTo}
+            disableSubject={composeData.disableSubject}
             signatureText={savedSignature}
             signatureImage={savedSignatureImage}
             signatureSize={savedSignatureSize}
@@ -1212,7 +1239,42 @@ export default function EmailFolderDynamicPage() {
                 />
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                {/* Header Mini Pagination */}
+                {!isLoadingEmails && totalItems > 0 && (
+                  <div className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">
+                    <span>
+                      {startIndex}–{endIndex} of {totalItems}
+                    </span>
+                    <div className="flex items-center gap-0.5">
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
+                        disabled={safeCurrentPage <= 1}
+                        onClick={() =>
+                          setCurrentPage((p) => Math.max(1, p - 1))
+                        }
+                        title="Previous page"
+                        className="size-7"
+                      >
+                        <ChevronLeft className="size-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
+                        disabled={safeCurrentPage >= totalPages}
+                        onClick={() =>
+                          setCurrentPage((p) => Math.min(totalPages, p + 1))
+                        }
+                        title="Next page"
+                        className="size-7"
+                      >
+                        <ChevronRight className="size-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 <Button
                   variant="outline"
                   size="icon-sm"
@@ -1229,11 +1291,31 @@ export default function EmailFolderDynamicPage() {
 
           <CardContent className="flex-1 p-0">
             {isLoadingEmails ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground">
-                <RefreshCw className="mb-3 size-7 animate-spin text-primary/60" />
-                <p className="text-sm font-medium">
-                  Loading emails from database...
-                </p>
+              /* Skeleton Loading State */
+              <div className="divide-y divide-border/60">
+                {Array.from({ length: Math.min(pageSize, 8) }).map((_, i) => (
+                  <div key={i} className="flex items-start gap-4 p-4">
+                    <Skeleton className="mt-0.5 size-4 shrink-0 rounded" />
+                    <div className="min-w-0 flex-1 space-y-2.5">
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-4 w-32 rounded sm:w-44" />
+                          {i % 2 === 0 && (
+                            <Skeleton className="h-4 w-7 rounded-full" />
+                          )}
+                        </div>
+                        <Skeleton className="h-3.5 w-16 rounded" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="h-4 w-2/5 rounded" />
+                        {i % 3 === 0 && (
+                          <Skeleton className="size-3.5 rounded" />
+                        )}
+                      </div>
+                      <Skeleton className="h-3.5 w-4/5 rounded" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : filteredThreads.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
@@ -1249,7 +1331,7 @@ export default function EmailFolderDynamicPage() {
               </div>
             ) : (
               <div className="divide-y">
-                {filteredThreads.map((thread) => {
+                {paginatedThreads.map((thread) => {
                   const isSentFolder = folderParam === "sent"
                   const messageCount = thread.messages.length
 
@@ -1338,6 +1420,140 @@ export default function EmailFolderDynamicPage() {
               </div>
             )}
           </CardContent>
+
+          {/* Card Footer with Full Pagination Controls */}
+          {!isLoadingEmails && totalItems > 0 && (
+            <CardFooter className="flex flex-col gap-3 border-t bg-muted/10 p-3.5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                <span>
+                  Showing{" "}
+                  <span className="font-medium text-foreground">
+                    {startIndex}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-medium text-foreground">
+                    {endIndex}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-medium text-foreground">
+                    {totalItems}
+                  </span>{" "}
+                  conversations
+                </span>
+
+                <div className="flex items-center gap-1.5 sm:ml-2">
+                  <span className="text-muted-foreground">Rows per page:</span>
+                  <div className="flex items-center gap-1 rounded-md border bg-background p-0.5">
+                    {[10, 15, 25, 50].map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => {
+                          setPageSize(size)
+                          setCurrentPage(1)
+                        }}
+                        className={cn(
+                          "rounded px-2 py-0.5 text-xs font-medium transition-colors",
+                          pageSize === size
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="icon-xs"
+                  disabled={safeCurrentPage <= 1}
+                  onClick={() => setCurrentPage(1)}
+                  title="First page"
+                  className="size-7"
+                >
+                  <ChevronsLeft className="size-3.5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon-xs"
+                  disabled={safeCurrentPage <= 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  title="Previous page"
+                  className="size-7"
+                >
+                  <ChevronLeft className="size-3.5" />
+                </Button>
+
+                <div className="flex items-center gap-1 px-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((p) => {
+                      if (totalPages <= 5) return true
+                      if (p === 1 || p === totalPages) return true
+                      return Math.abs(p - safeCurrentPage) <= 1
+                    })
+                    .reduce((acc: (number | string)[], p, idx, arr) => {
+                      if (
+                        idx > 0 &&
+                        (p as number) - (arr[idx - 1] as number) > 1
+                      ) {
+                        acc.push("...")
+                      }
+                      acc.push(p)
+                      return acc
+                    }, [])
+                    .map((p, idx) =>
+                      typeof p === "string" ? (
+                        <span
+                          key={`dots-${idx}`}
+                          className="px-1 text-xs text-muted-foreground"
+                        >
+                          ...
+                        </span>
+                      ) : (
+                        <Button
+                          key={p}
+                          variant={
+                            safeCurrentPage === p ? "default" : "outline"
+                          }
+                          size="icon-xs"
+                          onClick={() => setCurrentPage(p)}
+                          className="size-7 text-xs"
+                        >
+                          {p}
+                        </Button>
+                      )
+                    )}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="icon-xs"
+                  disabled={safeCurrentPage >= totalPages}
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  title="Next page"
+                  className="size-7"
+                >
+                  <ChevronRight className="size-3.5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon-xs"
+                  disabled={safeCurrentPage >= totalPages}
+                  onClick={() => setCurrentPage(totalPages)}
+                  title="Last page"
+                  className="size-7"
+                >
+                  <ChevronsRight className="size-3.5" />
+                </Button>
+              </div>
+            </CardFooter>
+          )}
         </Card>
       )}
 
@@ -1649,6 +1865,7 @@ export default function EmailFolderDynamicPage() {
                             subject: fwdSubject,
                             body: fwdBody,
                             disableTo: false,
+                            disableSubject: true,
                           })
                           setSelectedThread(null)
                           setComposeOpen(true)
@@ -1690,6 +1907,7 @@ export default function EmailFolderDynamicPage() {
                             subject: replySubject,
                             body: replyBody,
                             disableTo: true,
+                            disableSubject: true,
                           })
                           setSelectedThread(null)
                           setComposeOpen(true)

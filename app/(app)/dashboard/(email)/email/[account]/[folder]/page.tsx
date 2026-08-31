@@ -34,6 +34,7 @@ import {
 
 import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
 import { useAuthStore } from "@/stores/auth-store"
+import { useEmailStore, type DbEmailMessage } from "@/stores/email-store"
 import {
   ComposeEmailDialog,
   TagEmailInput,
@@ -59,41 +60,9 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
-// Database Email type
-export interface DbEmailMessage {
-  id: string
-  resendId?: string | null
-  mailbox: string
-  folder: "INBOX" | "SENT" | "DRAFT" | "TRASH" | "ARCHIVE" | "SPAM"
-  direction: "INBOUND" | "OUTBOUND"
-  fromEmail: string
-  fromName?: string | null
-  toEmails: string[]
-  ccEmails: string[]
-  bccEmails: string[]
-  replyTo?: string | null
-  subject: string
-  preview?: string | null
-  bodyText?: string | null
-  bodyHtml: string
-  isRead: boolean
-  isStarred: boolean
-  isArchived: boolean
-  isTrash: boolean
-  attachments: Array<{
-    id: string
-    filename: string
-    contentType: string
-    size: number
-    url: string
-    r2Key: string
-    isInline: boolean
-  }>
-  sentAt?: string | null
-  receivedAt?: string | null
-  createdAt: string
-  updatedAt: string
-}
+export type { DbEmailMessage }
+
+const EMPTY_EMAILS: DbEmailMessage[] = []
 
 export interface EmailThread {
   threadId: string
@@ -304,8 +273,22 @@ export default function EmailFolderDynamicPage() {
     disableSubject?: boolean
   }>({})
 
-  const [emails, setEmails] = React.useState<DbEmailMessage[]>([])
-  const [isLoadingEmails, setIsLoadingEmails] = React.useState(true)
+  // Zustand Store Integration
+  const accountEmails = useEmailStore((s) => s.emailsByAccount[accountParam])
+  const emails = accountEmails ?? EMPTY_EMAILS
+  const isFetchingEmails = useEmailStore((s) =>
+    Boolean(s.isFetchingByAccount[accountParam])
+  )
+  const hasInitialLoaded = useEmailStore((s) =>
+    Boolean(s.hasInitialLoaded[accountParam])
+  )
+  const storeFetchEmails = useEmailStore((s) => s.fetchEmails)
+  const storeUpdateEmail = useEmailStore((s) => s.updateEmail)
+  const storeDeleteEmails = useEmailStore((s) => s.deleteEmails)
+
+  // Show skeleton ONLY on the very first cold load if no cached emails exist yet
+  const isLoadingEmails = !hasInitialLoaded && emails.length === 0
+
   const [selectedThread, setSelectedThread] =
     React.useState<EmailThread | null>(null)
   const [expandedMessageIds, setExpandedMessageIds] = React.useState<
@@ -364,30 +347,11 @@ export default function EmailFolderDynamicPage() {
   const [isEditingSignature, setIsEditingSignature] = React.useState(false)
   const [isSavingSettings, setIsSavingSettings] = React.useState(false)
 
-  // Fetch real emails from database API
+  // Fetch real emails from database API via Zustand store
   const fetchEmails = React.useCallback(async () => {
     if (folderParam === "settings") return
-    setIsLoadingEmails(true)
-    try {
-      const userEmailParam =
-        accountParam === "personal" && userEmail
-          ? `&userEmail=${encodeURIComponent(userEmail)}`
-          : ""
-      const res = await fetch(
-        `/api/email?mailbox=${encodeURIComponent(accountParam)}&folder=${encodeURIComponent(
-          folderParam
-        )}&q=${encodeURIComponent(searchQuery)}${userEmailParam}`
-      )
-      const json = await res.json()
-      if (json.success) {
-        setEmails(json.data || [])
-      }
-    } catch (err) {
-      console.error("Failed to fetch emails from database", err)
-    } finally {
-      setIsLoadingEmails(false)
-    }
-  }, [accountParam, folderParam, searchQuery, userEmail])
+    await storeFetchEmails(accountParam, folderParam, searchQuery, userEmail)
+  }, [accountParam, folderParam, searchQuery, userEmail, storeFetchEmails])
 
   React.useEffect(() => {
     fetchEmails()
@@ -643,12 +607,11 @@ export default function EmailFolderDynamicPage() {
   ) => {
     e.stopPropagation()
     const nextStarred = !thread.isStarred
-    const msgIds = new Set(thread.messages.map((m) => m.id))
-    setEmails((prev) =>
-      prev.map((item) =>
-        msgIds.has(item.id) ? { ...item, isStarred: nextStarred } : item
-      )
-    )
+    // Optimistic update in Zustand store
+    thread.messages.forEach((m) => {
+      storeUpdateEmail(m.id, { isStarred: nextStarred })
+    })
+
     if (selectedThread && selectedThread.threadId === thread.threadId) {
       setSelectedThread({
         ...selectedThread,
@@ -676,19 +639,22 @@ export default function EmailFolderDynamicPage() {
 
   const handleDeleteThread = async (thread: EmailThread) => {
     try {
+      const msgIds = thread.messages.map((m) => m.id)
+      // Optimistic delete in Zustand store
+      storeDeleteEmails(msgIds)
+
+      if (selectedThread?.threadId === thread.threadId) {
+        setSelectedThread(null)
+      }
       await Promise.all(
         thread.messages.map((m) =>
           fetch(`/api/email?id=${m.id}`, { method: "DELETE" })
         )
       )
-      const msgIds = new Set(thread.messages.map((m) => m.id))
-      setEmails((prev) => prev.filter((e) => !msgIds.has(e.id)))
-      if (selectedThread?.threadId === thread.threadId) {
-        setSelectedThread(null)
-      }
       toast.success("Conversation deleted successfully")
     } catch (err) {
       toast.error("Failed to delete conversation")
+      fetchEmails()
     }
   }
 
@@ -702,12 +668,10 @@ export default function EmailFolderDynamicPage() {
 
     const unreadMsgs = thread.messages.filter((m) => !m.isRead)
     if (unreadMsgs.length > 0) {
-      const unreadIds = new Set(unreadMsgs.map((m) => m.id))
-      setEmails((prev) =>
-        prev.map((item) =>
-          unreadIds.has(item.id) ? { ...item, isRead: true } : item
-        )
-      )
+      // Optimistic mark read in Zustand store
+      unreadMsgs.forEach((m) => {
+        storeUpdateEmail(m.id, { isRead: true })
+      })
       Promise.all(
         unreadMsgs.map((m) =>
           fetch("/api/email", {
@@ -1282,7 +1246,7 @@ export default function EmailFolderDynamicPage() {
                   title="Refresh emails"
                 >
                   <RefreshCw
-                    className={cn("size-4", isLoadingEmails && "animate-spin")}
+                    className={cn("size-4", isFetchingEmails && "animate-spin")}
                   />
                 </Button>
               </div>

@@ -22,6 +22,7 @@ export const CONTACT = {
 } as const
 
 export const EMAIL = {
+  register: "register@thaisoulmate.org",
   contact: "contact@thaisoulmate.org",
   notify: "notify@thaisoulmate.org",
 

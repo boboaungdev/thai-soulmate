@@ -144,7 +144,7 @@ export async function POST(req: Request) {
     // -----------------------------------------
 
     const { data: userData, error: userError } = await resend.emails.send({
-      from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
+      from: `"${APP_INFO.name}" <${EMAIL.register}>`,
 
       to: validatedData.email,
 

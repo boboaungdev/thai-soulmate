@@ -28,13 +28,13 @@ export const EMAIL_ACCOUNTS: EmailAccount[] = [
     description:
       "Support for active members, including service assistance, profile management, and member requests",
   },
-  {
-    id: "payments",
-    email: "payments@thaisoulmate.org",
-    name: `${APP_INFO.name} - Payment`,
-    description:
-      "Payment links, billing, invoices, receipts, and payment-related emails for customers and members",
-  },
+  // {
+  //   id: "payments",
+  //   email: "payments@thaisoulmate.org",
+  //   name: `${APP_INFO.name} - Payment`,
+  //   description:
+  //     "Payment links, billing, invoices, receipts, and payment-related emails for customers and members",
+  // },
   {
     id: "socials",
     email: "socials@thaisoulmate.org",

@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { resend } from "@/lib/resend"
 import { EmailFolder } from "@/lib/generated/prisma/client"
 import { EMAIL_ACCOUNTS } from "@/constants/email"
-import { syncEmailsFromResend } from "@/lib/email-sync"
-import { parseSenderNameAndEmail } from "@/lib/email-utils"
-import {
-  getReceivedEmail,
-  downloadAndUploadAttachment,
-} from "@/lib/resend-inbound"
 import { deleteEmailR2Assets } from "@/lib/r2-email"
+
+export const dynamic = "force-dynamic"
 
 export async function GET(req: Request) {
   try {
@@ -17,13 +12,6 @@ export async function GET(req: Request) {
     const mailbox = searchParams.get("mailbox") || "info"
     const folderParam = (searchParams.get("folder") || "inbox").toUpperCase()
     const query = (searchParams.get("q") || "").trim()
-
-    // Automatically sync missing emails from Resend into Database
-    try {
-      await syncEmailsFromResend(mailbox)
-    } catch (syncErr) {
-      console.warn("Background Resend sync note:", syncErr)
-    }
 
     let folder: EmailFolder = EmailFolder.INBOX
     if (folderParam === "SENT") folder = EmailFolder.SENT
@@ -87,33 +75,34 @@ export async function GET(req: Request) {
         }
       } else if (folder === EmailFolder.DRAFT) {
         whereClause = {
-          OR: [
-            { fromEmail: { equals: userEmail, mode: "insensitive" } },
-            { toEmails: { has: userEmail } },
-            { ccEmails: { has: userEmail } },
-            { bccEmails: { has: userEmail } },
-          ],
-          folder: {
-            notIn: [EmailFolder.TRASH, EmailFolder.ARCHIVE, EmailFolder.SPAM],
-          },
+          fromEmail: { equals: userEmail, mode: "insensitive" },
+          folder: EmailFolder.DRAFT,
           isTrash: false,
         }
       } else if (folder === EmailFolder.SENT) {
         whereClause = {
           fromEmail: { equals: userEmail, mode: "insensitive" },
           isTrash: false,
+          folder: {
+            notIn: [EmailFolder.TRASH, EmailFolder.DRAFT, EmailFolder.SPAM],
+          },
         }
       } else {
-        // INBOX
+        // INBOX (Personal)
         whereClause = {
           OR: [
             { toEmails: { has: userEmail } },
             { ccEmails: { has: userEmail } },
             { bccEmails: { has: userEmail } },
-            { fromEmail: { equals: userEmail, mode: "insensitive" } },
           ],
           folder: {
-            notIn: [EmailFolder.TRASH, EmailFolder.ARCHIVE, EmailFolder.SPAM],
+            notIn: [
+              EmailFolder.TRASH,
+              EmailFolder.ARCHIVE,
+              EmailFolder.SPAM,
+              EmailFolder.SENT,
+              EmailFolder.DRAFT,
+            ],
           },
           isArchived: false,
           isTrash: false,
@@ -130,11 +119,12 @@ export async function GET(req: Request) {
         ? accountConfig.email.toLowerCase()
         : `${mailbox.toLowerCase()}@thaisoulmate.org`
       const mailboxNames = [mailbox, mailbox.toLowerCase(), mailboxEmail]
+      const mbMatch = { in: mailboxNames }
 
       if (folderParam === "STARRED") {
         whereClause = {
           OR: [
-            { mailbox: { in: mailboxNames } },
+            { mailbox: mbMatch },
             { toEmails: { has: mailboxEmail } },
             { ccEmails: { has: mailboxEmail } },
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
@@ -145,7 +135,7 @@ export async function GET(req: Request) {
       } else if (folder === EmailFolder.TRASH) {
         whereClause = {
           OR: [
-            { mailbox: { in: mailboxNames } },
+            { mailbox: mbMatch },
             { toEmails: { has: mailboxEmail } },
             { ccEmails: { has: mailboxEmail } },
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
@@ -155,7 +145,7 @@ export async function GET(req: Request) {
       } else if (folder === EmailFolder.ARCHIVE) {
         whereClause = {
           OR: [
-            { mailbox: { in: mailboxNames } },
+            { mailbox: mbMatch },
             { toEmails: { has: mailboxEmail } },
             { ccEmails: { has: mailboxEmail } },
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
@@ -166,7 +156,7 @@ export async function GET(req: Request) {
       } else if (folder === EmailFolder.SPAM) {
         whereClause = {
           OR: [
-            { mailbox: { in: mailboxNames } },
+            { mailbox: mbMatch },
             { toEmails: { has: mailboxEmail } },
             { ccEmails: { has: mailboxEmail } },
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
@@ -177,36 +167,45 @@ export async function GET(req: Request) {
       } else if (folder === EmailFolder.DRAFT) {
         whereClause = {
           OR: [
-            { mailbox: { in: mailboxNames } },
-            { toEmails: { has: mailboxEmail } },
-            { ccEmails: { has: mailboxEmail } },
+            { mailbox: mbMatch },
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
           ],
-          folder: {
-            notIn: [EmailFolder.TRASH, EmailFolder.ARCHIVE, EmailFolder.SPAM],
-          },
+          folder: EmailFolder.DRAFT,
           isTrash: false,
         }
       } else if (folder === EmailFolder.SENT) {
         whereClause = {
           OR: [
-            { mailbox: { in: mailboxNames }, folder: EmailFolder.SENT },
+            { mailbox: mbMatch, folder: EmailFolder.SENT },
+            {
+              mailbox: mbMatch,
+              direction: "OUTBOUND" as const,
+            },
             { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
           ],
           isTrash: false,
+          folder: {
+            notIn: [EmailFolder.TRASH, EmailFolder.DRAFT, EmailFolder.SPAM],
+          },
         }
       } else {
-        // INBOX
+        // INBOX (Work)
         whereClause = {
           OR: [
-            { mailbox: { in: mailboxNames }, folder: EmailFolder.INBOX },
+            { mailbox: mbMatch },
             { toEmails: { has: mailboxEmail } },
             { ccEmails: { has: mailboxEmail } },
-            { fromEmail: { contains: mailboxEmail, mode: "insensitive" } },
           ],
           folder: {
-            notIn: [EmailFolder.TRASH, EmailFolder.ARCHIVE, EmailFolder.SPAM],
+            notIn: [
+              EmailFolder.TRASH,
+              EmailFolder.ARCHIVE,
+              EmailFolder.SPAM,
+              EmailFolder.SENT,
+              EmailFolder.DRAFT,
+            ],
           },
+          direction: { not: "OUTBOUND" },
           isArchived: false,
           isTrash: false,
         }
@@ -230,7 +229,7 @@ export async function GET(req: Request) {
       }
     }
 
-    const rawEmails = await prisma.emailMessage.findMany({
+    const emails = await prisma.emailMessage.findMany({
       where: whereClause,
       orderBy: {
         createdAt: "desc",
@@ -239,109 +238,6 @@ export async function GET(req: Request) {
         attachments: true,
       },
     })
-
-    // Auto-repair any emails that were previously saved with empty content
-    const emails = await Promise.all(
-      rawEmails.map(async (email) => {
-        if (
-          email.resendId &&
-          (email.bodyHtml === "<p>(No content)</p>" ||
-            !email.bodyHtml ||
-            email.bodyHtml.trim() === "" ||
-            !email.fromName)
-        ) {
-          try {
-            // First attempt to fetch from Inbound Received Emails API
-            let d: any = await getReceivedEmail(email.resendId)
-
-            // If not found in receiving API (e.g. outbound email), fetch from regular emails API
-            if (!d) {
-              const detailRes = await resend.emails.get(email.resendId)
-              d = detailRes.data as any
-            }
-
-            if (d && (d.html || d.text || d.body)) {
-              const bodyHtml =
-                d.html ||
-                (d.text
-                  ? `<p style="white-space: pre-wrap;">${d.text}</p>`
-                  : d.body
-                    ? `<p style="white-space: pre-wrap;">${d.body}</p>`
-                    : "<p>(No content)</p>")
-              const bodyText = d.text || d.body || ""
-              const preview = (bodyText || bodyHtml.replace(/<[^>]+>/g, " "))
-                .slice(0, 200)
-                .trim()
-
-              // Process any missing attachments
-              const newAttachments: {
-                filename: string
-                contentType: string
-                size: number
-                url: string
-                r2Key: string
-                isInline: boolean
-              }[] = []
-
-              if (
-                Array.isArray(d.attachments) &&
-                d.attachments.length > 0 &&
-                email.attachments.length === 0
-              ) {
-                for (const att of d.attachments) {
-                  try {
-                    const uploaded = await downloadAndUploadAttachment({
-                      emailId: email.resendId,
-                      mailboxId: email.mailbox,
-                      dbEmailId: email.id,
-                      attachment: att,
-                    })
-                    if (uploaded) {
-                      newAttachments.push({
-                        ...uploaded,
-                        isInline: false,
-                      })
-                    }
-                  } catch (attErr) {
-                    console.warn("Failed to repair attachment:", attErr)
-                  }
-                }
-              }
-
-              const headersFrom = d.headers?.from || null
-              const { name: fromName, email: fromEmail } =
-                parseSenderNameAndEmail(d.from, headersFrom)
-
-              const updated = await prisma.emailMessage.update({
-                where: { id: email.id },
-                data: {
-                  fromName: fromName || email.fromName,
-                  fromEmail: fromEmail || email.fromEmail,
-                  bodyHtml,
-                  bodyText,
-                  preview,
-                  ...(newAttachments.length > 0
-                    ? {
-                        attachments: {
-                          create: newAttachments,
-                        },
-                      }
-                    : {}),
-                },
-                include: {
-                  attachments: true,
-                },
-              })
-
-              return updated
-            }
-          } catch (repairErr) {
-            console.warn(`Failed to auto-repair email ${email.id}:`, repairErr)
-          }
-        }
-        return email
-      })
-    )
 
     return NextResponse.json({
       success: true,

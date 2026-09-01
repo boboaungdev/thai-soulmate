@@ -22,7 +22,13 @@ export interface EmailSignatureProps {
    BULLETPROOF STANDALONE SVG ICONS (Cross-client & Server Safe)
    ============================================================ */
 
-function WhatsappIcon({ size = 14, color = "#25D366" }: { size?: number; color?: string }) {
+function WhatsappIcon({
+  size = 14,
+  color = "#25D366",
+}: {
+  size?: number
+  color?: string
+}) {
   return (
     <svg
       width={size}
@@ -37,7 +43,13 @@ function WhatsappIcon({ size = 14, color = "#25D366" }: { size?: number; color?:
   )
 }
 
-function PhoneIcon({ size = 13, color = "#1877F2" }: { size?: number; color?: string }) {
+function PhoneIcon({
+  size = 13,
+  color = "#1877F2",
+}: {
+  size?: number
+  color?: string
+}) {
   return (
     <svg
       width={size}
@@ -56,7 +68,13 @@ function PhoneIcon({ size = 13, color = "#1877F2" }: { size?: number; color?: st
   )
 }
 
-function MailIcon({ size = 13, color = "#CA617D" }: { size?: number; color?: string }) {
+function MailIcon({
+  size = 13,
+  color = "#CA617D",
+}: {
+  size?: number
+  color?: string
+}) {
   return (
     <svg
       width={size}
@@ -76,7 +94,13 @@ function MailIcon({ size = 13, color = "#CA617D" }: { size?: number; color?: str
   )
 }
 
-function GlobeIcon({ size = 13, color = "#D3A753" }: { size?: number; color?: string }) {
+function GlobeIcon({
+  size = 13,
+  color = "#D3A753",
+}: {
+  size?: number
+  color?: string
+}) {
   return (
     <svg
       width={size}
@@ -97,7 +121,13 @@ function GlobeIcon({ size = 13, color = "#D3A753" }: { size?: number; color?: st
   )
 }
 
-function FacebookIcon({ size = 15, color = "#1877F2" }: { size?: number; color?: string }) {
+function FacebookIcon({
+  size = 15,
+  color = "#1877F2",
+}: {
+  size?: number
+  color?: string
+}) {
   return (
     <svg
       width={size}
@@ -112,7 +142,13 @@ function FacebookIcon({ size = 15, color = "#1877F2" }: { size?: number; color?:
   )
 }
 
-function InstagramIcon({ size = 15, color = "#E4405F" }: { size?: number; color?: string }) {
+function InstagramIcon({
+  size = 15,
+  color = "#E4405F",
+}: {
+  size?: number
+  color?: string
+}) {
   return (
     <svg
       width={size}
@@ -127,7 +163,13 @@ function InstagramIcon({ size = 15, color = "#E4405F" }: { size?: number; color?
   )
 }
 
-function LineIcon({ size = 15, color = "#00C300" }: { size?: number; color?: string }) {
+function LineIcon({
+  size = 15,
+  color = "#00C300",
+}: {
+  size?: number
+  color?: string
+}) {
   return (
     <svg
       width={size}
@@ -142,7 +184,13 @@ function LineIcon({ size = 15, color = "#00C300" }: { size?: number; color?: str
   )
 }
 
-function TiktokIcon({ size = 14, color = "#000000" }: { size?: number; color?: string }) {
+function TiktokIcon({
+  size = 14,
+  color = "#000000",
+}: {
+  size?: number
+  color?: string
+}) {
   return (
     <svg
       width={size}
@@ -486,7 +534,7 @@ const cardContainer: React.CSSProperties = {
   maxWidth: "600px",
   margin: "24px auto 0",
   border: "1px solid #E7DCD7",
-  backgroundColor: "#FBF8F3",
+  backgroundColor: "#FFFFFF",
   borderRadius: "14px",
   overflow: "hidden",
   fontFamily:
@@ -496,7 +544,7 @@ const cardContainer: React.CSSProperties = {
 const brandHeaderSection: React.CSSProperties = {
   padding: "24px 28px 16px",
   textAlign: "center",
-  backgroundColor: "#FBF8F3",
+  backgroundColor: "#FFFFFF",
 }
 
 const logoImage: React.CSSProperties = {
@@ -541,7 +589,7 @@ const taglineText: React.CSSProperties = {
 
 const bodySection: React.CSSProperties = {
   padding: "20px 24px 18px",
-  backgroundColor: "#FBF8F3",
+  backgroundColor: "#FFFFFF",
 }
 
 const columnHeading: React.CSSProperties = {
@@ -638,7 +686,7 @@ const socialSection: React.CSSProperties = {
   padding: "12px 28px",
   borderTop: "1px solid #E8DDD6",
   borderBottom: "1px solid #E8DDD6",
-  backgroundColor: "#FFFDFC",
+  backgroundColor: "#FFFFFF",
 }
 
 const socialHeaderLabel: React.CSSProperties = {
@@ -671,7 +719,7 @@ const legalFooterSection: React.CSSProperties = {
   padding: "16px 24px 20px",
   textAlign: "center",
   borderTop: "1px solid #EAE0DA",
-  backgroundColor: "#FAF7F2",
+  backgroundColor: "#FFFFFF",
 }
 
 const confidentialityNoticeText: React.CSSProperties = {

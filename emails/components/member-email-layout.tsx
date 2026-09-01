@@ -42,13 +42,20 @@ export function MemberEmailLayout({
         <Preview>{previewText}</Preview>
         <Container style={wrapper}>
           {/* ── TOP LUXURY GRADIENT BAR ── */}
-          <div style={{ backgroundColor: "#D3A753", lineHeight: 0, fontSize: 0 }}>
+          <div
+            style={{ backgroundColor: "#D3A753", lineHeight: 0, fontSize: 0 }}
+          >
             <Img
               src={topGradientUrl}
               alt=""
               width="600"
               height="5"
-              style={{ display: "block", width: "100%", height: "5px", border: 0 }}
+              style={{
+                display: "block",
+                width: "100%",
+                height: "5px",
+                border: 0,
+              }}
             />
           </div>
 
@@ -85,9 +92,7 @@ export function MemberEmailLayout({
                 <Text style={exclusiveText}>EXCLUSIVE</Text>
 
                 {/* 4. Tagline / Service Subtitle */}
-                <Text style={serviceSubtitleText}>
-                  {APP_INFO.tagline}
-                </Text>
+                <Text style={serviceSubtitleText}>{APP_INFO.tagline}</Text>
 
                 {/* 5. Decorative Fading Gold Heart Divider Image */}
                 <div style={{ textAlign: "center", margin: "6px auto" }}>
@@ -120,7 +125,12 @@ export function MemberEmailLayout({
               alt=""
               width="544"
               height="1"
-              style={{ display: "block", width: "100%", height: "1px", border: 0 }}
+              style={{
+                display: "block",
+                width: "100%",
+                height: "1px",
+                border: 0,
+              }}
             />
           </div>
 
@@ -148,7 +158,7 @@ export default MemberEmailLayout
 ═══════════════════════════════════════════════════════ */
 
 const main: React.CSSProperties = {
-  backgroundColor: "#F5F0EC",
+  backgroundColor: "#FFFFFF",
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
   padding: "36px 16px",
@@ -165,7 +175,7 @@ const wrapper: React.CSSProperties = {
 }
 
 const headerSection: React.CSSProperties = {
-  backgroundColor: "#FBF8F3",
+  backgroundColor: "#FFFFFF",
   padding: "26px 32px 20px",
   textAlign: "center",
 }

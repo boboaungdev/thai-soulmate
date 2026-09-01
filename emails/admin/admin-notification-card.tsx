@@ -116,7 +116,9 @@ export const AdminNotification = ({
                 <Text style={exclusiveText}>EXCLUSIVE</Text>
 
                 {/* 4. Tagline / Service Subtitle */}
-                <Text style={serviceSubtitleText}>{APP_INFO.tagline}</Text>
+                <Text style={serviceSubtitleText}>
+                  {APP_INFO.tagline}
+                </Text>
 
                 {/* 5. Decorative Fading Gold Heart Divider Image */}
                 <div style={{ textAlign: "center", margin: "6px auto" }}>
@@ -214,12 +216,10 @@ export const AdminNotification = ({
           {/* ── FOOTER ── */}
           <Section style={footerSection}>
             <Text style={footerNotice}>
-              This is an automated admin notification from{" "}
-              <strong style={{ color: "#5A0816" }}>{APP_INFO.name}</strong>.
-              Please do not reply to this email.
+              This is an automated admin notification from Thai Soulmate. Please do not reply to this email.
             </Text>
             <Text style={footerCopy}>
-              Copyright © {currentYear} {APP_INFO.name}. All rights reserved.
+              Copyright © {currentYear} Thai Soulmate. All rights reserved.
             </Text>
             <div style={bottomBar} />
           </Section>
@@ -233,11 +233,11 @@ export const AdminNotificationCard = AdminNotification
 export default AdminNotification
 
 /* ═══════════════════════════════════════════════════════
-   STYLES — Matching Business Card 6 & Member Email Master
+   STYLES — Pure Clean White Background Design
 ═══════════════════════════════════════════════════════ */
 
 const main: React.CSSProperties = {
-  backgroundColor: "#F5F0EC",
+  backgroundColor: "#FFFFFF",
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
   padding: "40px 16px",
@@ -250,12 +250,11 @@ const wrapper: React.CSSProperties = {
   borderRadius: "16px",
   maxWidth: "600px",
   border: "1px solid #E8DDD7",
-  boxShadow: "0 6px 24px rgba(90, 8, 22, 0.07)",
   overflow: "hidden",
 }
 
 const headerSection: React.CSSProperties = {
-  backgroundColor: "#FBF8F3",
+  backgroundColor: "#FFFFFF",
   padding: "26px 32px 20px",
   textAlign: "center",
 }
@@ -302,6 +301,7 @@ const taglineText: React.CSSProperties = {
 
 const cardSection: React.CSSProperties = {
   padding: "28px 36px 24px",
+  backgroundColor: "#FFFFFF",
 }
 
 const badgeRow: React.CSSProperties = {
@@ -338,7 +338,8 @@ const descriptionText: React.CSSProperties = {
 
 const gradientDivider: React.CSSProperties = {
   height: "1px",
-  background: "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+  background:
+    "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
   margin: "0 0 20px 0",
 }
 
@@ -418,7 +419,7 @@ const button: React.CSSProperties = {
 }
 
 const footerSection: React.CSSProperties = {
-  backgroundColor: "#FAF7F2",
+  backgroundColor: "#FFFFFF",
   padding: "20px 36px 0",
   textAlign: "center",
   borderTop: "1px solid #EEE6DF",
@@ -439,6 +440,7 @@ const footerCopy: React.CSSProperties = {
 
 const bottomBar: React.CSSProperties = {
   height: "4px",
-  background: "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
+  background:
+    "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, #CA617D 100%)",
   margin: "0 -36px",
 }

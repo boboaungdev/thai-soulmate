@@ -21,6 +21,7 @@ import {
   Clock,
   CheckCircle2,
 } from "lucide-react"
+import { WelcomeBanner } from "@/components/dashboard/welcome-banner"
 
 const membershipData = {
   plan: "Membership (3 Months)",
@@ -93,17 +94,21 @@ const StatusIcon = ({
 
 const UserDashboardPage = () => {
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+    <main className="flex flex-1 flex-col gap-6 p-4 lg:gap-6 lg:p-6">
+      {/* ── Title Section ── */}
       <div className="flex items-center justify-between space-y-2">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Welcome, John Doe!
+            Member Dashboard
           </h1>
           <p className="text-sm text-muted-foreground">
             Here&apos;s a snapshot of your journey to finding your soulmate.
           </p>
         </div>
       </div>
+
+      {/* ── Personalized Welcome Card with Live Time & Greeting ── */}
+      <WelcomeBanner />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Membership Details */}

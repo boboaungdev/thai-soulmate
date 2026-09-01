@@ -44,6 +44,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { WelcomeBanner } from "@/components/dashboard/welcome-banner"
 
 // Placeholder data for cards
 const dashboardCategories = {
@@ -219,10 +220,11 @@ const categoryIcons: { [key: string]: React.ElementType } = {
 
 export default function AdminDashboardPage() {
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+    <main className="flex flex-1 flex-col gap-6 p-4 lg:gap-6 lg:p-6">
+      {/* ── Title Section ── */}
       <div className="flex items-center justify-between space-y-2">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Welcome, Admin!</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
           <p className="text-sm text-muted-foreground">
             Overview of your platform&apos;s key metrics.
           </p>
@@ -231,6 +233,9 @@ export default function AdminDashboardPage() {
           {/* Potentially add filters or action buttons here */}
         </div>
       </div>
+
+      {/* ── Personalized Welcome Card with Live Time & Greeting ── */}
+      <WelcomeBanner />
 
       {/* Stats Cards */}
       <div className="space-y-6">

@@ -38,7 +38,7 @@ export const EMAIL_ACCOUNTS: EmailAccount[] = [
   {
     id: "socials",
     email: "socials@thaisoulmate.org",
-    name: `${APP_INFO.name} - Socila`,
+    name: `${APP_INFO.name} - Social`,
     description:
       "Social media accounts, OTP codes, verification emails, and account notifications",
   },

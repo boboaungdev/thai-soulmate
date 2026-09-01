@@ -74,6 +74,8 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
+import { useEmailStore } from "@/stores/email-store"
+import { cn } from "@/lib/utils"
 import React from "react"
 
 const roleIcons: Record<string, React.ElementType> = {
@@ -196,6 +198,7 @@ type EmailNavigationItem = {
   title: string
   url: string
   icon: React.ElementType
+  accountId?: string
   items?: {
     title: string
     url: string
@@ -203,17 +206,26 @@ type EmailNavigationItem = {
   }[]
 }
 
+const EMPTY_COUNTS: Record<string, number> = {}
+
 function EmailSidebarMenuItem({
   item,
   pathname,
+  accountId = "contact",
 }: {
   item: EmailNavigationItem
   pathname: string
+  accountId?: string
 }) {
+  const effectiveAccId = (item.accountId || accountId).toLowerCase()
+  const allFolderCounts = useEmailStore((s) => s.folderCounts)
+  const folderCounts = allFolderCounts[effectiveAccId] || EMPTY_COUNTS
   const hasSubItems = Boolean(item.items && item.items.length > 0)
   const isAnySubActive = Boolean(
     item.items?.some((sub) => pathname.startsWith(sub.url))
   )
+
+  const unreadInboxCount = folderCounts.inbox || 0
 
   if (!hasSubItems) {
     return (
@@ -226,6 +238,11 @@ function EmailSidebarMenuItem({
           <Link href={item.url}>
             <item.icon />
             <span>{item.title}</span>
+            {unreadInboxCount > 0 && (
+              <span className="ml-auto rounded-full bg-primary px-1.5 py-0.5 text-xs font-semibold text-primary-foreground group-data-[collapsible=icon]:hidden">
+                {unreadInboxCount > 99 ? "99+" : unreadInboxCount}
+              </span>
+            )}
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -244,25 +261,64 @@ function EmailSidebarMenuItem({
           <SidebarMenuButton tooltip={item.title}>
             <item.icon />
             <span className="truncate">{item.title}</span>
+            {unreadInboxCount > 0 && (
+              <span className="mr-1 ml-auto rounded-full bg-primary px-1.5 py-0.5 text-xs font-semibold text-primary-foreground group-data-[collapsible=icon]:hidden">
+                {unreadInboxCount > 99 ? "99+" : unreadInboxCount}
+              </span>
+            )}
             <ChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
           </SidebarMenuButton>
         </CollapsibleTrigger>
 
         <CollapsibleContent>
           <SidebarMenuSub>
-            {item.items?.map((subItem) => (
-              <SidebarMenuSubItem key={subItem.title}>
-                <SidebarMenuSubButton
-                  asChild
-                  isActive={pathname === subItem.url}
-                >
-                  <Link href={subItem.url}>
-                    {subItem.icon && <subItem.icon />}
-                    <span>{subItem.title}</span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
+            {item.items?.map((subItem) => {
+              const folderSlug = subItem.url.split("/").pop() || ""
+              const count = folderCounts[folderSlug] || 0
+              const isInbox = folderSlug === "inbox"
+              const isDraft = folderSlug === "draft"
+              const isSpam = folderSlug === "spam"
+              const hasCount = count > 0 && folderSlug !== "settings"
+
+              return (
+                <SidebarMenuSubItem key={subItem.title}>
+                  <SidebarMenuSubButton
+                    asChild
+                    isActive={pathname === subItem.url}
+                  >
+                    <Link href={subItem.url}>
+                      {subItem.icon && <subItem.icon />}
+                      <span
+                        className={cn(
+                          isInbox &&
+                            count > 0 &&
+                            "font-semibold text-foreground"
+                        )}
+                      >
+                        {subItem.title}
+                      </span>
+
+                      {hasCount && (
+                        <span
+                          className={cn(
+                            "ml-auto rounded-full px-1.5 py-0.5 text-xs font-semibold tabular-nums",
+                            isInbox
+                              ? "bg-primary text-primary-foreground"
+                              : isDraft
+                                ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                                : isSpam
+                                  ? "bg-destructive/15 text-destructive"
+                                  : "text-muted-foreground"
+                          )}
+                        >
+                          {count > 999 ? "999+" : count}
+                        </span>
+                      )}
+                    </Link>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              )
+            })}
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuItem>
@@ -275,6 +331,13 @@ export function AppSidebar() {
   const router = useRouter()
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
+  const fetchFolderCounts = useEmailStore((s) => s.fetchFolderCounts)
+
+  React.useEffect(() => {
+    if (user?.email) {
+      fetchFolderCounts(user.email)
+    }
+  }, [user?.email, pathname, fetchFolderCounts])
 
   if (!user) {
     return null
@@ -283,6 +346,7 @@ export function AppSidebar() {
   const personalEmailItem: EmailNavigationItem = {
     title: user.email,
     url: "/dashboard/email/personal/inbox",
+    accountId: "personal",
     icon: Mail,
     items: EMAIL_FOLDERS.map((folder) => ({
       title: folder.title,
@@ -295,6 +359,7 @@ export function AppSidebar() {
     (account) => ({
       title: account.email,
       url: `/dashboard/email/${account.id}/inbox`,
+      accountId: account.id,
       icon: Mail,
       items: EMAIL_FOLDERS.map((folder) => ({
         title: folder.title,

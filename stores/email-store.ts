@@ -50,12 +50,15 @@ interface EmailStoreState {
   isFetchingByAccount: Record<string, boolean>
   hasInitialLoaded: Record<string, boolean>
 
+  folderCounts: Record<string, Record<string, number>>
+
   // Actions
   setEmails: (account: string, emails: DbEmailMessage[]) => void
   addEmail: (account: string, email: DbEmailMessage) => void
   updateEmail: (id: string, partial: Partial<DbEmailMessage>) => void
   deleteEmails: (ids: string[]) => void
   setSettings: (account: string, settings: MailboxSettings) => void
+  setFolderCounts: (counts: Record<string, Record<string, number>>) => void
   fetchEmails: (
     account: string,
     folder: string,
@@ -63,6 +66,7 @@ interface EmailStoreState {
     userEmail?: string
   ) => Promise<void>
   fetchSettings: (account: string) => Promise<void>
+  fetchFolderCounts: (userEmail?: string) => Promise<void>
 }
 
 export function getEmailCacheKey(
@@ -85,6 +89,35 @@ export const useEmailStore = create<EmailStoreState>()(
       settingsByAccount: {},
       isFetchingByAccount: {},
       hasInitialLoaded: {},
+      folderCounts: {},
+
+      setFolderCounts: (counts) =>
+        set((state) => ({
+          folderCounts: {
+            ...state.folderCounts,
+            ...counts,
+          },
+        })),
+
+      fetchFolderCounts: async (userEmail = "") => {
+        try {
+          const userEmailParam = userEmail
+            ? `?userEmail=${encodeURIComponent(userEmail)}`
+            : ""
+          const res = await fetch(`/api/email/counts${userEmailParam}`)
+          const json = await res.json()
+          if (json.success && json.counts) {
+            set((state) => ({
+              folderCounts: {
+                ...state.folderCounts,
+                ...json.counts,
+              },
+            }))
+          }
+        } catch (err) {
+          console.error("Failed to fetch folder counts:", err)
+        }
+      },
 
       setEmails: (account, emails) =>
         set((state) => ({
@@ -107,24 +140,82 @@ export const useEmailStore = create<EmailStoreState>()(
       updateEmail: (id, partial) =>
         set((state) => {
           const updatedEmailsByAccount: Record<string, DbEmailMessage[]> = {}
+          let unreadDelta = 0
+          const affectedMailboxes = new Set<string>()
+
           for (const [acc, list] of Object.entries(state.emailsByAccount)) {
-            updatedEmailsByAccount[acc] = list.map((msg) =>
-              msg.id === id ? { ...msg, ...partial } : msg
-            )
+            updatedEmailsByAccount[acc] = list.map((msg) => {
+              if (msg.id === id) {
+                if (
+                  typeof partial.isRead === "boolean" &&
+                  partial.isRead !== msg.isRead
+                ) {
+                  unreadDelta = partial.isRead ? -1 : 1
+                  if (msg.mailbox) {
+                    affectedMailboxes.add(msg.mailbox.toLowerCase())
+                  }
+                  const accKey = acc.split(":")[0].toLowerCase()
+                  affectedMailboxes.add(accKey)
+                }
+                return { ...msg, ...partial }
+              }
+              return msg
+            })
           }
-          return { emailsByAccount: updatedEmailsByAccount }
+
+          let newFolderCounts = state.folderCounts
+          if (unreadDelta !== 0 && affectedMailboxes.size > 0) {
+            newFolderCounts = { ...state.folderCounts }
+            for (const mb of affectedMailboxes) {
+              const currentCounts = newFolderCounts[mb] || {}
+              newFolderCounts[mb] = {
+                ...currentCounts,
+                inbox: Math.max(0, (currentCounts.inbox || 0) + unreadDelta),
+              }
+            }
+          }
+
+          return {
+            emailsByAccount: updatedEmailsByAccount,
+            folderCounts: newFolderCounts,
+          }
         }),
 
       deleteEmails: (ids) =>
         set((state) => {
           const idSet = new Set(ids)
           const updatedEmailsByAccount: Record<string, DbEmailMessage[]> = {}
+          const deletedUnreadByMb: Record<string, number> = {}
+
           for (const [acc, list] of Object.entries(state.emailsByAccount)) {
-            updatedEmailsByAccount[acc] = list.filter(
-              (msg) => !idSet.has(msg.id)
-            )
+            updatedEmailsByAccount[acc] = list.filter((msg) => {
+              if (idSet.has(msg.id)) {
+                if (!msg.isRead) {
+                  const mb = (msg.mailbox || acc.split(":")[0]).toLowerCase()
+                  deletedUnreadByMb[mb] = (deletedUnreadByMb[mb] || 0) + 1
+                }
+                return false
+              }
+              return true
+            })
           }
-          return { emailsByAccount: updatedEmailsByAccount }
+
+          let newFolderCounts = state.folderCounts
+          if (Object.keys(deletedUnreadByMb).length > 0) {
+            newFolderCounts = { ...state.folderCounts }
+            for (const [mb, unreadCount] of Object.entries(deletedUnreadByMb)) {
+              const currentCounts = newFolderCounts[mb] || {}
+              newFolderCounts[mb] = {
+                ...currentCounts,
+                inbox: Math.max(0, (currentCounts.inbox || 0) - unreadCount),
+              }
+            }
+          }
+
+          return {
+            emailsByAccount: updatedEmailsByAccount,
+            folderCounts: newFolderCounts,
+          }
         }),
 
       setSettings: (account, settings) =>

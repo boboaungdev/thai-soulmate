@@ -72,6 +72,7 @@ import { cn } from "@/lib/utils"
 export type { DbEmailMessage }
 
 const EMPTY_EMAILS: DbEmailMessage[] = []
+const EMPTY_COUNTS: Record<string, number> = {}
 
 export interface EmailThread {
   threadId: string
@@ -131,7 +132,13 @@ export function groupEmailsIntoThreads(
 
     const first = sorted[0]
     const latest = sorted[sorted.length - 1]
-    const isRead = sorted.every((m) => m.isRead)
+
+    // A thread is unread ONLY if there is an unread incoming message from another user.
+    // Outbound messages, replies, and drafts sent by us are always treated as read.
+    const isOurOutbound = (m: DbEmailMessage) =>
+      m.direction === "OUTBOUND" || m.folder === "SENT" || m.folder === "DRAFT"
+
+    const isRead = !sorted.some((m) => !isOurOutbound(m) && !m.isRead)
     const isStarred = sorted.some((m) => m.isStarred)
     const hasAttachments = sorted.some(
       (m) => m.attachments && m.attachments.length > 0
@@ -301,6 +308,10 @@ export default function EmailFolderDynamicPage() {
   const storeFetchEmails = useEmailStore((s) => s.fetchEmails)
   const storeUpdateEmail = useEmailStore((s) => s.updateEmail)
   const storeDeleteEmails = useEmailStore((s) => s.deleteEmails)
+  const fetchFolderCounts = useEmailStore((s) => s.fetchFolderCounts)
+  const allFolderCounts = useEmailStore((s) => s.folderCounts)
+  const folderCounts =
+    allFolderCounts[accountParam.toLowerCase()] || EMPTY_COUNTS
 
   // Show skeleton loading state while fetching or before data is loaded
   const isLoadingEmails =
@@ -319,14 +330,16 @@ export default function EmailFolderDynamicPage() {
     setCurrentPage(1)
   }, [folderParam, accountParam, searchQuery])
 
-  // Settings State
+  // Mailbox Settings State
   const defaultDisplayName = React.useMemo(
-    () => `Thai Soulmate - ${currentAccount.name}`,
-    [currentAccount.name]
+    () =>
+      currentAccount.id === "personal"
+        ? user?.name || user?.email?.split("@")[0] || "User"
+        : currentAccount.name,
+    [currentAccount.id, currentAccount.name, user?.name, user?.email]
   )
   const defaultSignature = React.useMemo(
-    () =>
-      `Best regards,\n${currentAccount.name}\n${currentAccount.email}\n\nCONFIDENTIALITY NOTICE: This email and any attachments are intended only for the person or entity to whom they are addressed and may contain confidential information. If you have received this email in error, please notify the sender and delete it. Any unauthorized copying, disclosure, or use of this email or its contents is prohibited.`,
+    () => `Best regards,\n${currentAccount.name}\n${currentAccount.email}`,
     [currentAccount.name, currentAccount.email]
   )
 
@@ -366,9 +379,17 @@ export default function EmailFolderDynamicPage() {
 
   // Fetch real emails from database API via Zustand store
   const fetchEmails = React.useCallback(async () => {
+    fetchFolderCounts(userEmail)
     if (folderParam === "settings") return
     await storeFetchEmails(accountParam, folderParam, searchQuery, userEmail)
-  }, [accountParam, folderParam, searchQuery, userEmail, storeFetchEmails])
+  }, [
+    accountParam,
+    folderParam,
+    searchQuery,
+    userEmail,
+    storeFetchEmails,
+    fetchFolderCounts,
+  ])
 
   React.useEffect(() => {
     fetchEmails()
@@ -694,6 +715,7 @@ export default function EmailFolderDynamicPage() {
           })
         )
       )
+      fetchFolderCounts(userEmail)
       toast.success(nextRead ? "Marked as read" : "Marked as unread")
     } catch (err) {
       console.error("Failed to toggle read status", err)
@@ -738,6 +760,7 @@ export default function EmailFolderDynamicPage() {
           })
         )
       )
+      fetchFolderCounts(userEmail)
       toast.success(nextArchived ? "Conversation archived" : "Moved to Inbox")
     } catch (err) {
       console.error("Failed to archive conversation", err)
@@ -783,6 +806,7 @@ export default function EmailFolderDynamicPage() {
           })
         )
       )
+      fetchFolderCounts(userEmail)
       toast.success(nextTrash ? "Moved to Trash" : "Restored to Inbox")
     } catch (err) {
       console.error("Failed to update trash status", err)
@@ -827,6 +851,7 @@ export default function EmailFolderDynamicPage() {
           })
         )
       )
+      fetchFolderCounts(userEmail)
       toast.success(
         nextFolder === "SPAM" ? "Reported as spam" : "Moved to Inbox"
       )
@@ -854,6 +879,7 @@ export default function EmailFolderDynamicPage() {
           fetch(`/api/email?id=${m.id}`, { method: "DELETE" })
         )
       )
+      fetchFolderCounts(userEmail)
       toast.success("Conversation deleted permanently")
     } catch (err) {
       toast.error("Failed to delete conversation")
@@ -907,7 +933,9 @@ export default function EmailFolderDynamicPage() {
             body: JSON.stringify({ id: m.id, isRead: true }),
           }).catch(console.error)
         )
-      )
+      ).then(() => {
+        fetchFolderCounts(userEmail)
+      })
     }
   }
 
@@ -1002,23 +1030,52 @@ export default function EmailFolderDynamicPage() {
             }
           >
             <TabsList>
-              {EMAIL_FOLDERS.map((f) => (
-                <TabsTrigger key={f.id} value={f.slug} className="capitalize">
-                  {f.id === "inbox" && <Inbox className="mr-1.5 size-4" />}
-                  {f.id === "starred" && (
-                    <Star className="mr-1.5 size-4 fill-yellow-400 text-yellow-400" />
-                  )}
-                  {f.id === "sent" && <Send className="mr-1.5 size-4" />}
-                  {f.id === "draft" && <FileText className="mr-1.5 size-4" />}
-                  {f.id === "archive" && <Archive className="mr-1.5 size-4" />}
-                  {f.id === "spam" && <ShieldAlert className="mr-1.5 size-4" />}
-                  {f.id === "trash" && <Trash2 className="mr-1.5 size-4" />}
-                  {f.id === "settings" && (
-                    <Settings2 className="mr-1.5 size-4" />
-                  )}
-                  {f.title}
-                </TabsTrigger>
-              ))}
+              {EMAIL_FOLDERS.map((f) => {
+                const count = folderCounts[f.slug] || 0
+                const isInbox = f.slug === "inbox"
+                const isDraft = f.slug === "draft"
+                const isSpam = f.slug === "spam"
+                const hasCount = count > 0 && f.slug !== "settings"
+
+                return (
+                  <TabsTrigger key={f.id} value={f.slug} className="capitalize">
+                    {f.id === "inbox" && <Inbox className="mr-1.5 size-4" />}
+                    {f.id === "starred" && (
+                      <Star className="mr-1.5 size-4 fill-yellow-400 text-yellow-400" />
+                    )}
+                    {f.id === "sent" && <Send className="mr-1.5 size-4" />}
+                    {f.id === "draft" && <FileText className="mr-1.5 size-4" />}
+                    {f.id === "archive" && (
+                      <Archive className="mr-1.5 size-4" />
+                    )}
+                    {f.id === "spam" && (
+                      <ShieldAlert className="mr-1.5 size-4" />
+                    )}
+                    {f.id === "trash" && <Trash2 className="mr-1.5 size-4" />}
+                    {f.id === "settings" && (
+                      <Settings2 className="mr-1.5 size-4" />
+                    )}
+                    <span>{f.title}</span>
+
+                    {hasCount && (
+                      <span
+                        className={cn(
+                          "ml-1.5 rounded-full px-1.5 py-0.5 text-xs font-semibold tabular-nums",
+                          isInbox
+                            ? "bg-primary text-primary-foreground"
+                            : isDraft
+                              ? "bg-amber-500/20 text-amber-700 dark:text-amber-300"
+                              : isSpam
+                                ? "bg-destructive/20 text-destructive"
+                                : "bg-muted text-muted-foreground"
+                        )}
+                      >
+                        {count > 999 ? "999+" : count}
+                      </span>
+                    )}
+                  </TabsTrigger>
+                )
+              })}
             </TabsList>
           </Tabs>
 
@@ -1044,6 +1101,16 @@ export default function EmailFolderDynamicPage() {
               fetchEmails()
             }}
             onEmailSent={() => {
+              if (selectedThread) {
+                selectedThread.messages.forEach((m) => {
+                  storeUpdateEmail(m.id, { isRead: true })
+                  fetch("/api/email", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: m.id, isRead: true }),
+                  }).catch(console.error)
+                })
+              }
               fetchEmails()
             }}
           />
@@ -2245,8 +2312,9 @@ export default function EmailFolderDynamicPage() {
                                     className="size-6 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                                     onClick={async (e) => {
                                       e.stopPropagation()
-                                      const deleteToast =
-                                        toast.loading("Discarding draft...")
+                                      const deleteToast = toast.loading(
+                                        "Discarding draft..."
+                                      )
                                       try {
                                         storeDeleteEmails([msg.id])
                                         setSelectedThread((prev) =>

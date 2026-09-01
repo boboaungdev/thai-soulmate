@@ -4,7 +4,6 @@ import {
   Container,
   Head,
   Html,
-  Img,
   Preview,
   Section,
   Text,
@@ -14,9 +13,15 @@ import { APP_INFO } from "@/constants"
 import { env } from "@/lib/env"
 import { User } from "@/types"
 
+import EmailSignature from "../components/email-signature"
+
 const currentYear = new Date().getFullYear()
 
-export const TestEmailWithSignature = ({ ...userDetails }: User) => (
+type TestEmailWithSignatureProps = User
+
+export const TestEmailWithSignature = ({
+  ...userDetails
+}: TestEmailWithSignatureProps) => (
   <Html>
     <Head />
 
@@ -54,7 +59,9 @@ export const TestEmailWithSignature = ({ ...userDetails }: User) => (
         <Section style={btnContainer}>
           <Button
             style={button}
-            href={`${env.BASE_URL}/application-form?email=${userDetails.email}`}
+            href={`${env.BASE_URL}/application-form?email=${encodeURIComponent(
+              userDetails.email || ""
+            )}`}
           >
             Complete Application Form
           </Button>
@@ -72,25 +79,28 @@ export const TestEmailWithSignature = ({ ...userDetails }: User) => (
 
         <Text style={paragraph}>Warm regards,</Text>
 
-        <Section style={signature}>
-          <Container style={signatureContainer}>
-            <Img
-              src={`${env.BASE_URL}/email/3.png`}
-              width="150"
-              alt={APP_INFO.name}
-              style={signatureLogo}
-            />
-          </Container>
-        </Section>
+        {/* ======================================================
+            EMAIL SIGNATURE
+        ====================================================== */}
+
+        <EmailSignature name={APP_INFO.name} role="1-2-1 Matchmaking Service" />
+
+        {/* ======================================================
+            REPLY MESSAGE
+        ====================================================== */}
 
         <Text style={replyMessage}>
           You can reply directly to this email if you have any questions. Our
           matchmaking team will be happy to assist you.
         </Text>
 
+        {/* ======================================================
+            COPYRIGHT
+        ====================================================== */}
+
         <Section style={copyrightSection}>
           <Text style={copyright}>
-            Copyright &copy; {currentYear} {APP_INFO.name}. All rights reserved.
+            Copyright © {currentYear} {APP_INFO.name}. All rights reserved.
           </Text>
         </Section>
       </Container>
@@ -100,70 +110,66 @@ export const TestEmailWithSignature = ({ ...userDetails }: User) => (
 
 export default TestEmailWithSignature
 
+/* ============================================================
+   MAIN EMAIL STYLES
+============================================================ */
+
 const main = {
+  margin: 0,
+  padding: 0,
   backgroundColor: "#ffffff",
   fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
 }
 
 const container = {
+  width: "100%",
+  maxWidth: "600px",
   margin: "0 auto",
   padding: "20px 0 48px",
-  maxWidth: "600px",
 }
 
 const paragraph = {
+  margin: "0 0 18px",
   fontSize: "16px",
   lineHeight: "26px",
   color: "#333333",
 }
 
 const btnContainer = {
-  textAlign: "center" as const,
   margin: "32px 0",
+  textAlign: "center" as const,
 }
 
 const button = {
-  backgroundColor: "#cfa14f",
+  display: "block",
+  padding: "13px 24px",
+  backgroundColor: "#CFA14F",
   borderRadius: "6px",
   color: "#ffffff",
   fontSize: "16px",
-  textDecoration: "none",
-  textAlign: "center" as const,
-  display: "block",
-  padding: "12px 24px",
+  lineHeight: "20px",
   fontWeight: "600",
+  textAlign: "center" as const,
+  textDecoration: "none",
 }
 
 const replyMessage = {
+  margin: "16px 0 0",
   color: "#6b7280",
   fontSize: "13px",
   lineHeight: "20px",
-  marginTop: "12px",
 }
 
 const copyrightSection = {
+  marginTop: "24px",
   textAlign: "center" as const,
 }
 
 const copyright = {
+  margin: "8px 0 0",
   color: "#9ca3af",
   fontSize: "12px",
-  marginTop: "8px",
+  lineHeight: "18px",
   textAlign: "center" as const,
-}
-
-const signature = {
-  marginTop: "24px",
-  marginBottom: "24px",
-}
-
-const signatureContainer = {
-  width: "220px",
-  margin: "0",
-}
-
-const signatureLogo = {
-  display: "block",
-  margin: "0 auto 16px",
 }

@@ -2,7 +2,7 @@ import { z } from "zod"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
-import { APP_INFO, CONTACT, EMAIL } from "@/constants"
+import { APP_INFO, EMAIL } from "@/constants"
 import { resend } from "@/lib/resend"
 import {
   RegisterInterestAdminNotificationEmail,

@@ -194,7 +194,9 @@ function formatEmailDate(dateStr?: string | Date | null) {
     d.getFullYear() === now.getFullYear()
 
   if (isToday) {
-    return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+    const hours = String(d.getHours()).padStart(2, "0")
+    const minutes = String(d.getMinutes()).padStart(2, "0")
+    return `${hours}:${minutes}`
   }
 
   const yesterday = new Date(now)
@@ -209,6 +211,74 @@ function formatEmailDate(dateStr?: string | Date | null) {
   }
 
   return d.toLocaleDateString([], { month: "short", day: "numeric" })
+}
+
+function formatEmailDetailedDate(dateStr?: string | Date | null) {
+  if (!dateStr) return ""
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return ""
+  const now = new Date()
+
+  // Format date and 24-hour time e.g. "Mon, Aug 31, 23:44" or "Mon, Aug 31, 2025, 23:44"
+  const weekday = d.toLocaleDateString("en-US", { weekday: "short" })
+  const month = d.toLocaleDateString("en-US", { month: "short" })
+  const day = d.getDate()
+  const year = d.getFullYear()
+  const currentYear = now.getFullYear()
+  const hours = String(d.getHours()).padStart(2, "0")
+  const minutes = String(d.getMinutes()).padStart(2, "0")
+  const time = `${hours}:${minutes}`
+
+  const datePart =
+    year === currentYear
+      ? `${weekday}, ${month} ${day}, ${time}`
+      : `${weekday}, ${month} ${day}, ${year}, ${time}`
+
+  // Calculate relative time string
+  const isToday =
+    d.getDate() === now.getDate() &&
+    d.getMonth() === now.getMonth() &&
+    d.getFullYear() === now.getFullYear()
+
+  const yesterday = new Date(now)
+  yesterday.setDate(now.getDate() - 1)
+  const isYesterday =
+    d.getDate() === yesterday.getDate() &&
+    d.getMonth() === yesterday.getMonth() &&
+    d.getFullYear() === yesterday.getFullYear()
+
+  let relativePart = ""
+  if (isToday) {
+    const diffMs = now.getTime() - d.getTime()
+    const diffMins = Math.floor(diffMs / (1000 * 60))
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+    if (diffMins < 2) {
+      relativePart = "Just now"
+    } else if (diffMins < 60) {
+      relativePart = `${diffMins} mins ago`
+    } else {
+      relativePart = diffHours === 1 ? "1 hour ago" : `${diffHours} hours ago`
+    }
+  } else if (isYesterday) {
+    relativePart = "Yesterday"
+  } else {
+    const diffMs = now.getTime() - d.getTime()
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+    if (diffDays < 7) {
+      relativePart = `${diffDays} days ago`
+    } else if (diffDays < 30) {
+      const weeks = Math.floor(diffDays / 7)
+      relativePart = weeks === 1 ? "1 week ago" : `${weeks} weeks ago`
+    } else if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30)
+      relativePart = months === 1 ? "1 month ago" : `${months} months ago`
+    } else {
+      const years = Math.floor(diffDays / 365)
+      relativePart = years === 1 ? "1 year ago" : `${years} years ago`
+    }
+  }
+
+  return `${datePart} (${relativePart})`
 }
 
 function formatFileSize(bytes: number) {
@@ -2353,8 +2423,10 @@ export default function EmailFolderDynamicPage() {
                                     </span>
                                   </div>
                                 )}
-                              <span className="text-xs text-muted-foreground">
-                                {formatEmailDate(msg.sentAt || msg.createdAt)}
+                              <span className="shrink-0 text-xs font-medium text-muted-foreground">
+                                {formatEmailDetailedDate(
+                                  msg.sentAt || msg.createdAt
+                                )}
                               </span>
                               {isExpanded ? (
                                 <ChevronUp className="size-4 text-muted-foreground" />
@@ -2367,33 +2439,40 @@ export default function EmailFolderDynamicPage() {
                           {/* Expanded Message Content */}
                           {isExpanded && (
                             <div className="space-y-4 p-4">
-                              {/* Recipient meta line */}
-                              <div className="text-xs text-muted-foreground">
-                                <span>to </span>
-                                <span className="font-medium text-foreground">
-                                  {msg.toEmails.join(", ")}
-                                </span>
-                                {msg.ccEmails && msg.ccEmails.length > 0 && (
-                                  <span className="ml-2">
-                                    cc:{" "}
-                                    <span className="font-medium text-foreground">
-                                      {msg.ccEmails.join(", ")}
-                                    </span>
+                              {/* Recipient meta line & full timestamp */}
+                              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+                                <div>
+                                  <span>to </span>
+                                  <span className="font-medium text-foreground">
+                                    {msg.toEmails.join(", ")}
                                   </span>
-                                )}
+                                  {msg.ccEmails && msg.ccEmails.length > 0 && (
+                                    <span className="ml-2">
+                                      cc:{" "}
+                                      <span className="font-medium text-foreground">
+                                        {msg.ccEmails.join(", ")}
+                                      </span>
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[11px] font-medium text-muted-foreground">
+                                  {formatEmailDetailedDate(
+                                    msg.sentAt || msg.createdAt
+                                  )}
+                                </div>
                               </div>
 
-                              {/* HTML or Text Body */}
-                              <div className="text-sm leading-relaxed text-foreground/90">
+                              {/* HTML or Text Body on Clean Canvas */}
+                              <div className="rounded-xl border border-border/80 bg-white p-5 text-zinc-900 shadow-xs sm:p-6">
                                 {msg.bodyHtml ? (
                                   <div
-                                    className="overflow-x-auto text-foreground dark:[&_*]:!text-foreground [&_img]:max-w-full [&_img]:rounded-md"
+                                    className="email-content-view overflow-x-auto text-sm leading-relaxed text-zinc-900 [&_a]:text-blue-600 [&_a]:underline [&_img]:max-w-full [&_img]:rounded-md"
                                     dangerouslySetInnerHTML={{
                                       __html: msg.bodyHtml,
                                     }}
                                   />
                                 ) : (
-                                  <div className="whitespace-pre-wrap">
+                                  <div className="text-sm leading-relaxed whitespace-pre-wrap text-zinc-900">
                                     {msg.bodyText ||
                                       msg.preview ||
                                       "(Empty content)"}
@@ -2516,7 +2595,7 @@ export default function EmailFolderDynamicPage() {
                           const fwdBody = `<br/><br/>---------- Forwarded conversation ---------<br/>${selectedThread.messages
                             .map(
                               (m) =>
-                                `<br/><strong>From:</strong> ${m.fromName ? `${m.fromName} &lt;${m.fromEmail}&gt;` : m.fromEmail}<br/><strong>Date:</strong> ${formatEmailDate(m.sentAt || m.createdAt)}<br/><strong>Subject:</strong> ${m.subject}<br/><strong>To:</strong> ${m.toEmails.join(", ")}<br/><br/>${m.bodyHtml || m.preview}`
+                                `<br/><strong>From:</strong> ${m.fromName ? `${m.fromName} &lt;${m.fromEmail}&gt;` : m.fromEmail}<br/><strong>Date:</strong> ${formatEmailDetailedDate(m.sentAt || m.createdAt)}<br/><strong>Subject:</strong> ${m.subject}<br/><strong>To:</strong> ${m.toEmails.join(", ")}<br/><br/>${m.bodyHtml || m.preview}`
                             )
                             .join("<hr/>")}`
 

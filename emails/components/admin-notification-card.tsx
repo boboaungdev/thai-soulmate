@@ -53,6 +53,8 @@ export const AdminNotification = ({
   const baseUrl =
     env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
   const logoUrl = `${baseUrl}/logo.png`
+  const wordmarkUrl = `${baseUrl}/email/brand-wordmark.png`
+  const heartDividerUrl = `${baseUrl}/email/heart-divider.png`
 
   return (
     <Html>
@@ -61,19 +63,64 @@ export const AdminNotification = ({
       <Body style={main}>
         <Preview>{previewText}</Preview>
         <Container style={wrapper}>
-          {/* Header (Minimal logo & title) */}
+          {/* ── MASTER BRAND HEADER (Matching Email Signature) ── */}
           <Section style={headerSection}>
             <Row>
               <Column align="center" style={{ textAlign: "center" }}>
+                {/* 1. Logo */}
                 <Img
                   src={logoUrl}
                   alt={APP_INFO.name}
-                  width="44"
-                  height="44"
+                  width="68"
+                  height="68"
                   style={logoImg}
                 />
-                <Text style={brandHeaderTitle}>{APP_INFO.name}</Text>
-                <Text style={brandHeaderSubtitle}>Admin Notification System</Text>
+
+                {/* 2. Color Wordmark Image */}
+                <div
+                  style={{ textAlign: "center", margin: "6px auto 2px auto" }}
+                >
+                  <Img
+                    src={wordmarkUrl}
+                    alt={APP_INFO.name}
+                    width="165"
+                    height="24"
+                    style={{
+                      display: "block",
+                      margin: "0 auto",
+                      maxWidth: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+
+                {/* 3. Exclusive Subtitle Badge */}
+                <Text style={exclusiveText}>EXCLUSIVE</Text>
+
+                {/* 4. Service Subtitle */}
+                <Text style={serviceSubtitleText}>{APP_INFO.tagline}</Text>
+
+                {/* 5. Decorative Heart Divider Image */}
+                <div style={{ textAlign: "center", margin: "6px auto" }}>
+                  <Img
+                    src={heartDividerUrl}
+                    alt="♥"
+                    width="150"
+                    height="17"
+                    style={{
+                      display: "block",
+                      margin: "0 auto",
+                      maxWidth: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+
+                {/* 6. Tagline */}
+                <Text style={taglineText}>
+                  Real People. Real Relationships. Personally Matched in
+                  Thailand.
+                </Text>
               </Column>
             </Row>
           </Section>
@@ -124,7 +171,7 @@ export const AdminNotification = ({
             {/* CTA Button */}
             <Section style={buttonSection}>
               <Button style={button} href={buttonUrl}>
-                {buttonText} →
+                {buttonText}
               </Button>
             </Section>
           </Section>
@@ -135,7 +182,8 @@ export const AdminNotification = ({
           {/* Footer */}
           <Section style={footerSection}>
             <Text style={footerNotice}>
-              This is an automated admin notification from Thai Soulmate. Please do not reply to this email.
+              This is an automated admin notification from Thai Soulmate. Please
+              do not reply to this email.
             </Text>
             <Text style={footerCopy}>
               Copyright © {currentYear} Thai Soulmate. All rights reserved.
@@ -151,7 +199,7 @@ export const AdminNotificationCard = AdminNotification
 export default AdminNotification
 
 /* ═══════════════════════════════════════════════════════
-   STYLES — Minimal, Neutral (No Background Colors)
+   STYLES — Minimal, Clean Card Design
 ═══════════════════════════════════════════════════════ */
 
 const main: React.CSSProperties = {
@@ -184,21 +232,37 @@ const logoImg: React.CSSProperties = {
   objectFit: "contain",
 }
 
-const brandHeaderTitle: React.CSSProperties = {
-  margin: "4px 0 2px 0",
-  fontSize: "17px",
+const exclusiveText: React.CSSProperties = {
+  margin: "6px 0 0 0",
+  fontSize: "10px",
+  lineHeight: "14px",
   fontWeight: "700",
-  color: "#111827",
+  letterSpacing: "0.3em",
+  color: "#E791A7",
+  textTransform: "uppercase" as const,
   textAlign: "center",
+  fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
 }
 
-const brandHeaderSubtitle: React.CSSProperties = {
-  margin: "0",
-  fontSize: "11px",
-  fontWeight: "600",
-  letterSpacing: "0.1em",
+const serviceSubtitleText: React.CSSProperties = {
+  margin: "4px 0 0 0",
+  fontSize: "11.5px",
+  lineHeight: "16px",
+  fontWeight: "700",
+  letterSpacing: "0.22em",
+  color: "#D3A753",
   textTransform: "uppercase" as const,
-  color: "#6B7280",
+  textAlign: "center",
+  fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
+}
+
+const taglineText: React.CSSProperties = {
+  margin: "4px 0 0 0",
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontSize: "11.5px",
+  lineHeight: "17px",
+  fontStyle: "italic",
+  color: "#5A0816",
   textAlign: "center",
 }
 
@@ -241,7 +305,7 @@ const fieldsSection: React.CSSProperties = {
   backgroundColor: "#FFFFFF",
   borderRadius: "6px",
   border: "1px solid #E5E7EB",
-  padding: "4px 16px",
+  padding: "10px 16px",
   marginBottom: "20px",
 }
 
@@ -250,7 +314,7 @@ const table: React.CSSProperties = {
 }
 
 const labelCell: React.CSSProperties = {
-  padding: "10px 8px 10px 0",
+  padding: "6px 8px 6px 0",
   fontSize: "12px",
   fontWeight: "700",
   color: "#111827",
@@ -258,15 +322,13 @@ const labelCell: React.CSSProperties = {
   letterSpacing: "0.05em",
   width: "36%",
   verticalAlign: "top",
-  borderBottom: "1px solid #F3F4F6",
 }
 
 const valueCell: React.CSSProperties = {
-  padding: "10px 0",
+  padding: "6px 0",
   fontSize: "14px",
   color: "#374151",
   verticalAlign: "top",
-  borderBottom: "1px solid #F3F4F6",
 }
 
 const messageBox: React.CSSProperties = {

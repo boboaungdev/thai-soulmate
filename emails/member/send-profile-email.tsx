@@ -96,7 +96,7 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
         matchmaker, please feel free to reply directly to this email.
       </Text>
 
-      <Text style={closingText}>Warm regards,</Text>
+      <Text style={closingText}>Best regards,</Text>
     </MemberEmailLayout>
   )
 }

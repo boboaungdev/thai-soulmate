@@ -64,7 +64,7 @@ export const RegisterInterestMemberConfirmationEmail = ({
       {/* Action CTA Button */}
       <Section style={buttonContainer}>
         <Button style={button} href={applicationUrl}>
-          Complete Application Form →
+          Complete Application Form
         </Button>
       </Section>
 
@@ -79,7 +79,7 @@ export const RegisterInterestMemberConfirmationEmail = ({
         relationship.
       </Text>
 
-      <Text style={closingText}>Warm regards,</Text>
+      <Text style={closingText}>Best regards,</Text>
     </MemberEmailLayout>
   )
 }

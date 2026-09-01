@@ -86,7 +86,7 @@ export function WebNavBar() {
           <div className="min-w-0 text-center">
             <AppName className="truncate text-base font-semibold sm:text-lg" />
 
-            <p className="text-xs text-muted-foreground">Exclusive</p>
+            <p className="text-xs text-muted-foreground">EXCLUSIVE</p>
 
             <p className="truncate text-xs text-muted-foreground">
               {APP_INFO.tagline}

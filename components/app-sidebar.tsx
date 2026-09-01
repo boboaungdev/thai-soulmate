@@ -386,7 +386,7 @@ export function AppSidebar() {
             <div className="flex-1 text-center group-data-[collapsible=icon]:hidden">
               <AppName className="text-base font-semibold" />
 
-              <p className="text-xs text-muted-foreground">Exclusive</p>
+              <p className="text-xs text-muted-foreground">EXCLUSIVE</p>
 
               <p className="truncate text-xs text-muted-foreground">
                 {APP_INFO.tagline}

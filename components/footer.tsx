@@ -47,10 +47,10 @@ export function Footer() {
 
               {/* Brand */}
               <div className="min-w-0">
-                <AppName className="text-base font-semibold" />
+                <AppName className="text-md font-semibold" />
 
-                <p className="text-sm font-semibold text-[#CA617D]">
-                  Exclusive
+                <p className="text-sm text-[#CA617D]">
+                  EXCLUSIVE
                 </p>
 
                 <p className="text-sm text-[#D3A753]">{APP_INFO.tagline}</p>

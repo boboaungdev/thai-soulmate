@@ -63,14 +63,14 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="flex max-w-md flex-col items-center space-y-6 text-center"
+            className="flex max-w-md flex-col items-center space-y-5 text-center"
           >
             <>
               <Image
                 src="/logo.png"
                 alt={`${APP_INFO.name} Logo`}
-                width={150}
-                height={150}
+                width={120}
+                height={120}
                 className="h-auto w-auto object-contain"
               />
 
@@ -78,11 +78,11 @@ export default function HomePage() {
                 <AppName className="text-3xl font-bold sm:text-4xl md:text-4xl" />
 
                 <div className="space-y-0">
-                  <p className="text-lg font-bold md:text-xl">
-                    <span className="text-[#CA617D]">Exclusive</span>
+                  <p className="text-lg md:text-xl">
+                    <span className="text-[#CA617D]">EXCLUSIVE</span>
                   </p>
 
-                  <p className="text-lg font-bold md:text-xl">
+                  <p className="text-lg md:text-xl">
                     <span className="text-[#D3A753]">{APP_INFO.tagline}</span>
                   </p>
 

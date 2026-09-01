@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
-import { AdminNotification } from "@/emails/admin/admin-notification-card"
+import { AdminNotification } from "@/emails/components/admin-notification-card"
 import { APP_INFO } from "@/constants"
 import { Mail, Laptop, Smartphone } from "lucide-react"
 
@@ -59,7 +59,8 @@ const notifications = [
       previewText: "[Register Interest] New registration from Khun Supansa",
       category: "Register Interest",
       title: "New Interest Registration",
-      description: "A new visitor has registered their interest on the website.",
+      description:
+        "A new visitor has registered their interest on the website.",
       fields: [
         { label: "Name", value: "Miss Supansa Thanakit" },
         { label: "Email", value: "supansa@example.com" },
@@ -75,7 +76,8 @@ const notifications = [
       previewText: "[Application Form] New application from Khun Alex",
       category: "Application Form",
       title: "New Application Submitted",
-      description: "A candidate has submitted a new application on the website.",
+      description:
+        "A candidate has submitted a new application on the website.",
       fields: [
         { label: "Name", value: "Mr. Alex Johnson" },
         { label: "Email", value: "alex.johnson@example.com" },
@@ -147,33 +149,33 @@ export default function AdminNotificationPreviewPage() {
 
   return (
     <div className="min-h-screen bg-[#11070A] pb-20 font-sans text-slate-100 antialiased">
-      <header className="sticky top-0 z-50 border-b border-[#5A0816]/60 bg-[#1A0A0E]/95 backdrop-blur-md px-6 py-4">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <header className="sticky top-0 z-50 border-b border-[#5A0816]/60 bg-[#1A0A0E]/95 px-6 py-4 backdrop-blur-md">
+        <div className="mx-auto flex max-w-5xl flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-gradient-to-tr from-[#D3A753] via-[#E791A7] to-[#CA617D] p-0.5 flex items-center justify-center shadow-xl">
-              <div className="size-full bg-[#1C0A0F] rounded-[10px] flex items-center justify-center">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#D3A753] via-[#E791A7] to-[#CA617D] p-0.5 shadow-xl">
+              <div className="flex size-full items-center justify-center rounded-[10px] bg-[#1C0A0F]">
                 <Mail className="size-4 text-[#D3A753]" />
               </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-white tracking-wide">
+                <span className="text-base font-bold tracking-wide text-white">
                   Admin Notification Emails
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#D3A753]/20 text-[#D3A753] border border-[#D3A753]/40">
+                <span className="rounded-full border border-[#D3A753]/40 bg-[#D3A753]/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-[#D3A753] uppercase">
                   {notifications.length} Types
                 </span>
               </div>
-              <p className="text-xs text-[#E791A7]/70 mt-0.5">
+              <p className="mt-0.5 text-xs text-[#E791A7]/70">
                 Branded admin notification templates for {APP_INFO.name}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center bg-[#14070A] p-1 rounded-xl border border-[#5A0816]/60 text-xs">
+          <div className="flex items-center rounded-xl border border-[#5A0816]/60 bg-[#14070A] p-1 text-xs">
             <button
               onClick={() => setViewport("desktop")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition-all ${
                 viewport === "desktop"
                   ? "bg-[#5A0816] text-[#D3A753] shadow-sm"
                   : "text-slate-400 hover:text-white"
@@ -184,7 +186,7 @@ export default function AdminNotificationPreviewPage() {
             </button>
             <button
               onClick={() => setViewport("mobile")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition-all ${
                 viewport === "mobile"
                   ? "bg-[#5A0816] text-[#D3A753] shadow-sm"
                   : "text-slate-400 hover:text-white"
@@ -197,16 +199,16 @@ export default function AdminNotificationPreviewPage() {
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
-        <div className="flex gap-2 flex-wrap">
+      <div className="mx-auto max-w-5xl px-4 pt-6 sm:px-6">
+        <div className="flex flex-wrap gap-2">
           {notifications.map((n, i) => (
             <button
               key={n.id}
               onClick={() => setActiveTab(i)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all border ${
+              className={`rounded-xl border px-4 py-2 text-xs font-semibold transition-all ${
                 activeTab === i
-                  ? "bg-gradient-to-r from-[#5A0816] to-[#8B1428] text-white border-[#5A0816] shadow-md shadow-[#5A0816]/30"
-                  : "bg-[#1A0A0E] text-slate-400 border-[#5A0816]/40 hover:text-white hover:border-[#5A0816]/80"
+                  ? "border-[#5A0816] bg-gradient-to-r from-[#5A0816] to-[#8B1428] text-white shadow-md shadow-[#5A0816]/30"
+                  : "border-[#5A0816]/40 bg-[#1A0A0E] text-slate-400 hover:border-[#5A0816]/80 hover:text-white"
               }`}
             >
               {n.tab}
@@ -215,26 +217,26 @@ export default function AdminNotificationPreviewPage() {
         </div>
       </div>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
-        <div className="rounded-3xl border border-[#5A0816]/40 bg-[#F5F0EC] p-4 sm:p-10 flex justify-center transition-all duration-300">
+      <main className="mx-auto max-w-5xl px-4 pt-6 sm:px-6">
+        <div className="flex justify-center rounded-3xl border border-[#5A0816]/40 bg-[#F5F0EC] p-4 transition-all duration-300 sm:p-10">
           <div
             className={`w-full transition-all duration-300 ${
               viewport === "desktop" ? "max-w-[600px]" : "max-w-[390px]"
             }`}
           >
-            <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-              <div className="bg-slate-50 border-b border-slate-200 px-5 py-3.5 flex items-center justify-between">
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-3.5">
                 <div className="flex items-center gap-2.5">
                   <div className="flex gap-1.5">
-                    <span className="size-3 rounded-full bg-rose-400/80 inline-block" />
-                    <span className="size-3 rounded-full bg-amber-400/80 inline-block" />
-                    <span className="size-3 rounded-full bg-emerald-400/80 inline-block" />
+                    <span className="inline-block size-3 rounded-full bg-rose-400/80" />
+                    <span className="inline-block size-3 rounded-full bg-amber-400/80" />
+                    <span className="inline-block size-3 rounded-full bg-emerald-400/80" />
                   </div>
-                  <span className="text-xs font-medium text-slate-400 ml-2">
+                  <span className="ml-2 text-xs font-medium text-slate-400">
                     Admin Inbox · {APP_INFO.name}
                   </span>
                 </div>
-                <span className="text-[11px] font-mono text-slate-400">
+                <span className="font-mono text-[11px] text-slate-400">
                   {new Date().toLocaleTimeString("en-GB", {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -252,15 +254,15 @@ export default function AdminNotificationPreviewPage() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-2">
+        <div className="mt-4 flex flex-col justify-between gap-2 px-2 sm:flex-row sm:items-center">
           <p className="text-xs text-slate-500">
             Showing:{" "}
-            <span className="text-[#D3A753] font-semibold">{current.tab}</span>{" "}
+            <span className="font-semibold text-[#D3A753]">{current.tab}</span>{" "}
             notification template
           </p>
           <p className="text-xs text-slate-600">
             Edit{" "}
-            <code className="text-[#E791A7] text-[11px]">
+            <code className="text-[11px] text-[#E791A7]">
               emails/admin/admin-notification-card.tsx
             </code>{" "}
             — all {notifications.length} templates update automatically

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { env } from "@/lib/env"
-import { AdminNotification } from "./admin-notification-card"
+import { AdminNotification } from "../components/admin-notification-card"
 
 export const WebsiteReviewAdminNotificationEmail = ({
   reviewerInfo,
@@ -10,7 +10,8 @@ export const WebsiteReviewAdminNotificationEmail = ({
     email: string
   }
 }) => {
-  const baseUrl = env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
+  const baseUrl =
+    env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
 
   return (
     <AdminNotification

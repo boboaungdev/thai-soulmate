@@ -1,6 +1,6 @@
 import * as React from "react"
 import { env } from "@/lib/env"
-import { AdminNotification } from "./admin-notification-card"
+import { AdminNotification } from "../components/admin-notification-card"
 
 type ContactFormNotificationDetails = {
   name: string
@@ -15,7 +15,8 @@ export const ContactFormAdminNotificationEmail = ({
   subject,
   message,
 }: ContactFormNotificationDetails) => {
-  const baseUrl = env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
+  const baseUrl =
+    env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
 
   return (
     <AdminNotification

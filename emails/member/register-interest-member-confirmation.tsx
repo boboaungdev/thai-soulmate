@@ -29,13 +29,10 @@ export const RegisterInterestMemberConfirmationEmail = ({
     <MemberEmailLayout
       previewText={`[Register Interest] Thank you for registering with ${APP_INFO.name}.`}
     >
-      {/* ── Greeting ── */}
+      {/* Greeting */}
       <Text style={greetingText}>Dear {displayName},</Text>
 
-      {/* ── Subtle Gradient Divider ── */}
-      <div style={gradientDivider} />
-
-      {/* ── Paragraphs ── */}
+      {/* Paragraphs */}
       <Text style={paragraph}>
         Thank you for registering your interest. We have successfully received
         your details and are delighted to welcome you to our private matchmaking
@@ -48,7 +45,7 @@ export const RegisterInterestMemberConfirmationEmail = ({
         {preferredContactDate && preferredContactTime ? (
           <>
             , preferably on{" "}
-            <strong style={{ color: "#5A0816", fontWeight: "700" }}>
+            <strong>
               {preferredContactDate} between {preferredContactTime}
             </strong>
           </>
@@ -64,7 +61,7 @@ export const RegisterInterestMemberConfirmationEmail = ({
         clicking the button below.
       </Text>
 
-      {/* ── Action CTA Button ── */}
+      {/* Action CTA Button */}
       <Section style={buttonContainer}>
         <Button style={button} href={applicationUrl}>
           Complete Application Form →
@@ -90,34 +87,27 @@ export const RegisterInterestMemberConfirmationEmail = ({
 export default RegisterInterestMemberConfirmationEmail
 
 /* ═══════════════════════════════════════════════════════
-   STYLES
+   STYLES — Minimal, Neutral Text (No Accent Colors)
 ═══════════════════════════════════════════════════════ */
 
 const greetingText: React.CSSProperties = {
   fontSize: "18px",
   fontWeight: "700",
-  color: "#1C0E12",
-  margin: "0 0 12px 0",
+  color: "#111827",
+  margin: "0 0 16px 0",
   lineHeight: "26px",
-}
-
-const gradientDivider: React.CSSProperties = {
-  height: "1px",
-  background:
-    "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, transparent 100%)",
-  margin: "0 0 20px 0",
 }
 
 const paragraph: React.CSSProperties = {
   fontSize: "15px",
-  lineHeight: "25px",
-  color: "#3A2530",
+  lineHeight: "24px",
+  color: "#374151",
   margin: "0 0 16px 0",
 }
 
 const buttonContainer: React.CSSProperties = {
   textAlign: "center" as const,
-  margin: "26px 0",
+  margin: "24px 0",
 }
 
 const button: React.CSSProperties = {
@@ -128,15 +118,14 @@ const button: React.CSSProperties = {
   fontSize: "15px",
   fontWeight: "600",
   textDecoration: "none",
-  display: "block",
+  display: "inline-block",
   textAlign: "center" as const,
   letterSpacing: "0.02em",
-  boxShadow: "0 4px 12px rgba(207, 161, 79, 0.25)",
 }
 
 const closingText: React.CSSProperties = {
   fontSize: "15px",
   fontWeight: "600",
-  color: "#5A0816",
-  margin: "24px 0 24px 0",
+  color: "#111827",
+  margin: "24px 0 0 0",
 }

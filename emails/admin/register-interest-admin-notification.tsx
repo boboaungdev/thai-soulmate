@@ -1,6 +1,6 @@
 import * as React from "react"
 import { env } from "@/lib/env"
-import { AdminNotification } from "./admin-notification-card"
+import { AdminNotification } from "../components/admin-notification-card"
 
 type AdminNotificationDetails = {
   prefix?: string
@@ -14,7 +14,8 @@ export const RegisterInterestAdminNotificationEmail = ({
   name,
   email,
 }: AdminNotificationDetails) => {
-  const baseUrl = env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
+  const baseUrl =
+    env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
 
   return (
     <AdminNotification

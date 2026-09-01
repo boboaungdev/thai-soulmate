@@ -28,13 +28,10 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
     <MemberEmailLayout
       previewText={`[${APP_INFO.name}] A hand-selected match is waiting for your review.`}
     >
-      {/* ── Greeting ── */}
+      {/* Greeting */}
       <Text style={greetingText}>Dear {displayName},</Text>
 
-      {/* ── Subtle Gradient Divider ── */}
-      <div style={gradientDivider} />
-
-      {/* ── Paragraphs ── */}
+      {/* Paragraphs */}
       <Text style={paragraph}>
         We are pleased to inform you that our matchmaking team has hand-selected
         a potential match for you based on your personal values and preferences.
@@ -47,11 +44,10 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
 
       <Text style={paragraph}>
         Please review the profile and let us know your decision within{" "}
-        <strong style={{ color: "#5A0816" }}>48 hours</strong> by clicking one
-        of the options below:
+        <strong>48 hours</strong> by clicking one of the options below:
       </Text>
 
-      {/* ── Two-button Action Section ── */}
+      {/* Two-button Action Section */}
       <Section style={buttonsSection}>
         <Row>
           <Column
@@ -89,12 +85,9 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
 
       <div style={confidentialCallout}>
         <Text style={calloutText}>
-          <strong style={{ color: "#5A0816" }}>
-            Confidentiality Reminder:
-          </strong>{" "}
-          To preserve member privacy, please keep all attached details strictly
-          confidential and do not disclose or share this profile with any third
-          party.
+          <strong>Confidentiality Reminder:</strong> To preserve member privacy,
+          please keep all attached details strictly confidential and do not
+          disclose or share this profile with any third party.
         </Text>
       </div>
 
@@ -111,28 +104,21 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
 export default SendProfileEmail
 
 /* ═══════════════════════════════════════════════════════
-   STYLES
+   STYLES — Minimal, Neutral (No Accent Colors)
 ═══════════════════════════════════════════════════════ */
 
 const greetingText: React.CSSProperties = {
   fontSize: "18px",
   fontWeight: "700",
-  color: "#1C0E12",
-  margin: "0 0 12px 0",
+  color: "#111827",
+  margin: "0 0 16px 0",
   lineHeight: "26px",
-}
-
-const gradientDivider: React.CSSProperties = {
-  height: "1px",
-  background:
-    "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, transparent 100%)",
-  margin: "0 0 20px 0",
 }
 
 const paragraph: React.CSSProperties = {
   fontSize: "15px",
-  lineHeight: "25px",
-  color: "#3A2530",
+  lineHeight: "24px",
+  color: "#374151",
   margin: "0 0 16px 0",
 }
 
@@ -144,47 +130,44 @@ const acceptButton: React.CSSProperties = {
   backgroundColor: "#16A34A",
   color: "#FFFFFF",
   borderRadius: "6px",
-  padding: "12px 18px",
+  padding: "12px 22px",
   fontSize: "14px",
   fontWeight: "600",
   textDecoration: "none",
-  display: "block",
+  display: "inline-block",
   textAlign: "center" as const,
-  boxShadow: "0 3px 10px rgba(22, 163, 74, 0.25)",
 }
 
 const rejectButton: React.CSSProperties = {
   backgroundColor: "#DC2626",
   color: "#FFFFFF",
   borderRadius: "6px",
-  padding: "12px 18px",
+  padding: "12px 22px",
   fontSize: "14px",
   fontWeight: "600",
   textDecoration: "none",
-  display: "block",
+  display: "inline-block",
   textAlign: "center" as const,
-  boxShadow: "0 3px 10px rgba(220, 38, 38, 0.2)",
 }
 
 const confidentialCallout: React.CSSProperties = {
-  backgroundColor: "#FBF8F3",
-  border: "1px solid #EEE6DF",
-  borderLeft: "3px solid #D3A753",
-  borderRadius: "8px",
+  backgroundColor: "#F9FAFB",
+  borderLeft: "3px solid #6B7280",
   padding: "12px 16px",
-  margin: "18px 0",
+  borderRadius: "0 6px 6px 0",
+  margin: "20px 0",
 }
 
 const calloutText: React.CSSProperties = {
+  margin: "0",
   fontSize: "13px",
   lineHeight: "20px",
-  color: "#5A4E53",
-  margin: "0",
+  color: "#4B5563",
 }
 
 const closingText: React.CSSProperties = {
   fontSize: "15px",
   fontWeight: "600",
-  color: "#5A0816",
-  margin: "24px 0 24px 0",
+  color: "#111827",
+  margin: "24px 0 0 0",
 }

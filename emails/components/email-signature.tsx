@@ -18,9 +18,6 @@ export interface EmailSignatureProps {
   tiktok?: string
 }
 
-/* ============================================================
-   MAIN EMAIL SIGNATURE COMPONENT (Business Card 6 Master Design)
-   ============================================================ */
 export function EmailSignature({
   name = APP_INFO.name,
   role = "1-2-1 Matchmaking Service",
@@ -34,13 +31,11 @@ export function EmailSignature({
   line = "https://line.me/ti/p/~thaisoulmate",
   tiktok = "https://tiktok.com/@thaisoulmate",
 }: EmailSignatureProps) {
-  const baseUrl = env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
+  const baseUrl =
+    env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
   const logoUrl = `${baseUrl}/logo.png`
   const wordmarkUrl = `${baseUrl}/email/brand-wordmark.png`
-  const topGradientUrl = `${baseUrl}/email/gradient-bar-top.png`
   const heartDividerUrl = `${baseUrl}/email/heart-divider.png`
-  const middleGradientUrl = `${baseUrl}/email/middle-gradient-line.png`
-  const bottomBannerUrl = `${baseUrl}/email/bottom-gradient-banner.png`
 
   // Bulletproof cross-client icon URLs (colored)
   const whatsappIconUrl = `${baseUrl}/email/icons/whatsapp.png`
@@ -65,37 +60,26 @@ export function EmailSignature({
 
   return (
     <Section style={cardContainer}>
-      {/* ── TOP LUXURY GRADIENT BORDER ── */}
-      <div style={{ backgroundColor: "#D3A753", lineHeight: 0, fontSize: 0 }}>
-        <Img
-          src={topGradientUrl}
-          alt=""
-          width="600"
-          height="5"
-          style={{ display: "block", width: "100%", height: "5px", border: 0 }}
-        />
-      </div>
-
-      {/* ── BRAND HEADER SECTION ── */}
+      {/* ── BRAND HEADER WITH COLOR WORDMARK & EXCLUSIVE LABEL ── */}
       <Section style={brandHeaderSection}>
         <Row>
           <Column align="center" style={{ textAlign: "center" }}>
-            {/* Logo Image */}
+            {/* Logo */}
             <Img
               src={logoUrl}
               alt={APP_INFO.name}
-              width="54"
-              height="54"
+              width="68"
+              height="68"
               style={logoImage}
             />
 
-            {/* Universally-Supported Brand Wordmark Image */}
-            <div style={{ textAlign: "center", margin: "4px auto" }}>
+            {/* Color Wordmark Image */}
+            <div style={{ textAlign: "center", margin: "6px auto 2px auto" }}>
               <Img
                 src={wordmarkUrl}
                 alt={name}
-                width="220"
-                height="32"
+                width="165"
+                height="24"
                 style={{
                   display: "block",
                   margin: "0 auto",
@@ -105,7 +89,7 @@ export function EmailSignature({
               />
             </div>
 
-            {/* Exclusive Badge Subtitle */}
+            {/* Exclusive Subtitle Badge */}
             <Text style={exclusiveText}>EXCLUSIVE</Text>
 
             {/* Service Subtitle */}
@@ -116,8 +100,8 @@ export function EmailSignature({
               <Img
                 src={heartDividerUrl}
                 alt="♥"
-                width="180"
-                height="20"
+                width="150"
+                height="17"
                 style={{
                   display: "block",
                   margin: "0 auto",
@@ -135,29 +119,21 @@ export function EmailSignature({
         </Row>
       </Section>
 
-      {/* ── MIDDLE GRADIENT SEPARATOR ── */}
-      <Section style={{ padding: "0 28px" }}>
-        <Img
-          src={middleGradientUrl}
-          alt=""
-          width="544"
-          height="1"
-          style={{ display: "block", width: "100%", height: "1px", border: 0 }}
-        />
-      </Section>
+      {/* ── SIMPLE DIVIDER ── */}
+      <div style={sectionDivider} />
 
-      {/* ── MAIN 2-COLUMN BODY SECTION ── */}
+      {/* ── 2-COLUMN DETAILS ── */}
       <Section style={bodySection}>
         <Row>
-          {/* LEFT COLUMN — CONNECT & CONTACT DETAILS */}
+          {/* Left Column: Contact Details */}
           <Column
             width="55%"
             style={{
-              paddingRight: "20px",
+              paddingRight: "16px",
               verticalAlign: "top",
             }}
           >
-            <Text style={columnHeading}>Connect with us.</Text>
+            <Text style={columnHeading}>Connect with us</Text>
 
             {/* WhatsApp */}
             <Row style={contactRow}>
@@ -215,7 +191,7 @@ export function EmailSignature({
               </Row>
             )}
 
-            {/* Email (Clean neutral text label, colored icon) */}
+            {/* Email */}
             <Row style={contactRow}>
               <Column width="22" style={iconCell}>
                 <Img
@@ -233,7 +209,7 @@ export function EmailSignature({
               </Column>
             </Row>
 
-            {/* Website (Clean neutral text label, colored icon) */}
+            {/* Website */}
             <Row style={lastContactRow}>
               <Column width="22" style={iconCell}>
                 <Img
@@ -252,37 +228,36 @@ export function EmailSignature({
             </Row>
           </Column>
 
-          {/* RIGHT COLUMN — EXCLUSIVE MATCHMAKING & HIGHLIGHTS */}
+          {/* Right Column: Exclusive Matchmaking */}
           <Column
             width="45%"
             style={{
-              paddingLeft: "20px",
-              borderLeft: "1px solid #E7DCD7",
+              paddingLeft: "16px",
+              borderLeft: "1px solid #E5E7EB",
               verticalAlign: "top",
             }}
           >
-            <Text style={companyTitle}>Exclusive Matchmaking</Text>
+            <Text style={columnHeading}>Exclusive Matchmaking</Text>
             <Text style={companyDescription}>
               Personal 1-2-1 introductions for genuine and meaningful
               relationships in Thailand.
             </Text>
 
-            {/* Highlights with Brand Dots */}
-            <div style={{ marginTop: "10px" }}>
+            <div style={{ marginTop: "8px" }}>
               <Text style={featureItem}>
-                <span style={goldDot}>●</span>
+                <strong style={{ marginRight: "6px" }}>•</strong>
                 Personal 1-2-1 Matchmaking
               </Text>
               <Text style={featureItem}>
-                <span style={pinkDot}>●</span>
+                <strong style={{ marginRight: "6px" }}>•</strong>
                 100% Private & Confidential
               </Text>
               <Text style={featureItem}>
-                <span style={goldDot}>●</span>
+                <strong style={{ marginRight: "6px" }}>•</strong>
                 Verified & Hand-Picked Matches
               </Text>
               <Text style={featureItem}>
-                <span style={pinkDot}>●</span>
+                <strong style={{ marginRight: "6px" }}>•</strong>
                 Discreet Global Introductions
               </Text>
             </div>
@@ -354,33 +329,16 @@ export function EmailSignature({
         </Row>
       </Section>
 
-      {/* ── BOTTOM GRADIENT FOOTER BANNER ── */}
-      <div style={{ backgroundColor: "#5A0816", lineHeight: 0, fontSize: 0 }}>
-        <Img
-          src={bottomBannerUrl}
-          alt="EXCLUSIVE • PERSONAL • CONFIDENTIAL"
-          width="600"
-          height="32"
-          style={{ display: "block", width: "100%", height: "auto", border: 0 }}
-        />
-      </div>
-
-      {/* ── LEGAL & CONFIDENTIALITY FOOTER ── */}
+      {/* ── LEGAL FOOTER ── */}
       <Section style={legalFooterSection}>
-        {/* Confidentiality Notice */}
         <Text style={confidentialityNoticeText}>
-          <strong style={{ color: "#5A0816" }}>CONFIDENTIALITY NOTICE:</strong>{" "}
-          This email, including any attachments, contains confidential and
-          legally privileged information intended solely for the use of the
-          individual or entity named above. If you are not the intended
-          recipient, please note that any review, disclosure, copying,
-          distribution, or taking of any action in reliance on the contents of
-          this communication is strictly prohibited. If you have received this
-          transmission in error, please immediately notify the sender by reply
-          email and permanently delete all copies.
+          <strong>CONFIDENTIALITY NOTICE:</strong> This email, including any
+          attachments, contains confidential and legally privileged information
+          intended solely for the use of the individual or entity named above.
+          If you have received this transmission in error, please immediately
+          notify the sender by reply email and permanently delete all copies.
         </Text>
 
-        {/* Legal Links (Terms & Privacy) */}
         <div style={legalLinksRow}>
           <Link href={`${websiteUrl}/terms`} style={legalLink}>
             Terms of Service
@@ -391,7 +349,6 @@ export function EmailSignature({
           </Link>
         </div>
 
-        {/* Copyright */}
         <Text style={copyrightText}>
           Copyright © {currentYear} {APP_INFO.name}. All rights reserved.
         </Text>
@@ -403,30 +360,28 @@ export function EmailSignature({
 export default EmailSignature
 
 /* ============================================================
-   STYLES — Clean White Background & Cross-Client Compatibility
+   STYLES — Clean, Neutral, Minimal with Brand Accents
    ============================================================ */
 
 const cardContainer: React.CSSProperties = {
   width: "100%",
   maxWidth: "600px",
-  margin: "24px auto 0",
-  border: "1px solid #E7DCD7",
+  margin: "0 auto",
   backgroundColor: "#FFFFFF",
-  borderRadius: "14px",
-  overflow: "hidden",
   fontFamily:
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+  color: "#111827",
 }
 
 const brandHeaderSection: React.CSSProperties = {
-  padding: "24px 28px 16px",
+  padding: "16px 0 12px",
   textAlign: "center",
   backgroundColor: "#FFFFFF",
 }
 
 const logoImage: React.CSSProperties = {
   display: "block",
-  margin: "0 auto 8px auto",
+  margin: "0 auto 6px auto",
   objectFit: "contain",
 }
 
@@ -464,18 +419,23 @@ const taglineText: React.CSSProperties = {
   textAlign: "center",
 }
 
+const sectionDivider: React.CSSProperties = {
+  height: "1px",
+  backgroundColor: "#E5E7EB",
+  margin: "12px 0 16px 0",
+}
+
 const bodySection: React.CSSProperties = {
-  padding: "20px 24px 18px",
+  padding: "8px 0 16px",
   backgroundColor: "#FFFFFF",
 }
 
 const columnHeading: React.CSSProperties = {
-  margin: "0 0 12px 0",
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "15px",
+  margin: "0 0 10px 0",
+  fontSize: "13px",
   lineHeight: "18px",
   fontWeight: "700",
-  color: "#5A0816",
+  color: "#111827",
 }
 
 const contactRow: React.CSSProperties = {
@@ -493,68 +453,47 @@ const iconCell: React.CSSProperties = {
 
 const contactContentCell: React.CSSProperties = {
   verticalAlign: "middle",
-  paddingLeft: "2px",
+  paddingLeft: "4px",
 }
 
 const contactLink: React.CSSProperties = {
   display: "inline-block",
-  fontSize: "11.5px",
+  fontSize: "12px",
   lineHeight: "18px",
-  color: "#24141A",
+  color: "#111827",
   textDecoration: "none",
   fontWeight: "500",
 }
 
-const companyTitle: React.CSSProperties = {
-  margin: "0 0 14px 0",
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "15px",
-  lineHeight: "18px",
-  fontWeight: "700",
-  color: "#5A0816",
-}
-
 const companyDescription: React.CSSProperties = {
-  margin: "0 0 10px 0",
-  fontSize: "10px",
-  lineHeight: "15px",
-  color: "#6D5C61",
+  margin: "0 0 8px 0",
+  fontSize: "11px",
+  lineHeight: "16px",
+  color: "#4B5563",
 }
 
 const featureItem: React.CSSProperties = {
-  margin: "0 0 5px 0",
-  fontSize: "10px",
-  lineHeight: "14px",
-  color: "#4A3C41",
+  margin: "0 0 4px 0",
+  fontSize: "11px",
+  lineHeight: "15px",
+  color: "#374151",
   fontWeight: "500",
 }
 
-const goldDot: React.CSSProperties = {
-  color: "#D3A753",
-  marginRight: "6px",
-  fontSize: "8px",
-}
-
-const pinkDot: React.CSSProperties = {
-  color: "#CA617D",
-  marginRight: "6px",
-  fontSize: "8px",
-}
-
 const socialSection: React.CSSProperties = {
-  padding: "12px 28px",
-  borderTop: "1px solid #E8DDD6",
-  borderBottom: "1px solid #E8DDD6",
+  padding: "12px 0",
+  borderTop: "1px solid #E5E7EB",
+  borderBottom: "1px solid #E5E7EB",
   backgroundColor: "#FFFFFF",
 }
 
 const socialHeaderLabel: React.CSSProperties = {
   margin: 0,
-  fontSize: "9px",
+  fontSize: "10px",
   lineHeight: "16px",
   fontWeight: "700",
-  letterSpacing: "1.5px",
-  color: "#5A0816",
+  letterSpacing: "1px",
+  color: "#111827",
   textTransform: "uppercase",
 }
 
@@ -575,9 +514,8 @@ const socialIconLink: React.CSSProperties = {
 }
 
 const legalFooterSection: React.CSSProperties = {
-  padding: "16px 24px 20px",
+  padding: "16px 0 8px",
   textAlign: "center",
-  borderTop: "1px solid #EAE0DA",
   backgroundColor: "#FFFFFF",
 }
 
@@ -585,7 +523,7 @@ const confidentialityNoticeText: React.CSSProperties = {
   margin: "0 0 10px 0",
   fontSize: "9px",
   lineHeight: "14px",
-  color: "#8C7A80",
+  color: "#6B7280",
   textAlign: "justify",
   fontFamily:
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -593,21 +531,21 @@ const confidentialityNoticeText: React.CSSProperties = {
 
 const legalLinksRow: React.CSSProperties = {
   margin: "8px 0 6px 0",
-  fontSize: "10.5px",
+  fontSize: "11px",
   lineHeight: "14px",
   textAlign: "center",
 }
 
 const legalLink: React.CSSProperties = {
-  color: "#5A0816",
+  color: "#111827",
   textDecoration: "none",
   fontWeight: "600",
-  fontSize: "10.5px",
+  fontSize: "11px",
 }
 
 const legalDividerDot: React.CSSProperties = {
   padding: "0 8px",
-  color: "#D3A753",
+  color: "#9CA3AF",
   fontSize: "10px",
 }
 
@@ -615,7 +553,7 @@ const copyrightText: React.CSSProperties = {
   margin: "6px 0 0 0",
   fontSize: "10px",
   lineHeight: "14px",
-  color: "#9A8D92",
+  color: "#9CA3AF",
   textAlign: "center",
   fontWeight: "500",
 }

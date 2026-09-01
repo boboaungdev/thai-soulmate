@@ -1,6 +1,6 @@
 import * as React from "react"
 import { env } from "@/lib/env"
-import { AdminNotification } from "./admin-notification-card"
+import { AdminNotification } from "../components/admin-notification-card"
 
 export interface AdminEmailNotificationProps {
   mailbox: string
@@ -39,7 +39,8 @@ export const AdminEmailNotificationEmail = ({
   bodyHtml = "",
   bodyText,
 }: AdminEmailNotificationProps) => {
-  const baseUrl = env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
+  const baseUrl =
+    env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
   const rawPreview = bodyText || stripHtml(bodyHtml)
   const shortSnippet =
     rawPreview.length > 250 ? `${rawPreview.slice(0, 250)}...` : rawPreview

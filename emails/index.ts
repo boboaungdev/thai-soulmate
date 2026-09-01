@@ -7,7 +7,7 @@ export * from "./admin/website-review-admin-notification"
 export * from "./admin/contact-form-Admin-notification"
 export * from "./admin/application-form-admin-notification"
 export * from "./admin/admin-email-notification"
-export * from "./admin/admin-notification-card"
+export * from "./components/admin-notification-card"
 
 export { default as EmailSignature } from "./components/email-signature"
 export * from "./components/email-signature"

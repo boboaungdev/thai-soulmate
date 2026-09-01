@@ -1,9 +1,55 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect, useRef } from "react"
+import { renderToStaticMarkup } from "react-dom/server"
 import { AdminNotification } from "@/emails/admin/admin-notification-card"
 import { APP_INFO } from "@/constants"
 import { Mail, Laptop, Smartphone } from "lucide-react"
+
+function EmailFrame({ children }: { children: React.ReactElement }) {
+  const [html, setHtml] = useState<string>("")
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  useEffect(() => {
+    try {
+      const markup = renderToStaticMarkup(children)
+      setHtml(markup)
+    } catch (err) {
+      console.error("Failed to render admin email markup:", err)
+    }
+  }, [children])
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (iframeRef.current && iframeRef.current.contentDocument?.body) {
+        const body = iframeRef.current.contentDocument.body
+        const docEl = iframeRef.current.contentDocument.documentElement
+        const height = Math.max(body.scrollHeight, docEl.scrollHeight, 600)
+        iframeRef.current.style.height = `${height + 20}px`
+      }
+    }
+
+    const timer1 = setTimeout(handleResize, 50)
+    const timer2 = setTimeout(handleResize, 300)
+    const timer3 = setTimeout(handleResize, 800)
+
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+      clearTimeout(timer3)
+    }
+  }, [html])
+
+  return (
+    <iframe
+      ref={iframeRef}
+      srcDoc={html}
+      className="w-full border-0 transition-all duration-300"
+      style={{ minHeight: "750px", display: "block" }}
+      title="Admin Notification Email Preview"
+    />
+  )
+}
 
 const notifications = [
   {
@@ -195,8 +241,12 @@ export default function AdminNotificationPreviewPage() {
                   })}
                 </span>
               </div>
+
+              {/* Rendered in Isolated IFrame */}
               <div className="bg-[#F5F0EC]">
-                <AdminNotification {...current.props} />
+                <EmailFrame key={`${current.id}-${viewport}`}>
+                  <AdminNotification {...current.props} />
+                </EmailFrame>
               </div>
             </div>
           </div>

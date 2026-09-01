@@ -1,23 +1,11 @@
-import {
-  Body,
-  Button,
-  Column,
-  Container,
-  Head,
-  Html,
-  Img,
-  Preview,
-  Row,
-  Section,
-  Text,
-} from "react-email"
+import * as React from "react"
+import { Button, Column, Row, Section, Text } from "react-email"
 
 import { APP_INFO } from "@/constants"
 import { env } from "@/lib/env"
+import MemberEmailLayout from "../components/member-email-layout"
 
-const currentYear = new Date().getFullYear()
-
-interface SendProfileEmailProps {
+export interface SendProfileEmailProps {
   to: {
     prefix: string
     name: string
@@ -31,146 +19,172 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
   const from = isMaleRecipient ? "male" : "female"
   const pronoun = isMaleRecipient ? "Her" : "His"
   const otherPronoun = isMaleRecipient ? "she" : "he"
+  const displayName = [to.prefix, to.name].filter(Boolean).join(" ")
+
+  const acceptUrl = `${env.BASE_URL}/api/tracking/${trackingId}?response=accepted&from=${from}`
+  const rejectUrl = `${env.BASE_URL}/api/tracking/${trackingId}?response=rejected&from=${from}`
 
   return (
-    <Html>
-      <Head />
+    <MemberEmailLayout
+      previewText={`[${APP_INFO.name}] A hand-selected match is waiting for your review.`}
+    >
+      {/* ── Greeting ── */}
+      <Text style={greetingText}>Dear {displayName},</Text>
 
-      <Preview>
-        [Soulmate] A carefully selected match is waiting for your review.
-      </Preview>
+      {/* ── Subtle Gradient Divider ── */}
+      <div style={gradientDivider} />
 
-      <Body style={main}>
-        <Container style={container}>
-          <Text style={paragraph}>
-            Dear {to.prefix} {to.name},
-          </Text>
+      {/* ── Paragraphs ── */}
+      <Text style={paragraph}>
+        We are pleased to inform you that our matchmaking team has hand-selected
+        a potential match for you based on your personal values and preferences.
+      </Text>
 
-          <Text style={paragraph}>
-            We are pleased to let you know that our matchmaking team has
-            carefully selected a potential match for you.
-          </Text>
+      <Text style={paragraph}>
+        {pronoun} private profile document is attached to this email as a PDF
+        for your confidential review.
+      </Text>
 
-          <Text style={paragraph}>
-            {pronoun} profile is attached to this email as a PDF for your
-            review.
-          </Text>
+      <Text style={paragraph}>
+        Please review the profile and let us know your decision within{" "}
+        <strong style={{ color: "#5A0816" }}>48 hours</strong> by clicking one
+        of the options below:
+      </Text>
 
-          <Text style={paragraph}>
-            Please let us know your decision within <b>48 hours</b> by clicking
-            one of the buttons below.
-          </Text>
+      {/* ── Two-button Action Section ── */}
+      <Section style={buttonsSection}>
+        <Row>
+          <Column
+            align="right"
+            style={{
+              width: "50%",
+              paddingRight: "8px",
+              verticalAlign: "middle",
+            }}
+          >
+            <Button style={acceptButton} href={acceptUrl}>
+              ✓ Accept Introduction
+            </Button>
+          </Column>
+          <Column
+            align="left"
+            style={{
+              width: "50%",
+              paddingLeft: "8px",
+              verticalAlign: "middle",
+            }}
+          >
+            <Button style={rejectButton} href={rejectUrl}>
+              ✕ Decline Match
+            </Button>
+          </Column>
+        </Row>
+      </Section>
 
-          <Section style={buttonWrapper}>
-            <Row>
-              <Column
-                align="right"
-                style={{ width: "50%", paddingRight: "8px" }}
-              >
-                <Button
-                  style={{ ...button, backgroundColor: "#28a745" }}
-                  href={`${env.BASE_URL}/api/tracking/${trackingId}?response=accepted&from=${from}`}
-                >
-                  Accept
-                </Button>
-              </Column>
-              <Column align="left" style={{ width: "50%", paddingLeft: "8px" }}>
-                <Button
-                  style={{ ...button, backgroundColor: "#dc3545" }}
-                  href={`${env.BASE_URL}/api/tracking/${trackingId}?response=rejected&from=${from}`}
-                >
-                  Reject
-                </Button>
-              </Column>
-            </Row>
-          </Section>
+      <Text style={paragraph}>
+        Once we receive your response, we will immediately proceed with the next
+        steps. If you accept and {otherPronoun} also accepts, our team will
+        coordinate your private personal introduction.
+      </Text>
 
-          <Text style={paragraph}>
-            Once we receive your decision, we will proceed with the next steps.
-            If you accept, we will notify your potential match. If{" "}
-            {otherPronoun} also accepts, we will arrange an introduction.
-          </Text>
+      <div style={confidentialCallout}>
+        <Text style={calloutText}>
+          <strong style={{ color: "#5A0816" }}>
+            Confidentiality Reminder:
+          </strong>{" "}
+          To preserve member privacy, please keep all attached details strictly
+          confidential and do not disclose or share this profile with any third
+          party.
+        </Text>
+      </div>
 
-          <Text style={paragraph}>
-            To protect the privacy of all members, please keep the attached
-            profile confidential and do not share it with anyone.
-          </Text>
+      <Text style={paragraph}>
+        If you have any questions or wish to discuss this candidate with your
+        matchmaker, please feel free to reply directly to this email.
+      </Text>
 
-          <Text style={paragraph}>
-            If you have any questions, simply reply to this email. Our
-            matchmaking team will be happy to assist you.
-          </Text>
-
-          <Text style={paragraph}>Warm regards,</Text>
-
-          <Section style={signature}>
-            <Container style={signatureContainer}>
-              <Img
-                src={`${env.BASE_URL}/email/3.png`}
-                width="150"
-                alt={APP_INFO.name}
-                style={signatureLogo}
-              />
-            </Container>
-          </Section>
-
-          <Text style={replyMessage}>
-            Simply reply to this email to let us know your decision or if you
-            have any questions. We look forward to hearing from you.
-          </Text>
-
-          <Section style={copyrightSection}>
-            <Text style={copyright}>
-              Copyright &copy; {currentYear} {APP_INFO.name}. All rights
-              reserved.
-            </Text>
-          </Section>
-        </Container>
-      </Body>
-    </Html>
+      <Text style={closingText}>Warm regards,</Text>
+    </MemberEmailLayout>
   )
 }
 
 export default SendProfileEmail
 
-const main = {
-  backgroundColor: "#ffffff",
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+/* ═══════════════════════════════════════════════════════
+   STYLES
+═══════════════════════════════════════════════════════ */
+
+const greetingText: React.CSSProperties = {
+  fontSize: "18px",
+  fontWeight: "700",
+  color: "#1C0E12",
+  margin: "0 0 12px 0",
+  lineHeight: "26px",
 }
 
-const container = {
-  margin: "0 auto",
-  padding: "20px 0 48px",
-  maxWidth: "600px",
+const gradientDivider: React.CSSProperties = {
+  height: "1px",
+  background:
+    "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, transparent 100%)",
+  margin: "0 0 20px 0",
 }
-const paragraph = { fontSize: "16px", lineHeight: "28px", color: "#333333" }
-const buttonWrapper = {
-  textAlign: "center" as const,
-  marginTop: "20px",
-  marginBottom: "20px",
+
+const paragraph: React.CSSProperties = {
+  fontSize: "15px",
+  lineHeight: "25px",
+  color: "#3A2530",
+  margin: "0 0 16px 0",
 }
-const button = {
-  color: "#ffffff",
-  fontSize: "16px",
+
+const buttonsSection: React.CSSProperties = {
+  margin: "24px 0",
+}
+
+const acceptButton: React.CSSProperties = {
+  backgroundColor: "#16A34A",
+  color: "#FFFFFF",
+  borderRadius: "6px",
+  padding: "12px 18px",
+  fontSize: "14px",
+  fontWeight: "600",
   textDecoration: "none",
-  borderRadius: "5px",
-  padding: "12px 20px",
-  display: "inline-block",
+  display: "block",
+  textAlign: "center" as const,
+  boxShadow: "0 3px 10px rgba(22, 163, 74, 0.25)",
 }
-const replyMessage = {
-  color: "#6b7280",
+
+const rejectButton: React.CSSProperties = {
+  backgroundColor: "#DC2626",
+  color: "#FFFFFF",
+  borderRadius: "6px",
+  padding: "12px 18px",
+  fontSize: "14px",
+  fontWeight: "600",
+  textDecoration: "none",
+  display: "block",
+  textAlign: "center" as const,
+  boxShadow: "0 3px 10px rgba(220, 38, 38, 0.2)",
+}
+
+const confidentialCallout: React.CSSProperties = {
+  backgroundColor: "#FBF8F3",
+  border: "1px solid #EEE6DF",
+  borderLeft: "3px solid #D3A753",
+  borderRadius: "8px",
+  padding: "12px 16px",
+  margin: "18px 0",
+}
+
+const calloutText: React.CSSProperties = {
   fontSize: "13px",
   lineHeight: "20px",
-  marginTop: "12px",
+  color: "#5A4E53",
+  margin: "0",
 }
-const copyrightSection = { textAlign: "center" as const }
-const copyright = {
-  color: "#9ca3af",
-  fontSize: "12px",
-  marginTop: "8px",
-  textAlign: "center" as const,
+
+const closingText: React.CSSProperties = {
+  fontSize: "15px",
+  fontWeight: "600",
+  color: "#5A0816",
+  margin: "24px 0 24px 0",
 }
-const signature = { marginTop: "24px", marginBottom: "24px" }
-const signatureContainer = { width: "220px", margin: "0" }
-const signatureLogo = { display: "block", margin: "0 auto 16px" }

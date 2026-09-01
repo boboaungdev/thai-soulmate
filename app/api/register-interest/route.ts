@@ -9,7 +9,6 @@ import {
   RegisterInterestMemberConfirmationEmail,
 } from "@/emails"
 import { calculateAge, formatDate } from "@/lib/date"
-import TestEmailWithSignature from "@/emails/test/test-mail-with-signature"
 
 const PREFERRED_CONTACT_TIMES = [
   "10:00 - 11:00",
@@ -153,7 +152,7 @@ export async function POST(req: Request) {
 
       subject: `[Register Interest] Thank you for your interest in ${APP_INFO.name}!`,
 
-      react: TestEmailWithSignature({
+      react: RegisterInterestMemberConfirmationEmail({
         ...validatedData,
 
         preferredContactDate: formatDate(preferredContactDate),
@@ -210,44 +209,37 @@ export async function POST(req: Request) {
     // ADMIN NOTIFICATION
     // -----------------------------------------
 
-    // const { data: adminData, error: adminError } = await resend.emails.send({
-    //   from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
+    const { data: adminData, error: adminError } = await resend.emails.send({
+      from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
+      to: EMAIL.NOTIFICATIONS,
+      subject: `[Register Interest] New Interest Registration from ${validatedData.prefix} ${validatedData.name}`,
 
-    //   // Change this to CONTACT.email when ready
-    //   to: [CONTACT.email],
+      react: RegisterInterestAdminNotificationEmail({
+        ...validatedData,
 
-    //   // to: ["boolean405@gmail.com"],
+        age: calculateAge(validatedData.dob),
 
-    //   replyTo: validatedData.email,
+        location: validatedData.currentLocation,
 
-    //   subject: `[Register Interest] New Interest Registration from ${validatedData.prefix} ${validatedData.name}`,
+        preferredContactDate: formatDate(preferredContactDate),
 
-    //   react: RegisterInterestAdminNotificationEmail({
-    //     ...validatedData,
+        preferredContactTime: validatedData.preferredContactTime,
+      }),
+    })
 
-    //     age: calculateAge(validatedData.dob),
+    console.log("Admin email sent:", adminData?.id)
 
-    //     location: validatedData.currentLocation,
+    if (adminError) {
+      console.error("Admin email failed:", adminError)
 
-    //     preferredContactDate: formatDate(preferredContactDate),
-
-    //     preferredContactTime: validatedData.preferredContactTime,
-    //   }),
-    // })
-
-    // console.log("Admin email sent:", adminData?.id)
-
-    // if (adminError) {
-    //   console.error("Admin email failed:", adminError)
-
-    //   return NextResponse.json(
-    //     {
-    //       success: false,
-    //       error: "Registration completed, but admin notification failed.",
-    //     },
-    //     { status: 500 }
-    //   )
-    // }
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Registration completed, but admin notification failed.",
+        },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({
       success: true,

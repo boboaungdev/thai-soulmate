@@ -1,171 +1,142 @@
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Html,
-  Img,
-  Preview,
-  Section,
-  Text,
-} from "react-email"
+import * as React from "react"
+import { Button, Section, Text } from "react-email"
 
 import { APP_INFO } from "@/constants"
 import { env } from "@/lib/env"
 import { User } from "@/types"
+import MemberEmailLayout from "../components/member-email-layout"
 
-const currentYear = new Date().getFullYear()
+export type RegisterInterestMemberConfirmationEmailProps = Partial<User> & {
+  prefix?: string
+  name?: string
+  email?: string
+  preferredContactDate?: string
+  preferredContactTime?: string
+}
 
 export const RegisterInterestMemberConfirmationEmail = ({
-  ...userDetails
-}: User) => (
-  <Html>
-    <Head />
+  prefix = "",
+  name = "Valued Client",
+  email = "",
+  preferredContactDate,
+  preferredContactTime,
+}: RegisterInterestMemberConfirmationEmailProps) => {
+  const displayName = [prefix, name].filter(Boolean).join(" ")
+  const encodedEmail = encodeURIComponent(email || "")
+  const applicationUrl = `${env.BASE_URL}/application-form?email=${encodedEmail}`
 
-    <Preview>
-      [Register Interest] Thank you for registering your interest with us.
-      Welcome to {APP_INFO.name}.
-    </Preview>
+  return (
+    <MemberEmailLayout
+      previewText={`[Register Interest] Thank you for registering with ${APP_INFO.name}.`}
+    >
+      {/* ── Greeting ── */}
+      <Text style={greetingText}>Dear {displayName},</Text>
 
-    <Body style={main}>
-      <Container style={container}>
-        <Text style={paragraph}>
-          Dear {userDetails.prefix} {userDetails.name},
-        </Text>
+      {/* ── Subtle Gradient Divider ── */}
+      <div style={gradientDivider} />
 
-        <Text style={paragraph}>
-          Thank you for registering your interest with us. We have successfully
-          received your details.
-        </Text>
+      {/* ── Paragraphs ── */}
+      <Text style={paragraph}>
+        Thank you for registering your interest. We have successfully received
+        your details and are delighted to welcome you to our private matchmaking
+        service.
+      </Text>
 
-        <Text style={paragraph}>
-          Our matchmaking team will carefully review your information and
-          contact you soon to discuss the next steps
-          {userDetails.preferredContactDate && userDetails.preferredContactTime
-            ? `, preferably on ${userDetails.preferredContactDate} between ${userDetails.preferredContactTime}`
-            : ""}
-          .
-        </Text>
+      <Text style={paragraph}>
+        Our matchmaking advisory team will carefully review your information and
+        contact you soon to discuss your requirements in detail
+        {preferredContactDate && preferredContactTime ? (
+          <>
+            , preferably on{" "}
+            <strong style={{ color: "#5A0816", fontWeight: "700" }}>
+              {preferredContactDate} between {preferredContactTime}
+            </strong>
+          </>
+        ) : (
+          ""
+        )}
+        .
+      </Text>
 
-        <Text style={paragraph}>
-          In the meantime, please complete your profile application form by
-          clicking the button below. This will help us understand your
-          preferences and create the best possible match for you.
-        </Text>
+      <Text style={paragraph}>
+        To help us understand your personal values, lifestyle, and partner
+        preferences, please complete your private profile application form by
+        clicking the button below.
+      </Text>
 
-        <Section style={btnContainer}>
-          <Button
-            style={button}
-            href={`${env.BASE_URL}/application-form?email=${userDetails.email}`}
-          >
-            Complete Application Form
-          </Button>
-        </Section>
+      {/* ── Action CTA Button ── */}
+      <Section style={buttonContainer}>
+        <Button style={button} href={applicationUrl}>
+          Complete Application Form →
+        </Button>
+      </Section>
 
-        <Text style={paragraph}>
-          If you have any questions or need assistance, simply reply to this
-          email or contact our team. We will be happy to help you.
-        </Text>
+      <Text style={paragraph}>
+        If you have any questions or require immediate assistance, simply reply
+        directly to this email. Your dedicated matchmaking consultant will be
+        pleased to assist you.
+      </Text>
 
-        <Text style={paragraph}>
-          We look forward to helping you find a meaningful and lasting
-          relationship.
-        </Text>
+      <Text style={paragraph}>
+        We look forward to assisting you in finding a meaningful, lasting
+        relationship.
+      </Text>
 
-        <Text style={paragraph}>Warm regards,</Text>
-
-        <Section style={signature}>
-          <Container style={signatureContainer}>
-            <Img
-              src={`${env.BASE_URL}/email/3.png`}
-              width="150"
-              alt={APP_INFO.name}
-              style={signatureLogo}
-            />
-          </Container>
-        </Section>
-
-        <Text style={replyMessage}>
-          You can reply directly to this email if you have any questions. Our
-          matchmaking team will be happy to assist you.
-        </Text>
-
-        <Section style={copyrightSection}>
-          <Text style={copyright}>
-            Copyright &copy; {currentYear} {APP_INFO.name}. All rights reserved.
-          </Text>
-        </Section>
-      </Container>
-    </Body>
-  </Html>
-)
+      <Text style={closingText}>Warm regards,</Text>
+    </MemberEmailLayout>
+  )
+}
 
 export default RegisterInterestMemberConfirmationEmail
 
-const main = {
-  backgroundColor: "#ffffff",
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-}
+/* ═══════════════════════════════════════════════════════
+   STYLES
+═══════════════════════════════════════════════════════ */
 
-const container = {
-  margin: "0 auto",
-  padding: "20px 0 48px",
-  maxWidth: "600px",
-}
-
-const paragraph = {
-  fontSize: "16px",
+const greetingText: React.CSSProperties = {
+  fontSize: "18px",
+  fontWeight: "700",
+  color: "#1C0E12",
+  margin: "0 0 12px 0",
   lineHeight: "26px",
-  color: "#333333",
 }
 
-const btnContainer = {
+const gradientDivider: React.CSSProperties = {
+  height: "1px",
+  background:
+    "linear-gradient(90deg, #D3A753 0%, #E791A7 50%, transparent 100%)",
+  margin: "0 0 20px 0",
+}
+
+const paragraph: React.CSSProperties = {
+  fontSize: "15px",
+  lineHeight: "25px",
+  color: "#3A2530",
+  margin: "0 0 16px 0",
+}
+
+const buttonContainer: React.CSSProperties = {
   textAlign: "center" as const,
-  margin: "32px 0",
+  margin: "26px 0",
 }
 
-const button = {
-  backgroundColor: "#cfa14f",
+const button: React.CSSProperties = {
+  backgroundColor: "#CFA14F",
+  color: "#FFFFFF",
   borderRadius: "6px",
-  color: "#ffffff",
-  fontSize: "16px",
-  textDecoration: "none",
-  textAlign: "center" as const,
-  display: "block",
-  padding: "12px 24px",
+  padding: "13px 28px",
+  fontSize: "15px",
   fontWeight: "600",
-}
-
-const replyMessage = {
-  color: "#6b7280",
-  fontSize: "13px",
-  lineHeight: "20px",
-  marginTop: "12px",
-}
-
-const copyrightSection = {
-  textAlign: "center" as const,
-}
-
-const copyright = {
-  color: "#9ca3af",
-  fontSize: "12px",
-  marginTop: "8px",
-  textAlign: "center" as const,
-}
-
-const signature = {
-  marginTop: "24px",
-  marginBottom: "24px",
-}
-
-const signatureContainer = {
-  width: "220px",
-  margin: "0",
-}
-
-const signatureLogo = {
+  textDecoration: "none",
   display: "block",
-  margin: "0 auto 16px",
+  textAlign: "center" as const,
+  letterSpacing: "0.02em",
+  boxShadow: "0 4px 12px rgba(207, 161, 79, 0.25)",
+}
+
+const closingText: React.CSSProperties = {
+  fontSize: "15px",
+  fontWeight: "600",
+  color: "#5A0816",
+  margin: "24px 0 24px 0",
 }

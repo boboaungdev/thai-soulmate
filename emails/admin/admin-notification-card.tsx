@@ -51,9 +51,9 @@ export const AdminNotification = ({
 }: AdminNotificationProps) => (
   <Html>
     <Head />
-    <Preview>{previewText}</Preview>
 
     <Body style={main}>
+      <Preview>{previewText}</Preview>
       <Container style={wrapper}>
         {/* ── TOP GRADIENT BAR ── */}
         <div style={topBar} />

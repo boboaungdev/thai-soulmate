@@ -1,5 +1,6 @@
 export * from "./member/register-interest-member-confirmation"
 export * from "./member/send-profile-email"
+export * from "./components/member-email-layout"
 
 export * from "./admin/register-interest-admin-notification"
 export * from "./admin/website-review-admin-notification"

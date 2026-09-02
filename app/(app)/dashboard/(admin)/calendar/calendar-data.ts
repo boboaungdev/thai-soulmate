@@ -11,6 +11,9 @@ export type CalendarItem = {
   description: string
   person?: string
   location?: string
+  meetUrl?: string
+  phone?: string
+  email?: string
 }
 
 export const BUSINESS_HOURS = {
@@ -165,10 +168,12 @@ export const mockCalendarItems: CalendarItem[] = [
     end: localDateTime(0, 13, 30),
     kind: "register_interest",
     person: "Nalinee S.",
-    description: "Preferred contact from the register interest form.",
+    description:
+      "Preferred contact from the register interest form. Inquire about partner preferences and budget.",
     location: "Phone",
+    phone: "+66812345678",
+    email: "nalinee.s@example.com",
   },
-
   {
     id: "ri-2",
     title: "Intro call · James W.",
@@ -177,21 +182,24 @@ export const mockCalendarItems: CalendarItem[] = [
     kind: "register_interest",
     person: "James W.",
     description:
-      "First introduction call after the interest form was received.",
+      "First introduction call after the interest form was received. Discuss verified membership tiers.",
     location: "Google Meet",
+    meetUrl: "https://meet.google.com/tsm-intro-james",
+    email: "james.w@example.com",
   },
-
   {
     id: "ri-3",
-    title: "In-person · Somchai P.",
+    title: "In-person Consultation · Somchai P.",
     start: localDateTime(thisWeekOffset(5), 16, 0),
     end: localDateTime(thisWeekOffset(5), 17, 0),
     kind: "register_interest",
     person: "Somchai P.",
-    description: "Consultation booked from preferred contact date and time.",
-    location: "Office",
+    description:
+      "Consultation booked at office. Document verification and photo portfolio session.",
+    location: "Office · Suite 402",
+    phone: "+66897654321",
+    email: "somchai.p@example.com",
   },
-
   {
     id: "ri-4",
     title: "Follow-up · Emily R.",
@@ -199,62 +207,67 @@ export const mockCalendarItems: CalendarItem[] = [
     end: localDateTime(-2, 16, 0),
     kind: "register_interest",
     person: "Emily R.",
-    description: "Second contact after she requested evening hours.",
+    description:
+      "Second contact after she requested evening hours. Review Bangkok dates availability.",
     location: "WhatsApp",
+    phone: "+447911123456",
+    email: "emily.r@example.co.uk",
   },
-
   {
     id: "meet-1",
-    title: "Meet follow-up · pairing notes",
+    title: "Google Meet · Video Intro (Alex & Supansa)",
     start: localDateTime(0, 11, 0),
     end: localDateTime(0, 11, 30),
     kind: "google_meet",
+    person: "Alex J. & Supansa T.",
     description:
-      "Write follow-up notes after this morning’s introduction call.",
+      "Facilitated 1-to-1 video introduction call between matched candidates.",
     location: "Google Meet",
+    meetUrl: "https://meet.google.com/tsm-intro-alex-supansa",
   },
-
   {
     id: "meet-2",
-    title: "Meet follow-up · matching recap",
+    title: "Meet Follow-up · Matching Recap",
     start: localDateTime(tomorrowOffset, 14, 0),
     end: localDateTime(tomorrowOffset, 14, 30),
     kind: "google_meet",
-    person: "James W. & Nalinee S.",
-    description: "Send recap and next-step times after the video introduction.",
+    person: "David M. & Nipa C.",
+    description: "Send recap notes and coordinate first dinner date schedule.",
     location: "Google Meet",
+    meetUrl: "https://meet.google.com/tsm-recap-david-nipa",
   },
-
   {
     id: "meet-3",
-    title: "Meet follow-up · tracking check",
+    title: "Candidate Verification Video Call",
     start: localDateTime(thisWeekOffset(4), 15, 0),
     end: localDateTime(thisWeekOffset(4), 15, 30),
     kind: "google_meet",
-    description: "Confirm both members completed the post-meet feedback form.",
-    location: "Office",
+    person: "Michael B.",
+    description:
+      "Identity verification and background check interview via Google Meet.",
+    location: "Google Meet",
+    meetUrl: "https://meet.google.com/tsm-verify-michael",
   },
-
   {
     id: "event-1",
-    title: "Weekly matching standup",
+    title: "Weekly Matching Team Standup",
     start: localDateTime(0, 10, 0),
     end: localDateTime(0, 10, 45),
     kind: "event",
-    description: "Staff sync on active matches and Google Meet slots.",
-    location: "Office · Meeting room",
+    description:
+      "Staff sync on active matches, new applications, and Google Meet slots.",
+    location: "Office · Meeting Room A",
   },
-
   {
     id: "event-2",
-    title: "Member welcome mixer",
+    title: "Exclusive Member Welcome Mixer",
     start: localDateTime(3, 18, 0),
     end: localDateTime(3, 20, 0),
     kind: "event",
-    description: "Small introduction evening for newly approved members.",
-    location: "Bangkok lounge",
+    description:
+      "Small cocktail introduction evening for verified executive members.",
+    location: "Bangkok Lounge · Sukhumvit",
   },
-
   {
     id: "holiday-1",
     title: "Christmas Day",
@@ -263,7 +276,6 @@ export const mockCalendarItems: CalendarItem[] = [
     kind: "holiday",
     description: "Office closed for Christmas. No contact appointments.",
   },
-
   {
     id: "holiday-2",
     title: "New Year’s Day",
@@ -272,7 +284,6 @@ export const mockCalendarItems: CalendarItem[] = [
     kind: "holiday",
     description: "Public holiday — office closed.",
   },
-
   {
     id: "holiday-3",
     title: "Constitution Day",

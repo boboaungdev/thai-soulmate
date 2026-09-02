@@ -40,7 +40,7 @@ export async function POST(
     const [femaleResult, maleResult] = await Promise.all([
       resend.emails.send({
         from: `${APP_INFO.name} <${EMAIL.contact}>`,
-        to: ["boolean405@gmail.com"],
+        to: EMAIL.NOTIFICATIONS, //testing
         // to: [female.personalDetails.email],
         subject:
           "[Soulmate] A carefully selected match is waiting for your review.",
@@ -58,7 +58,7 @@ export async function POST(
 
       resend.emails.send({
         from: `${APP_INFO.name} <${EMAIL.contact}>`,
-        to: ["boolean405@gmail.com"],
+        to: EMAIL.NOTIFICATIONS, //testing
         // to: [male.personalDetails.email],
         subject:
           "[Soulmate] A carefully selected match is waiting for your review.",

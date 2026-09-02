@@ -108,6 +108,7 @@ export async function POST(req: Request) {
         femaleId,
         matchPercentage,
         status: "INITIAL_CONNECT",
+        completedStatuses: ["INITIAL_CONNECT"],
       },
     })
 

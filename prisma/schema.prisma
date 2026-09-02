@@ -123,10 +123,10 @@ model Profile {
 }
 
 model ProfileFolder {
-  id        String   @id @default(uuid())
+  id        String        @id @default(uuid())
   name      String
   profileId String
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile   Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
   files     ProfileFile[]
 
   createdAt DateTime @default(now())
@@ -148,8 +148,8 @@ model ProfileFile {
   profile    Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
   uploadedBy String?
 
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum ProfileStatus {
@@ -182,8 +182,9 @@ model Tracking {
 
   matchPercentage Int
 
-  status           TrackingStatus  @default(INITIAL_CONNECT)
-  closedFromStatus TrackingStatus?
+  status            TrackingStatus   @default(INITIAL_CONNECT)
+  completedStatuses TrackingStatus[] @default([INITIAL_CONNECT])
+  closedFromStatus  TrackingStatus?
 
   notes TrackingNote[]
 

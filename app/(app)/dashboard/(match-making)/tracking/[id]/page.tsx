@@ -94,7 +94,11 @@ const statusGroups = [
     name: "Both Accepted",
     statuses: [TrackingStatus.BOTH_PROFILES_ACCEPTED],
   },
-  { step: 6, name: "First Google Meet", statuses: [TrackingStatus.FIRST_GOOGLE_MEET] },
+  {
+    step: 6,
+    name: "First Google Meet",
+    statuses: [TrackingStatus.FIRST_GOOGLE_MEET],
+  },
   {
     step: 7,
     name: "Second Google Meet",
@@ -135,6 +139,7 @@ interface Tracking {
   maleId: string
   femaleId: string
   status: TrackingStatus
+  completedStatuses: TrackingStatus[]
   male: SoulmateApplication
   female: SoulmateApplication
   notes: SoulmateNote[]
@@ -230,139 +235,185 @@ const SoulmateActions: React.FC<{
 
 const SoulmateStatusLine: React.FC<{
   currentStatus: Tracking["status"]
+  completedStatuses?: Tracking["completedStatuses"]
   closedFromStatus?: Tracking["status"]
-}> = ({ currentStatus, closedFromStatus }) => {
-  const currentGroup = statusGroups.find((g) =>
-    g.statuses.includes(currentStatus)
+}> = ({
+  currentStatus,
+  completedStatuses = [TrackingStatus.INITIAL_CONNECT],
+  closedFromStatus,
+}) => {
+  const isClosed = currentStatus === TrackingStatus.CLOSED
+  const closedFromGroup = statusGroups.find(
+    (g) => closedFromStatus && g.statuses.includes(closedFromStatus)
   )
-  const currentStep = currentGroup?.step ?? 0
-  if (currentStatus === TrackingStatus.CLOSED) {
-    const closedAtGroupIndex = closedFromStatus
-      ? statusGroups.findIndex((group) =>
-          group.statuses.includes(closedFromStatus)
-        )
-      : -1
+  const closedFromStep = closedFromGroup?.step ?? 0
 
-    return (
-      <div className="flex items-center justify-between gap-1 text-xs">
-        {statusGroups.map((group, index) => {
-          const isClosedGroup = group.statuses.includes(TrackingStatus.CLOSED)
-
-          let textColorClass = "text-gray-500"
-          let separatorColorClass = "bg-gray-300"
-          let icon = <XCircle className="size-4 text-red-500" />
-
-          if (isClosedGroup) {
-            textColorClass = "text-blue-700 font-semibold"
-            icon = <CheckCircle2 className="size-4 text-blue-500" />
-          } else {
-            const wasCompletedBeforeClose =
-              closedAtGroupIndex > -1 && index <= closedAtGroupIndex
-            if (wasCompletedBeforeClose) {
-              textColorClass = "text-green-700"
-              separatorColorClass = "bg-green-500"
-              icon = <CheckCircle2 className="size-4 text-green-500" />
-            }
-          }
-
-          const shouldShowSeparator = index < statusGroups.length - 1
-
-          return (
-            <React.Fragment key={group.name}>
-              <div className="flex min-w-0 flex-1 flex-col items-center">
-                <span title={group.name}>{icon}</span>
-                <span
-                  className={cn(
-                    "mt-1 truncate text-center",
-                    textColorClass,
-                    "max-w-[70px] whitespace-normal"
-                  )}
-                >
-                  {group.name}
-                </span>
-              </div>
-              {shouldShowSeparator && (
-                <div
-                  className={cn("h-1 flex-1", separatorColorClass, "mx-1")}
-                ></div>
-              )}
-            </React.Fragment>
-          )
-        })}
-      </div>
-    )
+  const getStatusLabel = (status: TrackingStatus): string => {
+    const words = status.toLowerCase().split("_")
+    return words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
   }
 
   return (
     <div className="flex items-start justify-between gap-1 text-xs">
       {statusGroups.map((group, index) => {
-        const isCompleted = currentStep > group.step
-        const isCurrent = currentStep === group.step
+        let isCompleted = false
+        let label = group.name
+        let textColorClass = "text-muted-foreground"
+        let separatorColorClass = "bg-border/60"
+        let icon: React.ReactNode = (
+          <Circle className="size-4 fill-muted text-muted-foreground/40" />
+        )
 
-        let textColorClass = "text-gray-500"
-        let separatorColorClass = "bg-gray-300"
-        let icon = <Circle className="size-4 fill-gray-300 text-gray-300" />
+        if (isClosed) {
+          if (group.statuses.includes(TrackingStatus.CLOSED)) {
+            icon = <CheckCircle2 className="size-4 text-blue-500" />
+            textColorClass = "text-blue-700 dark:text-blue-400 font-semibold"
+            isCompleted = true
+          } else if (
+            (group.step === 3 &&
+              (completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
+                closedFromStatus === TrackingStatus.FEMALE_REJECTED)) ||
+            (group.step === 4 &&
+              (completedStatuses.includes(TrackingStatus.MALE_REJECTED) ||
+                closedFromStatus === TrackingStatus.MALE_REJECTED))
+          ) {
+            icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
+            textColorClass = "text-red-600 dark:text-red-400 font-semibold"
+          } else if (
+            group.statuses.some((s) => completedStatuses.includes(s)) ||
+            (closedFromStep > 0 && group.step <= closedFromStep)
+          ) {
+            icon = <CheckCircle2 className="size-4 text-green-500" />
+            textColorClass = "text-green-700 dark:text-green-400 font-medium"
+            isCompleted = true
+          } else {
+            icon = <XCircle className="size-4 text-red-500" />
+            textColorClass = "text-muted-foreground line-through"
+          }
+        } else {
+          // Check step-specific completion from completedStatuses
+          if (group.step === 1) {
+            isCompleted = completedStatuses.includes(
+              TrackingStatus.INITIAL_CONNECT
+            )
+          } else if (group.step === 2) {
+            isCompleted = completedStatuses.includes(
+              TrackingStatus.BOTH_PROFILES_SENT
+            )
+          } else if (group.step === 3) {
+            // Female Review
+            if (
+              completedStatuses.includes(TrackingStatus.FEMALE_ACCEPTED) ||
+              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_ACCEPTED)
+            ) {
+              isCompleted = true
+              label = "Female Accepted"
+            } else if (
+              completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
+              currentStatus === TrackingStatus.FEMALE_REJECTED
+            ) {
+              label = "Female Rejected"
+            } else if (
+              completedStatuses.includes(TrackingStatus.FEMALE_THINKING) ||
+              currentStatus === TrackingStatus.FEMALE_THINKING
+            ) {
+              label = "Female Thinking"
+            } else if (
+              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_SENT)
+            ) {
+              label = "Female (Review)"
+            }
+          } else if (group.step === 4) {
+            // Male Review
+            if (
+              completedStatuses.includes(TrackingStatus.MALE_ACCEPTED) ||
+              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_ACCEPTED)
+            ) {
+              isCompleted = true
+              label = "Male Accepted"
+            } else if (
+              completedStatuses.includes(TrackingStatus.MALE_REJECTED) ||
+              currentStatus === TrackingStatus.MALE_REJECTED
+            ) {
+              label = "Male Rejected"
+            } else if (
+              completedStatuses.includes(TrackingStatus.MALE_THINKING) ||
+              currentStatus === TrackingStatus.MALE_THINKING
+            ) {
+              label = "Male Thinking"
+            } else if (
+              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_SENT)
+            ) {
+              label = "Male (Review)"
+            }
+          } else if (group.step === 5) {
+            isCompleted = completedStatuses.includes(
+              TrackingStatus.BOTH_PROFILES_ACCEPTED
+            )
+          } else {
+            isCompleted = group.statuses.some((s) =>
+              completedStatuses.includes(s)
+            )
+          }
 
-        if (currentStatus === TrackingStatus.INITIAL_CONNECT && isCurrent) {
-          textColorClass = "text-green-700"
-          separatorColorClass = "bg-gray-300"
-          icon = <CheckCircle2 className="size-4 text-green-500" />
-        } else if (isCompleted) {
-          textColorClass = "text-green-700"
-          separatorColorClass = "bg-green-500"
-          icon = <CheckCircle2 className="size-4 text-green-500" />
-        } else if (isCurrent) {
-          if (
-            currentStatus === TrackingStatus.FEMALE_REJECTED ||
-            currentStatus === TrackingStatus.MALE_REJECTED
-          ) {
-            textColorClass = "text-red-700 font-semibold"
-            icon = <XCircle className="size-4 fill-red-500 text-red-500" />
-          } else if (
-            currentStatus === TrackingStatus.FEMALE_THINKING ||
-            currentStatus === TrackingStatus.MALE_THINKING
-          ) {
-            textColorClass = "text-yellow-700 font-semibold"
-            icon = <Clock className="size-4 animate-spin text-yellow-500" />
-          } else if (
-            currentStatus === TrackingStatus.FEMALE_ACCEPTED ||
-            currentStatus === TrackingStatus.MALE_ACCEPTED
-          ) {
-            textColorClass = "text-green-700 font-semibold"
+          const isCurrent = group.statuses.includes(currentStatus)
+
+          if (isCompleted) {
             icon = <CheckCircle2 className="size-4 text-green-500" />
-          } else if (currentStatus === TrackingStatus.BOTH_PROFILES_SENT) {
-            textColorClass = "text-green-700"
-            icon = <CheckCircle2 className="size-4 text-green-500" />
-          } else {
-            textColorClass = "text-blue-700 font-semibold"
-            icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
-          }
-        } else if (
-          currentStatus === TrackingStatus.BOTH_PROFILES_SENT &&
-          (group.step === 3 || group.step === 4)
-        ) {
-          // Special case for BOTH_PROFILES_SENT
-          textColorClass = "text-yellow-700 font-semibold"
-          icon = <Clock className="size-4 animate-spin text-yellow-500" />
-          if (index < statusGroups.length - 1) {
-            separatorColorClass = "bg-gray-300"
-          } else {
-            textColorClass = "text-blue-700 font-semibold"
-            icon = <Circle className="size-4 fill-blue-500 text-blue-500" />
-          }
-        } else if (
-          (currentStatus.startsWith("FEMALE_") && group.step === 4) ||
-          (currentStatus.startsWith("MALE_") && group.step === 3)
-        ) {
-          // When one member has decided, show the other as still in review
-          textColorClass = "text-yellow-700 font-semibold"
-          icon = <Clock className="size-4 animate-spin text-yellow-500" />
-          if (index < statusGroups.length - 1) {
-            separatorColorClass = "bg-gray-300"
+            textColorClass = "text-green-700 dark:text-green-400 font-medium"
+          } else if (
+            (currentStatus === TrackingStatus.FEMALE_REJECTED &&
+              group.step === 3) ||
+            (completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) &&
+              group.step === 3)
+          ) {
+            icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
+            textColorClass = "text-red-600 dark:text-red-400 font-semibold"
+            label = "Female Rejected"
+          } else if (
+            (currentStatus === TrackingStatus.MALE_REJECTED &&
+              group.step === 4) ||
+            (completedStatuses.includes(TrackingStatus.MALE_REJECTED) &&
+              group.step === 4)
+          ) {
+            icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
+            textColorClass = "text-red-600 dark:text-red-400 font-semibold"
+            label = "Male Rejected"
+          } else if (
+            (currentStatus === TrackingStatus.FEMALE_THINKING &&
+              group.step === 3) ||
+            (currentStatus === TrackingStatus.MALE_THINKING && group.step === 4)
+          ) {
+            icon = <Clock className="size-4 animate-spin text-amber-500" />
+            textColorClass = "text-amber-600 dark:text-amber-400 font-semibold"
+          } else if (
+            completedStatuses.includes(TrackingStatus.BOTH_PROFILES_SENT) &&
+            (group.step === 3 || group.step === 4) &&
+            !isCompleted
+          ) {
+            icon = <Clock className="size-4 animate-spin text-amber-500" />
+            textColorClass = "text-amber-600 dark:text-amber-400 font-semibold"
+          } else if (isCurrent) {
+            icon = (
+              <Circle className="size-4 animate-pulse fill-primary text-primary" />
+            )
+            textColorClass = "text-primary font-bold"
+            label = getStatusLabel(currentStatus)
           }
         }
 
-        const shouldShowSeparator = index < statusGroups.length - 1
+        // Check if next step is reached/completed
+        const nextGroup = statusGroups[index + 1]
+        const isNextCompletedOrActive =
+          nextGroup &&
+          (nextGroup.statuses.some((s) => completedStatuses.includes(s)) ||
+            nextGroup.statuses.includes(currentStatus))
+
+        if (isCompleted && isNextCompletedOrActive) {
+          separatorColorClass = "bg-green-500"
+        }
 
         return (
           <React.Fragment key={group.name}>
@@ -370,31 +421,21 @@ const SoulmateStatusLine: React.FC<{
               <span title={group.name}>{icon}</span>
               <span
                 className={cn(
-                  "mt-1 truncate text-center",
+                  "mt-1 truncate text-center text-[10px] leading-tight sm:text-xs",
                   textColorClass,
                   "max-w-[70px] whitespace-normal"
                 )}
               >
-                {group.name}
-                {currentStatus === TrackingStatus.BOTH_PROFILES_SENT &&
-                  (group.step === 3 || group.step === 4) && (
-                    <span className="mt-1 block">(Review)</span>
-                  )}
-                {/* Explicitly show (Review) for current THINKING statuses */}
-                {isCurrent &&
-                  (currentStatus === TrackingStatus.FEMALE_THINKING ||
-                    currentStatus === TrackingStatus.MALE_THINKING) && (
-                    <span className="mt-1 block">(Review)</span>
-                  )}
-                {((currentStatus.startsWith("FEMALE_") && group.step === 4) ||
-                  (currentStatus.startsWith("MALE_") && group.step === 3)) && (
-                  <span className="mt-1 block">(Review)</span>
-                )}
+                {label}
               </span>
             </div>
-            {shouldShowSeparator && (
+            {index < statusGroups.length - 1 && (
               <div
-                className={cn("h-1 flex-1", separatorColorClass, "mx-1")}
+                className={cn(
+                  "h-0.5 flex-1 transition-colors",
+                  separatorColorClass,
+                  "mx-1"
+                )}
               ></div>
             )}
           </React.Fragment>
@@ -653,6 +694,7 @@ export default function SoulmateDetailPage() {
         <CardContent>
           <SoulmateStatusLine
             currentStatus={tracking.status}
+            completedStatuses={tracking.completedStatuses}
             closedFromStatus={tracking.closedFromStatus}
           />
         </CardContent>

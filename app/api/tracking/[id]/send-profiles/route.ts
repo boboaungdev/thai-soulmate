@@ -82,10 +82,25 @@ export async function POST(
       throw new Error("Failed to send profile emails")
     }
 
+    const existingTracking = await prisma.tracking.findUnique({
+      where: { id: trackingId },
+      select: { completedStatuses: true },
+    })
+
+    const updatedCompletedStatuses = Array.from(
+      new Set([
+        ...(existingTracking?.completedStatuses || [
+          TrackingStatus.INITIAL_CONNECT,
+        ]),
+        TrackingStatus.BOTH_PROFILES_SENT,
+      ])
+    )
+
     await prisma.tracking.update({
       where: { id: trackingId },
       data: {
         status: TrackingStatus.BOTH_PROFILES_SENT,
+        completedStatuses: updatedCompletedStatuses,
       },
     })
 

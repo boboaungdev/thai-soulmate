@@ -161,9 +161,23 @@ export async function GET(
       newStatus = TrackingStatus.BOTH_PROFILES_ACCEPTED
     }
 
+    const existingStatuses = tracking.completedStatuses || [
+      TrackingStatus.INITIAL_CONNECT,
+    ]
+    const updatedStatusesSet = new Set([...existingStatuses, newStatus])
+    if (newStatus === TrackingStatus.BOTH_PROFILES_ACCEPTED) {
+      updatedStatusesSet.add(TrackingStatus.MALE_ACCEPTED)
+      updatedStatusesSet.add(TrackingStatus.FEMALE_ACCEPTED)
+      updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_ACCEPTED)
+    }
+    const updatedCompletedStatuses = Array.from(updatedStatusesSet)
+
     await tx.tracking.update({
       where: { id: trackingId },
-      data: { status: newStatus },
+      data: {
+        status: newStatus,
+        completedStatuses: updatedCompletedStatuses,
+      },
     })
 
     return NextResponse.redirect(confirmationUrl)
@@ -203,11 +217,28 @@ export async function PATCH(
       )
     }
 
+    const existingStatuses = tracking.completedStatuses || [
+      TrackingStatus.INITIAL_CONNECT,
+    ]
+    const updatedStatusesSet = new Set([...existingStatuses, status])
+    if (status === TrackingStatus.BOTH_PROFILES_ACCEPTED) {
+      updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_SENT)
+      updatedStatusesSet.add(TrackingStatus.MALE_ACCEPTED)
+      updatedStatusesSet.add(TrackingStatus.FEMALE_ACCEPTED)
+      updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_ACCEPTED)
+    } else if (status === TrackingStatus.BOTH_PROFILES_SENT) {
+      updatedStatusesSet.add(TrackingStatus.INITIAL_CONNECT)
+      updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_SENT)
+    }
+    const updatedCompletedStatuses = Array.from(updatedStatusesSet)
+
     const dataToUpdate: {
       status: TrackingStatus
+      completedStatuses: TrackingStatus[]
       closedFromStatus?: TrackingStatus
     } = {
       status: status,
+      completedStatuses: updatedCompletedStatuses,
     }
 
     if (status === TrackingStatus.CLOSED) {

@@ -51,7 +51,9 @@ import {
   User,
   MoreHorizontal,
   Printer,
+  GitMerge,
 } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { ApplicationForm } from "@/types/application-form"
 import React from "react"
 import { FaSmoking } from "react-icons/fa"
@@ -734,10 +736,16 @@ export default async function MatchComparisonPage({
   const {
     male,
     female,
+    pairTrackings = [],
     matchPercentage,
     matchBreakdown = [],
     dealBreakerPenalties = [],
   } = data
+
+  const activePairTracking = pairTrackings.find(
+    (t: any) => t.status !== "CLOSED"
+  )
+  const latestPairTracking = pairTrackings[0]
 
   // For the female column: shows if her attributes match the male's preferences
   const femaleMatchByKey = Object.fromEntries(
@@ -801,6 +809,60 @@ export default async function MatchComparisonPage({
           </DropdownMenu>
         </div>
       </div>
+
+      {pairTrackings.length > 0 && (
+        <div
+          className={cn(
+            "mb-6 flex flex-col items-start justify-between gap-3 rounded-lg border p-4 sm:flex-row sm:items-center",
+            activePairTracking
+              ? "border-blue-500/30 bg-blue-500/10 text-blue-900 dark:text-blue-200"
+              : "border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200"
+          )}
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background/80 shadow-xs">
+              <GitMerge className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 font-semibold">
+                <span>Pair Connection History:</span>
+                <Badge variant="outline" className="text-xs font-semibold">
+                  Matched {pairTrackings.length} time
+                  {pairTrackings.length > 1 ? "s" : ""}
+                </Badge>
+                {activePairTracking ? (
+                  <Badge className="bg-blue-600 text-xs text-white">
+                    Currently Active
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="text-xs">
+                    Past Connection (Closed)
+                  </Badge>
+                )}
+              </div>
+              <p className="mt-0.5 text-xs opacity-90">
+                Last Status:{" "}
+                <strong>
+                  {latestPairTracking?.closedFromStatus ||
+                    latestPairTracking?.status}
+                </strong>{" "}
+                • Created on{" "}
+                {new Date(latestPairTracking?.createdAt).toLocaleDateString(
+                  "en-GB",
+                  { day: "numeric", month: "short", year: "numeric" }
+                )}
+              </p>
+            </div>
+          </div>
+          {activePairTracking && (
+            <Button asChild size="sm" className="btn-gradient shrink-0">
+              <Link href={`/dashboard/tracking/${activePairTracking.id}`}>
+                View Active Tracking
+              </Link>
+            </Button>
+          )}
+        </div>
+      )}
 
       <div className="mb-6 rounded-lg border bg-card p-4">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">

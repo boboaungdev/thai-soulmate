@@ -16,6 +16,26 @@ export async function GET() {
             id: true,
           },
         },
+        asMale: {
+          select: {
+            id: true,
+            femaleId: true,
+            status: true,
+            completedStatuses: true,
+            closedFromStatus: true,
+            createdAt: true,
+          },
+        },
+        asFemale: {
+          select: {
+            id: true,
+            maleId: true,
+            status: true,
+            completedStatuses: true,
+            closedFromStatus: true,
+            createdAt: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",

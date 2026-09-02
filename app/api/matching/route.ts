@@ -200,22 +200,102 @@ const parseCriteria = (criteriaParam: string | null) => {
   }
 }
 
-const parseApplicant = (applicant: any) => ({
-  ...applicant,
-  personalDetails: safeParse(applicant.personalDetails),
-  career: safeParse(applicant.career),
-  appearance: safeParse(applicant.appearance),
-  personality: safeParse(applicant.personality),
-  lifestyle: safeParse(applicant.lifestyle),
-  relationshipGoals: safeParse(applicant.relationshipGoals),
-  idealPartner: safeParse(applicant.idealPartner),
-  financial: safeParse(applicant.financial),
-  photos: safeParse(applicant.photos),
-  isVip:
-    applicant.membership?.plan === "FEMALE_VIP_ONE_MONTH" ||
-    applicant.membership?.plan === "FEMALE_VIP_THREE_MONTHS" ||
-    applicant.membership?.plan === "FEMALE_VIP_SIX_MONTHS",
-})
+const computeTrackingStats = (trackings: any[]) => {
+  const list = trackings || []
+  const totalTrackings = list.length
+  const activeTrackings = list.filter((t) => t.status !== "CLOSED").length
+  const rejectedByHim = list.filter(
+    (t) =>
+      (t.completedStatuses || []).includes("MALE_REJECTED") ||
+      t.status === "MALE_REJECTED" ||
+      (t.status === "CLOSED" && t.closedFromStatus === "MALE_REJECTED")
+  ).length
+  const rejectedByHer = list.filter(
+    (t) =>
+      (t.completedStatuses || []).includes("FEMALE_REJECTED") ||
+      t.status === "FEMALE_REJECTED" ||
+      (t.status === "CLOSED" && t.closedFromStatus === "FEMALE_REJECTED")
+  ).length
+  const matchedSuccess = list.filter(
+    (t) =>
+      (t.completedStatuses || []).includes("MATCHED") ||
+      t.status === "MATCHED" ||
+      (t.completedStatuses || []).includes("BOTH_PROFILES_ACCEPTED")
+  ).length
+
+  return {
+    totalTrackings,
+    activeTrackings,
+    rejectedByHim,
+    rejectedByHer,
+    matchedSuccess,
+  }
+}
+
+const computePairHistory = (femaleTrackings: any[], maleId: string | null) => {
+  if (!maleId) {
+    return {
+      hasExistingTracking: false,
+      matchCount: 0,
+      hasActiveTracking: false,
+      activeTrackingId: null,
+      latestTrackingId: null,
+      latestStatus: null,
+      latestClosedFromStatus: null,
+      latestCompletedStatuses: [],
+      latestDate: null,
+    }
+  }
+
+  const pairTrackings = (femaleTrackings || [])
+    .filter((t: any) => t.maleId === maleId)
+    .sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+
+  const hasExistingTracking = pairTrackings.length > 0
+  const activeTracking = pairTrackings.find((t: any) => t.status !== "CLOSED")
+  const latest = pairTrackings[0]
+
+  return {
+    hasExistingTracking,
+    matchCount: pairTrackings.length,
+    hasActiveTracking: !!activeTracking,
+    activeTrackingId: activeTracking ? activeTracking.id : null,
+    latestTrackingId: latest ? latest.id : null,
+    latestStatus: latest ? latest.status : null,
+    latestClosedFromStatus: latest ? latest.closedFromStatus : null,
+    latestCompletedStatuses: latest ? latest.completedStatuses || [] : [],
+    latestDate: latest ? latest.createdAt : null,
+  }
+}
+
+const parseApplicant = (applicant: any, selectedMaleId?: string | null) => {
+  const asFemale = applicant.asFemale || []
+  const asMale = applicant.asMale || []
+  const trackings =
+    applicant.personalDetails?.gender === "Male" ? asMale : asFemale
+
+  return {
+    ...applicant,
+    personalDetails: safeParse(applicant.personalDetails),
+    career: safeParse(applicant.career),
+    appearance: safeParse(applicant.appearance),
+    personality: safeParse(applicant.personality),
+    lifestyle: safeParse(applicant.lifestyle),
+    relationshipGoals: safeParse(applicant.relationshipGoals),
+    idealPartner: safeParse(applicant.idealPartner),
+    financial: safeParse(applicant.financial),
+    photos: safeParse(applicant.photos),
+    isVip:
+      applicant.membership?.plan === "FEMALE_VIP_ONE_MONTH" ||
+      applicant.membership?.plan === "FEMALE_VIP_THREE_MONTHS" ||
+      applicant.membership?.plan === "FEMALE_VIP_SIX_MONTHS",
+    trackingStats: computeTrackingStats(trackings),
+    pairHistory: computePairHistory(asFemale, selectedMaleId || null),
+  }
+}
 
 const buildFemaleWhere = (filter: string): Prisma.ApplicationFormWhereInput => {
   const where: Prisma.ApplicationFormWhereInput = {
@@ -317,12 +397,24 @@ export async function GET(request: Request) {
       // Initial state: no male selected, so show every female application.
       const femaleApplicants = await prisma.applicationForm.findMany({
         where: femaleWhere,
-        include: { membership: true },
+        include: {
+          membership: true,
+          asFemale: {
+            select: {
+              id: true,
+              maleId: true,
+              status: true,
+              completedStatuses: true,
+              closedFromStatus: true,
+              createdAt: true,
+            },
+          },
+        },
       })
 
       let matches = femaleApplicants.map((applicant) => ({
         score: 0,
-        applicant: parseApplicant(applicant),
+        applicant: parseApplicant(applicant, null),
       }))
 
       const scoreRange = parseMatchRangeParam(matchRange)
@@ -341,7 +433,19 @@ export async function GET(request: Request) {
     // If a userId is provided, perform matching logic
     const maleApplicant = await prisma.applicationForm.findUnique({
       where: { id: userId },
-      include: { membership: true },
+      include: {
+        membership: true,
+        asMale: {
+          select: {
+            id: true,
+            femaleId: true,
+            status: true,
+            completedStatuses: true,
+            closedFromStatus: true,
+            createdAt: true,
+          },
+        },
+      },
     })
 
     if (!maleApplicant) {
@@ -367,7 +471,19 @@ export async function GET(request: Request) {
           id: userId,
         },
       },
-      include: { membership: true },
+      include: {
+        membership: true,
+        asFemale: {
+          select: {
+            id: true,
+            maleId: true,
+            status: true,
+            completedStatuses: true,
+            closedFromStatus: true,
+            createdAt: true,
+          },
+        },
+      },
     })
 
     const maleIdealPartner = parsedMale.idealPartner
@@ -379,11 +495,11 @@ export async function GET(request: Request) {
       )
     }
 
-    let matches: MatchResult[] = femaleApplicants.map((femaleApplicant) => {
+    let matches: MatchResult[] = femaleApplicants.map((female) => {
       let score = 0
       let totalPossibleScore = 0
 
-      const parsedFemale = parseApplicant(femaleApplicant)
+      const parsedFemale = parseApplicant(female, userId)
       const femalePersonalDetails = parsedFemale.personalDetails
       const femaleAppearance = parsedFemale.appearance
       const femaleCareer = parsedFemale.career

@@ -685,9 +685,20 @@ export async function GET(
 
     const matchDetails = calculateMatchDetails(parsedMale, parsedFemale)
 
+    const pairTrackings = await prisma.tracking.findMany({
+      where: {
+        maleId,
+        femaleId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
+
     return NextResponse.json({
       male: parsedMale,
       female: parsedFemale,
+      pairTrackings,
       ...matchDetails,
     })
   } catch (error) {

@@ -69,6 +69,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ConnectButton } from "./ConnectButton"
+import { MatchBreakdownTable } from "./match-breakdown-table"
 
 type MatchBreakdownItem = {
   key: string
@@ -215,158 +216,6 @@ function ProfileSection({
         <div className="flex w-full flex-1 flex-col justify-between divide-y">
           {children}
         </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-function MatchBreakdown({
-  items,
-  penalties,
-}: {
-  items: MatchBreakdownItem[]
-  penalties: DealBreakerPenalty[]
-}) {
-  if (!items.length) return null
-
-  const MatchStatus = ({ matched }: { matched: boolean }) => (
-    <Badge
-      variant={matched ? "outline" : "destructive"}
-      className={`flex shrink-0 items-center gap-1 text-xs ${
-        matched
-          ? "border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400"
-          : ""
-      }`}
-    >
-      {matched ? (
-        <>
-          <CheckCircle2 className="h-3 w-3" />
-          <span>Match</span>
-        </>
-      ) : (
-        <>
-          <XCircle className="h-3 w-3" />
-          <span>No Match</span>
-        </>
-      )}
-    </Badge>
-  )
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Full details of matching</CardTitle>
-        <CardDescription>
-          Each card shows how both applicants preferences match up against each
-          other attributes.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {items.map((item) => {
-            const isLanguage =
-              item.key === "languageEnglish" || item.key === "languageThai"
-
-            return (
-              <div key={item.key} className="rounded-lg border bg-card p-4">
-                <div className="mb-4 flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
-                      {item.category}
-                    </p>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {item.label}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Score point: {item.malePoints}/{item.malePossiblePoints}
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  {/* Male Preference vs Female Value */}
-                  <div className="rounded-md bg-background/50 p-3">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium">
-                        {isLanguage ? "Male vs Female" : "Male Preference"}
-                      </p>
-                      <MatchStatus matched={item.malePrefMatch} />
-                    </div>
-                    <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
-                      <div className="break-words">
-                        <p className="text-muted-foreground">
-                          {isLanguage ? "Male Value" : "Preference"}
-                        </p>
-                        <p className="font-medium">
-                          {item.key === "nationality"
-                            ? getNationalityDisplayValue(item.malePreference)
-                            : item.malePreference}
-                        </p>
-                      </div>
-                      <div className="break-words">
-                        <p className="text-muted-foreground">Female Value</p>
-                        <p className="font-medium">
-                          {item.key === "nationality"
-                            ? getNationalityDisplayValue(item.femaleValue)
-                            : item.femaleValue}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Female Preference vs Male Value */}
-                  <div className="rounded-md bg-background/50 p-3">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium">
-                        {isLanguage ? "Female vs Male" : "Female Preference"}
-                      </p>
-                      <MatchStatus matched={item.femalePrefMatch} />
-                    </div>
-                    <div className="mt-2 grid grid-cols-2 gap-x-2 text-xs">
-                      <div className="break-words">
-                        <p className="text-muted-foreground">
-                          {isLanguage ? "Female Value" : "Preference"}
-                        </p>
-                        <p className="font-medium">
-                          {item.key === "nationality"
-                            ? getNationalityDisplayValue(item.femalePreference)
-                            : item.femalePreference}
-                        </p>
-                      </div>
-                      <div className="break-words">
-                        <p className="text-muted-foreground">Male Value</p>
-                        <p className="font-medium">
-                          {item.key === "nationality"
-                            ? getNationalityDisplayValue(item.maleValue)
-                            : item.maleValue}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
-        {penalties.length > 0 && (
-          <div className="rounded-md border border-destructive/30 bg-destructive/5 p-4">
-            <h3 className="font-semibold text-destructive">
-              Deal Breaker Penalties
-            </h3>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {penalties.map((penalty) => (
-                <div
-                  key={penalty.key}
-                  className="flex items-center justify-between gap-3 rounded-md bg-background px-3 py-2 text-sm"
-                >
-                  <span>{penalty.label}</span>
-                  <Badge variant="destructive">-{penalty.penalty}</Badge>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   )
@@ -1331,9 +1180,10 @@ export default async function MatchComparisonPage({
 
         <TabsContent value="compare" className="space-y-6">
           {/* Match Breakdown Section */}
-          <MatchBreakdown
+          <MatchBreakdownTable
             items={matchBreakdown}
             penalties={dealBreakerPenalties}
+            matchPercentage={matchPercentage}
           />
         </TabsContent>
       </Tabs>

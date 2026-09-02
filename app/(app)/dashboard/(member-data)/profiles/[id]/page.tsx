@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
 import { ApplicationForm } from "@/types/application-form"
@@ -747,76 +748,55 @@ export default function ProfilesDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-5xl py-8">
-        <div className="mb-4 flex items-center justify-between">
-          <Skeleton className="h-6 w-20" />
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-10 w-48" />
-            <Skeleton className="h-10 w-10" />
-          </div>
-        </div>
+      <main className="space-y-6 p-4 md:p-6">
+        <Skeleton className="h-6 w-20" />
 
-        <Card className="overflow-hidden">
-          <CardContent className="flex flex-col items-center pt-6">
-            <Skeleton className="mx-auto mb-4 h-32 w-32 rounded-full" />
-            <Skeleton className="h-8 w-64" />
-            <Skeleton className="mt-2 h-5 w-48" />
-            <Skeleton className="mt-2 h-5 w-56" />
-
-            <div className="mt-10 w-full space-y-6">
-              {/* Overview Section Skeleton */}
-              <Card>
-                <CardHeader>
-                  <Skeleton className="h-7 w-32" />
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-5/6" />
-                  <div className="grid grid-cols-2 gap-6 pt-4">
-                    {[...Array(8)].map((_, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <Skeleton className="h-8 w-8 rounded-full" />
-                        <div className="space-y-1">
-                          <Skeleton className="h-4 w-20" />
-                          <Skeleton className="h-5 w-24" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+        {/* Header Card Skeleton */}
+        <Card className="p-6">
+          <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+            <div className="flex flex-col items-center gap-4 md:flex-row">
+              <Skeleton className="h-28 w-28 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-8 w-64" />
+                <div className="flex flex-wrap justify-center gap-2 md:justify-start">
+                  <Skeleton className="h-6 w-20" />
+                  <Skeleton className="h-6 w-16" />
+                  <Skeleton className="h-6 w-24" />
+                </div>
+                <Skeleton className="h-4 w-48" />
+              </div>
             </div>
-          </CardContent>
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-10 w-36" />
+              <Skeleton className="h-10 w-10" />
+            </div>
+          </div>
         </Card>
 
-        {/* Photos Section Skeleton */}
-        <div className="mt-8">
+        {/* Tabs Skeleton */}
+        <Skeleton className="h-10 w-full max-w-xs rounded-lg" />
+
+        {/* Content Skeleton */}
+        <div className="grid grid-cols-1 items-start gap-6">
           <Card>
             <CardHeader>
-              <Skeleton className="h-7 w-24" />
+              <Skeleton className="h-7 w-32" />
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex flex-col gap-2">
-                    <Skeleton className="h-56 w-full" />
-                    <div className="flex items-center justify-center gap-10">
-                      <Skeleton className="h-5 w-20" />
-                      <Skeleton className="h-9 w-32" />
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
     )
   }
 
   if (!profile) {
     return (
-      <div className="container mx-auto py-8 text-center">User not found.</div>
+      <main className="p-6 text-center text-muted-foreground">
+        Profile not found.
+      </main>
     )
   }
 
@@ -846,183 +826,251 @@ export default function ProfilesDetailPage() {
     fullLength: "Full Length",
     casualLifestyle: "Casual Lifestyle",
   }
+
   return (
-    <div className="container mx-auto max-w-5xl py-8">
-      <div className="mb-4 flex items-center justify-between">
-        <Button
-          variant="link"
-          onClick={() => router.back()}
-          className="flex items-center gap-1 p-0 text-muted-foreground hover:text-foreground"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Back
-        </Button>
-        <div className="flex items-center gap-2">
-          <Dialog
-            open={!!viewingImage}
-            onOpenChange={(open) => !open && setViewingImage(null)}
-          >
-            <DialogContent className="max-w-3xl">
-              <DialogHeader>
-                <DialogTitle>Photo Preview</DialogTitle>
-                <DialogDescription>
-                  {photoLabels[viewingImage?.key ?? ""] ?? viewingImage?.key}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="relative mt-4 h-[70vh] w-full">
-                {viewingImage?.url && (
-                  <Image
-                    src={viewingImage.url}
-                    alt="Full size photo preview"
-                    fill
-                    className="object-contain"
-                  />
+    <main className="space-y-6 p-4 md:p-6">
+      {/* Photo Preview Dialog */}
+      <Dialog
+        open={!!viewingImage}
+        onOpenChange={(open) => !open && setViewingImage(null)}
+      >
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Photo Preview</DialogTitle>
+            <DialogDescription>
+              {photoLabels[viewingImage?.key ?? ""] ?? viewingImage?.key}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative mt-4 h-[70vh] w-full">
+            {viewingImage?.url && (
+              <Image
+                src={viewingImage.url}
+                alt="Full size photo preview"
+                fill
+                className="object-contain"
+              />
+            )}
+          </div>
+          <DialogFooter className="sm:justify-between">
+            <Button variant="outline" onClick={() => setViewingImage(null)}>
+              Close
+            </Button>
+            {viewingImage && (
+              <Button
+                variant="default"
+                onClick={() =>
+                  handleDownload(viewingImage.url, viewingImage.key)
+                }
+                className="btn-gradient"
+                disabled={!!downloading}
+              >
+                {downloading === viewingImage.key ? (
+                  <>
+                    <Download className="mr-2 h-4 w-4 animate-bounce" />
+                    Downloading...
+                  </>
+                ) : (
+                  "Download"
+                )}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Back Button */}
+      <Button
+        variant="link"
+        className="p-0 text-muted-foreground hover:text-foreground"
+        onClick={() => router.back()}
+      >
+        <ChevronLeft className="mr-2 h-4 w-4" />
+        Back
+      </Button>
+
+      {/* Profile Header Card */}
+      <Card className="p-6">
+        <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+          <div className="flex flex-col items-center gap-4 md:flex-row">
+            <Avatar className="h-28 w-28 border-4 border-primary/20">
+              <AvatarImage
+                src={mainPhoto}
+                alt="Profile photo"
+                className="object-cover"
+              />
+              <AvatarFallback className="bg-gradient-to-br from-[#8A2535] to-[#5A0816] text-2xl font-bold text-white">
+                {personalDetails?.name?.charAt(0) || "U"}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h1 className="text-gradient text-2xl font-bold">
+                {personalDetails?.prefix || ""}{" "}
+                {personalDetails?.name || "User"}
+                {personalDetails?.nickname &&
+                  personalDetails.name &&
+                  ` (${personalDetails.nickname})`}
+              </h1>
+              <div className="mt-2 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+                <Badge
+                  variant="outline"
+                  className="cursor-pointer gap-1 transition-colors hover:bg-muted"
+                  onClick={handleCopyId}
+                  title="Click to copy ID"
+                >
+                  <span>
+                    ID:{" "}
+                    {String(profile.applicationForm.customId).padStart(4, "0")}
+                  </span>
+                  <Copy className="h-3 w-3 text-muted-foreground" />
+                </Badge>
+                <Badge variant="outline" className="gap-1">
+                  {personalDetails?.gender === "Male" ? (
+                    <Mars className="h-3.5 w-3.5 text-blue-500" />
+                  ) : personalDetails?.gender === "Female" ? (
+                    <Venus className="h-3.5 w-3.5 text-pink-500" />
+                  ) : null}
+                  <span>{personalDetails?.gender || "N/A"}</span>
+                </Badge>
+                {age !== "N/A" && (
+                  <Badge variant="secondary" className="gap-1">
+                    <Cake className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span>{age} years old</span>
+                  </Badge>
+                )}
+                {personalDetails?.nationality && (
+                  <Badge variant="secondary" className="gap-1">
+                    <Home className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span>{personalDetails.nationality}</span>
+                  </Badge>
                 )}
               </div>
-              <DialogFooter className="sm:justify-between">
-                <Button variant="outline" onClick={() => setViewingImage(null)}>
-                  Close
-                </Button>
-                {viewingImage && (
-                  <Button
-                    variant="default"
-                    onClick={() =>
-                      handleDownload(viewingImage.url, viewingImage.key)
-                    }
-                    className="btn-gradient"
-                    disabled={!!downloading}
-                  >
-                    {downloading === viewingImage.key ? (
-                      <>
-                        <Download className="mr-2 h-4 w-4 animate-bounce" />
-                        Downloading...
-                      </>
-                    ) : (
-                      "Download"
-                    )}
-                  </Button>
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground md:justify-start">
+                {age !== "N/A" && (
+                  <span className="flex items-center gap-1.5">
+                    <Cake className="h-4 w-4" />
+                    {age} years old
+                  </span>
                 )}
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Button
-            variant="outline"
-            onClick={() =>
-              router.push(
-                `/dashboard/application-form/${profile.applicationForm.id}`
-              )
-            }
-          >
-            <FileText className="mr-2 h-4 w-4" /> View Application
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/print/${profile.id}/profile?print=true`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Printer className="mr-2 h-4 w-4" />
-                  Print
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <BookUser className="mr-2 h-4 w-4" />
-                  Contact
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuItem asChild>
-                    <a href={`mailto:${personalDetails?.email}`}>
-                      <Mail className="mr-2 h-4 w-4" /> Email
-                    </a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href={`tel:${personalDetails?.phone}`}>
-                      <Phone className="mr-2 h-4 w-4" /> Phone
-                    </a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href={`https://wa.me/${personalDetails?.phone}`}>
-                      <FaWhatsapp className="mr-2 h-4 w-4" /> WhatsApp
-                    </a>
-                  </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+                {personalDetails?.currentLocation && (
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4" />
+                    {personalDetails.currentLocation}
+                  </span>
+                )}
+                {personalDetails?.nationality && (
+                  <span className="flex items-center gap-1.5">
+                    <Home className="h-4 w-4" />
+                    {personalDetails.nationality}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
 
-      <Card className="overflow-hidden">
-        <CardContent className="flex flex-col items-center pt-6">
-          <Avatar className="mx-auto mb-4 h-32 w-32 border-4 border-background">
-            <AvatarImage src={mainPhoto} alt="Profile photo" />
-            <AvatarFallback>
-              {personalDetails?.name?.charAt(0) || "U"}
-            </AvatarFallback>
-          </Avatar>
-          <h1 className="text-gradient text-3xl font-bold">
-            {personalDetails?.prefix || ""} {personalDetails?.name || "User"}
-            {personalDetails?.nickname &&
-              personalDetails.name &&
-              ` (${personalDetails.nickname})`}
-          </h1>
-          <div className="mt-2 flex items-center justify-center gap-4 text-muted-foreground">
-            <div
-              className="flex cursor-pointer items-center gap-1 hover:text-foreground"
-              onClick={handleCopyId}
+          {/* Action Buttons on Right Side of Header Card */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() =>
+                router.push(
+                  `/dashboard/application-form/${profile.applicationForm.id}`
+                )
+              }
             >
-              <p>
-                ID: {String(profile.applicationForm.customId).padStart(4, "0")}
-              </p>
-              <Copy className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-1">
-              {personalDetails?.gender === "Male" ? (
-                <Mars className="h-5 w-5 text-blue-500" />
-              ) : personalDetails?.gender === "Female" ? (
-                <Venus className="h-5 w-5 text-pink-500" />
-              ) : null}
-              <p>{age} years old</p>
-            </div>
+              <FileText className="mr-2 h-4 w-4" /> View Application
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/print/${profile.id}/profile?print=true`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Printer className="mr-2 h-4 w-4" />
+                    Print
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <BookUser className="mr-2 h-4 w-4" />
+                    Contact
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem asChild>
+                      <a href={`mailto:${personalDetails?.email}`}>
+                        <Mail className="mr-2 h-4 w-4" /> Email
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a href={`tel:${personalDetails?.phone}`}>
+                        <Phone className="mr-2 h-4 w-4" /> Phone
+                      </a>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a href={`https://wa.me/${personalDetails?.phone}`}>
+                        <FaWhatsapp className="mr-2 h-4 w-4" /> WhatsApp
+                      </a>
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <div className="mt-2 flex items-center justify-center gap-4 text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <MapPin className="h-5 w-5" />
-              <p>{personalDetails?.currentLocation || "N/A"}</p>
-            </div>
-            <div className="flex items-center gap-1">
-              <Home className="h-5 w-5" />
-              <p>{personalDetails?.nationality || "N/A"}</p>
-            </div>
-          </div>
+        </div>
+      </Card>
 
-          <div className="mt-10 w-full space-y-6">
+      {/* Tabs Section */}
+      <Tabs defaultValue="profile" className="w-full space-y-6">
+        <TabsList className="grid h-10 w-full max-w-xs grid-cols-2 p-1">
+          <TabsTrigger
+            value="profile"
+            variant="gradient"
+            className="gap-2 text-sm font-medium"
+          >
+            <UserIcon className="h-4 w-4" />
+            <span>Profile</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="notes"
+            variant="gradient"
+            className="gap-2 text-sm font-medium"
+          >
+            <StickyNote className="h-4 w-4" />
+            <span>Notes</span>
+            {profile.notes && profile.notes.length > 0 && (
+              <span className="ml-1 rounded-full bg-black/15 px-1.5 py-0.5 text-[11px] font-semibold text-inherit dark:bg-white/20">
+                {profile.notes.length}
+              </span>
+            )}
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Tab 1: Profile Details & Photos */}
+        <TabsContent value="profile" className="space-y-6">
+          <div className="grid grid-cols-1 items-start gap-6">
             <OverviewSection profile={profile.applicationForm} />
             <LifestyleSection profile={profile.applicationForm} />
             <LookingForSection profile={profile.applicationForm} />
+            <PhotoGrid
+              photos={photos}
+              onImageClick={(url, key) => setViewingImage({ url, key })}
+              onDownloadClick={handleDownload}
+              downloading={downloading}
+            />
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
 
-      <div className="mt-8">
-        <PhotoGrid
-          photos={photos}
-          onImageClick={(url, key) => setViewingImage({ url, key })}
-          onDownloadClick={handleDownload}
-          downloading={downloading}
-        />
-      </div>
-      <div className="mt-8">
-        <NotesSection profileId={profile.id} initialNotes={profile.notes} />
-      </div>
-    </div>
+        {/* Tab 2: Notes */}
+        <TabsContent value="notes">
+          <NotesSection profileId={profile.id} initialNotes={profile.notes} />
+        </TabsContent>
+      </Tabs>
+    </main>
   )
 }

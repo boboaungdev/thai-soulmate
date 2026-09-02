@@ -188,6 +188,39 @@ model Tracking {
 
   notes TrackingNote[]
 
+  folders TrackingFolder[]
+  files   TrackingFile[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrackingFolder {
+  id         String         @id @default(uuid())
+  name       String
+  trackingId String
+  tracking   Tracking       @relation(fields: [trackingId], references: [id], onDelete: Cascade)
+  files      TrackingFile[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([trackingId, name])
+}
+
+model TrackingFile {
+  id         String          @id @default(uuid())
+  name       String
+  url        String
+  r2Key      String
+  size       Int
+  mimeType   String
+  folderId   String?
+  folder     TrackingFolder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  trackingId String
+  tracking   Tracking        @relation(fields: [trackingId], references: [id], onDelete: Cascade)
+  uploadedBy String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -198,7 +231,7 @@ model TrackingNote {
   type    TrackingNoteType
 
   trackingId String
-  tracking   Tracking @relation(fields: [trackingId], references: [id])
+  tracking   Tracking @relation(fields: [trackingId], references: [id], onDelete: Cascade)
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -315,6 +348,9 @@ enum TrackingNoteType {
   THIRD_GOOGLE_MEET
   FINAL_MATCH
   CLOSED
+  MANUAL
+  CALL_LOG
+  FEEDBACK
 }
 
 enum EmailFolder {

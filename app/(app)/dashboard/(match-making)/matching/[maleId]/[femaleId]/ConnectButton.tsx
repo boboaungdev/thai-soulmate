@@ -14,17 +14,20 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { HeartHandshake, Loader2 } from "lucide-react"
+import Link from "next/link"
+import { Eye, HeartHandshake, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 export function ConnectButton({
   maleId,
   femaleId,
   matchPercentage,
+  activeTrackingId,
 }: {
   maleId: string
   femaleId: string
   matchPercentage: number
+  activeTrackingId?: string | null
 }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -54,6 +57,17 @@ export function ConnectButton({
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (activeTrackingId) {
+    return (
+      <Button asChild className="btn-gradient shadow-xs">
+        <Link href={`/dashboard/tracking/${activeTrackingId}`}>
+          <Eye className="mr-1.5 h-4 w-4" />
+          View Active Tracking
+        </Link>
+      </Button>
+    )
   }
 
   return (

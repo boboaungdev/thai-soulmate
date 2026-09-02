@@ -65,3 +65,69 @@ export async function getUniqueFileName(
     counter++
   }
 }
+
+export async function getUniqueTrackingFolderName(
+  trackingId: string,
+  requestedName: string,
+  excludeFolderId?: string
+): Promise<string> {
+  const baseName = requestedName.trim()
+  let name = baseName
+  let counter = 1
+
+  while (true) {
+    const existing = await prisma.trackingFolder.findFirst({
+      where: {
+        trackingId,
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
+        ...(excludeFolderId ? { id: { not: excludeFolderId } } : {}),
+      },
+    })
+
+    if (!existing) {
+      return name
+    }
+
+    name = `${baseName} (${counter})`
+    counter++
+  }
+}
+
+export async function getUniqueTrackingFileName(
+  trackingId: string,
+  folderId: string | null,
+  requestedName: string,
+  excludeFileId?: string
+): Promise<string> {
+  const trimmed = requestedName.trim()
+  const dotIndex = trimmed.lastIndexOf(".")
+  const baseName = dotIndex !== -1 ? trimmed.slice(0, dotIndex) : trimmed
+  const extension = dotIndex !== -1 ? trimmed.slice(dotIndex) : ""
+
+  let name = trimmed
+  let counter = 1
+
+  while (true) {
+    const existing = await prisma.trackingFile.findFirst({
+      where: {
+        trackingId,
+        folderId,
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
+        ...(excludeFileId ? { id: { not: excludeFileId } } : {}),
+      },
+    })
+
+    if (!existing) {
+      return name
+    }
+
+    name = `${baseName} (${counter})${extension}`
+    counter++
+  }
+}

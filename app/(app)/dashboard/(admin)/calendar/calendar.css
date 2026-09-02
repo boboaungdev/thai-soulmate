@@ -54,3 +54,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.calendar-shell .fc-timegrid-slot-label-cushion {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  padding: 0 4px;
+}
+
+.calendar-shell .fc-timegrid-axis-cushion {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}

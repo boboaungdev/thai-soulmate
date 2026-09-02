@@ -385,18 +385,16 @@ export function CalendarView() {
 
               nowIndicator
               dayMaxEvents={false}
-              firstDay={1}
-
-              slotMinTime="10:00:00"
-              slotMaxTime="20:30:00"
+              slotMinTime="09:00:00"
+              slotMaxTime="21:00:00"
               slotDuration="00:30:00"
-
               slotHeaderInterval="01:00"
               slotHeaderFormat={{
                 hour: "2-digit",
                 minute: "2-digit",
                 hour12: false,
               }}
+              scrollTime="09:30:00"
 
               businessHours={BUSINESS_HOURS}
 

@@ -10,12 +10,24 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+function createPrismaClient() {
+  return new PrismaClient({
     adapter,
   })
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma
 }
+
+export const prisma = (() => {
+  if (
+    globalForPrisma.prisma &&
+    "trackingFolder" in globalForPrisma.prisma &&
+    "trackingFile" in globalForPrisma.prisma &&
+    "trackingStatusHistory" in globalForPrisma.prisma
+  ) {
+    return globalForPrisma.prisma
+  }
+  const client = createPrismaClient()
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = client
+  }
+  return client
+})()

@@ -332,6 +332,13 @@ export async function POST(req: Request) {
         matchPercentage,
         status: "INITIAL_CONNECT",
         completedStatuses: ["INITIAL_CONNECT"],
+        statusHistory: {
+          create: {
+            status: "INITIAL_CONNECT",
+            changedBy: "System",
+            note: "Initial soulmate connection created",
+          },
+        },
       },
     })
 

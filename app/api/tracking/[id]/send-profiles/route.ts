@@ -101,6 +101,13 @@ export async function POST(
       data: {
         status: TrackingStatus.BOTH_PROFILES_SENT,
         completedStatuses: updatedCompletedStatuses,
+        statusHistory: {
+          create: {
+            status: TrackingStatus.BOTH_PROFILES_SENT,
+            changedBy: "Matchmaker",
+            note: "Profiles sent to both members via email",
+          },
+        },
       },
     })
 

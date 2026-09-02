@@ -36,6 +36,11 @@ export async function GET(
               profile: true,
             },
           },
+          statusHistory: {
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
           notes: {
             include: {
               user: {
@@ -209,6 +214,13 @@ export async function GET(
         status: finalStatus,
         completedStatuses: updatedCompletedStatuses,
         ...(closedFromStatus ? { closedFromStatus } : {}),
+        statusHistory: {
+          create: {
+            status: responseStatus,
+            changedBy: isMale ? "Male Member" : "Female Member",
+            note: `Member responded with ${responseStatus}`,
+          },
+        },
       },
     })
 
@@ -333,7 +345,16 @@ export async function PATCH(
 
     const updatedTracking = await prisma.tracking.update({
       where: { id: trackingId },
-      data: dataToUpdate,
+      data: {
+        ...dataToUpdate,
+        statusHistory: {
+          create: {
+            status,
+            changedBy: "Matchmaker",
+            note: `Status updated to ${status}`,
+          },
+        },
+      },
       include: {
         male: {
           select: {
@@ -351,6 +372,11 @@ export async function PATCH(
             personalDetails: true,
             photos: true,
             profile: true,
+          },
+        },
+        statusHistory: {
+          orderBy: {
+            createdAt: "asc",
           },
         },
         notes: {

@@ -186,13 +186,27 @@ model Tracking {
   completedStatuses TrackingStatus[] @default([INITIAL_CONNECT])
   closedFromStatus  TrackingStatus?
 
-  notes TrackingNote[]
+  statusHistory TrackingStatusHistory[]
+  notes         TrackingNote[]
 
   folders TrackingFolder[]
   files   TrackingFile[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model TrackingStatusHistory {
+  id         String         @id @default(uuid())
+  status     TrackingStatus
+  trackingId String
+  tracking   Tracking       @relation(fields: [trackingId], references: [id], onDelete: Cascade)
+  changedBy  String?
+  note       String?
+  createdAt  DateTime       @default(now())
+
+  @@index([trackingId])
+  @@index([trackingId, status])
 }
 
 model TrackingFolder {

@@ -71,6 +71,10 @@ import {
   Heart,
   Sparkles,
   Compass,
+  History,
+  Clock,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { toast } from "sonner"
@@ -99,6 +103,15 @@ enum TrackingStatus {
   THIRD_FOLLOW_UP = "THIRD_FOLLOW_UP",
   MATCHED = "MATCHED",
   CLOSED = "CLOSED",
+}
+
+export interface TrackingStatusHistoryItem {
+  id: string
+  status: TrackingStatus
+  trackingId: string
+  changedBy?: string | null
+  note?: string | null
+  createdAt: string
 }
 
 const statusGroups = [
@@ -192,6 +205,7 @@ interface Tracking {
   completedStatuses: TrackingStatus[]
   male: SoulmateApplication
   female: SoulmateApplication
+  statusHistory?: TrackingStatusHistoryItem[]
   notes: TrackingNoteWithUser[]
   createdAt: string
   updatedAt: string
@@ -330,10 +344,14 @@ const SoulmateStatusLine: React.FC<{
   currentStatus: Tracking["status"]
   completedStatuses?: Tracking["completedStatuses"]
   closedFromStatus?: Tracking["status"]
+  statusHistory?: TrackingStatusHistoryItem[]
+  trackingCreatedAt?: string
 }> = ({
   currentStatus,
   completedStatuses = [TrackingStatus.INITIAL_CONNECT],
   closedFromStatus,
+  statusHistory = [],
+  trackingCreatedAt,
 }) => {
   const isClosed = currentStatus === TrackingStatus.CLOSED
   const closedFromGroup = statusGroups.find(
@@ -342,186 +360,288 @@ const SoulmateStatusLine: React.FC<{
   const closedFromStep = closedFromGroup?.step ?? 0
 
   return (
-    <div className="flex items-start justify-between gap-1 text-xs">
-      {statusGroups.map((group, index) => {
-        let isCompleted = false
-        let label = group.name
-        let textColorClass = "text-muted-foreground"
-        let separatorColorClass = "bg-border/60"
-        let icon: React.ReactNode = (
-          <Circle className="size-4 fill-muted text-muted-foreground/40" />
-        )
+    <div className="w-full overflow-x-auto pt-1 pb-2">
+      <div className="flex min-w-[1040px] items-start justify-between gap-1 text-xs">
+        {statusGroups.map((group, index) => {
+          let isCompleted = false
+          let label = group.name
+          let textColorClass = "text-muted-foreground"
+          let separatorColorClass = "bg-border/60"
+          let icon: React.ReactNode = (
+            <Circle className="size-5 fill-muted text-muted-foreground/40" />
+          )
 
-        if (isClosed) {
-          if (group.statuses.includes(TrackingStatus.CLOSED)) {
-            icon = <CheckCircle2 className="size-4 text-blue-500" />
-            textColorClass = "text-blue-700 dark:text-blue-400 font-semibold"
-            isCompleted = true
-          } else if (group.step === 3) {
-            if (completedStatuses.includes(TrackingStatus.FEMALE_ACCEPTED)) {
-              icon = <CheckCircle2 className="size-4 text-green-500" />
-              textColorClass = "text-green-700 dark:text-green-400 font-medium"
-              label = "Female Accepted"
+          // Find status date for this group from statusHistory
+          const matchedHistory = statusHistory.find((h) =>
+            group.statuses.includes(h.status)
+          )
+          let dateStr: string | null = matchedHistory?.createdAt || null
+          if (group.step === 1 && !dateStr && trackingCreatedAt) {
+            dateStr = trackingCreatedAt
+          }
+
+          const dateFormatted = dateStr
+            ? new Date(dateStr).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+              })
+            : null
+          const timeFormatted = dateStr
+            ? new Date(dateStr).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : null
+
+          if (isClosed) {
+            if (group.statuses.includes(TrackingStatus.CLOSED)) {
+              icon = <CheckCircle2 className="size-5 text-blue-500" />
+              textColorClass = "text-blue-700 dark:text-blue-400 font-semibold"
               isCompleted = true
+            } else if (group.step === 3) {
+              if (completedStatuses.includes(TrackingStatus.FEMALE_ACCEPTED)) {
+                icon = <CheckCircle2 className="size-5 text-green-500" />
+                textColorClass =
+                  "text-green-700 dark:text-green-400 font-medium"
+                label = "Female Accepted"
+                isCompleted = true
+              } else if (
+                completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
+                closedFromStatus === TrackingStatus.FEMALE_REJECTED
+              ) {
+                icon = (
+                  <XCircle className="size-5 fill-red-500/10 text-red-500" />
+                )
+                textColorClass = "text-red-600 dark:text-red-400 font-semibold"
+                label = "Female Rejected"
+              } else if (closedFromStep > 0 && group.step <= closedFromStep) {
+                icon = <CheckCircle2 className="size-5 text-green-500" />
+                textColorClass =
+                  "text-green-700 dark:text-green-400 font-medium"
+                isCompleted = true
+              } else {
+                icon = <XCircle className="size-5 text-red-500/70" />
+                textColorClass = "text-muted-foreground line-through"
+              }
+            } else if (group.step === 4) {
+              if (completedStatuses.includes(TrackingStatus.MALE_ACCEPTED)) {
+                icon = <CheckCircle2 className="size-5 text-green-500" />
+                textColorClass =
+                  "text-green-700 dark:text-green-400 font-medium"
+                label = "Male Accepted"
+                isCompleted = true
+              } else if (
+                completedStatuses.includes(TrackingStatus.MALE_REJECTED) ||
+                closedFromStatus === TrackingStatus.MALE_REJECTED
+              ) {
+                icon = (
+                  <XCircle className="size-5 fill-red-500/10 text-red-500" />
+                )
+                textColorClass = "text-red-600 dark:text-red-400 font-semibold"
+                label = "Male Rejected"
+              } else if (closedFromStep > 0 && group.step <= closedFromStep) {
+                icon = <CheckCircle2 className="size-5 text-green-500" />
+                textColorClass =
+                  "text-green-700 dark:text-green-400 font-medium"
+                isCompleted = true
+              } else {
+                icon = <XCircle className="size-5 text-red-500/70" />
+                textColorClass = "text-muted-foreground line-through"
+              }
             } else if (
-              completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
-              closedFromStatus === TrackingStatus.FEMALE_REJECTED
+              group.statuses.some((s) => completedStatuses.includes(s)) ||
+              (closedFromStep > 0 && group.step <= closedFromStep)
             ) {
-              icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
-              textColorClass = "text-red-600 dark:text-red-400 font-semibold"
-              label = "Female Rejected"
-            } else if (closedFromStep > 0 && group.step <= closedFromStep) {
-              icon = <CheckCircle2 className="size-4 text-green-500" />
+              icon = <CheckCircle2 className="size-5 text-green-500" />
               textColorClass = "text-green-700 dark:text-green-400 font-medium"
               isCompleted = true
             } else {
-              icon = <XCircle className="size-4 text-red-500/70" />
+              icon = <XCircle className="size-5 text-red-500/70" />
               textColorClass = "text-muted-foreground line-through"
             }
-          } else if (group.step === 4) {
-            if (completedStatuses.includes(TrackingStatus.MALE_ACCEPTED)) {
-              icon = <CheckCircle2 className="size-4 text-green-500" />
-              textColorClass = "text-green-700 dark:text-green-400 font-medium"
-              label = "Male Accepted"
-              isCompleted = true
-            } else if (
-              completedStatuses.includes(TrackingStatus.MALE_REJECTED) ||
-              closedFromStatus === TrackingStatus.MALE_REJECTED
-            ) {
-              icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
-              textColorClass = "text-red-600 dark:text-red-400 font-semibold"
-              label = "Male Rejected"
-            } else if (closedFromStep > 0 && group.step <= closedFromStep) {
-              icon = <CheckCircle2 className="size-4 text-green-500" />
-              textColorClass = "text-green-700 dark:text-green-400 font-medium"
-              isCompleted = true
-            } else {
-              icon = <XCircle className="size-4 text-red-500/70" />
-              textColorClass = "text-muted-foreground line-through"
-            }
-          } else if (
-            group.statuses.some((s) => completedStatuses.includes(s)) ||
-            (closedFromStep > 0 && group.step <= closedFromStep)
-          ) {
-            icon = <CheckCircle2 className="size-4 text-green-500" />
-            textColorClass = "text-green-700 dark:text-green-400 font-medium"
-            isCompleted = true
           } else {
-            icon = <XCircle className="size-4 text-red-500/70" />
-            textColorClass = "text-muted-foreground line-through"
-          }
-        } else {
-          if (group.step === 1) {
-            isCompleted = completedStatuses.includes(
-              TrackingStatus.INITIAL_CONNECT
-            )
-          } else if (group.step === 2) {
-            isCompleted = completedStatuses.includes(
-              TrackingStatus.BOTH_PROFILES_SENT
-            )
-          } else if (group.step === 3) {
-            if (
-              completedStatuses.includes(TrackingStatus.FEMALE_ACCEPTED) ||
-              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_ACCEPTED)
-            ) {
-              isCompleted = true
-              label = "Female Accepted"
+            if (group.step === 1) {
+              isCompleted = completedStatuses.includes(
+                TrackingStatus.INITIAL_CONNECT
+              )
+            } else if (group.step === 2) {
+              isCompleted = completedStatuses.includes(
+                TrackingStatus.BOTH_PROFILES_SENT
+              )
+            } else if (group.step === 3) {
+              if (
+                completedStatuses.includes(TrackingStatus.FEMALE_ACCEPTED) ||
+                completedStatuses.includes(
+                  TrackingStatus.BOTH_PROFILES_ACCEPTED
+                )
+              ) {
+                isCompleted = true
+                label = "Female Accepted"
+              } else if (
+                completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
+                currentStatus === TrackingStatus.FEMALE_REJECTED
+              ) {
+                label = "Female Rejected"
+              } else if (
+                completedStatuses.includes(TrackingStatus.FEMALE_THINKING) ||
+                currentStatus === TrackingStatus.FEMALE_THINKING
+              ) {
+                label = "Female Thinking"
+              } else if (
+                completedStatuses.includes(TrackingStatus.BOTH_PROFILES_SENT)
+              ) {
+                label = "Female (Review)"
+              }
+            } else if (group.step === 4) {
+              if (
+                completedStatuses.includes(TrackingStatus.MALE_ACCEPTED) ||
+                completedStatuses.includes(
+                  TrackingStatus.BOTH_PROFILES_ACCEPTED
+                )
+              ) {
+                isCompleted = true
+                label = "Male Accepted"
+              } else if (
+                completedStatuses.includes(TrackingStatus.MALE_REJECTED) ||
+                currentStatus === TrackingStatus.MALE_REJECTED
+              ) {
+                label = "Male Rejected"
+              } else if (
+                completedStatuses.includes(TrackingStatus.MALE_THINKING) ||
+                currentStatus === TrackingStatus.MALE_THINKING
+              ) {
+                label = "Male Thinking"
+              } else if (
+                completedStatuses.includes(TrackingStatus.BOTH_PROFILES_SENT)
+              ) {
+                label = "Male (Review)"
+              }
+            } else if (group.step === 5) {
+              isCompleted = completedStatuses.includes(
+                TrackingStatus.BOTH_PROFILES_ACCEPTED
+              )
+            } else {
+              isCompleted = group.statuses.some((s) =>
+                completedStatuses.includes(s)
+              )
+            }
+
+            const isCurrent = group.statuses.includes(currentStatus)
+
+            if (isCompleted) {
+              icon = <CheckCircle2 className="size-5 text-green-500" />
+              textColorClass = "text-green-700 dark:text-green-400 font-medium"
+              separatorColorClass = "bg-green-500/50"
             } else if (
-              completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
-              currentStatus === TrackingStatus.FEMALE_REJECTED
+              (currentStatus === TrackingStatus.FEMALE_REJECTED &&
+                group.step === 3) ||
+              (completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) &&
+                group.step === 3)
             ) {
+              icon = <XCircle className="size-5 fill-red-500/10 text-red-500" />
+              textColorClass = "text-red-600 dark:text-red-400 font-semibold"
               label = "Female Rejected"
             } else if (
-              completedStatuses.includes(TrackingStatus.FEMALE_THINKING) ||
-              currentStatus === TrackingStatus.FEMALE_THINKING
+              (currentStatus === TrackingStatus.MALE_REJECTED &&
+                group.step === 4) ||
+              (completedStatuses.includes(TrackingStatus.MALE_REJECTED) &&
+                group.step === 4)
             ) {
-              label = "Female Thinking"
-            } else if (
-              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_SENT)
-            ) {
-              label = "Female (Review)"
-            }
-          } else if (group.step === 4) {
-            if (
-              completedStatuses.includes(TrackingStatus.MALE_ACCEPTED) ||
-              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_ACCEPTED)
-            ) {
-              isCompleted = true
-              label = "Male Accepted"
-            } else if (
-              completedStatuses.includes(TrackingStatus.MALE_REJECTED) ||
-              currentStatus === TrackingStatus.MALE_REJECTED
-            ) {
+              icon = <XCircle className="size-5 fill-red-500/10 text-red-500" />
+              textColorClass = "text-red-600 dark:text-red-400 font-semibold"
               label = "Male Rejected"
             } else if (
-              completedStatuses.includes(TrackingStatus.MALE_THINKING) ||
-              currentStatus === TrackingStatus.MALE_THINKING
+              (currentStatus === TrackingStatus.FEMALE_THINKING &&
+                group.step === 3) ||
+              (currentStatus === TrackingStatus.MALE_THINKING &&
+                group.step === 4)
             ) {
-              label = "Male Thinking"
+              icon = <Clock className="size-5 animate-spin text-amber-500" />
+              textColorClass =
+                "text-amber-600 dark:text-amber-400 font-semibold"
             } else if (
-              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_SENT)
+              completedStatuses.includes(TrackingStatus.BOTH_PROFILES_SENT) &&
+              (group.step === 3 || group.step === 4) &&
+              !isCompleted
             ) {
-              label = "Male (Review)"
-            }
-          } else if (group.step === 5) {
-            isCompleted = completedStatuses.includes(
-              TrackingStatus.BOTH_PROFILES_ACCEPTED
-            )
-          } else {
-            isCompleted = group.statuses.some((s) =>
-              completedStatuses.includes(s)
-            )
-          }
-
-          if (isCompleted) {
-            icon = <CheckCircle2 className="size-4 text-green-500" />
-            textColorClass = "text-green-700 dark:text-green-400 font-medium"
-            separatorColorClass = "bg-green-500/50"
-          } else if (group.statuses.includes(currentStatus)) {
-            if (
-              currentStatus === TrackingStatus.FEMALE_REJECTED ||
-              currentStatus === TrackingStatus.MALE_REJECTED
-            ) {
-              icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
-              textColorClass = "text-red-600 dark:text-red-400 font-semibold"
-            } else if (
-              currentStatus === TrackingStatus.FEMALE_THINKING ||
-              currentStatus === TrackingStatus.MALE_THINKING
-            ) {
-              icon = <Loader2 className="size-4 animate-spin text-amber-500" />
-              textColorClass = "text-amber-600 dark:text-amber-400 font-medium"
-            } else {
-              icon = <Circle className="size-4 fill-primary/20 text-primary" />
-              textColorClass = "text-primary font-semibold"
+              icon = <Clock className="size-5 animate-spin text-amber-500" />
+              textColorClass =
+                "text-amber-600 dark:text-amber-400 font-semibold"
+            } else if (isCurrent) {
+              icon = (
+                <Circle className="size-5 animate-pulse fill-primary text-primary" />
+              )
+              textColorClass = "text-primary font-bold"
             }
           }
-        }
 
-        return (
-          <React.Fragment key={group.step}>
-            <div className="flex min-w-0 flex-1 flex-col items-center text-center">
-              {icon}
-              <span
-                className={cn(
-                  "mt-1 max-w-[65px] truncate text-[10px] leading-tight sm:max-w-none sm:text-xs",
-                  textColorClass
+          // Check if next step is reached/completed
+          const nextGroup = statusGroups[index + 1]
+          const isNextCompletedOrActive =
+            nextGroup &&
+            (nextGroup.statuses.some((s) => completedStatuses.includes(s)) ||
+              nextGroup.statuses.includes(currentStatus))
+
+          if (isCompleted && isNextCompletedOrActive) {
+            separatorColorClass = "bg-green-500"
+          }
+
+          return (
+            <React.Fragment key={group.step}>
+              <div className="flex min-w-[76px] flex-1 flex-col items-center text-center">
+                {icon}
+                <span
+                  className={cn(
+                    "mt-1.5 text-xs leading-tight font-semibold",
+                    textColorClass
+                  )}
+                  title={label}
+                >
+                  {label}
+                </span>
+                {dateFormatted ? (
+                  <div
+                    className="mt-1.5 flex flex-col items-center rounded-md border border-border/50 bg-muted/60 px-2 py-0.5 shadow-2xs"
+                    title={
+                      matchedHistory?.changedBy
+                        ? `${dateFormatted} ${timeFormatted} • By ${matchedHistory.changedBy}`
+                        : `${dateFormatted} ${timeFormatted}`
+                    }
+                  >
+                    <span className="text-xs font-semibold whitespace-nowrap text-foreground">
+                      {dateFormatted}
+                    </span>
+                    <span className="font-mono text-[11px] font-medium text-muted-foreground">
+                      {timeFormatted}
+                    </span>
+                  </div>
+                ) : isCompleted ? (
+                  <span className="mt-1.5 text-xs font-medium text-muted-foreground/60">
+                    Done
+                  </span>
+                ) : group.statuses.includes(currentStatus) ? (
+                  <span className="mt-1.5 rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-primary uppercase">
+                    Active
+                  </span>
+                ) : (
+                  <span className="mt-1.5 text-xs font-medium text-muted-foreground/30">
+                    —
+                  </span>
                 )}
-              >
-                {label}
-              </span>
-            </div>
-            {index < statusGroups.length - 1 && (
-              <div
-                className={cn(
-                  "h-0.5 flex-1 transition-colors",
-                  separatorColorClass,
-                  "mx-1"
-                )}
-              ></div>
-            )}
-          </React.Fragment>
-        )
-      })}
+              </div>
+              {index < statusGroups.length - 1 && (
+                <div
+                  className={cn(
+                    "h-0.5 flex-1 transition-colors",
+                    separatorColorClass,
+                    "mx-1 mt-2.5"
+                  )}
+                ></div>
+              )}
+            </React.Fragment>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -1403,6 +1523,7 @@ export default function SoulmateDetailPage() {
     title?: string
   } | null>(null)
   const [downloading, setDownloading] = useState<string | null>(null)
+  const [showStatusTimeline, setShowStatusTimeline] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -1519,21 +1640,98 @@ export default function SoulmateDetailPage() {
 
   if (isLoading) {
     return (
-      <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-64" />
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-8 w-1/2" />
+      <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
+        {/* Header Bar Skeleton */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-32" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-36 rounded-md" />
+              <Skeleton className="h-8 w-8 rounded-md" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-72" />
+            <Skeleton className="h-4 w-96 max-w-full" />
+            <Skeleton className="mt-2 h-6 w-28 rounded-full" />
+          </div>
+        </div>
+
+        {/* Status Progression Card Skeleton */}
+        <Card className="border">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <div className="space-y-1.5">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-3.5 w-56" />
+            </div>
+            <Skeleton className="h-8 w-24 rounded-md" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-6 w-full" />
+            <div className="flex items-center justify-between gap-2 overflow-hidden py-3">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <React.Fragment key={i}>
+                  <div className="flex min-w-[80px] flex-col items-center gap-1.5">
+                    <Skeleton className="h-5 w-5 rounded-full" />
+                    <Skeleton className="h-3.5 w-16 rounded" />
+                    <Skeleton className="mt-0.5 h-5 w-14 rounded-md" />
+                  </div>
+                  {i < 7 && <Skeleton className="h-0.5 flex-1" />}
+                </React.Fragment>
+              ))}
+            </div>
           </CardContent>
         </Card>
-        <Skeleton className="h-10 w-80 rounded-lg" />
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Skeleton className="h-80 rounded-xl" />
-          <Skeleton className="h-80 rounded-xl" />
+
+        {/* Tabs Bar Skeleton */}
+        <div className="space-y-6">
+          <Skeleton className="h-10 w-full max-w-md rounded-lg" />
+
+          {/* 2-Column Member Profile Cards Skeleton */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Male Card Skeleton */}
+            <Card className="overflow-hidden border">
+              <CardHeader className="bg-muted/10 p-5">
+                <div className="flex items-center gap-4">
+                  <Skeleton className="h-20 w-20 shrink-0 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-6 w-40" />
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-4 w-48" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4 p-5">
+                <div className="grid grid-cols-2 gap-3">
+                  <Skeleton className="h-10 w-full rounded-md" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+                <Skeleton className="h-32 w-full rounded-lg" />
+                <Skeleton className="h-20 w-full rounded-lg" />
+              </CardContent>
+            </Card>
+
+            {/* Female Card Skeleton */}
+            <Card className="overflow-hidden border">
+              <CardHeader className="bg-muted/10 p-5">
+                <div className="flex items-center gap-4">
+                  <Skeleton className="h-20 w-20 shrink-0 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-6 w-40" />
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-4 w-48" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4 p-5">
+                <div className="grid grid-cols-2 gap-3">
+                  <Skeleton className="h-10 w-full rounded-md" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+                <Skeleton className="h-32 w-full rounded-lg" />
+                <Skeleton className="h-20 w-full rounded-lg" />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     )
@@ -1619,14 +1817,85 @@ export default function SoulmateDetailPage() {
       {/* Status Progression Card */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-3">
-          <CardTitle>Connection Status</CardTitle>
+          <div className="space-y-0.5">
+            <CardTitle>Connection Status</CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Current stage:{" "}
+              <strong className="text-foreground">
+                {tracking.status.replace(/_/g, " ")}
+              </strong>
+            </p>
+          </div>
+          {tracking.statusHistory && tracking.statusHistory.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5 border-border bg-background text-xs hover:bg-muted dark:border-input dark:bg-input/30"
+              onClick={() => setShowStatusTimeline(!showStatusTimeline)}
+            >
+              <History className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>
+                {showStatusTimeline
+                  ? "Hide History"
+                  : `History (${tracking.statusHistory.length})`}
+              </span>
+              {showStatusTimeline ? (
+                <ChevronUp className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <SoulmateStatusLine
             currentStatus={tracking.status}
             completedStatuses={tracking.completedStatuses}
             closedFromStatus={tracking.closedFromStatus}
+            statusHistory={tracking.statusHistory}
+            trackingCreatedAt={tracking.createdAt}
           />
+
+          {showStatusTimeline &&
+            tracking.statusHistory &&
+            tracking.statusHistory.length > 0 && (
+              <div className="mt-4 space-y-3 rounded-xl border bg-muted/20 p-4">
+                <h4 className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                  <History className="h-3.5 w-3.5 text-muted-foreground" />
+                  Status Transition Log
+                </h4>
+                <div className="space-y-2">
+                  {tracking.statusHistory.map((item, idx) => (
+                    <div
+                      key={item.id || idx}
+                      className="flex items-center justify-between gap-3 rounded-lg border bg-card p-2.5 text-xs"
+                    >
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge
+                          variant="outline"
+                          className="border text-[11px] font-semibold shadow-2xs"
+                        >
+                          {item.status.replace(/_/g, " ")}
+                        </Badge>
+                        {item.changedBy && (
+                          <span className="text-[11px] text-muted-foreground">
+                            by <strong>{item.changedBy}</strong>
+                          </span>
+                        )}
+                        {item.note && (
+                          <span className="hidden text-[11px] text-muted-foreground/80 italic sm:inline">
+                            — {item.note}
+                          </span>
+                        )}
+                      </div>
+                      <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
+                        {formatDateTime(item.createdAt)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
         </CardContent>
       </Card>
 

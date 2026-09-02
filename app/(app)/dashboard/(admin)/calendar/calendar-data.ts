@@ -1,5 +1,5 @@
 export type CalendarKind =
-  "register_interest" | "google_meet" | "event" | "holiday"
+  "register_interest" | "google_meet" | "follow_up" | "event" | "holiday"
 
 export type CalendarItem = {
   id: string
@@ -42,11 +42,20 @@ export const calendarKinds: {
   {
     value: "google_meet",
     label: "Google Meet",
-    hint: "Meeting follow-ups and video calls",
+    hint: "Meeting video calls & virtual dates",
     color: "#3b82f6",
     badge:
       "border-blue-200 bg-blue-100 text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300",
     dot: "bg-[#3b82f6]",
+  },
+  {
+    value: "follow_up",
+    label: "Follow Up",
+    hint: "Matchmaking feedback, date review & follow-up calls",
+    color: "#8b5cf6",
+    badge:
+      "border-purple-200 bg-purple-100 text-purple-800 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300",
+    dot: "bg-[#8b5cf6]",
   },
   {
     value: "event",
@@ -247,6 +256,44 @@ export const mockCalendarItems: CalendarItem[] = [
       "Identity verification and background check interview via Google Meet.",
     location: "Google Meet",
     meetUrl: "https://meet.google.com/tsm-verify-michael",
+  },
+  {
+    id: "fu-1",
+    title: "1st Date Follow-up · Oliver & Siriporn",
+    start: localDateTime(0, 16, 0),
+    end: localDateTime(0, 16, 30),
+    kind: "follow_up",
+    person: "Oliver S. & Siriporn S.",
+    description:
+      "Post-meeting review call. Both attended their first dinner date in Thonglor yesterday. Check mutual impressions and chemistry.",
+    location: "Phone / WhatsApp",
+    phone: "+66819998888",
+    email: "oliver.s@example.com",
+  },
+  {
+    id: "fu-2",
+    title: "Post-Meet Feedback · Marcus & Kanya",
+    start: localDateTime(tomorrowOffset, 11, 30),
+    end: localDateTime(tomorrowOffset, 12, 0),
+    kind: "follow_up",
+    person: "Marcus B. & Kanya R.",
+    description:
+      "Review 1st Google Meet impressions. Discuss second video date or in-person dinner plan.",
+    location: "Google Meet",
+    meetUrl: "https://meet.google.com/tsm-followup-marcus-kanya",
+  },
+  {
+    id: "fu-3",
+    title: "2nd Follow-up Check-in · Ethan & Nutcha",
+    start: localDateTime(thisWeekOffset(3), 17, 0),
+    end: localDateTime(thisWeekOffset(3), 17, 30),
+    kind: "follow_up",
+    person: "Ethan W. & Nutcha P.",
+    description:
+      "Check-in after 2nd Google Meet. Confirm next step preferences and private matchmaker advice.",
+    location: "Phone / WhatsApp",
+    phone: "+66845678901",
+    email: "ethan.w@example.com",
   },
   {
     id: "event-1",

@@ -117,6 +117,19 @@ const kindStyle = Object.fromEntries(
   calendarKinds.map((kind) => [kind.value, kind])
 ) as Record<CalendarKind, (typeof calendarKinds)[number]>
 
+const kindCardBg: Record<CalendarKind, string> = {
+  register_interest:
+    "bg-amber-500/8 hover:bg-amber-500/15 border-amber-500/25 dark:bg-amber-500/10",
+  google_meet:
+    "bg-blue-500/8 hover:bg-blue-500/15 border-blue-500/25 dark:bg-blue-500/10",
+  follow_up:
+    "bg-purple-500/8 hover:bg-purple-500/15 border-purple-500/25 dark:bg-purple-500/10",
+  event:
+    "bg-rose-500/8 hover:bg-rose-500/15 border-rose-500/25 dark:bg-rose-500/10",
+  holiday:
+    "bg-emerald-500/8 hover:bg-emerald-500/15 border-emerald-500/25 dark:bg-emerald-500/10",
+}
+
 function toCalendarEvents(
   items: CalendarItem[],
   visibleKinds: CalendarKind[],
@@ -227,23 +240,43 @@ function TaskList({
   }
 
   return (
-    <div className="flex flex-col gap-2 pb-2">
+    <div className="flex flex-col gap-2.5 pb-1">
       {items.map((item) => (
         <button
           key={item.id}
           type="button"
-          className="rounded-xl border bg-background p-3 text-left transition-colors hover:bg-muted/60"
+          className={cn(
+            "rounded-xl border p-3 text-left shadow-2xs transition-all hover:shadow-xs",
+            kindCardBg[item.kind] ||
+              "border-border bg-muted/40 hover:bg-muted/70"
+          )}
           onClick={() => onSelect(item)}
         >
-          <div className="mb-1 flex items-center gap-2">
-            <span
-              className={cn("size-2 rounded-full", kindStyle[item.kind]?.dot)}
-            />
-            <span className="text-sm font-medium">{item.title}</span>
+          <div className="mb-1.5 flex items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <span
+                className={cn(
+                  "size-2.5 shrink-0 rounded-full",
+                  kindStyle[item.kind]?.dot
+                )}
+              />
+              <span className="truncate text-sm font-semibold text-foreground">
+                {item.title}
+              </span>
+            </div>
+            <Badge
+              variant="outline"
+              className={cn(
+                "shrink-0 px-1.5 py-0 text-[10px] font-semibold",
+                kindStyle[item.kind]?.badge
+              )}
+            >
+              {kindStyle[item.kind]?.label}
+            </Badge>
           </div>
 
-          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <CalendarClock className="size-3.5" />
+          <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <CalendarClock className="size-3.5 text-muted-foreground/80" />
             {formatItemWhen(item)}
           </p>
         </button>
@@ -354,7 +387,10 @@ export function CalendarView() {
       const hours = String(clickedDate.getHours()).padStart(2, "0")
       const mins = String(clickedDate.getMinutes()).padStart(2, "0")
       setFormStartTime(`${hours}:${mins}`)
-      const endHours = String((clickedDate.getHours() + 1) % 24).padStart(2, "0")
+      const endHours = String((clickedDate.getHours() + 1) % 24).padStart(
+        2,
+        "0"
+      )
       setFormEndTime(`${endHours}:${mins}`)
     } else {
       setFormStartTime("10:00")
@@ -424,12 +460,20 @@ export function CalendarView() {
     const startDate = new Date(item.start)
     setFormDate(startDate.toISOString().split("T")[0])
     setFormStartTime(
-      startDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })
+      startDate.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
     )
     if (item.end) {
       const endDate = new Date(item.end)
       setFormEndTime(
-        endDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })
+        endDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
       )
     } else {
       setFormEndTime("11:00")
@@ -465,7 +509,9 @@ export function CalendarView() {
       description: formDescription.trim(),
     }
 
-    setItems((prev) => prev.map((item) => (item.id === selected.id ? updatedItem : item)))
+    setItems((prev) =>
+      prev.map((item) => (item.id === selected.id ? updatedItem : item))
+    )
     toast.success("Appointment updated successfully.")
     setIsEditOpen(false)
     setSelected(updatedItem)
@@ -485,7 +531,9 @@ export function CalendarView() {
 
   // Metric stats
   const totalGoogleMeet = items.filter((i) => i.kind === "google_meet").length
-  const totalRegisterInterest = items.filter((i) => i.kind === "register_interest").length
+  const totalRegisterInterest = items.filter(
+    (i) => i.kind === "register_interest"
+  ).length
 
   return (
     <div className="space-y-6">
@@ -494,55 +542,79 @@ export function CalendarView() {
         <Card className="border-border/60 bg-card p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-muted-foreground">Today&apos;s Appointments</p>
-              <h3 className="text-gradient mt-1 text-2xl font-bold">{todayItems.length}</h3>
+              <p className="text-sm font-semibold text-muted-foreground">
+                Today&apos;s Appointments
+              </p>
+              <h3 className="text-gradient mt-1 text-2xl font-bold">
+                {todayItems.length}
+              </h3>
             </div>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <CalendarClock className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground">
-            {todayItems.length === 0 ? "No items scheduled today" : `${todayItems.length} active sessions today`}
+          <p className="mt-2 text-xs text-muted-foreground">
+            {todayItems.length === 0
+              ? "No items scheduled today"
+              : `${todayItems.length} active sessions today`}
           </p>
         </Card>
 
         <Card className="border-border/60 bg-card p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-muted-foreground">Google Meet Calls</p>
-              <h3 className="mt-1 text-2xl font-bold text-blue-500">{totalGoogleMeet}</h3>
+              <p className="text-sm font-semibold text-muted-foreground">
+                Google Meet Calls
+              </p>
+              <h3 className="mt-1 text-2xl font-bold text-blue-500">
+                {totalGoogleMeet}
+              </h3>
             </div>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
               <Video className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground">Candidate video consultations</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Candidate video consultations
+          </p>
         </Card>
 
         <Card className="border-border/60 bg-card p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-muted-foreground">Interest Callbacks</p>
-              <h3 className="mt-1 text-2xl font-bold text-amber-500">{totalRegisterInterest}</h3>
+              <p className="text-sm font-semibold text-muted-foreground">
+                Interest Callbacks
+              </p>
+              <h3 className="mt-1 text-2xl font-bold text-amber-500">
+                {totalRegisterInterest}
+              </h3>
             </div>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
               <Users2 className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground">Inbound candidate follow-ups</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Inbound candidate follow-ups
+          </p>
         </Card>
 
         <Card className="border-border/60 bg-card p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-muted-foreground">This Week Total</p>
-              <h3 className="mt-1 text-2xl font-bold text-rose-500">{weekItems.length}</h3>
+              <p className="text-sm font-semibold text-muted-foreground">
+                This Week Total
+              </p>
+              <h3 className="mt-1 text-2xl font-bold text-rose-500">
+                {weekItems.length}
+              </h3>
             </div>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-500">
               <CalendarDays className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground">Scheduled through Sunday</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Scheduled through Sunday
+          </p>
         </Card>
       </div>
 
@@ -553,7 +625,7 @@ export function CalendarView() {
           <CardHeader className="gap-4 border-b px-6 py-4">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-1">
-                <CardTitle className="text-lg font-bold">Calendar</CardTitle>
+                <CardTitle className="text-xl font-bold">Calendar</CardTitle>
                 <CardDescription>
                   Business hours Monday–Friday, 10:00–20:00
                 </CardDescription>
@@ -562,12 +634,12 @@ export function CalendarView() {
               <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
                 {/* SEARCH INPUT */}
                 <div className="relative w-full sm:w-48">
-                  <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                  <Search className="absolute top-2.5 left-2.5 h-3.5 w-3.5 text-muted-foreground" />
                   <Input
                     placeholder="Search calendar..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-8 pl-8 text-xs"
+                    className="h-9 pl-8 text-sm"
                   />
                 </div>
 
@@ -587,7 +659,7 @@ export function CalendarView() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="h-8 text-xs font-medium"
+                    className="h-9 px-3 text-sm font-medium"
                     onClick={() => controller.today()}
                   >
                     Today
@@ -612,9 +684,14 @@ export function CalendarView() {
                     setViewType(value)
                   }}
                 >
-                  <TabsList className="h-8">
+                  <TabsList className="h-9">
                     {views.map((view) => (
-                      <TabsTrigger key={view.value} value={view.value} className="h-7 text-xs px-2.5">
+                      <TabsTrigger
+                        key={view.value}
+                        value={view.value}
+                        variant="gradient"
+                        className="h-7 px-2.5 text-xs font-medium"
+                      >
                         {view.label}
                       </TabsTrigger>
                     ))}
@@ -624,7 +701,7 @@ export function CalendarView() {
                 {/* NEW APPOINTMENT BUTTON */}
                 <Button
                   size="sm"
-                  className="btn-gradient h-8 gap-1 text-xs font-medium"
+                  className="btn-gradient h-9 gap-1.5 px-3.5 text-sm font-medium"
                   onClick={handleOpenCreate}
                 >
                   <Plus className="h-3.5 w-3.5" />
@@ -682,9 +759,11 @@ export function CalendarView() {
         <div className="flex flex-col gap-6">
           {/* COLOR KEY & FILTERS */}
           <Card className="shadow-xs">
-            <CardHeader className="px-6 pb-3 pt-5">
-              <CardTitle className="text-sm font-semibold">Categories & Filters</CardTitle>
-              <CardDescription className="text-xs">
+            <CardHeader className="px-6 pt-5 pb-3">
+              <CardTitle className="text-base font-semibold">
+                Categories & Filters
+              </CardTitle>
+              <CardDescription className="text-sm">
                 Click to filter categories on the calendar.
               </CardDescription>
             </CardHeader>
@@ -696,18 +775,21 @@ export function CalendarView() {
                   pressed={visibleKinds.includes(kind.value)}
                   onPressedChange={() => toggleKind(kind.value)}
                   variant="outline"
-                  className="h-auto w-full justify-start gap-3 px-3 py-2 text-left transition-all"
+                  className="h-auto w-full justify-start gap-3 p-3 text-left transition-all"
                 >
                   <span className={cn("size-2.5 rounded-full", kind.dot)} />
 
                   <span className="flex min-w-0 flex-1 flex-col items-start text-left">
-                    <span className="text-xs font-semibold">{kind.label}</span>
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-sm font-semibold">{kind.label}</span>
+                    <span className="text-xs text-muted-foreground">
                       {kind.hint}
                     </span>
                   </span>
 
-                  <Badge variant="secondary" className="font-mono text-[10px]">
+                  <Badge
+                    variant="secondary"
+                    className="px-2 py-0.5 font-mono text-xs font-bold"
+                  >
                     {kind.count}
                   </Badge>
                 </Toggle>
@@ -717,9 +799,9 @@ export function CalendarView() {
 
           {/* AGENDA ACCORDION */}
           <Card className="flex-1 shadow-xs">
-            <CardHeader className="px-6 pb-3 pt-5">
-              <CardTitle className="text-sm font-semibold">Agenda</CardTitle>
-              <CardDescription className="text-xs">
+            <CardHeader className="px-6 pt-5 pb-3">
+              <CardTitle className="text-base font-semibold">Agenda</CardTitle>
+              <CardDescription className="text-sm">
                 Quick review of today, tomorrow, and this week.
               </CardDescription>
             </CardHeader>
@@ -729,28 +811,33 @@ export function CalendarView() {
                 type="single"
                 collapsible
                 defaultValue="today"
-                className="gap-3"
+                className="space-y-3"
               >
                 {/* TODAY */}
                 <AccordionItem
                   value="today"
-                  className="rounded-xl border px-3 not-last:border-b-0"
+                  className="rounded-xl border bg-card px-3.5 shadow-2xs transition-all data-[state=open]:border-primary/40 data-[state=open]:bg-muted/15"
                 >
-                  <AccordionTrigger className="py-2.5 hover:no-underline">
+                  <AccordionTrigger className="py-3 hover:no-underline">
                     <span className="flex min-w-0 flex-1 items-center justify-between gap-3 pr-2">
                       <span className="flex flex-col items-start">
-                        <span className="text-xs font-semibold">Today</span>
-                        <span className="text-[11px] font-normal text-muted-foreground">
+                        <span className="text-sm font-semibold text-foreground">
+                          Today
+                        </span>
+                        <span className="text-xs font-normal text-muted-foreground">
                           {formatDayLabel(today)}
                         </span>
                       </span>
-                      <Badge variant="secondary" className="font-mono text-[10px]">
+                      <Badge
+                        variant="secondary"
+                        className="px-2 py-0.5 font-mono text-xs font-bold"
+                      >
                         {todayItems.length}
                       </Badge>
                     </span>
                   </AccordionTrigger>
 
-                  <AccordionContent>
+                  <AccordionContent className="pb-3">
                     <TaskList
                       items={todayItems}
                       empty="No items scheduled today."
@@ -762,25 +849,30 @@ export function CalendarView() {
                 {/* TOMORROW */}
                 <AccordionItem
                   value="tomorrow"
-                  className="rounded-xl border px-3 not-last:border-b-0"
+                  className="rounded-xl border bg-card px-3.5 shadow-2xs transition-all data-[state=open]:border-primary/40 data-[state=open]:bg-muted/15"
                 >
-                  <AccordionTrigger className="py-2.5 hover:no-underline">
+                  <AccordionTrigger className="py-3 hover:no-underline">
                     <span className="flex min-w-0 flex-1 items-center justify-between gap-3 pr-2">
                       <span className="flex flex-col items-start">
-                        <span className="text-xs font-semibold">{tomorrowLabel}</span>
-                        <span className="text-[11px] font-normal text-muted-foreground">
+                        <span className="text-sm font-semibold text-foreground">
+                          {tomorrowLabel}
+                        </span>
+                        <span className="text-xs font-normal text-muted-foreground">
                           {tomorrowIsSkippedWeekend
                             ? `Next business day · ${formatDayLabel(tomorrowFocus)}`
                             : formatDayLabel(tomorrowFocus)}
                         </span>
                       </span>
-                      <Badge variant="secondary" className="font-mono text-[10px]">
+                      <Badge
+                        variant="secondary"
+                        className="px-2 py-0.5 font-mono text-xs font-bold"
+                      >
                         {tomorrowItems.length}
                       </Badge>
                     </span>
                   </AccordionTrigger>
 
-                  <AccordionContent>
+                  <AccordionContent className="pb-3">
                     <TaskList
                       items={tomorrowItems}
                       empty="No items on next business day."
@@ -792,24 +884,31 @@ export function CalendarView() {
                 {/* THIS WEEK */}
                 <AccordionItem
                   value="week"
-                  className="rounded-xl border px-3 not-last:border-b-0"
+                  className="rounded-xl border bg-card px-3.5 shadow-2xs transition-all data-[state=open]:border-primary/40 data-[state=open]:bg-muted/15"
                 >
-                  <AccordionTrigger className="py-2.5 hover:no-underline">
+                  <AccordionTrigger className="py-3 hover:no-underline">
                     <span className="flex min-w-0 flex-1 items-center justify-between gap-3 pr-2">
                       <span className="flex flex-col items-start">
-                        <span className="text-xs font-semibold">This week</span>
-                        <span className="text-[11px] font-normal text-muted-foreground">
+                        <span className="text-sm font-semibold text-foreground">
+                          This week
+                        </span>
+                        <span className="text-xs font-normal text-muted-foreground">
                           {formatDayLabel(startOfWeekMonday(today))} –{" "}
-                          {formatDayLabel(new Date(endOfWeekSunday(today).getTime() - 1))}
+                          {formatDayLabel(
+                            new Date(endOfWeekSunday(today).getTime() - 1)
+                          )}
                         </span>
                       </span>
-                      <Badge variant="secondary" className="font-mono text-[10px]">
+                      <Badge
+                        variant="secondary"
+                        className="px-2 py-0.5 font-mono text-xs font-bold"
+                      >
                         {weekItems.length}
                       </Badge>
                     </span>
                   </AccordionTrigger>
 
-                  <AccordionContent>
+                  <AccordionContent className="pb-3">
                     <TaskList
                       items={weekItems}
                       empty="No items this week for selected types."
@@ -837,7 +936,10 @@ export function CalendarView() {
                 <div className="flex items-center gap-2">
                   <Badge
                     variant="outline"
-                    className={cn("w-fit text-xs font-medium", kindStyle[selected.kind]?.badge)}
+                    className={cn(
+                      "w-fit text-xs font-medium",
+                      kindStyle[selected.kind]?.badge
+                    )}
                   >
                     {kindStyle[selected.kind]?.label}
                   </Badge>
@@ -852,24 +954,32 @@ export function CalendarView() {
               </DialogHeader>
 
               {/* Details Body */}
-              <div className="space-y-3 rounded-xl border bg-muted/20 p-3.5 text-xs">
+              <div className="space-y-3.5 rounded-xl border bg-muted/20 p-4 text-sm">
                 {selected.person && (
                   <div className="flex items-center gap-2">
-                    <User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                    <span className="font-semibold text-foreground">Candidate / Contact:</span>
-                    <span className="text-muted-foreground">{selected.person}</span>
+                    <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <span className="text-sm font-semibold text-foreground">
+                      Candidate / Contact:
+                    </span>
+                    <span className="text-muted-foreground">
+                      {selected.person}
+                    </span>
                   </div>
                 )}
 
                 {selected.location && (
                   <div className="flex items-center gap-2">
-                    <MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                    <span className="font-semibold text-foreground">Location / Channel:</span>
-                    <span className="text-muted-foreground">{selected.location}</span>
+                    <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <span className="text-sm font-semibold text-foreground">
+                      Location / Channel:
+                    </span>
+                    <span className="text-muted-foreground">
+                      {selected.location}
+                    </span>
                   </div>
                 )}
 
-                <div className="pt-1 text-muted-foreground leading-relaxed">
+                <div className="pt-1 leading-relaxed text-muted-foreground">
                   {selected.description}
                 </div>
               </div>
@@ -879,10 +989,14 @@ export function CalendarView() {
                 {selected.meetUrl && (
                   <Button
                     size="sm"
-                    className="btn-gradient gap-1.5 text-xs font-medium"
+                    className="btn-gradient h-9 gap-1.5 px-3.5 text-sm font-medium"
                     asChild
                   >
-                    <a href={selected.meetUrl} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={selected.meetUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Video className="h-3.5 w-3.5" /> Join Google Meet
                     </a>
                   </Button>
@@ -892,7 +1006,7 @@ export function CalendarView() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="gap-1.5 text-xs font-medium text-emerald-600 hover:text-emerald-700"
+                    className="h-9 gap-1.5 px-3.5 text-sm font-medium text-emerald-600 hover:text-emerald-700"
                     asChild
                   >
                     <a
@@ -908,7 +1022,7 @@ export function CalendarView() {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="gap-1.5 text-xs font-medium"
+                  className="h-9 gap-1.5 px-3.5 text-sm font-medium"
                   onClick={() => handleOpenEdit(selected)}
                 >
                   <Pencil className="h-3.5 w-3.5" /> Edit
@@ -917,7 +1031,7 @@ export function CalendarView() {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="gap-1.5 text-xs font-medium text-muted-foreground hover:text-destructive"
+                  className="gap-1.5 text-sm font-semibold text-muted-foreground hover:text-destructive"
                   onClick={() => {
                     setItemToDelete(selected)
                     setSelected(null)
@@ -935,27 +1049,33 @@ export function CalendarView() {
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold">Schedule New Appointment</DialogTitle>
-            <DialogDescription className="text-xs">
+            <DialogTitle className="text-lg font-bold">
+              Schedule New Appointment
+            </DialogTitle>
+            <DialogDescription className="text-sm">
               Add a candidate consultation, Google Meet session, or team event.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-3.5 py-2 text-xs">
+          <div className="space-y-4 py-2 text-sm">
             {/* Title */}
             <div className="space-y-1.5">
-              <label className="font-semibold text-foreground">Title *</label>
+              <label className="text-sm font-semibold text-foreground">
+                Title *
+              </label>
               <Input
                 placeholder="e.g. Video Intro · Alex J. & Supansa T."
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
-                className="h-9 text-xs"
+                className="h-9.5 text-sm"
               />
             </div>
 
             {/* Category */}
             <div className="space-y-1.5">
-              <label className="font-semibold text-foreground">Category</label>
+              <label className="text-sm font-semibold text-foreground">
+                Category
+              </label>
               <div className="grid grid-cols-2 gap-2">
                 {calendarKinds.map((k) => (
                   <button
@@ -970,7 +1090,7 @@ export function CalendarView() {
                     )}
                   >
                     <span className={cn("size-2 rounded-full", k.dot)} />
-                    <span className="text-xs">{k.label}</span>
+                    <span className="text-sm">{k.label}</span>
                   </button>
                 ))}
               </div>
@@ -979,30 +1099,36 @@ export function CalendarView() {
             {/* Date & Time Grid */}
             <div className="grid grid-cols-3 gap-2">
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Date</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Date
+                </label>
                 <Input
                   type="date"
                   value={formDate}
                   onChange={(e) => setFormDate(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Start Time</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Start Time
+                </label>
                 <Input
                   type="time"
                   value={formStartTime}
                   onChange={(e) => setFormStartTime(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">End Time</label>
+                <label className="text-sm font-semibold text-foreground">
+                  End Time
+                </label>
                 <Input
                   type="time"
                   value={formEndTime}
                   onChange={(e) => setFormEndTime(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
             </div>
@@ -1010,21 +1136,25 @@ export function CalendarView() {
             {/* Candidate Name & Location */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Candidate / Contact</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Candidate / Contact
+                </label>
                 <Input
                   placeholder="e.g. Supansa Thanakit"
                   value={formPerson}
                   onChange={(e) => setFormPerson(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Location / Channel</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Location / Channel
+                </label>
                 <Input
                   placeholder="Google Meet, Phone, Office"
                   value={formLocation}
                   onChange={(e) => setFormLocation(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
             </div>
@@ -1032,34 +1162,40 @@ export function CalendarView() {
             {/* Google Meet Link & Phone */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Google Meet URL</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Google Meet URL
+                </label>
                 <Input
                   placeholder="https://meet.google.com/..."
                   value={formMeetUrl}
                   onChange={(e) => setFormMeetUrl(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Phone / WhatsApp</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Phone / WhatsApp
+                </label>
                 <Input
                   placeholder="+66812345678"
                   value={formPhone}
                   onChange={(e) => setFormPhone(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
             </div>
 
             {/* Description */}
             <div className="space-y-1.5">
-              <label className="font-semibold text-foreground">Notes / Description</label>
+              <label className="text-sm font-semibold text-foreground">
+                Notes / Description
+              </label>
               <Textarea
                 placeholder="Add notes, candidate preferences, or meeting agenda..."
                 value={formDescription}
                 onChange={(e) => setFormDescription(e.target.value)}
                 rows={3}
-                className="text-xs"
+                className="text-sm"
               />
             </div>
           </div>
@@ -1079,97 +1215,117 @@ export function CalendarView() {
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold">Edit Appointment</DialogTitle>
-            <DialogDescription className="text-xs">
+            <DialogTitle className="text-lg font-bold">
+              Edit Appointment
+            </DialogTitle>
+            <DialogDescription className="text-sm">
               Update appointment details, times, or notes.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-3.5 py-2 text-xs">
+          <div className="space-y-4 py-2 text-sm">
             <div className="space-y-1.5">
-              <label className="font-semibold text-foreground">Title *</label>
+              <label className="text-sm font-semibold text-foreground">
+                Title *
+              </label>
               <Input
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
-                className="h-9 text-xs"
+                className="h-9.5 text-sm"
               />
             </div>
 
             <div className="grid grid-cols-3 gap-2">
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Date</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Date
+                </label>
                 <Input
                   type="date"
                   value={formDate}
                   onChange={(e) => setFormDate(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Start Time</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Start Time
+                </label>
                 <Input
                   type="time"
                   value={formStartTime}
                   onChange={(e) => setFormStartTime(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">End Time</label>
+                <label className="text-sm font-semibold text-foreground">
+                  End Time
+                </label>
                 <Input
                   type="time"
                   value={formEndTime}
                   onChange={(e) => setFormEndTime(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Candidate / Contact</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Candidate / Contact
+                </label>
                 <Input
                   value={formPerson}
                   onChange={(e) => setFormPerson(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Location / Channel</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Location / Channel
+                </label>
                 <Input
                   value={formLocation}
                   onChange={(e) => setFormLocation(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Google Meet URL</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Google Meet URL
+                </label>
                 <Input
                   value={formMeetUrl}
                   onChange={(e) => setFormMeetUrl(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-semibold text-foreground">Phone / WhatsApp</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Phone / WhatsApp
+                </label>
                 <Input
                   value={formPhone}
                   onChange={(e) => setFormPhone(e.target.value)}
-                  className="h-9 text-xs"
+                  className="h-9.5 text-sm"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-semibold text-foreground">Notes / Description</label>
+              <label className="text-sm font-semibold text-foreground">
+                Notes / Description
+              </label>
               <Textarea
                 value={formDescription}
                 onChange={(e) => setFormDescription(e.target.value)}
                 rows={3}
-                className="text-xs"
+                className="text-sm"
               />
             </div>
           </div>
@@ -1197,7 +1353,7 @@ export function CalendarView() {
             <AlertDialogTitle>Delete Appointment?</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete{" "}
-              <strong className="font-semibold text-foreground">
+              <strong className="text-sm font-semibold text-foreground">
                 {itemToDelete?.title}
               </strong>
               ? This action cannot be undone.

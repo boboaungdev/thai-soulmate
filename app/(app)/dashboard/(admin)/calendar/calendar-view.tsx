@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState, useEffect } from "react"
+import { useMemo, useState } from "react"
 import { useTheme } from "next-themes"
 
 import FullCalendar, {
@@ -28,15 +28,11 @@ import {
   Plus,
   Search,
   Video,
-  Phone,
   MapPin,
-  Calendar,
   Pencil,
   Trash2,
-  ExternalLink,
   Clock,
   User,
-  Sparkles,
   Users2,
   CalendarDays,
 } from "lucide-react"

@@ -9,7 +9,8 @@ import {
   Loader2,
   Contact2,
   Eye,
-  CheckCircle2, // Added Loader2
+  CheckCircle2,
+  DollarSign, // Added Loader2
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { Row } from "@tanstack/react-table"
@@ -171,7 +172,7 @@ export function DataTableRowActions<TData>({
           <DialogTrigger asChild>
             <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
               <FileText className="mr-2 h-4 w-4" />
-              Add Note
+              Add note
             </DropdownMenuItem>
           </DialogTrigger>
           <DialogContent>
@@ -219,7 +220,7 @@ export function DataTableRowActions<TData>({
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
             <CheckCircle2 className="mr-2 h-4 w-4" />
-            <span>Change Status</span>
+            <span>Change status</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuRadioGroup
@@ -269,6 +270,10 @@ export function DataTableRowActions<TData>({
             </DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+          <DropdownMenuItem onClick={handlePrint} disabled>
+          <DollarSign className="mr-2 h-4 w-4" />
+          Send payment link
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handlePrint}>
           <Printer className="mr-2 h-4 w-4" />

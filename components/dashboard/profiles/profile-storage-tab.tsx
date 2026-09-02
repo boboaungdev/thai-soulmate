@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef, useCallback } from "react"
 import Image from "next/image"
 import {
   Folder,
@@ -11,7 +11,6 @@ import {
   Trash2,
   Download,
   Eye,
-  Copy,
   UploadCloud,
   Plus,
   ChevronRight,
@@ -112,6 +111,13 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
   const [files, setFiles] = useState<ProfileFile[]>([])
   const [totalSize, setTotalSize] = useState(0)
 
+  // Loading states for actions
+  const [isCreatingFolder, setIsCreatingFolder] = useState(false)
+  const [isRenamingFolder, setIsRenamingFolder] = useState(false)
+  const [isRenamingFile, setIsRenamingFile] = useState(false)
+  const [isDeletingFile, setIsDeletingFile] = useState(false)
+  const [isDeletingFolder, setIsDeletingFolder] = useState(false)
+
   // Active navigation
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
@@ -132,9 +138,8 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
   const [deleteFolderItem, setDeleteFolderItem] =
     useState<ProfileFolder | null>(null)
 
-  const fetchStorageData = async () => {
+  const fetchStorageData = useCallback(async () => {
     try {
-      setLoading(true)
       const res = await fetch(`/api/profiles/${profileId}/storage`)
       if (!res.ok) throw new Error("Failed to fetch storage")
       const data = await res.json()
@@ -147,11 +152,39 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [profileId])
 
   useEffect(() => {
+    let isMounted = true
+
+    const loadInitialData = async () => {
+      try {
+        const res = await fetch(`/api/profiles/${profileId}/storage`)
+        if (!res.ok) throw new Error("Failed to fetch storage")
+        const data = await res.json()
+        if (isMounted) {
+          setFolders(data.folders || [])
+          setFiles(data.files || [])
+          setTotalSize(data.totalSize || 0)
+        }
+      } catch (error) {
+        console.error(error)
+        if (isMounted) {
+          toast.error("Failed to load profile storage.")
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
     if (profileId) {
-      fetchStorageData()
+      loadInitialData()
+    }
+
+    return () => {
+      isMounted = false
     }
   }, [profileId])
 
@@ -163,6 +196,7 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
     }
 
     try {
+      setIsCreatingFolder(true)
       const res = await fetch(`/api/profiles/${profileId}/storage/folders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -180,6 +214,8 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
       fetchStorageData()
     } catch (error: any) {
       toast.error(error.message || "Failed to create folder.")
+    } finally {
+      setIsCreatingFolder(false)
     }
   }
 
@@ -187,6 +223,7 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
     if (!renameFolderItem || !renameFolderName.trim()) return
 
     try {
+      setIsRenamingFolder(true)
       const res = await fetch(
         `/api/profiles/${profileId}/storage/folders/${renameFolderItem.id}`,
         {
@@ -205,6 +242,8 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
       fetchStorageData()
     } catch (error: any) {
       toast.error(error.message || "Failed to rename folder.")
+    } finally {
+      setIsRenamingFolder(false)
     }
   }
 
@@ -212,6 +251,7 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
     if (!renameFileItem || !renameFileName.trim()) return
 
     try {
+      setIsRenamingFile(true)
       const res = await fetch(
         `/api/profiles/${profileId}/storage/files/${renameFileItem.id}`,
         {
@@ -230,6 +270,8 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
       fetchStorageData()
     } catch (error: any) {
       toast.error(error.message || "Failed to rename file.")
+    } finally {
+      setIsRenamingFile(false)
     }
   }
 
@@ -237,6 +279,7 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
     if (!deleteFolderItem) return
 
     try {
+      setIsDeletingFolder(true)
       const res = await fetch(
         `/api/profiles/${profileId}/storage/folders/${deleteFolderItem.id}`,
         { method: "DELETE" }
@@ -252,6 +295,8 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
       fetchStorageData()
     } catch (error) {
       toast.error("Failed to delete folder.")
+    } finally {
+      setIsDeletingFolder(false)
     }
   }
 
@@ -309,6 +354,7 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
     if (!deleteFileItem) return
 
     try {
+      setIsDeletingFile(true)
       const res = await fetch(
         `/api/profiles/${profileId}/storage/files/${deleteFileItem.id}`,
         { method: "DELETE" }
@@ -321,12 +367,9 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
       fetchStorageData()
     } catch (error) {
       toast.error("Failed to delete file.")
+    } finally {
+      setIsDeletingFile(false)
     }
-  }
-
-  const handleCopyLink = (url: string) => {
-    navigator.clipboard.writeText(url)
-    toast.success("File URL copied to clipboard.")
   }
 
   const activeFolder = folders.find((f) => f.id === activeFolderId)
@@ -364,7 +407,7 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
         <CardHeader className="pb-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2 text-xl font-bold">
+              <CardTitle className="text-gradient flex items-center gap-2 text-xl font-bold">
                 <HardDrive className="h-5 w-5 text-primary" />
                 Secure Storage
               </CardTitle>
@@ -392,7 +435,7 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
               </Button>
               <Button
                 size="sm"
-                className="btn-gradient gap-1.5 text-primary-foreground hover:bg-primary/90"
+                className="btn-gradient gap-1.5"
                 disabled={uploading}
                 onClick={() => fileInputRef.current?.click()}
               >
@@ -679,15 +722,6 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                        title="Copy Public Link"
-                        onClick={() => handleCopyLink(file.url)}
-                      >
-                        <Copy className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-foreground"
                         title="Download"
                         asChild
                       >
@@ -757,15 +791,24 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
           <DialogFooter>
             <Button
               variant="outline"
+              disabled={isCreatingFolder}
               onClick={() => setNewFolderDialogOpen(false)}
             >
               Cancel
             </Button>
             <Button
               className="btn-gradient"
+              disabled={isCreatingFolder}
               onClick={() => handleCreateFolder()}
             >
-              Create Folder
+              {isCreatingFolder ? (
+                <>
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Create Folder"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -798,11 +841,26 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRenameFolderItem(null)}>
+            <Button
+              variant="outline"
+              disabled={isRenamingFolder}
+              onClick={() => setRenameFolderItem(null)}
+            >
               Cancel
             </Button>
-            <Button className="btn-gradient" onClick={handleRenameFolder}>
-              Save Name
+            <Button
+              className="btn-gradient"
+              disabled={isRenamingFolder}
+              onClick={handleRenameFolder}
+            >
+              {isRenamingFolder ? (
+                <>
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Name"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -835,10 +893,27 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRenameFileItem(null)}>
+            <Button
+              variant="outline"
+              disabled={isRenamingFile}
+              onClick={() => setRenameFileItem(null)}
+            >
               Cancel
             </Button>
-            <Button className="btn-gradient" onClick={handleRenameFile}>Save Name</Button>
+            <Button
+              className="btn-gradient"
+              disabled={isRenamingFile}
+              onClick={handleRenameFile}
+            >
+              {isRenamingFile ? (
+                <>
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Name"
+              )}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -848,77 +923,85 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
         open={!!previewFile}
         onOpenChange={(open) => !open && setPreviewFile(null)}
       >
-        <DialogContent className="max-w-3xl overflow-hidden p-0">
+        <DialogContent className="flex !h-[92vh] !max-h-[92vh] !w-[96vw] !max-w-6xl flex-col overflow-hidden rounded-2xl border bg-card p-0 shadow-2xl">
           {previewFile && (
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between border-b px-4 py-3">
+            <div className="flex h-full w-full flex-col">
+              {/* Modal Header */}
+              <div className="flex shrink-0 items-center justify-between border-b bg-card py-3.5 pr-14 pl-5">
                 <div className="truncate pr-4">
-                  <h4 className="truncate text-sm font-semibold">
+                  <h4 className="truncate text-base font-bold text-foreground">
                     {previewFile.name}
                   </h4>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     {formatFileSize(previewFile.size)} •{" "}
                     {formatDateTime(previewFile.createdAt)}
+                    {previewFile.uploadedBy && (
+                      <span> • Uploaded by {previewFile.uploadedBy}</span>
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
-                    variant="outline"
-                    className="h-8 gap-1 text-xs"
-                    onClick={() => handleCopyLink(previewFile.url)}
+                    className="btn-gradient h-8 gap-1.5 text-xs font-medium shadow-xs"
+                    asChild
                   >
-                    <Copy className="h-3.5 w-3.5" /> Copy Link
-                  </Button>
-                  <Button size="sm" className="h-8 gap-1 text-xs" asChild>
                     <a
                       href={previewFile.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       download
                     >
-                      <Download className="h-3.5 w-3.5" /> Open / Download
+                      <Download className="h-3.5 w-3.5" /> Download
                     </a>
                   </Button>
                 </div>
               </div>
 
-              <div className="flex max-h-[70vh] min-h-[360px] items-center justify-center bg-black/5 p-4 dark:bg-black/40">
+              {/* Modal Body / Viewer Area */}
+              <div className="relative flex flex-1 items-center justify-center overflow-auto bg-neutral-900/10 p-4 dark:bg-black/60">
                 {isImageFile(previewFile.mimeType, previewFile.name) ? (
-                  <div className="relative h-[500px] w-full max-w-full">
+                  <div className="relative flex h-full w-full items-center justify-center overflow-auto p-2">
                     <Image
                       src={previewFile.url}
                       alt={previewFile.name}
                       fill
                       unoptimized
+                      priority
                       className="object-contain"
+                      sizes="95vw"
                     />
                   </div>
                 ) : isPdfFile(previewFile.mimeType, previewFile.name) ? (
                   <iframe
                     src={previewFile.url}
                     title={previewFile.name}
-                    className="h-[500px] w-full rounded-md border"
+                    className="h-full w-full rounded-xl border border-border/60 bg-white shadow-xs"
                   />
                 ) : (
-                  <div className="text-center">
-                    <File className="mx-auto h-16 w-16 text-muted-foreground" />
-                    <p className="mt-2 text-sm font-semibold">
+                  <div className="flex flex-col items-center justify-center p-8 text-center">
+                    <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+                      <File className="h-10 w-10" />
+                    </div>
+                    <p className="mt-4 text-base font-semibold text-foreground">
                       {previewFile.name}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      Preview not available for this file type.
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Direct in-app preview is not supported for this file
+                      format ({previewFile.mimeType}).
                     </p>
-                    <Button className="mt-4 gap-1.5" asChild>
-                      <a
-                        href={previewFile.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download
-                      >
-                        <Download className="h-4 w-4" /> Download File
-                      </a>
-                    </Button>
+                    <div className="mt-5 flex items-center justify-center">
+                      <Button className="btn-gradient gap-1.5" asChild>
+                        <a
+                          href={previewFile.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          download
+                        >
+                          <Download className="h-4 w-4" /> Download File
+                        </a>
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -945,13 +1028,23 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeletingFile}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
+              disabled={isDeletingFile}
               className="hover:bg-destructive/90"
               onClick={handleDeleteFile}
             >
-              Delete
+              {isDeletingFile ? (
+                <>
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -974,13 +1067,23 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeletingFolder}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
+              disabled={isDeletingFolder}
               className="hover:bg-destructive/90"
               onClick={handleDeleteFolder}
             >
-              Delete Folder
+              {isDeletingFolder ? (
+                <>
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Folder"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

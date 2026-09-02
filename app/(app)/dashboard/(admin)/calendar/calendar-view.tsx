@@ -25,6 +25,7 @@ import {
   CalendarClock,
   ChevronLeft,
   ChevronRight,
+  ChevronsUpDown,
   Plus,
   Search,
   Video,
@@ -51,6 +52,14 @@ import {
 } from "@/components/ui/accordion"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -263,6 +272,10 @@ export const kindIcons: Record<CalendarKind, LucideIcon> = {
 export interface MatchedPairOption {
   id: string
   trackingId: string
+  status: string
+  lastCompletedStatus: string
+  completedAt: string
+  completedDate: string
   male: {
     name: string
     prefix: string
@@ -278,64 +291,88 @@ export interface MatchedPairOption {
 
 export const mockMatchedPairs: MatchedPairOption[] = [
   {
-    id: "match-1",
-    trackingId: "TRK-2026-081",
-    male: {
-      prefix: "Mr.",
-      name: "John Doe",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
-    },
-    female: {
-      prefix: "Ms.",
-      name: "Pornyaporn Watashi",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-    },
-    meetTitle: "Google Meet · John Doe & Pornyaporn Watashi",
-  },
-  {
-    id: "match-2",
-    trackingId: "TRK-2026-092",
-    male: {
-      prefix: "Mr.",
-      name: "Alex Johnson",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-    },
-    female: {
-      prefix: "Ms.",
-      name: "Supansa Thanakit",
-      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80",
-    },
-    meetTitle: "Google Meet · Alex J. & Supansa T.",
-  },
-  {
-    id: "match-3",
-    trackingId: "TRK-2026-104",
-    male: {
-      prefix: "Mr.",
-      name: "David Miller",
-      avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80",
-    },
-    female: {
-      prefix: "Ms.",
-      name: "Nipa Charoensuk",
-      avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&auto=format&fit=crop&q=80",
-    },
-    meetTitle: "Google Meet · David M. & Nipa C.",
-  },
-  {
     id: "match-4",
     trackingId: "TRK-2026-115",
+    status: "Ready for First Google Meet",
+    lastCompletedStatus: "Both Profiles Accepted",
+    completedAt: "30 Aug 2026, 16:45",
+    completedDate: "2026-08-30T16:45:00",
     male: {
       prefix: "Mr.",
       name: "Marcus Bennett",
-      avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80",
+      avatar:
+        "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80",
     },
     female: {
       prefix: "Ms.",
       name: "Kanya Rattana",
-      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80",
+      avatar:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80",
     },
     meetTitle: "Google Meet · Marcus B. & Kanya R.",
+  },
+  {
+    id: "match-3",
+    trackingId: "TRK-2026-104",
+    status: "Ready for Second Google Meet",
+    lastCompletedStatus: "First Google Meet",
+    completedAt: "31 Aug 2026, 11:00",
+    completedDate: "2026-08-31T11:00:00",
+    male: {
+      prefix: "Mr.",
+      name: "David Miller",
+      avatar:
+        "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80",
+    },
+    female: {
+      prefix: "Ms.",
+      name: "Nipa Charoensuk",
+      avatar:
+        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&auto=format&fit=crop&q=80",
+    },
+    meetTitle: "Google Meet · David M. & Nipa C.",
+  },
+  {
+    id: "match-2",
+    trackingId: "TRK-2026-092",
+    status: "Ready for First Google Meet",
+    lastCompletedStatus: "Both Profiles Accepted",
+    completedAt: "01 Sep 2026, 17:15",
+    completedDate: "2026-09-01T17:15:00",
+    male: {
+      prefix: "Mr.",
+      name: "Alex Johnson",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+    },
+    female: {
+      prefix: "Ms.",
+      name: "Supansa Thanakit",
+      avatar:
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80",
+    },
+    meetTitle: "Google Meet · Alex J. & Supansa T.",
+  },
+  {
+    id: "match-1",
+    trackingId: "TRK-2026-081",
+    status: "Ready for First Google Meet",
+    lastCompletedStatus: "Both Profiles Accepted",
+    completedAt: "02 Sep 2026, 14:30",
+    completedDate: "2026-09-02T14:30:00",
+    male: {
+      prefix: "Mr.",
+      name: "John Doe",
+      avatar:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
+    },
+    female: {
+      prefix: "Ms.",
+      name: "Pornyaporn Watashi",
+      avatar:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+    },
+    meetTitle: "Google Meet · John Doe & Pornyaporn Watashi",
   },
 ]
 
@@ -480,7 +517,9 @@ function renderEventContent(info: EventDisplayInfo) {
   const kind = item?.kind
   return (
     <div className="fc-event-chip">
-      {kind && <CategoryIcon kind={kind} className="size-3 shrink-0 opacity-90" />}
+      {kind && (
+        <CategoryIcon kind={kind} className="size-3 shrink-0 opacity-90" />
+      )}
       {info.timeText ? (
         <span className="fc-event-chip-time">{info.timeText}</span>
       ) : null}
@@ -534,10 +573,7 @@ function TaskList({
                   kindIconBg[item.kind]
                 )}
               >
-                <CategoryIcon
-                  kind={item.kind}
-                  className="size-3.5"
-                />
+                <CategoryIcon kind={item.kind} className="size-3.5" />
               </div>
               <span className="truncate text-sm font-semibold text-foreground">
                 {item.title}
@@ -597,6 +633,9 @@ export function CalendarView() {
 
   // Popover open states
   const [isDateOpen, setIsDateOpen] = useState(false)
+  const [isTrackingMembersOpen, setIsTrackingMembersOpen] = useState(false)
+  const [isEditTrackingMembersOpen, setIsEditTrackingMembersOpen] =
+    useState(false)
   const [isEditDateOpen, setIsEditDateOpen] = useState(false)
 
   // Form states
@@ -961,7 +1000,8 @@ export function CalendarView() {
             <div className="space-y-1">
               <CardTitle className="text-xl font-bold">Calendar</CardTitle>
               <CardDescription className="text-sm">
-                Manage consultations, Google Meet video dates, and follow-up schedules.
+                Manage consultations, Google Meet video dates, and follow-up
+                schedules.
               </CardDescription>
             </div>
 
@@ -1115,8 +1155,8 @@ export function CalendarView() {
                     variant="outline"
                     className={cn(
                       "h-auto w-full justify-start gap-3 p-3 text-left transition-all",
-                      "bg-card/40 border-border/60 hover:bg-muted/40 hover:border-border",
-                      "data-[state=off]:opacity-55 hover:data-[state=off]:opacity-90 hover:data-[state=off]:bg-muted/30",
+                      "border-border/60 bg-card/40 hover:border-border hover:bg-muted/40",
+                      "data-[state=off]:opacity-55 hover:data-[state=off]:bg-muted/30 hover:data-[state=off]:opacity-90",
                       kindActiveToggle[kind.value]
                     )}
                   >
@@ -1125,17 +1165,16 @@ export function CalendarView() {
                         "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all",
                         isSelected
                           ? kindIconBg[kind.value]
-                          : "bg-muted/60 text-muted-foreground border border-border/40"
+                          : "border border-border/40 bg-muted/60 text-muted-foreground"
                       )}
                     >
-                      <CategoryIcon
-                        kind={kind.value}
-                        className="size-4"
-                      />
+                      <CategoryIcon kind={kind.value} className="size-4" />
                     </div>
 
                     <span className="flex min-w-0 flex-1 flex-col items-start text-left">
-                      <span className="text-sm font-semibold text-foreground">{kind.label}</span>
+                      <span className="text-sm font-semibold text-foreground">
+                        {kind.label}
+                      </span>
                       <span className="text-xs text-muted-foreground">
                         {kind.hint}
                       </span>
@@ -1146,7 +1185,7 @@ export function CalendarView() {
                       className={cn(
                         "px-2 py-0.5 font-mono text-xs font-bold transition-all",
                         isSelected
-                          ? "bg-foreground/10 text-foreground border-transparent"
+                          ? "border-transparent bg-foreground/10 text-foreground"
                           : "text-muted-foreground"
                       )}
                     >
@@ -1396,18 +1435,31 @@ export function CalendarView() {
               Schedule New Appointment
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Add a candidate consultation, Google Meet session, or follow-up note.
+              Add a candidate consultation, Google Meet session, or follow-up
+              note.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-5 py-2 text-sm">
             {/* Title */}
             <div className="flex flex-col gap-2">
-              <label className={cn("text-sm font-semibold tracking-tight", formErrors.title ? "text-destructive" : "text-foreground")}>
+              <label
+                className={cn(
+                  "text-sm font-semibold tracking-tight",
+                  formErrors.title ? "text-destructive" : "text-foreground"
+                )}
+              >
                 Title *
               </label>
               <div className="relative">
-                <PenLine className={cn("absolute left-3 top-1/2 -translate-y-1/2 size-4 pointer-events-none transition-colors", formErrors.title ? "text-destructive" : "text-muted-foreground")} />
+                <PenLine
+                  className={cn(
+                    "pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 transition-colors",
+                    formErrors.title
+                      ? "text-destructive"
+                      : "text-muted-foreground"
+                  )}
+                />
                 <Input
                   placeholder="e.g. Video Intro · Alex J. & Supansa T."
                   value={formTitle}
@@ -1420,7 +1472,8 @@ export function CalendarView() {
                   aria-invalid={Boolean(formErrors.title)}
                   className={cn(
                     "h-10 pl-9 text-sm",
-                    formErrors.title && "border-destructive focus-visible:ring-destructive/20"
+                    formErrors.title &&
+                      "border-destructive focus-visible:ring-destructive/20"
                   )}
                 />
               </div>
@@ -1433,7 +1486,12 @@ export function CalendarView() {
 
             {/* Category Select Dropdown */}
             <div className="flex flex-col gap-2">
-              <label className={cn("text-sm font-semibold tracking-tight", formErrors.kind ? "text-destructive" : "text-foreground")}>
+              <label
+                className={cn(
+                  "text-sm font-semibold tracking-tight",
+                  formErrors.kind ? "text-destructive" : "text-foreground"
+                )}
+              >
                 Category *
               </label>
               <Select
@@ -1445,7 +1503,12 @@ export function CalendarView() {
                   }
                 }}
               >
-                <SelectTrigger className={cn("h-10 text-sm", formErrors.kind && "border-destructive text-destructive")}>
+                <SelectTrigger
+                  className={cn(
+                    "h-10 text-sm",
+                    formErrors.kind && "border-destructive text-destructive"
+                  )}
+                >
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1464,10 +1527,7 @@ export function CalendarView() {
                               kindIconBg[k.value]
                             )}
                           >
-                            <CategoryIcon
-                              kind={k.value}
-                              className="size-3.5"
-                            />
+                            <CategoryIcon kind={k.value} className="size-3.5" />
                           </div>
                           <span className="font-medium text-foreground">
                             {k.label}
@@ -1490,95 +1550,221 @@ export function CalendarView() {
               )}
             </div>
 
-            {/* Matched Pair Selection for Google Meet */}
+            {/* Tracking Members Selection for Google Meet (Searchable Combobox) */}
             {formKind === "google_meet" && (
-              <div className="flex flex-col gap-2 rounded-xl border border-blue-500/30 bg-blue-500/5 p-3.5 dark:bg-blue-500/10">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-1.5">
-                    <Video className="size-4 text-blue-500" />
-                    <span>Matched Members</span>
-                  </label>
-                  <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
-                    Both Accepted
-                  </span>
-                </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold tracking-tight text-foreground">
+                  Tracking Members
+                </label>
 
-                <Select
-                  value={selectedMatchedPair}
-                  onValueChange={(val) => {
-                    setSelectedMatchedPair(val)
-                    const pair = mockMatchedPairs.find((p) => p.id === val)
-                    if (pair) {
-                      setFormTitle(pair.meetTitle)
-                      setFormPerson(`${pair.male.prefix} ${pair.male.name} & ${pair.female.prefix} ${pair.female.name}`)
-                      setFormMeetUrl(`https://meet.google.com/tsm-${pair.trackingId.toLowerCase()}`)
-                      if (formErrors.title) {
-                        setFormErrors((prev) => ({ ...prev, title: undefined }))
-                      }
-                    }
-                  }}
+                <Popover
+                  open={isTrackingMembersOpen}
+                  onOpenChange={setIsTrackingMembersOpen}
                 >
-                  <SelectTrigger className="h-auto min-h-12 py-2 text-sm bg-background/90 dark:bg-background/70">
-                    <SelectValue placeholder="Select matched members for Google Meet..." />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-64">
-                    {mockMatchedPairs.map((pair) => (
-                      <SelectItem key={pair.id} value={pair.id} className="py-2.5 px-3">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          {/* Male Avatar + Name */}
-                          <div className="flex items-center gap-2">
-                            <Avatar className="size-7.5 shrink-0 ring-1.5 ring-[#CFA14F]/80 ring-offset-1 ring-offset-background shadow-2xs">
-                              <AvatarImage src={pair.male.avatar} />
-                              <AvatarFallback className="text-xs font-semibold">
-                                {pair.male.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm font-semibold text-foreground truncate">
-                              {pair.male.prefix} {pair.male.name}
-                            </span>
-                          </div>
-
-                          <span className="text-muted-foreground text-sm font-bold px-0.5">&</span>
-
-                          {/* Female Avatar + Name */}
-                          <div className="flex items-center gap-2">
-                            <Avatar className="size-7.5 shrink-0 ring-1.5 ring-pink-400/80 ring-offset-1 ring-offset-background shadow-2xs">
-                              <AvatarImage src={pair.female.avatar} />
-                              <AvatarFallback className="text-xs font-semibold">
-                                {pair.female.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm font-semibold text-foreground truncate">
-                              {pair.female.prefix} {pair.female.name}
-                            </span>
-                          </div>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      role="combobox"
+                      aria-expanded={isTrackingMembersOpen}
+                      className={cn(
+                        "h-auto min-h-12 w-full justify-between rounded-lg border border-input bg-transparent px-3 py-2 text-left text-sm font-normal hover:bg-muted/40 dark:bg-input/30",
+                        !selectedMatchedPair && "text-muted-foreground"
+                      )}
+                    >
+                      {selectedMatchedPair ? (
+                        (() => {
+                          const pair = mockMatchedPairs.find(
+                            (p) => p.id === selectedMatchedPair
+                          )
+                          if (!pair)
+                            return "Select tracking members for Google Meet..."
+                          return (
+                            <div className="flex min-w-0 items-center gap-2.5">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="size-7 shrink-0 border border-[#D3A753] shadow-xs">
+                                  <AvatarImage src={pair.male.avatar} />
+                                  <AvatarFallback className="text-xs font-semibold">
+                                    {pair.male.name.slice(0, 2).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="truncate text-sm font-semibold text-foreground">
+                                  {pair.male.prefix} {pair.male.name}
+                                </span>
+                              </div>
+                              <span className="px-0.5 text-sm font-bold text-muted-foreground">
+                                &
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <Avatar className="size-7 shrink-0 border border-[#E791A7] shadow-xs">
+                                  <AvatarImage src={pair.female.avatar} />
+                                  <AvatarFallback className="text-xs font-semibold">
+                                    {pair.female.name.slice(0, 2).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="truncate text-sm font-semibold text-foreground">
+                                  {pair.female.prefix} {pair.female.name}
+                                </span>
+                              </div>
+                            </div>
+                          )
+                        })()
+                      ) : (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Users2 className="size-4" />
+                          <span>
+                            Select tracking members for Google Meet...
+                          </span>
                         </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                      )}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-(--radix-popover-trigger-width) p-0"
+                    align="start"
+                  >
+                    <Command
+                      filter={(value, search) => {
+                        const pair = mockMatchedPairs.find(
+                          (p) => p.id === value
+                        )
+                        if (!pair) return 0
+                        const query = search.toLowerCase()
+                        const textToMatch =
+                          `${pair.male.name} ${pair.male.prefix} ${pair.female.name} ${pair.female.prefix} ${pair.lastCompletedStatus} ${pair.completedAt} ${pair.trackingId}`.toLowerCase()
+                        return textToMatch.includes(query) ? 1 : 0
+                      }}
+                    >
+                      <CommandInput placeholder="Search by male, female, or status..." />
+                      <CommandList className="max-h-72">
+                        <CommandEmpty>No tracking members found.</CommandEmpty>
+                        <CommandGroup>
+                          {[...mockMatchedPairs]
+                            .sort(
+                              (a, b) =>
+                                new Date(a.completedDate).getTime() -
+                                new Date(b.completedDate).getTime()
+                            )
+                            .map((pair) => (
+                              <CommandItem
+                                key={pair.id}
+                                value={pair.id}
+                                onSelect={(val) => {
+                                  setSelectedMatchedPair(val)
+                                  setFormTitle(pair.meetTitle)
+                                  setFormPerson(
+                                    `${pair.male.prefix} ${pair.male.name} & ${pair.female.prefix} ${pair.female.name}`
+                                  )
+                                  setFormMeetUrl(
+                                    `https://meet.google.com/tsm-${pair.trackingId.toLowerCase()}`
+                                  )
+                                  setIsTrackingMembersOpen(false)
+                                  if (formErrors.title) {
+                                    setFormErrors((prev) => ({
+                                      ...prev,
+                                      title: undefined,
+                                    }))
+                                  }
+                                }}
+                                className="cursor-pointer px-3 py-2.5"
+                              >
+                                <div className="flex w-full flex-col gap-1.5 text-left">
+                                  {/* Row 1: Avatars + Member Names */}
+                                  <div className="flex min-w-0 items-center gap-2.5">
+                                    <div className="flex items-center gap-2">
+                                      <Avatar className="size-7.5 shrink-0 border border-[#D3A753] shadow-xs">
+                                        <AvatarImage src={pair.male.avatar} />
+                                        <AvatarFallback className="text-xs font-semibold">
+                                          {pair.male.name
+                                            .slice(0, 2)
+                                            .toUpperCase()}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <span className="truncate text-sm font-semibold text-foreground">
+                                        {pair.male.prefix} {pair.male.name}
+                                      </span>
+                                    </div>
+
+                                    <span className="px-0.5 text-sm font-bold text-muted-foreground">
+                                      &
+                                    </span>
+
+                                    <div className="flex items-center gap-2">
+                                      <Avatar className="size-7.5 shrink-0 border border-[#E791A7] shadow-xs">
+                                        <AvatarImage src={pair.female.avatar} />
+                                        <AvatarFallback className="text-xs font-semibold">
+                                          {pair.female.name
+                                            .slice(0, 2)
+                                            .toUpperCase()}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <span className="truncate text-sm font-semibold text-foreground">
+                                        {pair.female.prefix} {pair.female.name}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Row 2: Last Completed Status (left) & Date Time (end right) */}
+                                  <div className="flex w-full items-center justify-between gap-2 pl-0.5 text-xs">
+                                    <div className="flex min-w-0 items-center gap-1.5">
+                                      <span className="size-1.5 shrink-0 rounded-full bg-emerald-500" />
+                                      <span className="truncate font-semibold text-emerald-600 dark:text-emerald-400">
+                                        {pair.lastCompletedStatus}
+                                      </span>
+                                    </div>
+                                    <span className="shrink-0 text-right font-mono text-[11px] text-muted-foreground">
+                                      {pair.completedAt}
+                                    </span>
+                                  </div>
+                                </div>
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
             )}
 
             {/* Date (One full row) */}
             <div className="flex flex-col gap-2">
-              <label className={cn("text-sm font-semibold tracking-tight", formErrors.date ? "text-destructive" : "text-foreground")}>
-                Date * <span className="text-xs font-normal text-muted-foreground">(Mon – Fri)</span>
+              <label
+                className={cn(
+                  "text-sm font-semibold tracking-tight",
+                  formErrors.date ? "text-destructive" : "text-foreground"
+                )}
+              >
+                Date *{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  (Mon – Fri)
+                </span>
               </label>
               <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
                     className={cn(
-                      "w-full h-10 justify-start text-left text-sm font-normal px-3 rounded-lg border border-input bg-transparent dark:bg-input/30 hover:bg-muted/40",
+                      "h-10 w-full justify-start rounded-lg border border-input bg-transparent px-3 text-left text-sm font-normal hover:bg-muted/40 dark:bg-input/30",
                       !formDate && "text-muted-foreground",
-                      formErrors.date && "border-destructive text-destructive focus-visible:ring-destructive/20"
+                      formErrors.date &&
+                        "border-destructive text-destructive focus-visible:ring-destructive/20"
                     )}
                   >
-                    <CalendarIcon className={cn("mr-2 h-4 w-4 shrink-0", formErrors.date ? "text-destructive" : "text-muted-foreground")} />
+                    <CalendarIcon
+                      className={cn(
+                        "mr-2 h-4 w-4 shrink-0",
+                        formErrors.date
+                          ? "text-destructive"
+                          : "text-muted-foreground"
+                      )}
+                    />
                     <span className="truncate">
                       {formDate
-                        ? format(new Date(formDate + "T00:00:00"), "EEEE, dd MMMM yyyy")
+                        ? format(
+                            new Date(formDate + "T00:00:00"),
+                            "EEEE, dd MMMM yyyy"
+                          )
                         : "Pick appointment date"}
                     </span>
                   </Button>
@@ -1587,14 +1773,18 @@ export function CalendarView() {
                   <div>
                     <CalendarPicker
                       mode="single"
-                      selected={formDate ? new Date(formDate + "T00:00:00") : undefined}
+                      selected={
+                        formDate ? new Date(formDate + "T00:00:00") : undefined
+                      }
                       disabled={[
                         { before: startOfDay(new Date()) },
                         (date) => isDateBookedMock(date),
                       ]}
                       modifiers={{
                         available: (date) => isDateAvailableMock(date),
-                        booked: (date) => isDateBookedMock(date) && date >= startOfDay(new Date()),
+                        booked: (date) =>
+                          isDateBookedMock(date) &&
+                          date >= startOfDay(new Date()),
                       }}
                       modifiersClassNames={{
                         available:
@@ -1608,7 +1798,10 @@ export function CalendarView() {
                           setFormStartTime("")
                           setFormEndTime("")
                           if (formErrors.date) {
-                            setFormErrors((prev) => ({ ...prev, date: undefined }))
+                            setFormErrors((prev) => ({
+                              ...prev,
+                              date: undefined,
+                            }))
                           }
                         }
                       }}
@@ -1627,8 +1820,18 @@ export function CalendarView() {
             <div className="grid grid-cols-2 gap-3">
               {/* Start Time */}
               <div className="flex flex-col gap-2">
-                <label className={cn("text-sm font-semibold tracking-tight", formErrors.startTime ? "text-destructive" : "text-foreground")}>
-                  Start Time * <span className="text-xs font-normal text-muted-foreground">(10:00 – 20:00)</span>
+                <label
+                  className={cn(
+                    "text-sm font-semibold tracking-tight",
+                    formErrors.startTime
+                      ? "text-destructive"
+                      : "text-foreground"
+                  )}
+                >
+                  Start Time *{" "}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    (10:00 – 20:00)
+                  </span>
                 </label>
                 <Select
                   value={formStartTime}
@@ -1649,22 +1852,36 @@ export function CalendarView() {
                   <SelectTrigger
                     className={cn(
                       "h-10 font-mono text-sm",
-                      formErrors.startTime && "border-destructive text-destructive",
-                      !formDate && "opacity-50 cursor-not-allowed"
+                      formErrors.startTime &&
+                        "border-destructive text-destructive",
+                      !formDate && "cursor-not-allowed opacity-50"
                     )}
                   >
                     <div className="flex items-center gap-2 truncate">
-                      <Clock className={cn("size-4 shrink-0", formErrors.startTime ? "text-destructive" : "text-muted-foreground")} />
-                      <SelectValue placeholder={!formDate ? "Pick date first" : "Select start"} />
+                      <Clock
+                        className={cn(
+                          "size-4 shrink-0",
+                          formErrors.startTime
+                            ? "text-destructive"
+                            : "text-muted-foreground"
+                        )}
+                      />
+                      <SelectValue
+                        placeholder={
+                          !formDate ? "Pick date first" : "Select start"
+                        }
+                      />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-56">
-                    <div className="px-2.5 py-1.5 text-xs font-semibold text-muted-foreground border-b mb-1 flex items-center justify-between">
+                    <div className="mb-1 flex items-center justify-between border-b px-2.5 py-1.5 text-xs font-semibold text-muted-foreground">
                       <span className="flex items-center gap-1.5">
                         <Clock className="size-3.5 text-primary" />
                         <span>Business Hours: </span>
                       </span>
-                      <span className="font-bold text-foreground">10:00 – 20:00</span>
+                      <span className="font-bold text-foreground">
+                        10:00 – 20:00
+                      </span>
                     </div>
                     {TIME_SLOTS_30MIN.map((time) => {
                       const isBooked = isTimeSlotBookedMock(formDate, time)
@@ -1682,11 +1899,13 @@ export function CalendarView() {
                             </div>
                             {isBooked ? (
                               <span className="flex items-center gap-1 text-[10px] font-medium text-rose-500">
-                                <span className="size-1.5 rounded-full bg-rose-500" /> Full
+                                <span className="size-1.5 rounded-full bg-rose-500" />{" "}
+                                Full
                               </span>
                             ) : (
                               <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                                <span className="size-1.5 rounded-full bg-emerald-500" /> Available
+                                <span className="size-1.5 rounded-full bg-emerald-500" />{" "}
+                                Available
                               </span>
                             )}
                           </div>
@@ -1704,8 +1923,16 @@ export function CalendarView() {
 
               {/* End Time / Duration Selection */}
               <div className="flex flex-col gap-2">
-                <label className={cn("text-sm font-semibold tracking-tight", formErrors.endTime ? "text-destructive" : "text-foreground")}>
-                  End Time * <span className="text-xs font-normal text-muted-foreground">(30m slot)</span>
+                <label
+                  className={cn(
+                    "text-sm font-semibold tracking-tight",
+                    formErrors.endTime ? "text-destructive" : "text-foreground"
+                  )}
+                >
+                  End Time *{" "}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    (30m slot)
+                  </span>
                 </label>
                 <Select
                   value={formEndTime}
@@ -1720,25 +1947,51 @@ export function CalendarView() {
                   <SelectTrigger
                     className={cn(
                       "h-10 font-mono text-sm",
-                      formErrors.endTime && "border-destructive text-destructive",
-                      (!formDate || !formStartTime) && "opacity-50 cursor-not-allowed"
+                      formErrors.endTime &&
+                        "border-destructive text-destructive",
+                      (!formDate || !formStartTime) &&
+                        "cursor-not-allowed opacity-50"
                     )}
                   >
                     <div className="flex items-center gap-2 truncate">
-                      <Clock className={cn("size-4 shrink-0", formErrors.endTime ? "text-destructive" : "text-muted-foreground")} />
-                      <SelectValue placeholder={!formStartTime ? "Select start first" : "Select end"} />
+                      <Clock
+                        className={cn(
+                          "size-4 shrink-0",
+                          formErrors.endTime
+                            ? "text-destructive"
+                            : "text-muted-foreground"
+                        )}
+                      />
+                      <SelectValue
+                        placeholder={
+                          !formStartTime ? "Select start first" : "Select end"
+                        }
+                      />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-56">
-                    <div className="px-2.5 py-1.5 text-xs font-semibold text-muted-foreground border-b mb-1 flex items-center gap-1.5">
+                    <div className="mb-1 flex items-center gap-1.5 border-b px-2.5 py-1.5 text-xs font-semibold text-muted-foreground">
                       <Clock className="size-3.5 text-primary" />
-                      <span>Business Hours: <strong className="text-foreground">10:00 – 20:00</strong></span>
+                      <span>
+                        Business Hours:{" "}
+                        <strong className="text-foreground">
+                          10:00 – 20:00
+                        </strong>
+                      </span>
                     </div>
-                    {END_TIME_OPTIONS.filter((time) => !formStartTime || time.localeCompare(formStartTime) > 0).map((time) => {
-                      const [sh, sm] = (formStartTime || "10:00").split(":").map(Number)
+                    {END_TIME_OPTIONS.filter(
+                      (time) =>
+                        !formStartTime || time.localeCompare(formStartTime) > 0
+                    ).map((time) => {
+                      const [sh, sm] = (formStartTime || "10:00")
+                        .split(":")
+                        .map(Number)
                       const [eh, em] = time.split(":").map(Number)
-                      const durationMins = (eh * 60 + em) - (sh * 60 + sm)
-                      const durationLabel = durationMins === 30 ? "30 min" : `${durationMins / 60} hr`
+                      const durationMins = eh * 60 + em - (sh * 60 + sm)
+                      const durationLabel =
+                        durationMins === 30
+                          ? "30 min"
+                          : `${durationMins / 60} hr`
 
                       return (
                         <SelectItem
@@ -1771,14 +2024,17 @@ export function CalendarView() {
             {/* Note Textarea */}
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold tracking-tight text-foreground">
-                Note <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
+                Note{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  (Optional)
+                </span>
               </label>
               <Textarea
                 placeholder="Add notes, agenda, or reminders for this appointment..."
                 value={formDescription}
                 onChange={(e) => setFormDescription(e.target.value)}
                 rows={4}
-                className="text-sm min-h-[100px] resize-none"
+                className="min-h-[100px] resize-none text-sm"
               />
             </div>
           </div>
@@ -1809,11 +2065,23 @@ export function CalendarView() {
           <div className="space-y-5 py-2 text-sm">
             {/* Title */}
             <div className="flex flex-col gap-2">
-              <label className={cn("text-sm font-semibold tracking-tight", formErrors.title ? "text-destructive" : "text-foreground")}>
+              <label
+                className={cn(
+                  "text-sm font-semibold tracking-tight",
+                  formErrors.title ? "text-destructive" : "text-foreground"
+                )}
+              >
                 Title *
               </label>
               <div className="relative">
-                <PenLine className={cn("absolute left-3 top-1/2 -translate-y-1/2 size-4 pointer-events-none transition-colors", formErrors.title ? "text-destructive" : "text-muted-foreground")} />
+                <PenLine
+                  className={cn(
+                    "pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 transition-colors",
+                    formErrors.title
+                      ? "text-destructive"
+                      : "text-muted-foreground"
+                  )}
+                />
                 <Input
                   value={formTitle}
                   onChange={(e) => {
@@ -1825,7 +2093,8 @@ export function CalendarView() {
                   aria-invalid={Boolean(formErrors.title)}
                   className={cn(
                     "h-10 pl-9 text-sm",
-                    formErrors.title && "border-destructive focus-visible:ring-destructive/20"
+                    formErrors.title &&
+                      "border-destructive focus-visible:ring-destructive/20"
                   )}
                 />
               </div>
@@ -1838,7 +2107,12 @@ export function CalendarView() {
 
             {/* Category Select Dropdown */}
             <div className="flex flex-col gap-2">
-              <label className={cn("text-sm font-semibold tracking-tight", formErrors.kind ? "text-destructive" : "text-foreground")}>
+              <label
+                className={cn(
+                  "text-sm font-semibold tracking-tight",
+                  formErrors.kind ? "text-destructive" : "text-foreground"
+                )}
+              >
                 Category *
               </label>
               <Select
@@ -1850,7 +2124,12 @@ export function CalendarView() {
                   }
                 }}
               >
-                <SelectTrigger className={cn("h-10 text-sm", formErrors.kind && "border-destructive text-destructive")}>
+                <SelectTrigger
+                  className={cn(
+                    "h-10 text-sm",
+                    formErrors.kind && "border-destructive text-destructive"
+                  )}
+                >
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1869,10 +2148,7 @@ export function CalendarView() {
                               kindIconBg[k.value]
                             )}
                           >
-                            <CategoryIcon
-                              kind={k.value}
-                              className="size-3.5"
-                            />
+                            <CategoryIcon kind={k.value} className="size-3.5" />
                           </div>
                           <span className="font-medium text-foreground">
                             {k.label}
@@ -1895,95 +2171,221 @@ export function CalendarView() {
               )}
             </div>
 
-            {/* Matched Pair Selection for Google Meet */}
+            {/* Tracking Members Selection for Google Meet (Searchable Combobox) */}
             {formKind === "google_meet" && (
-              <div className="flex flex-col gap-2 rounded-xl border border-blue-500/30 bg-blue-500/5 p-3.5 dark:bg-blue-500/10">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-1.5">
-                    <Video className="size-4 text-blue-500" />
-                    <span>Matched Members</span>
-                  </label>
-                  <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
-                    Both Accepted
-                  </span>
-                </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold tracking-tight text-foreground">
+                  Tracking Members
+                </label>
 
-                <Select
-                  value={selectedMatchedPair}
-                  onValueChange={(val) => {
-                    setSelectedMatchedPair(val)
-                    const pair = mockMatchedPairs.find((p) => p.id === val)
-                    if (pair) {
-                      setFormTitle(pair.meetTitle)
-                      setFormPerson(`${pair.male.prefix} ${pair.male.name} & ${pair.female.prefix} ${pair.female.name}`)
-                      setFormMeetUrl(`https://meet.google.com/tsm-${pair.trackingId.toLowerCase()}`)
-                      if (formErrors.title) {
-                        setFormErrors((prev) => ({ ...prev, title: undefined }))
-                      }
-                    }
-                  }}
+                <Popover
+                  open={isTrackingMembersOpen}
+                  onOpenChange={setIsTrackingMembersOpen}
                 >
-                  <SelectTrigger className="h-auto min-h-12 py-2 text-sm bg-background/90 dark:bg-background/70">
-                    <SelectValue placeholder="Select matched members for Google Meet..." />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-64">
-                    {mockMatchedPairs.map((pair) => (
-                      <SelectItem key={pair.id} value={pair.id} className="py-2.5 px-3">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          {/* Male Avatar + Name */}
-                          <div className="flex items-center gap-2">
-                            <Avatar className="size-7.5 shrink-0 ring-1.5 ring-[#CFA14F]/80 ring-offset-1 ring-offset-background shadow-2xs">
-                              <AvatarImage src={pair.male.avatar} />
-                              <AvatarFallback className="text-xs font-semibold">
-                                {pair.male.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm font-semibold text-foreground truncate">
-                              {pair.male.prefix} {pair.male.name}
-                            </span>
-                          </div>
-
-                          <span className="text-muted-foreground text-sm font-bold px-0.5">&</span>
-
-                          {/* Female Avatar + Name */}
-                          <div className="flex items-center gap-2">
-                            <Avatar className="size-7.5 shrink-0 ring-1.5 ring-pink-400/80 ring-offset-1 ring-offset-background shadow-2xs">
-                              <AvatarImage src={pair.female.avatar} />
-                              <AvatarFallback className="text-xs font-semibold">
-                                {pair.female.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm font-semibold text-foreground truncate">
-                              {pair.female.prefix} {pair.female.name}
-                            </span>
-                          </div>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      role="combobox"
+                      aria-expanded={isTrackingMembersOpen}
+                      className={cn(
+                        "h-auto min-h-12 w-full justify-between rounded-lg border border-input bg-transparent px-3 py-2 text-left text-sm font-normal hover:bg-muted/40 dark:bg-input/30",
+                        !selectedMatchedPair && "text-muted-foreground"
+                      )}
+                    >
+                      {selectedMatchedPair ? (
+                        (() => {
+                          const pair = mockMatchedPairs.find(
+                            (p) => p.id === selectedMatchedPair
+                          )
+                          if (!pair)
+                            return "Select tracking members for Google Meet..."
+                          return (
+                            <div className="flex min-w-0 items-center gap-2.5">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="size-7 shrink-0 border border-[#D3A753] shadow-xs">
+                                  <AvatarImage src={pair.male.avatar} />
+                                  <AvatarFallback className="text-xs font-semibold">
+                                    {pair.male.name.slice(0, 2).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="truncate text-sm font-semibold text-foreground">
+                                  {pair.male.prefix} {pair.male.name}
+                                </span>
+                              </div>
+                              <span className="px-0.5 text-sm font-bold text-muted-foreground">
+                                &
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <Avatar className="size-7 shrink-0 border border-[#E791A7] shadow-xs">
+                                  <AvatarImage src={pair.female.avatar} />
+                                  <AvatarFallback className="text-xs font-semibold">
+                                    {pair.female.name.slice(0, 2).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="truncate text-sm font-semibold text-foreground">
+                                  {pair.female.prefix} {pair.female.name}
+                                </span>
+                              </div>
+                            </div>
+                          )
+                        })()
+                      ) : (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Users2 className="size-4" />
+                          <span>
+                            Select tracking members for Google Meet...
+                          </span>
                         </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                      )}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-(--radix-popover-trigger-width) p-0"
+                    align="start"
+                  >
+                    <Command
+                      filter={(value, search) => {
+                        const pair = mockMatchedPairs.find(
+                          (p) => p.id === value
+                        )
+                        if (!pair) return 0
+                        const query = search.toLowerCase()
+                        const textToMatch =
+                          `${pair.male.name} ${pair.male.prefix} ${pair.female.name} ${pair.female.prefix} ${pair.lastCompletedStatus} ${pair.completedAt} ${pair.trackingId}`.toLowerCase()
+                        return textToMatch.includes(query) ? 1 : 0
+                      }}
+                    >
+                      <CommandInput placeholder="Search by male, female, or status..." />
+                      <CommandList className="max-h-72">
+                        <CommandEmpty>No tracking members found.</CommandEmpty>
+                        <CommandGroup>
+                          {[...mockMatchedPairs]
+                            .sort(
+                              (a, b) =>
+                                new Date(a.completedDate).getTime() -
+                                new Date(b.completedDate).getTime()
+                            )
+                            .map((pair) => (
+                              <CommandItem
+                                key={pair.id}
+                                value={pair.id}
+                                onSelect={(val) => {
+                                  setSelectedMatchedPair(val)
+                                  setFormTitle(pair.meetTitle)
+                                  setFormPerson(
+                                    `${pair.male.prefix} ${pair.male.name} & ${pair.female.prefix} ${pair.female.name}`
+                                  )
+                                  setFormMeetUrl(
+                                    `https://meet.google.com/tsm-${pair.trackingId.toLowerCase()}`
+                                  )
+                                  setIsTrackingMembersOpen(false)
+                                  if (formErrors.title) {
+                                    setFormErrors((prev) => ({
+                                      ...prev,
+                                      title: undefined,
+                                    }))
+                                  }
+                                }}
+                                className="cursor-pointer px-3 py-2.5"
+                              >
+                                <div className="flex w-full flex-col gap-1.5 text-left">
+                                  {/* Row 1: Avatars + Member Names */}
+                                  <div className="flex min-w-0 items-center gap-2.5">
+                                    <div className="flex items-center gap-2">
+                                      <Avatar className="size-7.5 shrink-0 border border-[#D3A753] shadow-xs">
+                                        <AvatarImage src={pair.male.avatar} />
+                                        <AvatarFallback className="text-xs font-semibold">
+                                          {pair.male.name
+                                            .slice(0, 2)
+                                            .toUpperCase()}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <span className="truncate text-sm font-semibold text-foreground">
+                                        {pair.male.prefix} {pair.male.name}
+                                      </span>
+                                    </div>
+
+                                    <span className="px-0.5 text-sm font-bold text-muted-foreground">
+                                      &
+                                    </span>
+
+                                    <div className="flex items-center gap-2">
+                                      <Avatar className="size-7.5 shrink-0 border border-[#E791A7] shadow-xs">
+                                        <AvatarImage src={pair.female.avatar} />
+                                        <AvatarFallback className="text-xs font-semibold">
+                                          {pair.female.name
+                                            .slice(0, 2)
+                                            .toUpperCase()}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <span className="truncate text-sm font-semibold text-foreground">
+                                        {pair.female.prefix} {pair.female.name}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Row 2: Last Completed Status (left) & Date Time (end right) */}
+                                  <div className="flex w-full items-center justify-between gap-2 pl-0.5 text-xs">
+                                    <div className="flex min-w-0 items-center gap-1.5">
+                                      <span className="size-1.5 shrink-0 rounded-full bg-emerald-500" />
+                                      <span className="truncate font-semibold text-emerald-600 dark:text-emerald-400">
+                                        {pair.lastCompletedStatus}
+                                      </span>
+                                    </div>
+                                    <span className="shrink-0 text-right font-mono text-[11px] text-muted-foreground">
+                                      {pair.completedAt}
+                                    </span>
+                                  </div>
+                                </div>
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
             )}
 
             {/* Date (One full row) */}
             <div className="flex flex-col gap-2">
-              <label className={cn("text-sm font-semibold tracking-tight", formErrors.date ? "text-destructive" : "text-foreground")}>
-                Date * <span className="text-xs font-normal text-muted-foreground">(Mon – Fri)</span>
+              <label
+                className={cn(
+                  "text-sm font-semibold tracking-tight",
+                  formErrors.date ? "text-destructive" : "text-foreground"
+                )}
+              >
+                Date *{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  (Mon – Fri)
+                </span>
               </label>
               <Popover open={isEditDateOpen} onOpenChange={setIsEditDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
                     className={cn(
-                      "w-full h-10 justify-start text-left text-sm font-normal px-3 rounded-lg border border-input bg-transparent dark:bg-input/30 hover:bg-muted/40",
+                      "h-10 w-full justify-start rounded-lg border border-input bg-transparent px-3 text-left text-sm font-normal hover:bg-muted/40 dark:bg-input/30",
                       !formDate && "text-muted-foreground",
-                      formErrors.date && "border-destructive text-destructive focus-visible:ring-destructive/20"
+                      formErrors.date &&
+                        "border-destructive text-destructive focus-visible:ring-destructive/20"
                     )}
                   >
-                    <CalendarIcon className={cn("mr-2 h-4 w-4 shrink-0", formErrors.date ? "text-destructive" : "text-muted-foreground")} />
+                    <CalendarIcon
+                      className={cn(
+                        "mr-2 h-4 w-4 shrink-0",
+                        formErrors.date
+                          ? "text-destructive"
+                          : "text-muted-foreground"
+                      )}
+                    />
                     <span className="truncate">
                       {formDate
-                        ? format(new Date(formDate + "T00:00:00"), "EEEE, dd MMMM yyyy")
+                        ? format(
+                            new Date(formDate + "T00:00:00"),
+                            "EEEE, dd MMMM yyyy"
+                          )
                         : "Pick appointment date"}
                     </span>
                   </Button>
@@ -1992,14 +2394,18 @@ export function CalendarView() {
                   <div>
                     <CalendarPicker
                       mode="single"
-                      selected={formDate ? new Date(formDate + "T00:00:00") : undefined}
+                      selected={
+                        formDate ? new Date(formDate + "T00:00:00") : undefined
+                      }
                       disabled={[
                         { before: startOfDay(new Date()) },
                         (date) => isDateBookedMock(date),
                       ]}
                       modifiers={{
                         available: (date) => isDateAvailableMock(date),
-                        booked: (date) => isDateBookedMock(date) && date >= startOfDay(new Date()),
+                        booked: (date) =>
+                          isDateBookedMock(date) &&
+                          date >= startOfDay(new Date()),
                       }}
                       modifiersClassNames={{
                         available:
@@ -2013,7 +2419,10 @@ export function CalendarView() {
                           setFormStartTime("")
                           setFormEndTime("")
                           if (formErrors.date) {
-                            setFormErrors((prev) => ({ ...prev, date: undefined }))
+                            setFormErrors((prev) => ({
+                              ...prev,
+                              date: undefined,
+                            }))
                           }
                         }
                       }}
@@ -2032,8 +2441,18 @@ export function CalendarView() {
             <div className="grid grid-cols-2 gap-3">
               {/* Start Time */}
               <div className="flex flex-col gap-2">
-                <label className={cn("text-sm font-semibold tracking-tight", formErrors.startTime ? "text-destructive" : "text-foreground")}>
-                  Start Time * <span className="text-xs font-normal text-muted-foreground">(10:00 – 20:00)</span>
+                <label
+                  className={cn(
+                    "text-sm font-semibold tracking-tight",
+                    formErrors.startTime
+                      ? "text-destructive"
+                      : "text-foreground"
+                  )}
+                >
+                  Start Time *{" "}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    (10:00 – 20:00)
+                  </span>
                 </label>
                 <Select
                   value={formStartTime}
@@ -2043,20 +2462,36 @@ export function CalendarView() {
                     const autoEnd = get30MinEndTime(val)
                     setFormEndTime(autoEnd)
                     if (formErrors.startTime || formErrors.endTime) {
-                      setFormErrors((prev) => ({ ...prev, startTime: undefined, endTime: undefined }))
+                      setFormErrors((prev) => ({
+                        ...prev,
+                        startTime: undefined,
+                        endTime: undefined,
+                      }))
                     }
                   }}
                 >
                   <SelectTrigger
                     className={cn(
                       "h-10 font-mono text-sm",
-                      formErrors.startTime && "border-destructive text-destructive",
-                      !formDate && "opacity-50 cursor-not-allowed"
+                      formErrors.startTime &&
+                        "border-destructive text-destructive",
+                      !formDate && "cursor-not-allowed opacity-50"
                     )}
                   >
                     <div className="flex items-center gap-2 truncate">
-                      <Clock className={cn("size-4 shrink-0", formErrors.startTime ? "text-destructive" : "text-muted-foreground")} />
-                      <SelectValue placeholder={!formDate ? "Pick date first" : "Select start"} />
+                      <Clock
+                        className={cn(
+                          "size-4 shrink-0",
+                          formErrors.startTime
+                            ? "text-destructive"
+                            : "text-muted-foreground"
+                        )}
+                      />
+                      <SelectValue
+                        placeholder={
+                          !formDate ? "Pick date first" : "Select start"
+                        }
+                      />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-52">
@@ -2076,11 +2511,13 @@ export function CalendarView() {
                             </div>
                             {isBooked ? (
                               <span className="flex items-center gap-1 text-[10px] font-medium text-rose-500">
-                                <span className="size-1.5 rounded-full bg-rose-500" /> Full
+                                <span className="size-1.5 rounded-full bg-rose-500" />{" "}
+                                Full
                               </span>
                             ) : (
                               <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                                <span className="size-1.5 rounded-full bg-emerald-500" /> Available
+                                <span className="size-1.5 rounded-full bg-emerald-500" />{" "}
+                                Available
                               </span>
                             )}
                           </div>
@@ -2098,8 +2535,16 @@ export function CalendarView() {
 
               {/* End Time */}
               <div className="flex flex-col gap-2">
-                <label className={cn("text-sm font-semibold tracking-tight", formErrors.endTime ? "text-destructive" : "text-foreground")}>
-                  End Time * <span className="text-xs font-normal text-muted-foreground">(30m slot)</span>
+                <label
+                  className={cn(
+                    "text-sm font-semibold tracking-tight",
+                    formErrors.endTime ? "text-destructive" : "text-foreground"
+                  )}
+                >
+                  End Time *{" "}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    (30m slot)
+                  </span>
                 </label>
                 <Select
                   value={formEndTime}
@@ -2114,21 +2559,42 @@ export function CalendarView() {
                   <SelectTrigger
                     className={cn(
                       "h-10 font-mono text-sm",
-                      formErrors.endTime && "border-destructive text-destructive",
-                      (!formDate || !formStartTime) && "opacity-50 cursor-not-allowed"
+                      formErrors.endTime &&
+                        "border-destructive text-destructive",
+                      (!formDate || !formStartTime) &&
+                        "cursor-not-allowed opacity-50"
                     )}
                   >
                     <div className="flex items-center gap-2 truncate">
-                      <Clock className={cn("size-4 shrink-0", formErrors.endTime ? "text-destructive" : "text-muted-foreground")} />
-                      <SelectValue placeholder={!formStartTime ? "Select start first" : "Select end"} />
+                      <Clock
+                        className={cn(
+                          "size-4 shrink-0",
+                          formErrors.endTime
+                            ? "text-destructive"
+                            : "text-muted-foreground"
+                        )}
+                      />
+                      <SelectValue
+                        placeholder={
+                          !formStartTime ? "Select start first" : "Select end"
+                        }
+                      />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-52">
-                    {END_TIME_OPTIONS.filter((time) => !formStartTime || time.localeCompare(formStartTime) > 0).map((time) => {
-                      const [sh, sm] = (formStartTime || "10:00").split(":").map(Number)
+                    {END_TIME_OPTIONS.filter(
+                      (time) =>
+                        !formStartTime || time.localeCompare(formStartTime) > 0
+                    ).map((time) => {
+                      const [sh, sm] = (formStartTime || "10:00")
+                        .split(":")
+                        .map(Number)
                       const [eh, em] = time.split(":").map(Number)
-                      const durationMins = (eh * 60 + em) - (sh * 60 + sm)
-                      const durationLabel = durationMins === 30 ? "30 min" : `${durationMins / 60} hr`
+                      const durationMins = eh * 60 + em - (sh * 60 + sm)
+                      const durationLabel =
+                        durationMins === 30
+                          ? "30 min"
+                          : `${durationMins / 60} hr`
 
                       return (
                         <SelectItem
@@ -2161,14 +2627,17 @@ export function CalendarView() {
             {/* Note Textarea */}
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold tracking-tight text-foreground">
-                Note <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
+                Note{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  (Optional)
+                </span>
               </label>
               <Textarea
                 placeholder="Add notes, agenda, or reminders for this appointment..."
                 value={formDescription}
                 onChange={(e) => setFormDescription(e.target.value)}
                 rows={4}
-                className="text-sm min-h-[100px] resize-none"
+                className="min-h-[100px] resize-none text-sm"
               />
             </div>
           </div>

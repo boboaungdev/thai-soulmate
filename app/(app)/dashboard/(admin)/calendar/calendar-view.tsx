@@ -35,6 +35,10 @@ import {
   User,
   Users2,
   CalendarDays,
+  PhoneCall,
+  Palmtree,
+  type LucideIcon,
+  Calendar as CalendarIcon,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 
@@ -79,6 +83,20 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Calendar as CalendarPicker } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { format } from "date-fns"
 import { Toggle } from "@/components/ui/toggle"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -98,6 +116,122 @@ import {
   type CalendarKind,
 } from "./calendar-data"
 
+// Business hours 10:00 to 20:00 (30 min slots)
+export const TIME_SLOTS_30MIN = [
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+]
+
+export const END_TIME_OPTIONS = [
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+  "20:00",
+]
+
+// Mock logic for booked dates vs available dates
+export function isDateBookedMock(date: Date): boolean {
+  const day = date.getDay()
+  const dateNum = date.getDate()
+  // Mock Sundays and specific recurring dates as full
+  return day === 0 || dateNum % 7 === 3
+}
+
+export function isDateAvailableMock(date: Date): boolean {
+  const today = startOfDay(new Date())
+  if (date < today) return false
+  return !isDateBookedMock(date)
+}
+
+export function get30MinEndTime(startTime: string): string {
+  if (!startTime) return ""
+  const [h, m] = startTime.split(":").map(Number)
+  if (isNaN(h) || isNaN(m)) return "10:30"
+  let endM = m + 30
+  let endH = h
+  if (endM >= 60) {
+    endM -= 60
+    endH += 1
+  }
+  return `${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`
+}
+
+export function isTimeSlotBookedMock(dateStr: string, time: string): boolean {
+  if (!dateStr) return false
+  const dateNum = new Date(dateStr + "T00:00:00").getDate()
+  if (dateNum % 2 === 0) {
+    return time === "11:00" || time === "14:00" || time === "16:30"
+  } else {
+    return time === "10:30" || time === "13:30" || time === "17:00"
+  }
+}
+
+const TIME_OPTIONS = [
+  "08:00",
+  "08:30",
+  "09:00",
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+  "20:00",
+  "20:30",
+  "21:00",
+  "21:30",
+  "22:00",
+]
+
 const views = [
   {
     value: "timeGridDay",
@@ -112,6 +246,33 @@ const views = [
     label: "Month",
   },
 ] as const
+
+export const kindIcons: Record<CalendarKind, LucideIcon> = {
+  register_interest: Users2,
+  google_meet: Video,
+  follow_up: PhoneCall,
+  event: CalendarDays,
+  holiday: Palmtree,
+}
+
+export const kindIconColor: Record<CalendarKind, string> = {
+  register_interest: "text-amber-500 dark:text-amber-400",
+  google_meet: "text-blue-500 dark:text-blue-400",
+  follow_up: "text-purple-500 dark:text-purple-400",
+  event: "text-rose-500 dark:text-rose-400",
+  holiday: "text-emerald-500 dark:text-emerald-400",
+}
+
+export function CategoryIcon({
+  kind,
+  className,
+}: {
+  kind: CalendarKind
+  className?: string
+}) {
+  const Icon = kindIcons[kind] || CalendarDays
+  return <Icon className={className} />
+}
 
 const kindStyle = Object.fromEntries(
   calendarKinds.map((kind) => [kind.value, kind])
@@ -205,8 +366,11 @@ function formatDayLabel(date: Date) {
 }
 
 function renderEventContent(info: EventDisplayInfo) {
+  const item = info.event.extendedProps as CalendarItem | undefined
+  const kind = item?.kind
   return (
     <div className="fc-event-chip">
+      {kind && <CategoryIcon kind={kind} className="size-3 shrink-0 opacity-90" />}
       {info.timeText ? (
         <span className="fc-event-chip-time">{info.timeText}</span>
       ) : null}
@@ -254,11 +418,9 @@ function TaskList({
         >
           <div className="mb-1.5 flex items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
-              <span
-                className={cn(
-                  "size-2.5 shrink-0 rounded-full",
-                  kindStyle[item.kind]?.dot
-                )}
+              <CategoryIcon
+                kind={item.kind}
+                className={cn("size-4 shrink-0", kindIconColor[item.kind])}
               />
               <span className="truncate text-sm font-semibold text-foreground">
                 {item.title}
@@ -285,6 +447,14 @@ function TaskList({
   )
 }
 
+interface FormErrors {
+  title?: string
+  kind?: string
+  date?: string
+  startTime?: string
+  endTime?: string
+}
+
 export function CalendarView() {
   const { resolvedTheme } = useTheme()
   const controller = useCalendarController()
@@ -305,19 +475,21 @@ export function CalendarView() {
   // Modals
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState<CalendarItem | null>(null)
   const [itemToDelete, setItemToDelete] = useState<CalendarItem | null>(null)
 
   // Form states
   const [formTitle, setFormTitle] = useState("")
-  const [formKind, setFormKind] = useState<CalendarKind>("register_interest")
+  const [formKind, setFormKind] = useState<CalendarKind>("google_meet")
   const [formDate, setFormDate] = useState("")
-  const [formStartTime, setFormStartTime] = useState("10:00")
-  const [formEndTime, setFormEndTime] = useState("10:45")
+  const [formStartTime, setFormStartTime] = useState("")
+  const [formEndTime, setFormEndTime] = useState("")
   const [formPerson, setFormPerson] = useState("")
   const [formLocation, setFormLocation] = useState("Google Meet")
   const [formMeetUrl, setFormMeetUrl] = useState("")
   const [formPhone, setFormPhone] = useState("")
   const [formDescription, setFormDescription] = useState("")
+  const [formErrors, setFormErrors] = useState<FormErrors>({})
 
   const today = startOfDay(new Date())
   const tomorrowFocus = nextBusinessDay(today)
@@ -380,21 +552,35 @@ export function CalendarView() {
   // Handle clicking empty slot on calendar
   function handleDateClick(info: { dateStr: string; allDay: boolean }) {
     const clickedDate = new Date(info.dateStr)
+    const today = startOfDay(new Date())
+
+    if (clickedDate < today) {
+      toast.error("Cannot book appointments on past dates.")
+      return
+    }
+
+    if (isDateBookedMock(clickedDate)) {
+      toast.error("This date is fully booked. Please select an available date.")
+      return
+    }
+
     const dateStr = clickedDate.toISOString().split("T")[0]
     setFormDate(dateStr)
 
     if (!info.allDay) {
       const hours = String(clickedDate.getHours()).padStart(2, "0")
       const mins = String(clickedDate.getMinutes()).padStart(2, "0")
-      setFormStartTime(`${hours}:${mins}`)
-      const endHours = String((clickedDate.getHours() + 1) % 24).padStart(
-        2,
-        "0"
-      )
-      setFormEndTime(`${endHours}:${mins}`)
+      const slotTime = `${hours}:${mins}`
+      if (hours >= "10" && hours < "20") {
+        setFormStartTime(slotTime)
+        setFormEndTime(get30MinEndTime(slotTime))
+      } else {
+        setFormStartTime("10:00")
+        setFormEndTime("10:30")
+      }
     } else {
       setFormStartTime("10:00")
-      setFormEndTime("10:45")
+      setFormEndTime("10:30")
     }
 
     setFormTitle("")
@@ -404,33 +590,59 @@ export function CalendarView() {
     setFormPhone("")
     setFormDescription("")
     setFormKind("google_meet")
+    setFormErrors({})
     setIsCreateOpen(true)
   }
 
   function handleOpenCreate() {
-    const todayStr = new Date().toISOString().split("T")[0]
-    setFormDate(todayStr)
-    setFormStartTime("10:00")
-    setFormEndTime("10:45")
+    setFormDate("")
+    setFormStartTime("")
+    setFormEndTime("")
     setFormTitle("")
     setFormPerson("")
     setFormLocation("Google Meet")
     setFormMeetUrl("")
     setFormPhone("")
     setFormDescription("")
-    setFormKind("register_interest")
+    setFormKind("google_meet")
+    setFormErrors({})
     setIsCreateOpen(true)
   }
 
-  function handleCreateEvent() {
+  function validateForm(): boolean {
+    const errors: FormErrors = {}
     if (!formTitle.trim()) {
-      toast.error("Please enter an event title.")
-      return
+      errors.title = "Appointment title is required"
     }
-    if (!formDate) {
-      toast.error("Please select a date.")
-      return
+    if (!formKind) {
+      errors.kind = "Category is required"
     }
+    if (!formDate.trim()) {
+      errors.date = "Please pick a date"
+    }
+    if (!formStartTime.trim()) {
+      errors.startTime = "Start time is required"
+    }
+    if (!formEndTime.trim()) {
+      errors.endTime = "End time is required"
+    } else if (
+      formStartTime.trim() &&
+      formEndTime.localeCompare(formStartTime) <= 0
+    ) {
+      errors.endTime = "End time must be after start time"
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors)
+      return false
+    }
+
+    setFormErrors({})
+    return true
+  }
+
+  function handleCreateEvent() {
+    if (!validateForm()) return
 
     const start = `${formDate}T${formStartTime}:00`
     const end = `${formDate}T${formEndTime}:00`
@@ -441,10 +653,6 @@ export function CalendarView() {
       start,
       end,
       kind: formKind,
-      person: formPerson.trim() || undefined,
-      location: formLocation.trim() || undefined,
-      meetUrl: formMeetUrl.trim() || undefined,
-      phone: formPhone.trim() || undefined,
       description: formDescription.trim() || "Scheduled appointment",
     }
 
@@ -455,6 +663,7 @@ export function CalendarView() {
 
   function handleOpenEdit(item: CalendarItem) {
     setSelected(null)
+    setEditingItem(item)
     setFormTitle(item.title)
     setFormKind(item.kind)
     const startDate = new Date(item.start)
@@ -476,44 +685,39 @@ export function CalendarView() {
         })
       )
     } else {
-      setFormEndTime("11:00")
+      setFormEndTime("10:45")
     }
     setFormPerson(item.person || "")
     setFormLocation(item.location || "Google Meet")
     setFormMeetUrl(item.meetUrl || "")
     setFormPhone(item.phone || "")
     setFormDescription(item.description || "")
+    setFormErrors({})
     setIsEditOpen(true)
   }
 
   function handleSaveEdit() {
-    if (!selected) return
-    if (!formTitle.trim()) {
-      toast.error("Please enter an event title.")
-      return
-    }
+    if (!editingItem) return
+    if (!validateForm()) return
 
     const start = `${formDate}T${formStartTime}:00`
     const end = `${formDate}T${formEndTime}:00`
 
     const updatedItem: CalendarItem = {
-      ...selected,
+      ...editingItem,
       title: formTitle.trim(),
       start,
       end,
       kind: formKind,
-      person: formPerson.trim() || undefined,
-      location: formLocation.trim() || undefined,
-      meetUrl: formMeetUrl.trim() || undefined,
-      phone: formPhone.trim() || undefined,
-      description: formDescription.trim(),
+      description: formDescription.trim() || "Scheduled appointment",
     }
 
     setItems((prev) =>
-      prev.map((item) => (item.id === selected.id ? updatedItem : item))
+      prev.map((item) => (item.id === editingItem.id ? updatedItem : item))
     )
     toast.success("Appointment updated successfully.")
     setIsEditOpen(false)
+    setEditingItem(null)
     setSelected(updatedItem)
   }
 
@@ -777,7 +981,12 @@ export function CalendarView() {
                   variant="outline"
                   className="h-auto w-full justify-start gap-3 p-3 text-left transition-all"
                 >
-                  <span className={cn("size-2.5 rounded-full", kind.dot)} />
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted/60">
+                    <CategoryIcon
+                      kind={kind.value}
+                      className={cn("size-4", kindIconColor[kind.value])}
+                    />
+                  </div>
 
                   <span className="flex min-w-0 flex-1 flex-col items-start text-left">
                     <span className="text-sm font-semibold">{kind.label}</span>
@@ -937,10 +1146,11 @@ export function CalendarView() {
                   <Badge
                     variant="outline"
                     className={cn(
-                      "w-fit text-xs font-medium",
+                      "w-fit gap-1.5 px-2.5 py-1 text-xs font-semibold",
                       kindStyle[selected.kind]?.badge
                     )}
                   >
+                    <CategoryIcon kind={selected.kind} className="size-3.5" />
                     {kindStyle[selected.kind]?.label}
                   </Badge>
                 </div>
@@ -954,35 +1164,16 @@ export function CalendarView() {
               </DialogHeader>
 
               {/* Details Body */}
-              <div className="space-y-3.5 rounded-xl border bg-muted/20 p-4 text-sm">
-                {selected.person && (
-                  <div className="flex items-center gap-2">
-                    <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                    <span className="text-sm font-semibold text-foreground">
-                      Candidate / Contact:
-                    </span>
-                    <span className="text-muted-foreground">
-                      {selected.person}
-                    </span>
-                  </div>
-                )}
-
-                {selected.location && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                    <span className="text-sm font-semibold text-foreground">
-                      Location / Channel:
-                    </span>
-                    <span className="text-muted-foreground">
-                      {selected.location}
-                    </span>
-                  </div>
-                )}
-
-                <div className="pt-1 leading-relaxed text-muted-foreground">
-                  {selected.description}
+              {selected.description && (
+                <div className="space-y-2 rounded-xl border bg-muted/20 p-4 text-sm">
+                  <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                    Note
+                  </span>
+                  <p className="leading-relaxed whitespace-pre-wrap text-foreground/90">
+                    {selected.description}
+                  </p>
                 </div>
-              </div>
+              )}
 
               {/* Direct Action Shortcuts */}
               <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -1047,160 +1238,314 @@ export function CalendarView() {
 
       {/* CREATE EVENT MODAL */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="pb-1">
             <DialogTitle className="text-lg font-bold">
               Schedule New Appointment
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Add a candidate consultation, Google Meet session, or team event.
+              Add a candidate consultation, Google Meet session, or follow-up note.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-2 text-sm">
+          <div className="space-y-5 py-2 text-sm">
             {/* Title */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-foreground">
+            <div className="flex flex-col gap-2">
+              <label className={cn("text-sm font-semibold tracking-tight", formErrors.title ? "text-destructive" : "text-foreground")}>
                 Title *
               </label>
               <Input
                 placeholder="e.g. Video Intro · Alex J. & Supansa T."
                 value={formTitle}
-                onChange={(e) => setFormTitle(e.target.value)}
-                className="h-9.5 text-sm"
+                onChange={(e) => {
+                  setFormTitle(e.target.value)
+                  if (formErrors.title) {
+                    setFormErrors((prev) => ({ ...prev, title: undefined }))
+                  }
+                }}
+                aria-invalid={Boolean(formErrors.title)}
+                className={cn(
+                  "h-10 text-sm",
+                  formErrors.title && "border-destructive focus-visible:ring-destructive/20"
+                )}
               />
+              {formErrors.title && (
+                <p className="text-xs font-medium text-destructive">
+                  {formErrors.title}
+                </p>
+              )}
             </div>
 
-            {/* Category */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-foreground">
-                Category
+            {/* Category Select Dropdown */}
+            <div className="flex flex-col gap-2">
+              <label className={cn("text-sm font-semibold tracking-tight", formErrors.kind ? "text-destructive" : "text-foreground")}>
+                Category *
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                {calendarKinds.map((k) => (
-                  <button
-                    key={k.value}
-                    type="button"
-                    onClick={() => setFormKind(k.value)}
-                    className={cn(
-                      "flex items-center gap-2 rounded-lg border p-2 text-left transition-colors",
-                      formKind === k.value
-                        ? "border-primary bg-primary/10 font-semibold text-primary"
-                        : "border-border bg-card text-muted-foreground hover:bg-muted/40"
-                    )}
-                  >
-                    <span className={cn("size-2 rounded-full", k.dot)} />
-                    <span className="text-sm">{k.label}</span>
-                  </button>
-                ))}
-              </div>
+              <Select
+                value={formKind}
+                onValueChange={(val) => {
+                  setFormKind(val as CalendarKind)
+                  if (formErrors.kind) {
+                    setFormErrors((prev) => ({ ...prev, kind: undefined }))
+                  }
+                }}
+              >
+                <SelectTrigger className={cn("h-10 text-sm", formErrors.kind && "border-destructive text-destructive")}>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {calendarKinds.map((k) => (
+                    <SelectItem
+                      key={k.value}
+                      value={k.value}
+                      disabled={k.value === "register_interest"}
+                      className="text-sm"
+                    >
+                      <div className="flex w-full items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <CategoryIcon
+                            kind={k.value}
+                            className={cn("size-4 shrink-0", kindIconColor[k.value])}
+                          />
+                          <span className="font-medium text-foreground">
+                            {k.label}
+                          </span>
+                        </div>
+                        {k.value === "register_interest" && (
+                          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground">
+                            Auto-booked
+                          </span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {formErrors.kind && (
+                <p className="text-xs font-medium text-destructive">
+                  {formErrors.kind}
+                </p>
+              )}
             </div>
 
             {/* Date & Time Grid */}
-            <div className="grid grid-cols-3 gap-2">
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Date
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Date Picker (Upcoming only, Green = Available, Red = Full Booked) */}
+              <div className="flex flex-col gap-2 sm:col-span-1">
+                <label className={cn("text-sm font-semibold tracking-tight", formErrors.date ? "text-destructive" : "text-foreground")}>
+                  Date *
                 </label>
-                <Input
-                  type="date"
-                  value={formDate}
-                  onChange={(e) => setFormDate(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className={cn(
+                        "w-full h-10 justify-start text-left text-sm font-normal px-3 rounded-lg border border-input bg-transparent dark:bg-input/30 hover:bg-muted/40",
+                        !formDate && "text-muted-foreground",
+                        formErrors.date && "border-destructive text-destructive focus-visible:ring-destructive/20"
+                      )}
+                    >
+                      <CalendarIcon className={cn("mr-2 h-4 w-4 shrink-0", formErrors.date ? "text-destructive" : "text-muted-foreground")} />
+                      <span className="truncate">
+                        {formDate
+                          ? format(new Date(formDate + "T00:00:00"), "dd MMM yyyy")
+                          : "Pick date"}
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-3" align="start">
+                    <div className="space-y-3">
+                      {/* Availability Legend */}
+                      <div className="flex items-center justify-between border-b pb-2 text-xs">
+                        <span className="font-semibold text-foreground">Date Availability</span>
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-[11px]">
+                            <span className="size-2 rounded-full bg-emerald-500" /> Available
+                          </span>
+                          <span className="flex items-center gap-1 text-rose-500 font-medium text-[11px]">
+                            <span className="size-2 rounded-full bg-rose-500" /> Full
+                          </span>
+                        </div>
+                      </div>
+
+                      <CalendarPicker
+                        mode="single"
+                        selected={formDate ? new Date(formDate + "T00:00:00") : undefined}
+                        disabled={[
+                          { before: startOfDay(new Date()) },
+                          (date) => isDateBookedMock(date),
+                        ]}
+                        modifiers={{
+                          available: (date) => isDateAvailableMock(date),
+                          booked: (date) => isDateBookedMock(date) && date >= startOfDay(new Date()),
+                        }}
+                        modifiersClassNames={{
+                          available:
+                            "[&>button]:text-emerald-600 [&>button]:dark:text-emerald-400 [&>button]:font-semibold relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-emerald-500",
+                          booked:
+                            "[&>button]:text-rose-500 [&>button]:dark:text-rose-400 [&>button]:line-through relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-rose-500",
+                        }}
+                        onSelect={(d) => {
+                          if (d) {
+                            setFormDate(format(d, "yyyy-MM-dd"))
+                            setFormStartTime("")
+                            setFormEndTime("")
+                            if (formErrors.date) {
+                              setFormErrors((prev) => ({ ...prev, date: undefined }))
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {formErrors.date && (
+                  <p className="text-xs font-medium text-destructive">
+                    {formErrors.date}
+                  </p>
+                )}
               </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Start Time
+
+              {/* Start Time (Business hours 10:00-20:00, 30 min duration, green/red availability) */}
+              <div className="flex flex-col gap-2">
+                <label className={cn("text-sm font-semibold tracking-tight", formErrors.startTime ? "text-destructive" : "text-foreground")}>
+                  Start Time *
                 </label>
-                <Input
-                  type="time"
+                <Select
                   value={formStartTime}
-                  onChange={(e) => setFormStartTime(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
+                  disabled={!formDate}
+                  onValueChange={(val) => {
+                    setFormStartTime(val)
+                    const autoEnd = get30MinEndTime(val)
+                    setFormEndTime(autoEnd)
+                    if (formErrors.startTime || formErrors.endTime) {
+                      setFormErrors((prev) => ({
+                        ...prev,
+                        startTime: undefined,
+                        endTime: undefined,
+                      }))
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "h-10 font-mono text-sm",
+                      formErrors.startTime && "border-destructive text-destructive",
+                      !formDate && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    <SelectValue placeholder={!formDate ? "Pick date first" : "Select start"} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-56">
+                    <div className="px-2 py-1 text-[10px] font-semibold text-muted-foreground border-b mb-1 flex items-center justify-between">
+                      <span>10:00–20:00 (30m)</span>
+                      <span className="text-emerald-600 dark:text-emerald-400">Green = Available</span>
+                    </div>
+                    {TIME_SLOTS_30MIN.map((time) => {
+                      const isBooked = isTimeSlotBookedMock(formDate, time)
+                      return (
+                        <SelectItem
+                          key={time}
+                          value={time}
+                          disabled={isBooked}
+                          className="font-mono text-sm"
+                        >
+                          <div className="flex w-full items-center justify-between gap-3">
+                            <span className="font-semibold">{time}</span>
+                            {isBooked ? (
+                              <span className="flex items-center gap-1 text-[10px] font-medium text-rose-500">
+                                <span className="size-1.5 rounded-full bg-rose-500" /> Full
+                              </span>
+                            ) : (
+                              <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                                <span className="size-1.5 rounded-full bg-emerald-500" /> Avail
+                              </span>
+                            )}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+                {formErrors.startTime && (
+                  <p className="text-xs font-medium text-destructive">
+                    {formErrors.startTime}
+                  </p>
+                )}
               </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  End Time
+
+              {/* End Time / Duration Selection */}
+              <div className="flex flex-col gap-2">
+                <label className={cn("text-sm font-semibold tracking-tight", formErrors.endTime ? "text-destructive" : "text-foreground")}>
+                  End Time *
                 </label>
-                <Input
-                  type="time"
+                <Select
                   value={formEndTime}
-                  onChange={(e) => setFormEndTime(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
+                  disabled={!formDate || !formStartTime}
+                  onValueChange={(val) => {
+                    setFormEndTime(val)
+                    if (formErrors.endTime) {
+                      setFormErrors((prev) => ({ ...prev, endTime: undefined }))
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "h-10 font-mono text-sm",
+                      formErrors.endTime && "border-destructive text-destructive",
+                      (!formDate || !formStartTime) && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    <SelectValue placeholder={!formStartTime ? "Select start first" : "Select end"} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-56">
+                    {END_TIME_OPTIONS.filter((time) => !formStartTime || time.localeCompare(formStartTime) > 0).map((time) => {
+                      const [sh, sm] = (formStartTime || "10:00").split(":").map(Number)
+                      const [eh, em] = time.split(":").map(Number)
+                      const durationMins = (eh * 60 + em) - (sh * 60 + sm)
+                      const durationLabel = durationMins === 30 ? "30 min" : `${durationMins / 60} hr`
+
+                      return (
+                        <SelectItem
+                          key={time}
+                          value={time}
+                          className="font-mono text-sm"
+                        >
+                          <div className="flex w-full items-center justify-between gap-3">
+                            <span className="font-semibold">{time}</span>
+                            <span className="text-[10px] font-medium text-muted-foreground">
+                              ({durationLabel})
+                            </span>
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+                {formErrors.endTime && (
+                  <p className="text-xs font-medium text-destructive">
+                    {formErrors.endTime}
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* Candidate Name & Location */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Candidate / Contact
-                </label>
-                <Input
-                  placeholder="e.g. Supansa Thanakit"
-                  value={formPerson}
-                  onChange={(e) => setFormPerson(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Location / Channel
-                </label>
-                <Input
-                  placeholder="Google Meet, Phone, Office"
-                  value={formLocation}
-                  onChange={(e) => setFormLocation(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Google Meet Link & Phone */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Google Meet URL
-                </label>
-                <Input
-                  placeholder="https://meet.google.com/..."
-                  value={formMeetUrl}
-                  onChange={(e) => setFormMeetUrl(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Phone / WhatsApp
-                </label>
-                <Input
-                  placeholder="+66812345678"
-                  value={formPhone}
-                  onChange={(e) => setFormPhone(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-foreground">
-                Notes / Description
+            {/* Note Textarea */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold tracking-tight text-foreground">
+                Note <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
               </label>
               <Textarea
-                placeholder="Add notes, candidate preferences, or meeting agenda..."
+                placeholder="Add notes, agenda, or reminders for this appointment..."
                 value={formDescription}
                 onChange={(e) => setFormDescription(e.target.value)}
-                rows={3}
-                className="text-sm"
+                rows={4}
+                className="text-sm min-h-[100px] resize-none"
               />
             </div>
           </div>
 
-          <DialogFooter className="gap-2">
+          <DialogFooter className="gap-2 pt-3">
             <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
               Cancel
             </Button>
@@ -1213,124 +1558,303 @@ export function CalendarView() {
 
       {/* EDIT EVENT MODAL */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="pb-1">
             <DialogTitle className="text-lg font-bold">
               Edit Appointment
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Update appointment details, times, or notes.
+              Update appointment title, category, date, time, or note.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-2 text-sm">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-foreground">
+          <div className="space-y-5 py-2 text-sm">
+            {/* Title */}
+            <div className="flex flex-col gap-2">
+              <label className={cn("text-sm font-semibold tracking-tight", formErrors.title ? "text-destructive" : "text-foreground")}>
                 Title *
               </label>
               <Input
                 value={formTitle}
-                onChange={(e) => setFormTitle(e.target.value)}
-                className="h-9.5 text-sm"
+                onChange={(e) => {
+                  setFormTitle(e.target.value)
+                  if (formErrors.title) {
+                    setFormErrors((prev) => ({ ...prev, title: undefined }))
+                  }
+                }}
+                aria-invalid={Boolean(formErrors.title)}
+                className={cn(
+                  "h-10 text-sm",
+                  formErrors.title && "border-destructive focus-visible:ring-destructive/20"
+                )}
               />
+              {formErrors.title && (
+                <p className="text-xs font-medium text-destructive">
+                  {formErrors.title}
+                </p>
+              )}
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Date
+            {/* Category Select Dropdown */}
+            <div className="flex flex-col gap-2">
+              <label className={cn("text-sm font-semibold tracking-tight", formErrors.kind ? "text-destructive" : "text-foreground")}>
+                Category *
+              </label>
+              <Select
+                value={formKind}
+                onValueChange={(val) => {
+                  setFormKind(val as CalendarKind)
+                  if (formErrors.kind) {
+                    setFormErrors((prev) => ({ ...prev, kind: undefined }))
+                  }
+                }}
+              >
+                <SelectTrigger className={cn("h-10 text-sm", formErrors.kind && "border-destructive text-destructive")}>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {calendarKinds.map((k) => (
+                    <SelectItem
+                      key={k.value}
+                      value={k.value}
+                      disabled={k.value === "register_interest"}
+                      className="text-sm"
+                    >
+                      <div className="flex w-full items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <CategoryIcon
+                            kind={k.value}
+                            className={cn("size-4 shrink-0", kindIconColor[k.value])}
+                          />
+                          <span className="font-medium text-foreground">
+                            {k.label}
+                          </span>
+                        </div>
+                        {k.value === "register_interest" && (
+                          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground">
+                            Auto-booked
+                          </span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {formErrors.kind && (
+                <p className="text-xs font-medium text-destructive">
+                  {formErrors.kind}
+                </p>
+              )}
+            </div>
+
+            {/* Date & Time Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Date Picker */}
+              <div className="flex flex-col gap-2 sm:col-span-1">
+                <label className={cn("text-sm font-semibold tracking-tight", formErrors.date ? "text-destructive" : "text-foreground")}>
+                  Date *
                 </label>
-                <Input
-                  type="date"
-                  value={formDate}
-                  onChange={(e) => setFormDate(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className={cn(
+                        "w-full h-10 justify-start text-left text-sm font-normal px-3 rounded-lg border border-input bg-transparent dark:bg-input/30 hover:bg-muted/40",
+                        !formDate && "text-muted-foreground",
+                        formErrors.date && "border-destructive text-destructive focus-visible:ring-destructive/20"
+                      )}
+                    >
+                      <CalendarIcon className={cn("mr-2 h-4 w-4 shrink-0", formErrors.date ? "text-destructive" : "text-muted-foreground")} />
+                      <span className="truncate">
+                        {formDate
+                          ? format(new Date(formDate + "T00:00:00"), "dd MMM yyyy")
+                          : "Pick date"}
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-3" align="start">
+                    <div className="space-y-3">
+                      {/* Availability Legend */}
+                      <div className="flex items-center justify-between border-b pb-2 text-xs">
+                        <span className="font-semibold text-foreground">Date Availability</span>
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-[11px]">
+                            <span className="size-2 rounded-full bg-emerald-500" /> Available
+                          </span>
+                          <span className="flex items-center gap-1 text-rose-500 font-medium text-[11px]">
+                            <span className="size-2 rounded-full bg-rose-500" /> Full
+                          </span>
+                        </div>
+                      </div>
+
+                      <CalendarPicker
+                        mode="single"
+                        selected={formDate ? new Date(formDate + "T00:00:00") : undefined}
+                        disabled={[
+                          { before: startOfDay(new Date()) },
+                          (date) => isDateBookedMock(date),
+                        ]}
+                        modifiers={{
+                          available: (date) => isDateAvailableMock(date),
+                          booked: (date) => isDateBookedMock(date) && date >= startOfDay(new Date()),
+                        }}
+                        modifiersClassNames={{
+                          available:
+                            "[&>button]:text-emerald-600 [&>button]:dark:text-emerald-400 [&>button]:font-semibold relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-emerald-500",
+                          booked:
+                            "[&>button]:text-rose-500 [&>button]:dark:text-rose-400 [&>button]:line-through relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-rose-500",
+                        }}
+                        onSelect={(d) => {
+                          if (d) {
+                            setFormDate(format(d, "yyyy-MM-dd"))
+                            if (formErrors.date) {
+                              setFormErrors((prev) => ({ ...prev, date: undefined }))
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {formErrors.date && (
+                  <p className="text-xs font-medium text-destructive">
+                    {formErrors.date}
+                  </p>
+                )}
               </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Start Time
+
+              {/* Start Time */}
+              <div className="flex flex-col gap-2">
+                <label className={cn("text-sm font-semibold tracking-tight", formErrors.startTime ? "text-destructive" : "text-foreground")}>
+                  Start Time *
                 </label>
-                <Input
-                  type="time"
+                <Select
                   value={formStartTime}
-                  onChange={(e) => setFormStartTime(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
+                  disabled={!formDate}
+                  onValueChange={(val) => {
+                    setFormStartTime(val)
+                    const autoEnd = get30MinEndTime(val)
+                    setFormEndTime(autoEnd)
+                    if (formErrors.startTime || formErrors.endTime) {
+                      setFormErrors((prev) => ({ ...prev, startTime: undefined, endTime: undefined }))
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "h-10 font-mono text-sm",
+                      formErrors.startTime && "border-destructive text-destructive",
+                      !formDate && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    <SelectValue placeholder={!formDate ? "Pick date first" : "Select start"} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-52">
+                    {TIME_SLOTS_30MIN.map((time) => {
+                      const isBooked = isTimeSlotBookedMock(formDate, time)
+                      return (
+                        <SelectItem
+                          key={time}
+                          value={time}
+                          disabled={isBooked}
+                          className="font-mono text-sm"
+                        >
+                          <div className="flex w-full items-center justify-between gap-3">
+                            <span className="font-semibold">{time}</span>
+                            {isBooked ? (
+                              <span className="flex items-center gap-1 text-[10px] font-medium text-rose-500">
+                                <span className="size-1.5 rounded-full bg-rose-500" /> Full
+                              </span>
+                            ) : (
+                              <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                                <span className="size-1.5 rounded-full bg-emerald-500" /> Avail
+                              </span>
+                            )}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+                {formErrors.startTime && (
+                  <p className="text-xs font-medium text-destructive">
+                    {formErrors.startTime}
+                  </p>
+                )}
               </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  End Time
+
+              {/* End Time */}
+              <div className="flex flex-col gap-2">
+                <label className={cn("text-sm font-semibold tracking-tight", formErrors.endTime ? "text-destructive" : "text-foreground")}>
+                  End Time *
                 </label>
-                <Input
-                  type="time"
+                <Select
                   value={formEndTime}
-                  onChange={(e) => setFormEndTime(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
+                  disabled={!formDate || !formStartTime}
+                  onValueChange={(val) => {
+                    setFormEndTime(val)
+                    if (formErrors.endTime) {
+                      setFormErrors((prev) => ({ ...prev, endTime: undefined }))
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "h-10 font-mono text-sm",
+                      formErrors.endTime && "border-destructive text-destructive",
+                      (!formDate || !formStartTime) && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    <SelectValue placeholder={!formStartTime ? "Select start first" : "Select end"} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-52">
+                    {END_TIME_OPTIONS.filter((time) => !formStartTime || time.localeCompare(formStartTime) > 0).map((time) => {
+                      const [sh, sm] = (formStartTime || "10:00").split(":").map(Number)
+                      const [eh, em] = time.split(":").map(Number)
+                      const durationMins = (eh * 60 + em) - (sh * 60 + sm)
+                      const durationLabel = durationMins === 30 ? "30 min" : `${durationMins / 60} hr`
+
+                      return (
+                        <SelectItem
+                          key={time}
+                          value={time}
+                          className="font-mono text-sm"
+                        >
+                          <div className="flex w-full items-center justify-between gap-3">
+                            <span className="font-semibold">{time}</span>
+                            <span className="text-[10px] font-medium text-muted-foreground">
+                              ({durationLabel})
+                            </span>
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+                {formErrors.endTime && (
+                  <p className="text-xs font-medium text-destructive">
+                    {formErrors.endTime}
+                  </p>
+                )}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Candidate / Contact
-                </label>
-                <Input
-                  value={formPerson}
-                  onChange={(e) => setFormPerson(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Location / Channel
-                </label>
-                <Input
-                  value={formLocation}
-                  onChange={(e) => setFormLocation(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Google Meet URL
-                </label>
-                <Input
-                  value={formMeetUrl}
-                  onChange={(e) => setFormMeetUrl(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-foreground">
-                  Phone / WhatsApp
-                </label>
-                <Input
-                  value={formPhone}
-                  onChange={(e) => setFormPhone(e.target.value)}
-                  className="h-9.5 text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-foreground">
-                Notes / Description
+            {/* Note Textarea */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold tracking-tight text-foreground">
+                Note <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
               </label>
               <Textarea
+                placeholder="Add notes, agenda, or reminders for this appointment..."
                 value={formDescription}
                 onChange={(e) => setFormDescription(e.target.value)}
-                rows={3}
-                className="text-sm"
+                rows={4}
+                className="text-sm min-h-[100px] resize-none"
               />
             </div>
           </div>
 
-          <DialogFooter className="gap-2">
+          <DialogFooter className="gap-2 pt-3">
             <Button variant="outline" onClick={() => setIsEditOpen(false)}>
               Cancel
             </Button>

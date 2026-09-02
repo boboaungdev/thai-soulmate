@@ -150,11 +150,11 @@ const MatchmakingItems = [
     url: "/dashboard/matching",
     icon: HeartHandshake,
   },
-  {
-    title: "Google Meet",
-    url: "/dashboard/google-meet",
-    icon: Video,
-  },
+  // {
+  //   title: "Google Meet",
+  //   url: "/dashboard/google-meet",
+  //   icon: Video,
+  // },
   {
     title: "Tracking",
     url: "/dashboard/tracking",

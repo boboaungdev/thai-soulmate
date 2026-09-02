@@ -53,13 +53,7 @@ const BrandName = ({ className = "" }: { className?: string }) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      <linearGradient
-        id="review-brand-gradient"
-        x1="0"
-        y1="0"
-        x2="1"
-        y2="0"
-      >
+      <linearGradient id="review-brand-gradient" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stopColor="#D3A753" />
         <stop offset="50%" stopColor="#E791A7" />
         <stop offset="100%" stopColor="#CA617D" />
@@ -155,6 +149,8 @@ export default async function PrintWebsiteReviewPage({
         body {
           margin: 0;
           padding: 0;
+          background: var(--background);
+          color: var(--foreground);
         }
 
         *,
@@ -163,18 +159,15 @@ export default async function PrintWebsiteReviewPage({
           box-sizing: border-box;
         }
 
-        body {
-          background: #eee7df;
-        }
-
         #printable-area.website-review-document {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 30px;
           width: 100%;
+          min-height: 100vh;
           padding: 36px;
-          background: #eee7df;
+          background: var(--background);
         }
 
         .website-review-page {
@@ -182,7 +175,8 @@ export default async function PrintWebsiteReviewPage({
           width: 210mm;
           min-height: 297mm;
           max-width: 210mm;
-          background: white;
+          background: white !important;
+          color: black !important;
           padding: 15mm;
           overflow: hidden;
         }
@@ -248,7 +242,10 @@ export default async function PrintWebsiteReviewPage({
         }
       `}</style>
 
-      <main id="printable-area" className="website-review-document">
+      <main
+        id="printable-area"
+        className="website-review-document min-h-screen bg-muted/40 dark:bg-neutral-950"
+      >
         {/* ============================================================
             PAGE 1: OVERVIEW & FIRST IMPRESSION
             ============================================================ */}
@@ -302,10 +299,7 @@ export default async function PrintWebsiteReviewPage({
                 title="First Impression"
                 data={review.firstImpression}
               />
-              <DetailSection
-                title="Ease of Use"
-                data={review.easeOfUse}
-              />
+              <DetailSection title="Ease of Use" data={review.easeOfUse} />
             </div>
           </div>
 
@@ -367,10 +361,7 @@ export default async function PrintWebsiteReviewPage({
                 title="Content Quality"
                 data={review.contentQuality}
               />
-              <DetailSection
-                title="Trust & Safety"
-                data={review.trustSafety}
-              />
+              <DetailSection title="Trust & Safety" data={review.trustSafety} />
             </div>
           </div>
 

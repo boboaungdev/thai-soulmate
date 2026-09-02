@@ -103,7 +103,8 @@ const DetailGrid = ({
   items: Array<{ label: string; value: unknown }>
 }) => {
   const filtered = items.filter(
-    (item) => item.value !== null && item.value !== undefined && item.value !== ""
+    (item) =>
+      item.value !== null && item.value !== undefined && item.value !== ""
   )
   if (filtered.length === 0) return null
 
@@ -160,6 +161,8 @@ export default async function ApplicationFormPrintPage({
         body {
           margin: 0;
           padding: 0;
+          background: var(--background);
+          color: var(--foreground);
         }
 
         *,
@@ -168,18 +171,15 @@ export default async function ApplicationFormPrintPage({
           box-sizing: border-box;
         }
 
-        body {
-          background: #eee7df;
-        }
-
         #printable-area.application-form-document {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 30px;
           width: 100%;
+          min-height: 100vh;
           padding: 36px;
-          background: #eee7df;
+          background: var(--background);
         }
 
         .application-form-page {
@@ -187,7 +187,8 @@ export default async function ApplicationFormPrintPage({
           width: 210mm;
           min-height: 297mm;
           max-width: 210mm;
-          background: white;
+          background: white !important;
+          color: black !important;
           padding: 15mm;
           overflow: hidden;
         }
@@ -253,7 +254,10 @@ export default async function ApplicationFormPrintPage({
         }
       `}</style>
 
-      <main id="printable-area" className="application-form-document">
+      <main
+        id="printable-area"
+        className="application-form-document min-h-screen bg-muted/40 dark:bg-neutral-950"
+      >
         {/* ============================================================
             PAGE 1: HEADSHOT (MIDDLE TOP) & PERSONAL DETAILS
             ============================================================ */}
@@ -571,9 +575,15 @@ export default async function ApplicationFormPrintPage({
                       label: "Travel Destinations",
                       value: application.lifestyle?.travelDestinations,
                     },
-                    { label: "Exercise", value: application.lifestyle?.exercise },
+                    {
+                      label: "Exercise",
+                      value: application.lifestyle?.exercise,
+                    },
                     { label: "Smoking", value: application.lifestyle?.smoking },
-                    { label: "Drinking", value: application.lifestyle?.drinking },
+                    {
+                      label: "Drinking",
+                      value: application.lifestyle?.drinking,
+                    },
                     {
                       label: "Family Importance",
                       value: application.lifestyle?.familyImportance,
@@ -641,8 +651,14 @@ export default async function ApplicationFormPrintPage({
                 <SectionTitle>Ideal Partner & Financial</SectionTitle>
                 <DetailGrid
                   items={[
-                    { label: "Height", value: application.idealPartner?.height },
-                    { label: "Weight", value: application.idealPartner?.weight },
+                    {
+                      label: "Height",
+                      value: application.idealPartner?.height,
+                    },
+                    {
+                      label: "Weight",
+                      value: application.idealPartner?.weight,
+                    },
                     {
                       label: "Education",
                       value: application.idealPartner?.education,
@@ -667,7 +683,10 @@ export default async function ApplicationFormPrintPage({
                       label: "Own Property",
                       value: application.financial?.ownProperty,
                     },
-                    { label: "Membership Plan", value: record.membership?.plan },
+                    {
+                      label: "Membership Plan",
+                      value: record.membership?.plan,
+                    },
                     {
                       label: "Membership Starts",
                       value: record.membership?.startsAt
@@ -694,11 +713,15 @@ export default async function ApplicationFormPrintPage({
                         className="py-2.5 first:pt-0 last:pb-0"
                       >
                         <div className="flex items-start justify-between gap-4">
-                          <p className="text-xs text-gray-800">{note.message}</p>
+                          <p className="text-xs text-gray-800">
+                            {note.message}
+                          </p>
                           <p className="shrink-0 text-right text-[10px] text-gray-400">
                             {note.user?.name || "Staff"}
                             <br />
-                            {note.createdAt ? formatDateTime(note.createdAt) : ""}
+                            {note.createdAt
+                              ? formatDateTime(note.createdAt)
+                              : ""}
                           </p>
                         </div>
                       </div>
@@ -748,9 +771,7 @@ export default async function ApplicationFormPrintPage({
                 <p className="text-xs font-bold tracking-wider text-gray-500 uppercase">
                   Full Length Portrait
                 </p>
-                <p className="font-mono text-xs text-gray-400">
-                  ID: {idLabel}
-                </p>
+                <p className="font-mono text-xs text-gray-400">ID: {idLabel}</p>
               </div>
             </header>
 
@@ -829,9 +850,7 @@ export default async function ApplicationFormPrintPage({
                 <p className="text-xs font-bold tracking-wider text-gray-500 uppercase">
                   Casual Lifestyle Portrait
                 </p>
-                <p className="font-mono text-xs text-gray-400">
-                  ID: {idLabel}
-                </p>
+                <p className="font-mono text-xs text-gray-400">ID: {idLabel}</p>
               </div>
             </header>
 

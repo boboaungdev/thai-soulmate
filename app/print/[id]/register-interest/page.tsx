@@ -123,6 +123,8 @@ export default async function PrintRegisterInterestPage({
         body {
           margin: 0;
           padding: 0;
+          background: var(--background);
+          color: var(--foreground);
         }
 
         *,
@@ -131,17 +133,14 @@ export default async function PrintRegisterInterestPage({
           box-sizing: border-box;
         }
 
-        body {
-          background: #eee7df;
-        }
-
         #printable-area.register-interest-document {
           display: flex;
           flex-direction: column;
           align-items: center;
           width: 100%;
+          min-height: 100vh;
           padding: 36px;
-          background: #eee7df;
+          background: var(--background);
         }
 
         .register-interest-page {
@@ -149,7 +148,8 @@ export default async function PrintRegisterInterestPage({
           width: 210mm;
           min-height: 297mm;
           max-width: 210mm;
-          background: white;
+          background: white !important;
+          color: black !important;
           padding: 15mm;
           overflow: hidden;
         }
@@ -210,7 +210,10 @@ export default async function PrintRegisterInterestPage({
         }
       `}</style>
 
-      <main id="printable-area" className="register-interest-document">
+      <main
+        id="printable-area"
+        className="register-interest-document min-h-screen bg-muted/40 dark:bg-neutral-950"
+      >
         <section className="register-interest-page flex flex-col justify-between text-black shadow-2xl">
           <div>
             {/* App Header */}
@@ -291,10 +294,9 @@ export default async function PrintRegisterInterestPage({
                   {interest.preferredContactDate && (
                     <DetailItem
                       label="Preferred Contact Date"
-                      value={formatDateTime(interest.preferredContactDate).replace(
-                        / \d{2}:\d{2}$/,
-                        ""
-                      )}
+                      value={formatDateTime(
+                        interest.preferredContactDate
+                      ).replace(/ \d{2}:\d{2}$/, "")}
                     />
                   )}
                   {interest.preferredContactTime && (

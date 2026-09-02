@@ -164,6 +164,8 @@ export default async function ProfilePrintPage({
         body {
           margin: 0;
           padding: 0;
+          background: var(--background);
+          color: var(--foreground);
         }
 
         *,
@@ -172,18 +174,15 @@ export default async function ProfilePrintPage({
           box-sizing: border-box;
         }
 
-        body {
-          background: #eee7df;
-        }
-
         #printable-area.profile-document {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 30px;
           width: 100%;
+          min-height: 100vh;
           padding: 36px;
-          background: #eee7df;
+          background: var(--background);
         }
 
         .profile-page {
@@ -191,7 +190,8 @@ export default async function ProfilePrintPage({
           width: 210mm;
           min-height: 297mm;
           max-width: 210mm;
-          background: white;
+          background: white !important;
+          color: black !important;
           padding: 15mm;
           overflow: hidden;
         }
@@ -257,7 +257,10 @@ export default async function ProfilePrintPage({
         }
       `}</style>
 
-      <main id="printable-area" className="profile-document">
+      <main
+        id="printable-area"
+        className="profile-document min-h-screen bg-muted/40 dark:bg-neutral-950"
+      >
         {/* ============================================================
             PAGE 1: SUMMARY & OVERVIEW
             ============================================================ */}

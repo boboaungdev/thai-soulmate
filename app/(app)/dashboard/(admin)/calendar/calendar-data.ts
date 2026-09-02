@@ -33,7 +33,7 @@ export const calendarKinds: {
   {
     value: "register_interest",
     label: "Register interest",
-    hint: "Contact appointments from interest forms",
+    hint: "Interest form callbacks",
     color: "#cfa14f",
     badge:
       "border-amber-200 bg-amber-100 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300",
@@ -42,7 +42,7 @@ export const calendarKinds: {
   {
     value: "google_meet",
     label: "Google Meet",
-    hint: "Meeting video calls & virtual dates",
+    hint: "Video calls & virtual dates",
     color: "#3b82f6",
     badge:
       "border-blue-200 bg-blue-100 text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300",
@@ -51,7 +51,7 @@ export const calendarKinds: {
   {
     value: "follow_up",
     label: "Follow Up",
-    hint: "Matchmaking feedback, date review & follow-up calls",
+    hint: "Feedback & review calls",
     color: "#8b5cf6",
     badge:
       "border-purple-200 bg-purple-100 text-purple-800 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300",
@@ -60,7 +60,7 @@ export const calendarKinds: {
   {
     value: "event",
     label: "Events",
-    hint: "Team dates, mixers, and office events",
+    hint: "Mixers & office events",
     color: "#cb5d7a",
     badge:
       "border-rose-200 bg-rose-100 text-rose-800 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-300",
@@ -69,7 +69,7 @@ export const calendarKinds: {
   {
     value: "holiday",
     label: "Holidays",
-    hint: "Christmas, public holidays, office closed",
+    hint: "Public holidays & office off",
     color: "#0f9f6e",
     badge:
       "border-emerald-200 bg-emerald-100 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",

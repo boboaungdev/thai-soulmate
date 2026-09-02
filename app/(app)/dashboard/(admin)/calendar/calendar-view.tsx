@@ -30,6 +30,7 @@ import {
   Video,
   MapPin,
   Pencil,
+  PenLine,
   Trash2,
   Clock,
   User,
@@ -49,6 +50,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -166,9 +168,12 @@ export const END_TIME_OPTIONS = [
 // Mock logic for booked dates vs available dates
 export function isDateBookedMock(date: Date): boolean {
   const day = date.getDay()
+  // Saturday (6) and Sunday (0) are closed / auto red (Mon to Fri business days)
+  if (day === 0 || day === 6) return true
+
+  // For weekdays (Mon-Fri), mock occasional high-demand fully booked dates
   const dateNum = date.getDate()
-  // Mock Sundays and specific recurring dates as full
-  return day === 0 || dateNum % 7 === 3
+  return dateNum % 8 === 4
 }
 
 export function isDateAvailableMock(date: Date): boolean {
@@ -255,6 +260,98 @@ export const kindIcons: Record<CalendarKind, LucideIcon> = {
   holiday: Palmtree,
 }
 
+export interface MatchedPairOption {
+  id: string
+  trackingId: string
+  male: {
+    name: string
+    prefix: string
+    avatar?: string
+  }
+  female: {
+    name: string
+    prefix: string
+    avatar?: string
+  }
+  meetTitle: string
+}
+
+export const mockMatchedPairs: MatchedPairOption[] = [
+  {
+    id: "match-1",
+    trackingId: "TRK-2026-081",
+    male: {
+      prefix: "Mr.",
+      name: "John Doe",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
+    },
+    female: {
+      prefix: "Ms.",
+      name: "Pornyaporn Watashi",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+    },
+    meetTitle: "Google Meet · John Doe & Pornyaporn Watashi",
+  },
+  {
+    id: "match-2",
+    trackingId: "TRK-2026-092",
+    male: {
+      prefix: "Mr.",
+      name: "Alex Johnson",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+    },
+    female: {
+      prefix: "Ms.",
+      name: "Supansa Thanakit",
+      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80",
+    },
+    meetTitle: "Google Meet · Alex J. & Supansa T.",
+  },
+  {
+    id: "match-3",
+    trackingId: "TRK-2026-104",
+    male: {
+      prefix: "Mr.",
+      name: "David Miller",
+      avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80",
+    },
+    female: {
+      prefix: "Ms.",
+      name: "Nipa Charoensuk",
+      avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&auto=format&fit=crop&q=80",
+    },
+    meetTitle: "Google Meet · David M. & Nipa C.",
+  },
+  {
+    id: "match-4",
+    trackingId: "TRK-2026-115",
+    male: {
+      prefix: "Mr.",
+      name: "Marcus Bennett",
+      avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80",
+    },
+    female: {
+      prefix: "Ms.",
+      name: "Kanya Rattana",
+      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80",
+    },
+    meetTitle: "Google Meet · Marcus B. & Kanya R.",
+  },
+]
+
+export const kindIconBg: Record<CalendarKind, string> = {
+  register_interest:
+    "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25",
+  google_meet:
+    "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/25",
+  follow_up:
+    "bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/25",
+  event:
+    "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25",
+  holiday:
+    "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25",
+}
+
 export const kindIconColor: Record<CalendarKind, string> = {
   register_interest: "text-amber-500 dark:text-amber-400",
   google_meet: "text-blue-500 dark:text-blue-400",
@@ -277,6 +374,19 @@ export function CategoryIcon({
 const kindStyle = Object.fromEntries(
   calendarKinds.map((kind) => [kind.value, kind])
 ) as Record<CalendarKind, (typeof calendarKinds)[number]>
+
+const kindActiveToggle: Record<CalendarKind, string> = {
+  register_interest:
+    "data-[state=on]:bg-amber-500/12 data-[state=on]:border-amber-500/40 data-[state=on]:shadow-2xs",
+  google_meet:
+    "data-[state=on]:bg-blue-500/12 data-[state=on]:border-blue-500/40 data-[state=on]:shadow-2xs",
+  follow_up:
+    "data-[state=on]:bg-purple-500/12 data-[state=on]:border-purple-500/40 data-[state=on]:shadow-2xs",
+  event:
+    "data-[state=on]:bg-rose-500/12 data-[state=on]:border-rose-500/40 data-[state=on]:shadow-2xs",
+  holiday:
+    "data-[state=on]:bg-emerald-500/12 data-[state=on]:border-emerald-500/40 data-[state=on]:shadow-2xs",
+}
 
 const kindCardBg: Record<CalendarKind, string> = {
   register_interest:
@@ -418,10 +528,17 @@ function TaskList({
         >
           <div className="mb-1.5 flex items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
-              <CategoryIcon
-                kind={item.kind}
-                className={cn("size-4 shrink-0", kindIconColor[item.kind])}
-              />
+              <div
+                className={cn(
+                  "flex size-6 shrink-0 items-center justify-center rounded-md",
+                  kindIconBg[item.kind]
+                )}
+              >
+                <CategoryIcon
+                  kind={item.kind}
+                  className="size-3.5"
+                />
+              </div>
               <span className="truncate text-sm font-semibold text-foreground">
                 {item.title}
               </span>
@@ -478,9 +595,14 @@ export function CalendarView() {
   const [editingItem, setEditingItem] = useState<CalendarItem | null>(null)
   const [itemToDelete, setItemToDelete] = useState<CalendarItem | null>(null)
 
+  // Popover open states
+  const [isDateOpen, setIsDateOpen] = useState(false)
+  const [isEditDateOpen, setIsEditDateOpen] = useState(false)
+
   // Form states
   const [formTitle, setFormTitle] = useState("")
   const [formKind, setFormKind] = useState<CalendarKind>("google_meet")
+  const [selectedMatchedPair, setSelectedMatchedPair] = useState("")
   const [formDate, setFormDate] = useState("")
   const [formStartTime, setFormStartTime] = useState("")
   const [formEndTime, setFormEndTime] = useState("")
@@ -559,6 +681,11 @@ export function CalendarView() {
       return
     }
 
+    if (clickedDate.getDay() === 0 || clickedDate.getDay() === 6) {
+      toast.error("Appointments are available Monday to Friday only.")
+      return
+    }
+
     if (isDateBookedMock(clickedDate)) {
       toast.error("This date is fully booked. Please select an available date.")
       return
@@ -590,7 +717,9 @@ export function CalendarView() {
     setFormPhone("")
     setFormDescription("")
     setFormKind("google_meet")
+    setSelectedMatchedPair("")
     setFormErrors({})
+    setIsDateOpen(false)
     setIsCreateOpen(true)
   }
 
@@ -605,6 +734,7 @@ export function CalendarView() {
     setFormPhone("")
     setFormDescription("")
     setFormKind("google_meet")
+    setSelectedMatchedPair("")
     setFormErrors({})
     setIsCreateOpen(true)
   }
@@ -693,6 +823,7 @@ export function CalendarView() {
     setFormPhone(item.phone || "")
     setFormDescription(item.description || "")
     setFormErrors({})
+    setIsEditDateOpen(false)
     setIsEditOpen(true)
   }
 
@@ -826,27 +957,28 @@ export function CalendarView() {
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
         {/* CALENDAR MAIN CARD */}
         <Card className="overflow-hidden py-0 shadow-sm">
-          <CardHeader className="gap-4 border-b px-6 py-4">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="space-y-1">
-                <CardTitle className="text-xl font-bold">Calendar</CardTitle>
-                <CardDescription>
-                  Business hours Monday–Friday, 10:00–20:00
-                </CardDescription>
+          <CardHeader className="gap-3.5 border-b px-6 py-4">
+            <div className="space-y-1">
+              <CardTitle className="text-xl font-bold">Calendar</CardTitle>
+              <CardDescription className="text-sm">
+                Manage consultations, Google Meet video dates, and follow-up schedules.
+              </CardDescription>
+            </div>
+
+            {/* CONTROLS ROW UNDER SUBTITLE */}
+            <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
+              {/* SEARCH INPUT */}
+              <div className="relative w-full sm:max-w-xs">
+                <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search calendar..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-9 pl-9 text-sm"
+                />
               </div>
 
-              <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
-                {/* SEARCH INPUT */}
-                <div className="relative w-full sm:w-48">
-                  <Search className="absolute top-2.5 left-2.5 h-3.5 w-3.5 text-muted-foreground" />
-                  <Input
-                    placeholder="Search calendar..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-9 pl-8 text-sm"
-                  />
-                </div>
-
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 {/* PREVIOUS / TODAY / NEXT */}
                 <div className="flex items-center gap-1">
                   <Button
@@ -973,36 +1105,56 @@ export function CalendarView() {
             </CardHeader>
 
             <CardContent className="flex flex-col gap-2 px-6 pb-5">
-              {counts.map((kind) => (
-                <Toggle
-                  key={kind.value}
-                  pressed={visibleKinds.includes(kind.value)}
-                  onPressedChange={() => toggleKind(kind.value)}
-                  variant="outline"
-                  className="h-auto w-full justify-start gap-3 p-3 text-left transition-all"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted/60">
-                    <CategoryIcon
-                      kind={kind.value}
-                      className={cn("size-4", kindIconColor[kind.value])}
-                    />
-                  </div>
-
-                  <span className="flex min-w-0 flex-1 flex-col items-start text-left">
-                    <span className="text-sm font-semibold">{kind.label}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {kind.hint}
-                    </span>
-                  </span>
-
-                  <Badge
-                    variant="secondary"
-                    className="px-2 py-0.5 font-mono text-xs font-bold"
+              {counts.map((kind) => {
+                const isSelected = visibleKinds.includes(kind.value)
+                return (
+                  <Toggle
+                    key={kind.value}
+                    pressed={isSelected}
+                    onPressedChange={() => toggleKind(kind.value)}
+                    variant="outline"
+                    className={cn(
+                      "h-auto w-full justify-start gap-3 p-3 text-left transition-all",
+                      "bg-card/40 border-border/60 hover:bg-muted/40 hover:border-border",
+                      "data-[state=off]:opacity-55 hover:data-[state=off]:opacity-90 hover:data-[state=off]:bg-muted/30",
+                      kindActiveToggle[kind.value]
+                    )}
                   >
-                    {kind.count}
-                  </Badge>
-                </Toggle>
-              ))}
+                    <div
+                      className={cn(
+                        "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all",
+                        isSelected
+                          ? kindIconBg[kind.value]
+                          : "bg-muted/60 text-muted-foreground border border-border/40"
+                      )}
+                    >
+                      <CategoryIcon
+                        kind={kind.value}
+                        className="size-4"
+                      />
+                    </div>
+
+                    <span className="flex min-w-0 flex-1 flex-col items-start text-left">
+                      <span className="text-sm font-semibold text-foreground">{kind.label}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {kind.hint}
+                      </span>
+                    </span>
+
+                    <Badge
+                      variant="secondary"
+                      className={cn(
+                        "px-2 py-0.5 font-mono text-xs font-bold transition-all",
+                        isSelected
+                          ? "bg-foreground/10 text-foreground border-transparent"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {kind.count}
+                    </Badge>
+                  </Toggle>
+                )
+              })}
             </CardContent>
           </Card>
 
@@ -1238,7 +1390,7 @@ export function CalendarView() {
 
       {/* CREATE EVENT MODAL */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-xl">
           <DialogHeader className="pb-1">
             <DialogTitle className="text-lg font-bold">
               Schedule New Appointment
@@ -1254,21 +1406,24 @@ export function CalendarView() {
               <label className={cn("text-sm font-semibold tracking-tight", formErrors.title ? "text-destructive" : "text-foreground")}>
                 Title *
               </label>
-              <Input
-                placeholder="e.g. Video Intro · Alex J. & Supansa T."
-                value={formTitle}
-                onChange={(e) => {
-                  setFormTitle(e.target.value)
-                  if (formErrors.title) {
-                    setFormErrors((prev) => ({ ...prev, title: undefined }))
-                  }
-                }}
-                aria-invalid={Boolean(formErrors.title)}
-                className={cn(
-                  "h-10 text-sm",
-                  formErrors.title && "border-destructive focus-visible:ring-destructive/20"
-                )}
-              />
+              <div className="relative">
+                <PenLine className={cn("absolute left-3 top-1/2 -translate-y-1/2 size-4 pointer-events-none transition-colors", formErrors.title ? "text-destructive" : "text-muted-foreground")} />
+                <Input
+                  placeholder="e.g. Video Intro · Alex J. & Supansa T."
+                  value={formTitle}
+                  onChange={(e) => {
+                    setFormTitle(e.target.value)
+                    if (formErrors.title) {
+                      setFormErrors((prev) => ({ ...prev, title: undefined }))
+                    }
+                  }}
+                  aria-invalid={Boolean(formErrors.title)}
+                  className={cn(
+                    "h-10 pl-9 text-sm",
+                    formErrors.title && "border-destructive focus-visible:ring-destructive/20"
+                  )}
+                />
+              </div>
               {formErrors.title && (
                 <p className="text-xs font-medium text-destructive">
                   {formErrors.title}
@@ -1303,10 +1458,17 @@ export function CalendarView() {
                     >
                       <div className="flex w-full items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
-                          <CategoryIcon
-                            kind={k.value}
-                            className={cn("size-4 shrink-0", kindIconColor[k.value])}
-                          />
+                          <div
+                            className={cn(
+                              "flex size-6 shrink-0 items-center justify-center rounded-md",
+                              kindIconBg[k.value]
+                            )}
+                          >
+                            <CategoryIcon
+                              kind={k.value}
+                              className="size-3.5"
+                            />
+                          </div>
                           <span className="font-medium text-foreground">
                             {k.label}
                           </span>
@@ -1328,88 +1490,145 @@ export function CalendarView() {
               )}
             </div>
 
-            {/* Date & Time Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {/* Date Picker (Upcoming only, Green = Available, Red = Full Booked) */}
-              <div className="flex flex-col gap-2 sm:col-span-1">
-                <label className={cn("text-sm font-semibold tracking-tight", formErrors.date ? "text-destructive" : "text-foreground")}>
-                  Date *
-                </label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        "w-full h-10 justify-start text-left text-sm font-normal px-3 rounded-lg border border-input bg-transparent dark:bg-input/30 hover:bg-muted/40",
-                        !formDate && "text-muted-foreground",
-                        formErrors.date && "border-destructive text-destructive focus-visible:ring-destructive/20"
-                      )}
-                    >
-                      <CalendarIcon className={cn("mr-2 h-4 w-4 shrink-0", formErrors.date ? "text-destructive" : "text-muted-foreground")} />
-                      <span className="truncate">
-                        {formDate
-                          ? format(new Date(formDate + "T00:00:00"), "dd MMM yyyy")
-                          : "Pick date"}
-                      </span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-3" align="start">
-                    <div className="space-y-3">
-                      {/* Availability Legend */}
-                      <div className="flex items-center justify-between border-b pb-2 text-xs">
-                        <span className="font-semibold text-foreground">Date Availability</span>
-                        <div className="flex items-center gap-3">
-                          <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-[11px]">
-                            <span className="size-2 rounded-full bg-emerald-500" /> Available
-                          </span>
-                          <span className="flex items-center gap-1 text-rose-500 font-medium text-[11px]">
-                            <span className="size-2 rounded-full bg-rose-500" /> Full
-                          </span>
+            {/* Matched Pair Selection for Google Meet */}
+            {formKind === "google_meet" && (
+              <div className="flex flex-col gap-2 rounded-xl border border-blue-500/30 bg-blue-500/5 p-3.5 dark:bg-blue-500/10">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-1.5">
+                    <Video className="size-4 text-blue-500" />
+                    <span>Matched Members</span>
+                  </label>
+                  <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
+                    Both Accepted
+                  </span>
+                </div>
+
+                <Select
+                  value={selectedMatchedPair}
+                  onValueChange={(val) => {
+                    setSelectedMatchedPair(val)
+                    const pair = mockMatchedPairs.find((p) => p.id === val)
+                    if (pair) {
+                      setFormTitle(pair.meetTitle)
+                      setFormPerson(`${pair.male.prefix} ${pair.male.name} & ${pair.female.prefix} ${pair.female.name}`)
+                      setFormMeetUrl(`https://meet.google.com/tsm-${pair.trackingId.toLowerCase()}`)
+                      if (formErrors.title) {
+                        setFormErrors((prev) => ({ ...prev, title: undefined }))
+                      }
+                    }
+                  }}
+                >
+                  <SelectTrigger className="h-auto min-h-12 py-2 text-sm bg-background/90 dark:bg-background/70">
+                    <SelectValue placeholder="Select matched members for Google Meet..." />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    {mockMatchedPairs.map((pair) => (
+                      <SelectItem key={pair.id} value={pair.id} className="py-2.5 px-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          {/* Male Avatar + Name */}
+                          <div className="flex items-center gap-2">
+                            <Avatar className="size-7.5 shrink-0 ring-1.5 ring-[#CFA14F]/80 ring-offset-1 ring-offset-background shadow-2xs">
+                              <AvatarImage src={pair.male.avatar} />
+                              <AvatarFallback className="text-xs font-semibold">
+                                {pair.male.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm font-semibold text-foreground truncate">
+                              {pair.male.prefix} {pair.male.name}
+                            </span>
+                          </div>
+
+                          <span className="text-muted-foreground text-sm font-bold px-0.5">&</span>
+
+                          {/* Female Avatar + Name */}
+                          <div className="flex items-center gap-2">
+                            <Avatar className="size-7.5 shrink-0 ring-1.5 ring-pink-400/80 ring-offset-1 ring-offset-background shadow-2xs">
+                              <AvatarImage src={pair.female.avatar} />
+                              <AvatarFallback className="text-xs font-semibold">
+                                {pair.female.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm font-semibold text-foreground truncate">
+                              {pair.female.prefix} {pair.female.name}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-
-                      <CalendarPicker
-                        mode="single"
-                        selected={formDate ? new Date(formDate + "T00:00:00") : undefined}
-                        disabled={[
-                          { before: startOfDay(new Date()) },
-                          (date) => isDateBookedMock(date),
-                        ]}
-                        modifiers={{
-                          available: (date) => isDateAvailableMock(date),
-                          booked: (date) => isDateBookedMock(date) && date >= startOfDay(new Date()),
-                        }}
-                        modifiersClassNames={{
-                          available:
-                            "[&>button]:text-emerald-600 [&>button]:dark:text-emerald-400 [&>button]:font-semibold relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-emerald-500",
-                          booked:
-                            "[&>button]:text-rose-500 [&>button]:dark:text-rose-400 [&>button]:line-through relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-rose-500",
-                        }}
-                        onSelect={(d) => {
-                          if (d) {
-                            setFormDate(format(d, "yyyy-MM-dd"))
-                            setFormStartTime("")
-                            setFormEndTime("")
-                            if (formErrors.date) {
-                              setFormErrors((prev) => ({ ...prev, date: undefined }))
-                            }
-                          }
-                        }}
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                {formErrors.date && (
-                  <p className="text-xs font-medium text-destructive">
-                    {formErrors.date}
-                  </p>
-                )}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+            )}
 
-              {/* Start Time (Business hours 10:00-20:00, 30 min duration, green/red availability) */}
+            {/* Date (One full row) */}
+            <div className="flex flex-col gap-2">
+              <label className={cn("text-sm font-semibold tracking-tight", formErrors.date ? "text-destructive" : "text-foreground")}>
+                Date * <span className="text-xs font-normal text-muted-foreground">(Mon – Fri)</span>
+              </label>
+              <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "w-full h-10 justify-start text-left text-sm font-normal px-3 rounded-lg border border-input bg-transparent dark:bg-input/30 hover:bg-muted/40",
+                      !formDate && "text-muted-foreground",
+                      formErrors.date && "border-destructive text-destructive focus-visible:ring-destructive/20"
+                    )}
+                  >
+                    <CalendarIcon className={cn("mr-2 h-4 w-4 shrink-0", formErrors.date ? "text-destructive" : "text-muted-foreground")} />
+                    <span className="truncate">
+                      {formDate
+                        ? format(new Date(formDate + "T00:00:00"), "EEEE, dd MMMM yyyy")
+                        : "Pick appointment date"}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-1.5" align="start">
+                  <div>
+                    <CalendarPicker
+                      mode="single"
+                      selected={formDate ? new Date(formDate + "T00:00:00") : undefined}
+                      disabled={[
+                        { before: startOfDay(new Date()) },
+                        (date) => isDateBookedMock(date),
+                      ]}
+                      modifiers={{
+                        available: (date) => isDateAvailableMock(date),
+                        booked: (date) => isDateBookedMock(date) && date >= startOfDay(new Date()),
+                      }}
+                      modifiersClassNames={{
+                        available:
+                          "[&>button]:text-emerald-600 [&>button]:dark:text-emerald-400 [&>button]:font-semibold relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-emerald-500",
+                        booked:
+                          "[&>button]:text-rose-500 [&>button]:dark:text-rose-400 [&>button]:line-through relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-rose-500",
+                      }}
+                      onSelect={(d) => {
+                        if (d) {
+                          setFormDate(format(d, "yyyy-MM-dd"))
+                          setFormStartTime("")
+                          setFormEndTime("")
+                          if (formErrors.date) {
+                            setFormErrors((prev) => ({ ...prev, date: undefined }))
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+              {formErrors.date && (
+                <p className="text-xs font-medium text-destructive">
+                  {formErrors.date}
+                </p>
+              )}
+            </div>
+
+            {/* Times (One row with 2 columns: Start Time & End Time) */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Start Time */}
               <div className="flex flex-col gap-2">
                 <label className={cn("text-sm font-semibold tracking-tight", formErrors.startTime ? "text-destructive" : "text-foreground")}>
-                  Start Time *
+                  Start Time * <span className="text-xs font-normal text-muted-foreground">(10:00 – 20:00)</span>
                 </label>
                 <Select
                   value={formStartTime}
@@ -1434,12 +1653,18 @@ export function CalendarView() {
                       !formDate && "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    <SelectValue placeholder={!formDate ? "Pick date first" : "Select start"} />
+                    <div className="flex items-center gap-2 truncate">
+                      <Clock className={cn("size-4 shrink-0", formErrors.startTime ? "text-destructive" : "text-muted-foreground")} />
+                      <SelectValue placeholder={!formDate ? "Pick date first" : "Select start"} />
+                    </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-56">
-                    <div className="px-2 py-1 text-[10px] font-semibold text-muted-foreground border-b mb-1 flex items-center justify-between">
-                      <span>10:00–20:00 (30m)</span>
-                      <span className="text-emerald-600 dark:text-emerald-400">Green = Available</span>
+                    <div className="px-2.5 py-1.5 text-xs font-semibold text-muted-foreground border-b mb-1 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="size-3.5 text-primary" />
+                        <span>Business Hours: </span>
+                      </span>
+                      <span className="font-bold text-foreground">10:00 – 20:00</span>
                     </div>
                     {TIME_SLOTS_30MIN.map((time) => {
                       const isBooked = isTimeSlotBookedMock(formDate, time)
@@ -1451,14 +1676,17 @@ export function CalendarView() {
                           className="font-mono text-sm"
                         >
                           <div className="flex w-full items-center justify-between gap-3">
-                            <span className="font-semibold">{time}</span>
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="size-3.5 shrink-0 text-muted-foreground" />
+                              <span className="font-semibold">{time}</span>
+                            </div>
                             {isBooked ? (
                               <span className="flex items-center gap-1 text-[10px] font-medium text-rose-500">
                                 <span className="size-1.5 rounded-full bg-rose-500" /> Full
                               </span>
                             ) : (
                               <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                                <span className="size-1.5 rounded-full bg-emerald-500" /> Avail
+                                <span className="size-1.5 rounded-full bg-emerald-500" /> Available
                               </span>
                             )}
                           </div>
@@ -1477,7 +1705,7 @@ export function CalendarView() {
               {/* End Time / Duration Selection */}
               <div className="flex flex-col gap-2">
                 <label className={cn("text-sm font-semibold tracking-tight", formErrors.endTime ? "text-destructive" : "text-foreground")}>
-                  End Time *
+                  End Time * <span className="text-xs font-normal text-muted-foreground">(30m slot)</span>
                 </label>
                 <Select
                   value={formEndTime}
@@ -1496,9 +1724,16 @@ export function CalendarView() {
                       (!formDate || !formStartTime) && "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    <SelectValue placeholder={!formStartTime ? "Select start first" : "Select end"} />
+                    <div className="flex items-center gap-2 truncate">
+                      <Clock className={cn("size-4 shrink-0", formErrors.endTime ? "text-destructive" : "text-muted-foreground")} />
+                      <SelectValue placeholder={!formStartTime ? "Select start first" : "Select end"} />
+                    </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-56">
+                    <div className="px-2.5 py-1.5 text-xs font-semibold text-muted-foreground border-b mb-1 flex items-center gap-1.5">
+                      <Clock className="size-3.5 text-primary" />
+                      <span>Business Hours: <strong className="text-foreground">10:00 – 20:00</strong></span>
+                    </div>
                     {END_TIME_OPTIONS.filter((time) => !formStartTime || time.localeCompare(formStartTime) > 0).map((time) => {
                       const [sh, sm] = (formStartTime || "10:00").split(":").map(Number)
                       const [eh, em] = time.split(":").map(Number)
@@ -1512,7 +1747,10 @@ export function CalendarView() {
                           className="font-mono text-sm"
                         >
                           <div className="flex w-full items-center justify-between gap-3">
-                            <span className="font-semibold">{time}</span>
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="size-3.5 shrink-0 text-muted-foreground" />
+                              <span className="font-semibold">{time}</span>
+                            </div>
                             <span className="text-[10px] font-medium text-muted-foreground">
                               ({durationLabel})
                             </span>
@@ -1558,7 +1796,7 @@ export function CalendarView() {
 
       {/* EDIT EVENT MODAL */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-xl">
           <DialogHeader className="pb-1">
             <DialogTitle className="text-lg font-bold">
               Edit Appointment
@@ -1574,20 +1812,23 @@ export function CalendarView() {
               <label className={cn("text-sm font-semibold tracking-tight", formErrors.title ? "text-destructive" : "text-foreground")}>
                 Title *
               </label>
-              <Input
-                value={formTitle}
-                onChange={(e) => {
-                  setFormTitle(e.target.value)
-                  if (formErrors.title) {
-                    setFormErrors((prev) => ({ ...prev, title: undefined }))
-                  }
-                }}
-                aria-invalid={Boolean(formErrors.title)}
-                className={cn(
-                  "h-10 text-sm",
-                  formErrors.title && "border-destructive focus-visible:ring-destructive/20"
-                )}
-              />
+              <div className="relative">
+                <PenLine className={cn("absolute left-3 top-1/2 -translate-y-1/2 size-4 pointer-events-none transition-colors", formErrors.title ? "text-destructive" : "text-muted-foreground")} />
+                <Input
+                  value={formTitle}
+                  onChange={(e) => {
+                    setFormTitle(e.target.value)
+                    if (formErrors.title) {
+                      setFormErrors((prev) => ({ ...prev, title: undefined }))
+                    }
+                  }}
+                  aria-invalid={Boolean(formErrors.title)}
+                  className={cn(
+                    "h-10 pl-9 text-sm",
+                    formErrors.title && "border-destructive focus-visible:ring-destructive/20"
+                  )}
+                />
+              </div>
               {formErrors.title && (
                 <p className="text-xs font-medium text-destructive">
                   {formErrors.title}
@@ -1622,10 +1863,17 @@ export function CalendarView() {
                     >
                       <div className="flex w-full items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
-                          <CategoryIcon
-                            kind={k.value}
-                            className={cn("size-4 shrink-0", kindIconColor[k.value])}
-                          />
+                          <div
+                            className={cn(
+                              "flex size-6 shrink-0 items-center justify-center rounded-md",
+                              kindIconBg[k.value]
+                            )}
+                          >
+                            <CategoryIcon
+                              kind={k.value}
+                              className="size-3.5"
+                            />
+                          </div>
                           <span className="font-medium text-foreground">
                             {k.label}
                           </span>
@@ -1647,86 +1895,145 @@ export function CalendarView() {
               )}
             </div>
 
-            {/* Date & Time Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {/* Date Picker */}
-              <div className="flex flex-col gap-2 sm:col-span-1">
-                <label className={cn("text-sm font-semibold tracking-tight", formErrors.date ? "text-destructive" : "text-foreground")}>
-                  Date *
-                </label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        "w-full h-10 justify-start text-left text-sm font-normal px-3 rounded-lg border border-input bg-transparent dark:bg-input/30 hover:bg-muted/40",
-                        !formDate && "text-muted-foreground",
-                        formErrors.date && "border-destructive text-destructive focus-visible:ring-destructive/20"
-                      )}
-                    >
-                      <CalendarIcon className={cn("mr-2 h-4 w-4 shrink-0", formErrors.date ? "text-destructive" : "text-muted-foreground")} />
-                      <span className="truncate">
-                        {formDate
-                          ? format(new Date(formDate + "T00:00:00"), "dd MMM yyyy")
-                          : "Pick date"}
-                      </span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-3" align="start">
-                    <div className="space-y-3">
-                      {/* Availability Legend */}
-                      <div className="flex items-center justify-between border-b pb-2 text-xs">
-                        <span className="font-semibold text-foreground">Date Availability</span>
-                        <div className="flex items-center gap-3">
-                          <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-[11px]">
-                            <span className="size-2 rounded-full bg-emerald-500" /> Available
-                          </span>
-                          <span className="flex items-center gap-1 text-rose-500 font-medium text-[11px]">
-                            <span className="size-2 rounded-full bg-rose-500" /> Full
-                          </span>
+            {/* Matched Pair Selection for Google Meet */}
+            {formKind === "google_meet" && (
+              <div className="flex flex-col gap-2 rounded-xl border border-blue-500/30 bg-blue-500/5 p-3.5 dark:bg-blue-500/10">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-1.5">
+                    <Video className="size-4 text-blue-500" />
+                    <span>Matched Members</span>
+                  </label>
+                  <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
+                    Both Accepted
+                  </span>
+                </div>
+
+                <Select
+                  value={selectedMatchedPair}
+                  onValueChange={(val) => {
+                    setSelectedMatchedPair(val)
+                    const pair = mockMatchedPairs.find((p) => p.id === val)
+                    if (pair) {
+                      setFormTitle(pair.meetTitle)
+                      setFormPerson(`${pair.male.prefix} ${pair.male.name} & ${pair.female.prefix} ${pair.female.name}`)
+                      setFormMeetUrl(`https://meet.google.com/tsm-${pair.trackingId.toLowerCase()}`)
+                      if (formErrors.title) {
+                        setFormErrors((prev) => ({ ...prev, title: undefined }))
+                      }
+                    }
+                  }}
+                >
+                  <SelectTrigger className="h-auto min-h-12 py-2 text-sm bg-background/90 dark:bg-background/70">
+                    <SelectValue placeholder="Select matched members for Google Meet..." />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    {mockMatchedPairs.map((pair) => (
+                      <SelectItem key={pair.id} value={pair.id} className="py-2.5 px-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          {/* Male Avatar + Name */}
+                          <div className="flex items-center gap-2">
+                            <Avatar className="size-7.5 shrink-0 ring-1.5 ring-[#CFA14F]/80 ring-offset-1 ring-offset-background shadow-2xs">
+                              <AvatarImage src={pair.male.avatar} />
+                              <AvatarFallback className="text-xs font-semibold">
+                                {pair.male.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm font-semibold text-foreground truncate">
+                              {pair.male.prefix} {pair.male.name}
+                            </span>
+                          </div>
+
+                          <span className="text-muted-foreground text-sm font-bold px-0.5">&</span>
+
+                          {/* Female Avatar + Name */}
+                          <div className="flex items-center gap-2">
+                            <Avatar className="size-7.5 shrink-0 ring-1.5 ring-pink-400/80 ring-offset-1 ring-offset-background shadow-2xs">
+                              <AvatarImage src={pair.female.avatar} />
+                              <AvatarFallback className="text-xs font-semibold">
+                                {pair.female.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm font-semibold text-foreground truncate">
+                              {pair.female.prefix} {pair.female.name}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-
-                      <CalendarPicker
-                        mode="single"
-                        selected={formDate ? new Date(formDate + "T00:00:00") : undefined}
-                        disabled={[
-                          { before: startOfDay(new Date()) },
-                          (date) => isDateBookedMock(date),
-                        ]}
-                        modifiers={{
-                          available: (date) => isDateAvailableMock(date),
-                          booked: (date) => isDateBookedMock(date) && date >= startOfDay(new Date()),
-                        }}
-                        modifiersClassNames={{
-                          available:
-                            "[&>button]:text-emerald-600 [&>button]:dark:text-emerald-400 [&>button]:font-semibold relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-emerald-500",
-                          booked:
-                            "[&>button]:text-rose-500 [&>button]:dark:text-rose-400 [&>button]:line-through relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-rose-500",
-                        }}
-                        onSelect={(d) => {
-                          if (d) {
-                            setFormDate(format(d, "yyyy-MM-dd"))
-                            if (formErrors.date) {
-                              setFormErrors((prev) => ({ ...prev, date: undefined }))
-                            }
-                          }
-                        }}
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                {formErrors.date && (
-                  <p className="text-xs font-medium text-destructive">
-                    {formErrors.date}
-                  </p>
-                )}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+            )}
 
+            {/* Date (One full row) */}
+            <div className="flex flex-col gap-2">
+              <label className={cn("text-sm font-semibold tracking-tight", formErrors.date ? "text-destructive" : "text-foreground")}>
+                Date * <span className="text-xs font-normal text-muted-foreground">(Mon – Fri)</span>
+              </label>
+              <Popover open={isEditDateOpen} onOpenChange={setIsEditDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "w-full h-10 justify-start text-left text-sm font-normal px-3 rounded-lg border border-input bg-transparent dark:bg-input/30 hover:bg-muted/40",
+                      !formDate && "text-muted-foreground",
+                      formErrors.date && "border-destructive text-destructive focus-visible:ring-destructive/20"
+                    )}
+                  >
+                    <CalendarIcon className={cn("mr-2 h-4 w-4 shrink-0", formErrors.date ? "text-destructive" : "text-muted-foreground")} />
+                    <span className="truncate">
+                      {formDate
+                        ? format(new Date(formDate + "T00:00:00"), "EEEE, dd MMMM yyyy")
+                        : "Pick appointment date"}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-1.5" align="start">
+                  <div>
+                    <CalendarPicker
+                      mode="single"
+                      selected={formDate ? new Date(formDate + "T00:00:00") : undefined}
+                      disabled={[
+                        { before: startOfDay(new Date()) },
+                        (date) => isDateBookedMock(date),
+                      ]}
+                      modifiers={{
+                        available: (date) => isDateAvailableMock(date),
+                        booked: (date) => isDateBookedMock(date) && date >= startOfDay(new Date()),
+                      }}
+                      modifiersClassNames={{
+                        available:
+                          "[&>button]:text-emerald-600 [&>button]:dark:text-emerald-400 [&>button]:font-semibold relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-emerald-500",
+                        booked:
+                          "[&>button]:text-rose-500 [&>button]:dark:text-rose-400 [&>button]:line-through relative after:absolute after:bottom-1 after:size-1 after:rounded-full after:bg-rose-500",
+                      }}
+                      onSelect={(d) => {
+                        if (d) {
+                          setFormDate(format(d, "yyyy-MM-dd"))
+                          setFormStartTime("")
+                          setFormEndTime("")
+                          if (formErrors.date) {
+                            setFormErrors((prev) => ({ ...prev, date: undefined }))
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+              {formErrors.date && (
+                <p className="text-xs font-medium text-destructive">
+                  {formErrors.date}
+                </p>
+              )}
+            </div>
+
+            {/* Times (One row with 2 columns: Start Time & End Time) */}
+            <div className="grid grid-cols-2 gap-3">
               {/* Start Time */}
               <div className="flex flex-col gap-2">
                 <label className={cn("text-sm font-semibold tracking-tight", formErrors.startTime ? "text-destructive" : "text-foreground")}>
-                  Start Time *
+                  Start Time * <span className="text-xs font-normal text-muted-foreground">(10:00 – 20:00)</span>
                 </label>
                 <Select
                   value={formStartTime}
@@ -1747,7 +2054,10 @@ export function CalendarView() {
                       !formDate && "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    <SelectValue placeholder={!formDate ? "Pick date first" : "Select start"} />
+                    <div className="flex items-center gap-2 truncate">
+                      <Clock className={cn("size-4 shrink-0", formErrors.startTime ? "text-destructive" : "text-muted-foreground")} />
+                      <SelectValue placeholder={!formDate ? "Pick date first" : "Select start"} />
+                    </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-52">
                     {TIME_SLOTS_30MIN.map((time) => {
@@ -1760,14 +2070,17 @@ export function CalendarView() {
                           className="font-mono text-sm"
                         >
                           <div className="flex w-full items-center justify-between gap-3">
-                            <span className="font-semibold">{time}</span>
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="size-3.5 shrink-0 text-muted-foreground" />
+                              <span className="font-semibold">{time}</span>
+                            </div>
                             {isBooked ? (
                               <span className="flex items-center gap-1 text-[10px] font-medium text-rose-500">
                                 <span className="size-1.5 rounded-full bg-rose-500" /> Full
                               </span>
                             ) : (
                               <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                                <span className="size-1.5 rounded-full bg-emerald-500" /> Avail
+                                <span className="size-1.5 rounded-full bg-emerald-500" /> Available
                               </span>
                             )}
                           </div>
@@ -1786,7 +2099,7 @@ export function CalendarView() {
               {/* End Time */}
               <div className="flex flex-col gap-2">
                 <label className={cn("text-sm font-semibold tracking-tight", formErrors.endTime ? "text-destructive" : "text-foreground")}>
-                  End Time *
+                  End Time * <span className="text-xs font-normal text-muted-foreground">(30m slot)</span>
                 </label>
                 <Select
                   value={formEndTime}
@@ -1805,7 +2118,10 @@ export function CalendarView() {
                       (!formDate || !formStartTime) && "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    <SelectValue placeholder={!formStartTime ? "Select start first" : "Select end"} />
+                    <div className="flex items-center gap-2 truncate">
+                      <Clock className={cn("size-4 shrink-0", formErrors.endTime ? "text-destructive" : "text-muted-foreground")} />
+                      <SelectValue placeholder={!formStartTime ? "Select start first" : "Select end"} />
+                    </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-52">
                     {END_TIME_OPTIONS.filter((time) => !formStartTime || time.localeCompare(formStartTime) > 0).map((time) => {
@@ -1821,7 +2137,10 @@ export function CalendarView() {
                           className="font-mono text-sm"
                         >
                           <div className="flex w-full items-center justify-between gap-3">
-                            <span className="font-semibold">{time}</span>
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="size-3.5 shrink-0 text-muted-foreground" />
+                              <span className="font-semibold">{time}</span>
+                            </div>
                             <span className="text-[10px] font-medium text-muted-foreground">
                               ({durationLabel})
                             </span>

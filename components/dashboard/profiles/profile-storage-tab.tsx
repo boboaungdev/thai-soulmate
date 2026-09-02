@@ -30,6 +30,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Dialog,
   DialogContent,
@@ -488,94 +489,104 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {/* All Files "Root" Folder Card */}
-          <div
-            onClick={() => setActiveFolderId(null)}
-            className={`flex cursor-pointer items-center justify-between rounded-xl border p-3.5 transition-all ${
-              activeFolderId === null
-                ? "border-primary bg-primary/10 shadow-sm"
-                : "border-border/60 bg-card hover:border-border hover:bg-accent/40"
-            }`}
-          >
-            <div className="flex items-center gap-2.5 overflow-hidden">
-              <FolderOpen
-                className={`h-5 w-5 shrink-0 ${
-                  activeFolderId === null ? "text-primary" : "text-amber-500"
-                }`}
-              />
-              <div className="truncate">
-                <p className="truncate text-xs font-semibold text-foreground">
-                  All Files
-                </p>
-                <p className="text-[10px] text-muted-foreground">
-                  {files.length} items
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* User Folders */}
-          {folders.map((folder) => {
-            const folderFilesCount = files.filter(
-              (f) => f.folderId === folder.id
-            ).length
-            const isSelected = activeFolderId === folder.id
-
-            return (
+          {loading ? (
+            [...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-16 rounded-xl" />
+            ))
+          ) : (
+            <>
+              {/* All Files "Root" Folder Card */}
               <div
-                key={folder.id}
-                onClick={() => setActiveFolderId(folder.id)}
-                className={`group relative flex cursor-pointer items-center justify-between rounded-xl border p-3.5 transition-all ${
-                  isSelected
+                onClick={() => setActiveFolderId(null)}
+                className={`flex cursor-pointer items-center justify-between rounded-xl border p-3.5 transition-all ${
+                  activeFolderId === null
                     ? "border-primary bg-primary/10 shadow-sm"
                     : "border-border/60 bg-card hover:border-border hover:bg-accent/40"
                 }`}
               >
-                <div className="flex items-center gap-2.5 overflow-hidden pr-2">
-                  <Folder
+                <div className="flex items-center gap-2.5 overflow-hidden">
+                  <FolderOpen
                     className={`h-5 w-5 shrink-0 ${
-                      isSelected ? "text-primary" : "text-amber-500"
+                      activeFolderId === null
+                        ? "text-primary"
+                        : "text-amber-500"
                     }`}
                   />
                   <div className="truncate">
                     <p className="truncate text-xs font-semibold text-foreground">
-                      {folder.name}
+                      All Files
                     </p>
                     <p className="text-[10px] text-muted-foreground">
-                      {folderFilesCount}{" "}
-                      {folderFilesCount === 1 ? "item" : "items"}
+                      {files.length} items
                     </p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                  <button
-                    type="button"
-                    title="Rename Folder"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setRenameFolderItem(folder)
-                      setRenameFolderName(folder.name)
-                    }}
-                    className="p-1 text-muted-foreground hover:text-foreground"
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    title="Delete Folder"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setDeleteFolderItem(folder)
-                    }}
-                    className="p-1 text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
               </div>
-            )
-          })}
+
+              {/* User Folders */}
+              {folders.map((folder) => {
+                const folderFilesCount = files.filter(
+                  (f) => f.folderId === folder.id
+                ).length
+                const isSelected = activeFolderId === folder.id
+
+                return (
+                  <div
+                    key={folder.id}
+                    onClick={() => setActiveFolderId(folder.id)}
+                    className={`group relative flex cursor-pointer items-center justify-between rounded-xl border p-3.5 transition-all ${
+                      isSelected
+                        ? "border-primary bg-primary/10 shadow-sm"
+                        : "border-border/60 bg-card hover:border-border hover:bg-accent/40"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 overflow-hidden pr-2">
+                      <Folder
+                        className={`h-5 w-5 shrink-0 ${
+                          isSelected ? "text-primary" : "text-amber-500"
+                        }`}
+                      />
+                      <div className="truncate">
+                        <p className="truncate text-xs font-semibold text-foreground">
+                          {folder.name}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {folderFilesCount}{" "}
+                          {folderFilesCount === 1 ? "item" : "items"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                      <button
+                        type="button"
+                        title="Rename Folder"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setRenameFolderItem(folder)
+                          setRenameFolderName(folder.name)
+                        }}
+                        className="p-1 text-muted-foreground hover:text-foreground"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        title="Delete Folder"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setDeleteFolderItem(folder)
+                        }}
+                        className="p-1 text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </>
+          )}
         </div>
       </div>
 
@@ -619,11 +630,24 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
         {/* Loading Skeleton */}
         {loading ? (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
+            {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="h-36 animate-pulse rounded-xl bg-muted/50"
-              />
+                className="flex flex-col justify-between space-y-3 overflow-hidden rounded-xl border border-border/60 bg-card p-3 shadow-xs"
+              >
+                <Skeleton className="h-28 w-full rounded-lg" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <div className="flex justify-between">
+                    <Skeleton className="h-3 w-16" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                </div>
+                <div className="flex justify-between border-t border-border/40 pt-2">
+                  <Skeleton className="h-7 w-16 rounded-md" />
+                  <Skeleton className="h-7 w-7 rounded-md" />
+                </div>
+              </div>
             ))}
           </div>
         ) : filteredFiles.length === 0 ? (

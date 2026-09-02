@@ -48,7 +48,9 @@ import {
   Shield,
   Users2,
   User2 as UserIcon,
+  HardDrive,
 } from "lucide-react"
+import { ProfileStorageTab } from "@/components/dashboard/profiles/profile-storage-tab"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
@@ -1027,7 +1029,7 @@ export default function ProfilesDetailPage() {
 
       {/* Tabs Section */}
       <Tabs defaultValue="profile" className="w-full space-y-6">
-        <TabsList className="grid h-10 w-full max-w-xs grid-cols-2 p-1">
+        <TabsList className="grid h-10 w-full max-w-md grid-cols-3 p-1">
           <TabsTrigger
             value="profile"
             variant="gradient"
@@ -1049,6 +1051,14 @@ export default function ProfilesDetailPage() {
               </span>
             )}
           </TabsTrigger>
+          <TabsTrigger
+            value="storage"
+            variant="gradient"
+            className="gap-2 text-sm font-medium"
+          >
+            <HardDrive className="h-4 w-4" />
+            <span>Storage</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Tab 1: Profile Details & Photos */}
@@ -1069,6 +1079,11 @@ export default function ProfilesDetailPage() {
         {/* Tab 2: Notes */}
         <TabsContent value="notes">
           <NotesSection profileId={profile.id} initialNotes={profile.notes} />
+        </TabsContent>
+
+        {/* Tab 3: Storage */}
+        <TabsContent value="storage">
+          <ProfileStorageTab profileId={profile.id} />
         </TabsContent>
       </Tabs>
     </main>

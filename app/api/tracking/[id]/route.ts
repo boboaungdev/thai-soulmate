@@ -103,7 +103,9 @@ export async function GET(
     const allowedInitialStatuses: TrackingStatus[] = [
       TrackingStatus.BOTH_PROFILES_SENT,
       TrackingStatus.MALE_ACCEPTED,
+      TrackingStatus.MALE_REJECTED,
       TrackingStatus.FEMALE_ACCEPTED,
+      TrackingStatus.FEMALE_REJECTED,
     ] as const
 
     if (!allowedInitialStatuses.includes(tracking.status)) {
@@ -116,67 +118,94 @@ export async function GET(
       return NextResponse.redirect(url)
     }
 
-    let newStatus: TrackingStatus
     const confirmationUrl = new URL("/action-feedback", env.BASE_URL)
     confirmationUrl.searchParams.set(
       "message",
       "Your response has been recorded. Thank you!"
     )
 
-    if (from === "male") {
-      newStatus =
-        response === "accepted"
+    const isMale = from === "male"
+    const responseStatus =
+      response === "accepted"
+        ? isMale
           ? TrackingStatus.MALE_ACCEPTED
-          : TrackingStatus.MALE_REJECTED
-    } else if (from === "female") {
-      newStatus =
-        response === "accepted"
-          ? TrackingStatus.FEMALE_ACCEPTED
+          : TrackingStatus.FEMALE_ACCEPTED
+        : isMale
+          ? TrackingStatus.MALE_REJECTED
           : TrackingStatus.FEMALE_REJECTED
-    } else {
-      return NextResponse.json(
-        { success: false, message: "Invalid 'from' parameter." },
-        { status: 400 }
-      )
-    }
 
     // Check if this user has already responded
+    const existingStatuses = tracking.completedStatuses || [
+      TrackingStatus.INITIAL_CONNECT,
+      TrackingStatus.BOTH_PROFILES_SENT,
+    ]
+
     if (
-      (from === "male" && tracking.status.startsWith("MALE_")) ||
-      (from === "female" && tracking.status.startsWith("FEMALE_"))
+      (isMale &&
+        (existingStatuses.includes(TrackingStatus.MALE_ACCEPTED) ||
+          existingStatuses.includes(TrackingStatus.MALE_REJECTED))) ||
+      (!isMale &&
+        (existingStatuses.includes(TrackingStatus.FEMALE_ACCEPTED) ||
+          existingStatuses.includes(TrackingStatus.FEMALE_REJECTED)))
     ) {
       return NextResponse.redirect(confirmationUrl)
     }
 
-    // If the other party has already responded, update to a combined status
-    if (
-      tracking.status === TrackingStatus.MALE_ACCEPTED &&
-      newStatus === TrackingStatus.FEMALE_ACCEPTED
-    ) {
-      newStatus = TrackingStatus.BOTH_PROFILES_ACCEPTED
-    } else if (
-      tracking.status === TrackingStatus.FEMALE_ACCEPTED &&
-      newStatus === TrackingStatus.MALE_ACCEPTED
-    ) {
-      newStatus = TrackingStatus.BOTH_PROFILES_ACCEPTED
+    const updatedStatusesSet = new Set([...existingStatuses, responseStatus])
+    let finalStatus: TrackingStatus = responseStatus
+    let closedFromStatus: TrackingStatus | undefined = undefined
+
+    // Check if the other party has already responded
+    const otherHasResponded = isMale
+      ? existingStatuses.includes(TrackingStatus.FEMALE_ACCEPTED) ||
+        existingStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
+        tracking.status === TrackingStatus.FEMALE_ACCEPTED ||
+        tracking.status === TrackingStatus.FEMALE_REJECTED
+      : existingStatuses.includes(TrackingStatus.MALE_ACCEPTED) ||
+        existingStatuses.includes(TrackingStatus.MALE_REJECTED) ||
+        tracking.status === TrackingStatus.MALE_ACCEPTED ||
+        tracking.status === TrackingStatus.MALE_REJECTED
+
+    if (otherHasResponded) {
+      // Both parties have now responded!
+      const femaleAccepted = isMale
+        ? existingStatuses.includes(TrackingStatus.FEMALE_ACCEPTED) ||
+          tracking.status === TrackingStatus.FEMALE_ACCEPTED
+        : responseStatus === TrackingStatus.FEMALE_ACCEPTED
+
+      const maleAccepted = isMale
+        ? responseStatus === TrackingStatus.MALE_ACCEPTED
+        : existingStatuses.includes(TrackingStatus.MALE_ACCEPTED) ||
+          tracking.status === TrackingStatus.MALE_ACCEPTED
+
+      if (femaleAccepted && maleAccepted) {
+        // Both accepted!
+        finalStatus = TrackingStatus.BOTH_PROFILES_ACCEPTED
+        updatedStatusesSet.add(TrackingStatus.MALE_ACCEPTED)
+        updatedStatusesSet.add(TrackingStatus.FEMALE_ACCEPTED)
+        updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_ACCEPTED)
+      } else {
+        // Both responded and at least one rejected -> Now close tracking!
+        finalStatus = TrackingStatus.CLOSED
+        closedFromStatus = responseStatus.includes("REJECTED")
+          ? responseStatus
+          : tracking.status
+        updatedStatusesSet.add(TrackingStatus.CLOSED)
+      }
+    } else {
+      // The other party has NOT responded yet: keep tracking open in review!
+      finalStatus = responseStatus
+      updatedStatusesSet.add(responseStatus)
     }
 
-    const existingStatuses = tracking.completedStatuses || [
-      TrackingStatus.INITIAL_CONNECT,
-    ]
-    const updatedStatusesSet = new Set([...existingStatuses, newStatus])
-    if (newStatus === TrackingStatus.BOTH_PROFILES_ACCEPTED) {
-      updatedStatusesSet.add(TrackingStatus.MALE_ACCEPTED)
-      updatedStatusesSet.add(TrackingStatus.FEMALE_ACCEPTED)
-      updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_ACCEPTED)
-    }
     const updatedCompletedStatuses = Array.from(updatedStatusesSet)
 
     await tx.tracking.update({
       where: { id: trackingId },
       data: {
-        status: newStatus,
+        status: finalStatus,
         completedStatuses: updatedCompletedStatuses,
+        ...(closedFromStatus ? { closedFromStatus } : {}),
       },
     })
 
@@ -221,15 +250,69 @@ export async function PATCH(
       TrackingStatus.INITIAL_CONNECT,
     ]
     const updatedStatusesSet = new Set([...existingStatuses, status])
-    if (status === TrackingStatus.BOTH_PROFILES_ACCEPTED) {
+    let finalStatus: TrackingStatus = status
+    let closedFromStatus: TrackingStatus | undefined = undefined
+
+    const isReviewResponse =
+      status === TrackingStatus.FEMALE_ACCEPTED ||
+      status === TrackingStatus.FEMALE_REJECTED ||
+      status === TrackingStatus.MALE_ACCEPTED ||
+      status === TrackingStatus.MALE_REJECTED
+
+    if (isReviewResponse) {
+      updatedStatusesSet.add(status)
+      const maleHasResponded =
+        status === TrackingStatus.MALE_ACCEPTED ||
+        status === TrackingStatus.MALE_REJECTED ||
+        existingStatuses.includes(TrackingStatus.MALE_ACCEPTED) ||
+        existingStatuses.includes(TrackingStatus.MALE_REJECTED)
+
+      const femaleHasResponded =
+        status === TrackingStatus.FEMALE_ACCEPTED ||
+        status === TrackingStatus.FEMALE_REJECTED ||
+        existingStatuses.includes(TrackingStatus.FEMALE_ACCEPTED) ||
+        existingStatuses.includes(TrackingStatus.FEMALE_REJECTED)
+
+      if (maleHasResponded && femaleHasResponded) {
+        const maleAccepted =
+          status === TrackingStatus.MALE_ACCEPTED ||
+          existingStatuses.includes(TrackingStatus.MALE_ACCEPTED)
+        const femaleAccepted =
+          status === TrackingStatus.FEMALE_ACCEPTED ||
+          existingStatuses.includes(TrackingStatus.FEMALE_ACCEPTED)
+
+        if (maleAccepted && femaleAccepted) {
+          finalStatus = TrackingStatus.BOTH_PROFILES_ACCEPTED
+          updatedStatusesSet.add(TrackingStatus.MALE_ACCEPTED)
+          updatedStatusesSet.add(TrackingStatus.FEMALE_ACCEPTED)
+          updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_ACCEPTED)
+        } else {
+          finalStatus = TrackingStatus.CLOSED
+          closedFromStatus = status.includes("REJECTED")
+            ? status
+            : tracking.status
+          updatedStatusesSet.add(TrackingStatus.CLOSED)
+        }
+      } else {
+        // One party responded, the other is still in review!
+        finalStatus = status
+      }
+    } else if (status === TrackingStatus.BOTH_PROFILES_ACCEPTED) {
+      finalStatus = TrackingStatus.BOTH_PROFILES_ACCEPTED
       updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_SENT)
       updatedStatusesSet.add(TrackingStatus.MALE_ACCEPTED)
       updatedStatusesSet.add(TrackingStatus.FEMALE_ACCEPTED)
       updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_ACCEPTED)
     } else if (status === TrackingStatus.BOTH_PROFILES_SENT) {
+      finalStatus = TrackingStatus.BOTH_PROFILES_SENT
       updatedStatusesSet.add(TrackingStatus.INITIAL_CONNECT)
       updatedStatusesSet.add(TrackingStatus.BOTH_PROFILES_SENT)
+    } else if (status === TrackingStatus.CLOSED) {
+      finalStatus = TrackingStatus.CLOSED
+      closedFromStatus = tracking.status
+      updatedStatusesSet.add(TrackingStatus.CLOSED)
     }
+
     const updatedCompletedStatuses = Array.from(updatedStatusesSet)
 
     const dataToUpdate: {
@@ -237,12 +320,12 @@ export async function PATCH(
       completedStatuses: TrackingStatus[]
       closedFromStatus?: TrackingStatus
     } = {
-      status: status,
+      status: finalStatus,
       completedStatuses: updatedCompletedStatuses,
     }
 
-    if (status === TrackingStatus.CLOSED) {
-      dataToUpdate.closedFromStatus = tracking.status
+    if (closedFromStatus) {
+      dataToUpdate.closedFromStatus = closedFromStatus
     }
 
     const updatedTracking = await prisma.tracking.update({

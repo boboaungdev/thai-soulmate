@@ -167,6 +167,45 @@ const getInitials = (name?: string) => {
     .toUpperCase()
 }
 
+const getNextStatus = (
+  status: TrackingStatus
+): { next: TrackingStatus; label: string } | null => {
+  switch (status) {
+    case TrackingStatus.BOTH_PROFILES_ACCEPTED:
+      return {
+        next: TrackingStatus.FIRST_GOOGLE_MEET,
+        label: "Start 1st Meet",
+      }
+    case TrackingStatus.FIRST_GOOGLE_MEET:
+      return {
+        next: TrackingStatus.SECOND_GOOGLE_MEET,
+        label: "Start 2nd Meet",
+      }
+    case TrackingStatus.SECOND_GOOGLE_MEET:
+      return {
+        next: TrackingStatus.FIRST_FOLLOW_UP,
+        label: "1st Follow-up",
+      }
+    case TrackingStatus.FIRST_FOLLOW_UP:
+      return {
+        next: TrackingStatus.SECOND_FOLLOW_UP,
+        label: "2nd Follow-up",
+      }
+    case TrackingStatus.SECOND_FOLLOW_UP:
+      return {
+        next: TrackingStatus.THIRD_FOLLOW_UP,
+        label: "3rd Follow-up",
+      }
+    case TrackingStatus.THIRD_FOLLOW_UP:
+      return {
+        next: TrackingStatus.MATCHED,
+        label: "Mark Matched 🎉",
+      }
+    default:
+      return null
+  }
+}
+
 const SoulmateActions: React.FC<{
   tracking: Tracking
   isUpdating: boolean
@@ -177,6 +216,7 @@ const SoulmateActions: React.FC<{
   ) => Promise<void>
 }> = ({ tracking, isUpdating, handleSendProfiles, handleUpdateStatus }) => {
   const canSendProfiles = tracking.status === TrackingStatus.INITIAL_CONNECT
+  const nextAction = getNextStatus(tracking.status)
 
   return (
     <div className="flex items-center gap-2">
@@ -194,6 +234,25 @@ const SoulmateActions: React.FC<{
             <>
               <Send className="mr-2 h-4 w-4" />
               Send Both Profiles
+            </>
+          )}
+        </Button>
+      )}
+
+      {nextAction && (
+        <Button
+          className="btn-gradient h-8 px-3 text-sm"
+          onClick={() => handleUpdateStatus(tracking.id, nextAction.next)}
+          disabled={isUpdating}
+        >
+          {isUpdating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...
+            </>
+          ) : (
+            <>
+              <CheckCircle2 className="mr-2 h-4 w-4" />
+              {nextAction.label}
             </>
           )}
         </Button>
@@ -271,16 +330,50 @@ const SoulmateStatusLine: React.FC<{
             icon = <CheckCircle2 className="size-4 text-blue-500" />
             textColorClass = "text-blue-700 dark:text-blue-400 font-semibold"
             isCompleted = true
-          } else if (
-            (group.step === 3 &&
-              (completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
-                closedFromStatus === TrackingStatus.FEMALE_REJECTED)) ||
-            (group.step === 4 &&
-              (completedStatuses.includes(TrackingStatus.MALE_REJECTED) ||
-                closedFromStatus === TrackingStatus.MALE_REJECTED))
-          ) {
-            icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
-            textColorClass = "text-red-600 dark:text-red-400 font-semibold"
+          } else if (group.step === 3) {
+            // Female Review in closed connection
+            if (completedStatuses.includes(TrackingStatus.FEMALE_ACCEPTED)) {
+              icon = <CheckCircle2 className="size-4 text-green-500" />
+              textColorClass = "text-green-700 dark:text-green-400 font-medium"
+              label = "Female Accepted"
+              isCompleted = true
+            } else if (
+              completedStatuses.includes(TrackingStatus.FEMALE_REJECTED) ||
+              closedFromStatus === TrackingStatus.FEMALE_REJECTED
+            ) {
+              icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
+              textColorClass = "text-red-600 dark:text-red-400 font-semibold"
+              label = "Female Rejected"
+            } else if (closedFromStep > 0 && group.step <= closedFromStep) {
+              icon = <CheckCircle2 className="size-4 text-green-500" />
+              textColorClass = "text-green-700 dark:text-green-400 font-medium"
+              isCompleted = true
+            } else {
+              icon = <XCircle className="size-4 text-red-500/70" />
+              textColorClass = "text-muted-foreground line-through"
+            }
+          } else if (group.step === 4) {
+            // Male Review in closed connection
+            if (completedStatuses.includes(TrackingStatus.MALE_ACCEPTED)) {
+              icon = <CheckCircle2 className="size-4 text-green-500" />
+              textColorClass = "text-green-700 dark:text-green-400 font-medium"
+              label = "Male Accepted"
+              isCompleted = true
+            } else if (
+              completedStatuses.includes(TrackingStatus.MALE_REJECTED) ||
+              closedFromStatus === TrackingStatus.MALE_REJECTED
+            ) {
+              icon = <XCircle className="size-4 fill-red-500/10 text-red-500" />
+              textColorClass = "text-red-600 dark:text-red-400 font-semibold"
+              label = "Male Rejected"
+            } else if (closedFromStep > 0 && group.step <= closedFromStep) {
+              icon = <CheckCircle2 className="size-4 text-green-500" />
+              textColorClass = "text-green-700 dark:text-green-400 font-medium"
+              isCompleted = true
+            } else {
+              icon = <XCircle className="size-4 text-red-500/70" />
+              textColorClass = "text-muted-foreground line-through"
+            }
           } else if (
             group.statuses.some((s) => completedStatuses.includes(s)) ||
             (closedFromStep > 0 && group.step <= closedFromStep)
@@ -289,7 +382,7 @@ const SoulmateStatusLine: React.FC<{
             textColorClass = "text-green-700 dark:text-green-400 font-medium"
             isCompleted = true
           } else {
-            icon = <XCircle className="size-4 text-red-500" />
+            icon = <XCircle className="size-4 text-red-500/70" />
             textColorClass = "text-muted-foreground line-through"
           }
         } else {

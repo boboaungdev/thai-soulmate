@@ -966,7 +966,7 @@ export default function MatchingPage() {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[10px] text-muted-foreground">
-                            ♀ Reject
+                            Female Reject
                           </span>
                           <span className="font-semibold text-red-600 dark:text-red-400">
                             {stats?.rejectedByHer ?? 0}
@@ -974,7 +974,7 @@ export default function MatchingPage() {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[10px] text-muted-foreground">
-                            ♂ Reject
+                            Male Reject
                           </span>
                           <span className="font-semibold text-amber-600 dark:text-amber-400">
                             {stats?.rejectedByHim ?? 0}

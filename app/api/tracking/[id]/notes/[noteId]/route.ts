@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
+import { TrackingNoteType } from "@/lib/generated/prisma/enums"
 
 const patchBodySchema = z.object({
-  message: z.string().min(1),
+  message: z.string().min(1).optional(),
+  type: z.nativeEnum(TrackingNoteType).optional(),
 })
 
 export async function PATCH(
@@ -13,7 +15,7 @@ export async function PATCH(
   try {
     const { id: trackingId, noteId } = await params
     const body = await req.json()
-    const { message } = patchBodySchema.parse(body)
+    const { message, type } = patchBodySchema.parse(body)
 
     const existing = await prisma.trackingNote.findUnique({
       where: { id: noteId },
@@ -26,9 +28,13 @@ export async function PATCH(
       )
     }
 
+    const dataToUpdate: any = {}
+    if (message !== undefined) dataToUpdate.message = message
+    if (type !== undefined) dataToUpdate.type = type
+
     const updatedNote = await prisma.trackingNote.update({
       where: { id: noteId },
-      data: { message },
+      data: dataToUpdate,
       include: {
         user: {
           select: {

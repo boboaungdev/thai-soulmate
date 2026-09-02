@@ -1682,6 +1682,7 @@ export default function SoulmateDetailPage() {
           <TrackingNotesTab
             trackingId={tracking.id}
             initialNotes={tracking.notes}
+            currentStatus={tracking.status}
             onNotesChange={(newNotes) =>
               setSoulmate({ ...tracking, notes: newNotes })
             }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
-import { TrackingNoteType } from "@/lib/generated/prisma/client"
+import { TrackingNoteType } from "@/lib/generated/prisma/enums"
 
 const postBodySchema = z.object({
   message: z.string().min(1),

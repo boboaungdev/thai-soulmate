@@ -443,7 +443,7 @@ export function TrackingStorageTab({ trackingId }: { trackingId: string }) {
         <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <HardDrive className="h-5 w-5 text-primary" />
+              <HardDrive className="h-5 w-5 text-muted-foreground" />
               <CardTitle className="text-lg font-semibold text-foreground">
                 Tracking Storage
               </CardTitle>

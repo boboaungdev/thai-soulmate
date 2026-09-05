@@ -81,7 +81,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="flex max-w-xl flex-col items-center space-y-4 text-center"
+            className="flex max-w-2xl flex-col items-center space-y-5 text-center"
           >
             <Image
               src="/logo.png"
@@ -92,7 +92,7 @@ export default function HomePage() {
               priority
             />
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               <AppName className="text-4xl font-black tracking-tight uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-5xl md:text-6xl" />
 
               <div className="space-y-2">
@@ -105,31 +105,28 @@ export default function HomePage() {
                 <p className="text-sm font-semibold tracking-[0.2em] text-[#D3A753] uppercase sm:text-base md:text-lg">
                   {APP_INFO.tagline}
                 </p>
-
-                <p className="pt-1 text-sm font-medium whitespace-pre-line text-white/85 sm:text-base md:text-lg">
-                  {APP_INFO.secondaryTagline}
-                </p>
-
-                <p className="pt-2 text-base font-bold tracking-wide text-white sm:text-lg md:text-xl">
-                  Personal Assistant in Your Search for a Life Partner in
-                  Thailand
-                </p>
-
-                <p className="pt-1 text-sm leading-relaxed font-medium text-white/90 sm:text-base md:text-lg">
-                  Stop searching. Let us do the matching.
-                  <span className="mt-1 block text-xs font-normal text-white/75 sm:text-sm">
-                    Real 1-2-1 personal matchmaking for men seeking genuine,
-                    lasting relationships with Thai women.
-                  </span>
-                </p>
               </div>
 
+              {/* Main Headline */}
+              <h1 className="text-xl font-bold tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] sm:text-2xl md:text-3xl lg:text-4xl">
+                Personal Assistant in Your Search for a Life Partner in Thailand
+              </h1>
+
+              {/* Subtitle / Description */}
+              <p className="mx-auto max-w-xl text-sm leading-relaxed text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] sm:text-base">
+                <span className="font-semibold text-white">
+                  Stop searching. Let us do the matching.
+                </span>{" "}
+                Real 1-2-1 personal matchmaking for men seeking genuine, lasting
+                relationships with Thai women.
+              </p>
+
               {/* Two Hero CTAs */}
-              <div className="flex w-full flex-col items-center justify-center gap-3 pt-4 sm:flex-row">
+              <div className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
                 <Button
                   asChild
                   size="lg"
-                  className="btn-gradient w-full font-semibold shadow-lg sm:w-auto"
+                  className="btn-gradient w-full font-semibold shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-[#D3A753]/30 sm:w-auto"
                 >
                   <Link href="/#register-interest">
                     Arrange a Confidential Consultation
@@ -139,10 +136,26 @@ export default function HomePage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="w-full border-white/25 bg-black/40 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white sm:w-auto"
+                  className="w-full border-white/30 bg-black/50 text-white backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/15 hover:text-white sm:w-auto"
                 >
                   <Link href="/service">See How It Works</Link>
                 </Button>
+              </div>
+
+              {/* Slogan Trust Ribbon */}
+              <div className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-2 text-xs text-white/90 sm:gap-3 sm:text-sm">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md">
+                  <ShieldCheck className="size-3.5 text-[#D3A753]" />
+                  <span>Real People</span>
+                </div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md">
+                  <Heart className="size-3.5 text-[#E791A7]" />
+                  <span>Real Relationships</span>
+                </div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md">
+                  <MapPin className="size-3.5 text-[#D3A753]" />
+                  <span>Personally Matched in Thailand</span>
+                </div>
               </div>
             </div>
           </MotionDiv>

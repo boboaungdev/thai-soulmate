@@ -172,7 +172,7 @@ export function WebNavBar() {
 
                   {/* Hover Sub-Nav Dropdown */}
                   <div className="pointer-events-none invisible absolute top-full left-1/2 z-50 -translate-x-1/2 pt-2 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100">
-                    <div className="min-w-[195px] rounded-xl border border-border/80 bg-background/95 p-1.5 shadow-xl backdrop-blur-md">
+                    <div className="min-w-[210px] rounded-2xl border border-[#D3A753]/30 bg-background/95 p-2 shadow-2xl shadow-[#D3A753]/10 backdrop-blur-md">
                       {item.subLinks.map((subItem) => {
                         const Icon = subItem.icon
                         return (
@@ -180,7 +180,7 @@ export function WebNavBar() {
                             key={subItem.href}
                             href={subItem.href}
                             onClick={(e) => handleNavClick(e, subItem.href)}
-                            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:bg-[#D3A753]/10 hover:text-[#D3A753]"
                           >
                             <Icon
                               className={cn(
@@ -260,88 +260,130 @@ export function WebNavBar() {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="flex w-3/4 flex-col sm:max-w-sm"
+                className="relative flex w-3/4 flex-col overflow-hidden border-l border-border/70 bg-background/95 backdrop-blur-xl sm:max-w-sm"
               >
-                <SheetHeader className="p-4 pb-2">
-                  <SheetTitle>Menu</SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-2 px-4">
-                  {SITE_NAV_LINKS.map((item) => {
-                    if (item.subLinks) {
-                      return (
-                        <div
-                          key={item.href}
-                          className="flex flex-col space-y-1"
-                        >
-                          <SheetClose asChild>
-                            <a
-                              onClick={(e) => handleNavClick(e, item.href)}
-                              className="flex cursor-pointer items-center justify-between px-3 py-2.5 font-medium"
-                            >
-                              <span>{item.label}</span>
-                              <ArrowUpRight className="size-4 text-muted-foreground" />
-                            </a>
-                          </SheetClose>
-                          <div className="ml-3 flex flex-col space-y-1 border-l-2 border-border/60 pl-3">
-                            {item.subLinks.map((subItem) => {
-                              const Icon = subItem.icon
-                              return (
-                                <SheetClose asChild key={subItem.href}>
-                                  <a
-                                    onClick={(e) =>
-                                      handleNavClick(e, subItem.href)
-                                    }
-                                    className="flex cursor-pointer items-center gap-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                                  >
-                                    <Icon
-                                      className={cn(
-                                        "size-3.5 shrink-0",
-                                        subItem.iconColor
-                                      )}
-                                    />
-                                    <span>{subItem.label}</span>
-                                  </a>
-                                </SheetClose>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )
-                    }
+                {/* Atmospheric Ambient Glow Orb inside sheet */}
+                <div className="pointer-events-none absolute -top-20 -right-20 -z-10 size-56 rounded-full bg-gradient-to-b from-[#D3A753]/15 via-[#E791A7]/10 to-transparent blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-20 -left-20 -z-10 size-48 rounded-full bg-gradient-to-tr from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
 
-                    return (
-                      <SheetClose asChild key={item.href}>
-                        <a
-                          onClick={(e) => handleNavClick(e, item.href)}
-                          className="flex cursor-pointer items-center justify-between px-3 py-2.5"
-                        >
-                          <span>{item.label}</span>
-                          <ArrowUpRight className="size-4 text-muted-foreground" />
-                        </a>
+                <SheetHeader className="border-b border-border/40 p-4 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <Image
+                      src="/logo.png"
+                      alt={`${APP_INFO.name} logo`}
+                      width={48}
+                      height={48}
+                      className="size-9 shrink-0 object-contain"
+                    />
+                    <div className="flex min-w-0 flex-col space-y-0.5">
+                      <AppName className="block text-sm font-black tracking-tight uppercase" />
+                      <p className="inline-flex items-center gap-1 text-[8px] font-bold tracking-[0.25em] text-[#E791A7] uppercase">
+                        <span className="h-px w-2.5 bg-[#CA617D]/60" />
+                        EXCLUSIVE
+                        <span className="h-px w-2.5 bg-[#CA617D]/60" />
+                      </p>
+                    </div>
+                  </div>
+                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                </SheetHeader>
+
+                <div className="flex flex-1 flex-col justify-between overflow-y-auto px-3 py-4">
+                  <div className="flex flex-col gap-1.5">
+                    {SITE_NAV_LINKS.map((item) => {
+                      const isActive = pathname === item.href
+                      if (item.subLinks) {
+                        return (
+                          <div
+                            key={item.href}
+                            className="flex flex-col space-y-1"
+                          >
+                            <SheetClose asChild>
+                              <a
+                                onClick={(e) => handleNavClick(e, item.href)}
+                                className={cn(
+                                  "flex cursor-pointer items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200",
+                                  isActive
+                                    ? "bg-[#D3A753]/15 font-semibold text-[#D3A753]"
+                                    : "text-foreground/90 hover:bg-muted/70 hover:text-foreground"
+                                )}
+                              >
+                                <span>{item.label}</span>
+                                <ArrowUpRight className="size-4 opacity-70" />
+                              </a>
+                            </SheetClose>
+                            <div className="ml-3 flex flex-col space-y-1 border-l border-[#D3A753]/30 pl-3">
+                              {item.subLinks.map((subItem) => {
+                                const Icon = subItem.icon
+                                return (
+                                  <SheetClose asChild key={subItem.href}>
+                                    <a
+                                      onClick={(e) =>
+                                        handleNavClick(e, subItem.href)
+                                      }
+                                      className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-muted-foreground transition-all duration-200 hover:bg-[#D3A753]/10 hover:text-[#D3A753]"
+                                    >
+                                      <Icon
+                                        className={cn(
+                                          "size-3.5 shrink-0",
+                                          subItem.iconColor
+                                        )}
+                                      />
+                                      <span>{subItem.label}</span>
+                                    </a>
+                                  </SheetClose>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        )
+                      }
+
+                      return (
+                        <SheetClose asChild key={item.href}>
+                          <a
+                            onClick={(e) => handleNavClick(e, item.href)}
+                            className={cn(
+                              "flex cursor-pointer items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200",
+                              isActive
+                                ? "bg-[#D3A753]/15 font-semibold text-[#D3A753]"
+                                : "text-foreground/90 hover:bg-muted/70 hover:text-foreground"
+                            )}
+                          >
+                            <span>{item.label}</span>
+                            <ArrowUpRight className="size-4 opacity-70" />
+                          </a>
+                        </SheetClose>
+                      )
+                    })}
+                  </div>
+
+                  {/* Bottom Action inside Drawer */}
+                  <div className="mt-4 space-y-3 border-t border-border/40 pt-6">
+                    {isClient && (
+                      <SheetClose asChild>
+                        {user ? (
+                          <Link
+                            href="/dashboard"
+                            className="btn-gradient flex cursor-pointer items-center justify-between rounded-xl px-4 py-3 font-semibold text-white shadow-lg transition-all"
+                          >
+                            <span>Dashboard</span>
+                            <ArrowUpRight className="size-4" />
+                          </Link>
+                        ) : (
+                          <Link
+                            href="/auth"
+                            className="btn-gradient flex cursor-pointer items-center justify-between rounded-xl px-4 py-3 font-semibold text-white shadow-lg transition-all"
+                          >
+                            <span>Login / Member Access</span>
+                            <ArrowUpRight className="size-4" />
+                          </Link>
+                        )}
                       </SheetClose>
-                    )
-                  })}
-                  {isClient && (
-                    <SheetClose asChild>
-                      {user ? (
-                        <Link
-                          href="/dashboard"
-                          className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
-                        >
-                          <span>Dashboard</span>
-                          <ArrowUpRight className="size-4" />
-                        </Link>
-                      ) : (
-                        <Link
-                          href="/auth"
-                          className="btn-gradient flex cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-white"
-                        >
-                          <span>Login</span>
-                          <ArrowUpRight className="size-4" />
-                        </Link>
-                      )}
-                    </SheetClose>
-                  )}
+                    )}
+                    <p className="text-center text-[10px] tracking-wider text-muted-foreground uppercase">
+                      {APP_INFO.tagline} · Thailand
+                    </p>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>

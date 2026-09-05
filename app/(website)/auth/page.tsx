@@ -16,7 +16,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -210,7 +209,7 @@ function AuthPageContents() {
               {/* Card ambient glow frame */}
               <div className="pointer-events-none absolute -inset-0.5 rounded-3xl bg-gradient-to-b from-[#D3A753]/25 via-transparent to-[#CA617D]/20 opacity-70 blur-md" />
 
-              <Card className="relative overflow-hidden rounded-3xl border border-[#D3A753]/30 bg-card/85 p-2 shadow-2xl backdrop-blur-xl sm:p-4">
+              <Card className="relative overflow-hidden rounded-3xl border border-[#D3A753]/30 bg-card/85 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
                 {/* Subtle top edge highlight */}
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D3A753]/60 to-transparent" />
 
@@ -220,7 +219,7 @@ function AuthPageContents() {
                     handleLogin()
                   }}
                 >
-                  <CardHeader className="space-y-1.5 pb-6">
+                  <CardHeader className="space-y-1.5 p-0 pb-6">
                     <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
                       Login
                     </CardTitle>
@@ -228,7 +227,7 @@ function AuthPageContents() {
                       Enter your credentials to access your account.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-5">
+                  <CardContent className="space-y-5 p-0">
                     <div className="space-y-2">
                       <Label
                         htmlFor="email"
@@ -319,33 +318,34 @@ function AuthPageContents() {
                         </p>
                       )}
                     </div>
-                  </CardContent>
-                  <CardFooter className="flex-col items-stretch gap-4 pt-2 pb-6">
-                    <Button
-                      type="submit"
-                      className="btn-gradient h-11 w-full rounded-xl text-base font-semibold shadow-md shadow-[#D3A753]/15 transition-all hover:shadow-[#D3A753]/30"
-                      disabled={isLoggingIn}
-                    >
-                      {isLoggingIn ? (
-                        <>
-                          <Spinner className="mr-2 size-4" />
-                          Logging in...
-                        </>
-                      ) : (
-                        "Login"
-                      )}
-                    </Button>
-                    <div className="flex items-center justify-center pt-1">
+
+                    <div className="space-y-3 pt-2">
                       <Button
-                        type="button"
-                        variant="link"
-                        className="p-0 text-sm text-muted-foreground transition-colors hover:text-[#D3A753]"
-                        onClick={() => router.push("/#register-interest")}
+                        type="submit"
+                        className="btn-gradient h-11 w-full rounded-xl text-base font-semibold shadow-md shadow-[#D3A753]/15 transition-all hover:shadow-[#D3A753]/30"
+                        disabled={isLoggingIn}
                       >
-                        Don&apos;t have an account?
+                        {isLoggingIn ? (
+                          <>
+                            <Spinner className="mr-2 size-4" />
+                            Logging in...
+                          </>
+                        ) : (
+                          "Login"
+                        )}
                       </Button>
+                      <div className="flex items-center justify-center pt-1">
+                        <Button
+                          type="button"
+                          variant="link"
+                          className="p-0 text-sm text-muted-foreground transition-colors hover:text-[#D3A753]"
+                          onClick={() => router.push("/#register-interest")}
+                        >
+                          Don&apos;t have an account?
+                        </Button>
+                      </div>
                     </div>
-                  </CardFooter>
+                  </CardContent>
                 </form>
               </Card>
             </div>

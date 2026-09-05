@@ -181,12 +181,12 @@ const FAQ_ITEMS: FaqItem[] = [
       </>
     ),
     answerText:
-      "Swipe apps treat romance like an endless game of numbers, leading to ghosting, scammers, catfishing, and months of wasted time. Thai Soulmate is a bespoke 1-to-1 personal matchmaking service. You deal with a real person, not an algorithm. Your personal assistant matchmaker in Thailand takes the time to understand your lifestyle, values, relationship history, and exact partner preferences, and then hand-picks and vets compatible matches specifically for you.",
+      "Swipe apps treat romance like an endless game of numbers, leading to ghosting, scammers, catfishing, and months of wasted time. Thai Soulmate is a bespoke 1-2-1 personal matchmaking service. You deal with a real person, not an algorithm. Your personal assistant matchmaker in Thailand takes the time to understand your lifestyle, values, relationship history, and exact partner preferences, and then hand-picks and vets compatible matches specifically for you.",
     answer: (
       <>
         Swipe apps treat romance like an endless numbers game, leading to
         ghosting, scammers, catfishing, and immense time wasted.{" "}
-        <AppName className="font-semibold" /> is a bespoke 1-to-1 personal
+        <AppName className="font-semibold" /> is a bespoke 1-2-1 personal
         matchmaking service. You deal with a real human being—not an algorithm.
         Your personal assistant matchmaker in Thailand takes the time to
         understand your personality, lifestyle, relationship goals, and what has
@@ -629,7 +629,7 @@ export function FaqContent() {
 
           {/* Subtitle */}
           <p className="mx-auto max-w-[720px] text-muted-foreground md:text-xl">
-            Everything you need to know about our private 1-to-1 personal
+            Everything you need to know about our private 1-2-1 personal
             matchmaking service in Thailand.
           </p>
 

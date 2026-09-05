@@ -45,7 +45,7 @@ export function HowItWorksContent() {
           {/* Trust Pill */}
           <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
             <ShieldCheck className="size-3.5" />
-            <span>Private 1-to-1 Matchmaking Process</span>
+            <span>Private 1-2-1 Matchmaking Process</span>
           </div>
 
           {/* Main Title */}
@@ -621,7 +621,7 @@ export function HowItWorksContent() {
                   Your Personal Assistant in Thailand
                 </CardTitle>
                 <CardDescription>
-                  Bespoke, human-guided 1-to-1 introduction concierge
+                  Bespoke, human-guided 1-2-1 introduction concierge
                 </CardDescription>
               </CardHeader>
               <CardContent>

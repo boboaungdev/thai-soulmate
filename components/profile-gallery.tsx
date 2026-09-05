@@ -313,7 +313,7 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
             To protect our members&apos; discretion, individual profiles are
-            shared privately during your 1-to-1 matchmaking consultation.
+            shared privately during your 1-2-1 matchmaking consultation.
           </p>
           <Button
             asChild

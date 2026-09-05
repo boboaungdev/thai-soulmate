@@ -25,7 +25,7 @@ import { MotionDiv } from "@/components/motion"
 export const metadata: Metadata = {
   title: "Contact Us | Thai Soulmate",
   description:
-    "Get in touch with our confidential 1-to-1 personal matchmaking team in Thailand.",
+    "Get in touch with our confidential 1-2-1 personal matchmaking team in Thailand.",
 }
 
 export default function ContactPage() {

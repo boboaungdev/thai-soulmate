@@ -230,7 +230,7 @@ export const mockCalendarItems: CalendarItem[] = [
     kind: "google_meet",
     person: "Alex J. & Supansa T.",
     description:
-      "Facilitated 1-to-1 video introduction call between matched candidates.",
+      "Facilitated 1-2-1 video introduction call between matched candidates.",
     location: "Google Meet",
     meetUrl: "https://meet.google.com/tsm-intro-alex-supansa",
   },

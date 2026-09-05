@@ -1,7 +1,6 @@
 // app/(website)/contact/page.tsx
 import { CONTACT } from "@/constants"
 import { ContactForm } from "@/components/contact-form"
-// Changed to react-icons/fa
 import {
   FaFacebookF,
   FaInstagram,
@@ -9,7 +8,7 @@ import {
   FaTiktok,
   FaWhatsapp,
 } from "react-icons/fa"
-import { Mail, Phone, MapPin } from "lucide-react" // Keeping Mail, Phone, MapPin from lucide-react for other cards
+import { Mail, Phone, MapPin } from "lucide-react"
 import Link from "next/link"
 import {
   Card,
@@ -22,173 +21,170 @@ import { MotionDiv } from "@/components/motion"
 
 export default function ContactPage() {
   return (
-    <main className="mb-12">
-      <section className="bg-animated-gradient flex min-h-[300px] py-12 md:py-24">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <MotionDiv
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <h1 className="text-gradient mb-8 text-4xl font-bold tracking-tighter md:text-5xl">
-              Contact Us
-            </h1>
-            <p className="mx-auto max-w-3xl text-muted-foreground md:text-xl">
-              We&apos;d love to hear from you! Reach out to us through any of
-              the channels below, or send us a message using the form.
-            </p>
-          </MotionDiv>
-        </div>
-      </section>
+    <MotionDiv
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <main className="mb-12">
+        <section className="py-12 md:py-24">
+          <div className="mx-auto w-full max-w-7xl space-y-12 px-4 sm:px-6 lg:px-8">
+            <div className="space-y-4 text-center">
+              <h1 className="text-gradient text-4xl font-bold tracking-tighter md:text-5xl">
+                Contact Us
+              </h1>
+              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                We&apos;d love to hear from you! Reach out to us through any of
+                the channels below, or send us a message using the form.
+              </p>
+            </div>
 
-      <section className="pb-16">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 md:grid-cols-2">
-            <div className="space-y-8">
-              <MotionDiv
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Mail className="h-6 w-6" />
-                      <span>Email</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      <Link
-                        href={`mailto:${CONTACT.email}`}
-                        className="text-lg font-medium hover:text-foreground hover:underline"
-                      >
-                        {CONTACT.email}
-                      </Link>
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </MotionDiv>
+            <div className="grid gap-12 md:grid-cols-2">
+              <div className="space-y-8">
+                <MotionDiv
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Mail className="h-6 w-6" />
+                        <span>Email</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        <Link
+                          href={`mailto:${CONTACT.email}`}
+                          className="text-lg font-medium hover:text-foreground hover:underline"
+                        >
+                          {CONTACT.email}
+                        </Link>
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </MotionDiv>
+                <MotionDiv
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Phone className="h-6 w-6" />
+                        <span>Phone</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <CardDescription>
+                        <Link
+                          href={`tel:${CONTACT.primaryPhone.replace(/\D/g, "")}`}
+                          className="text-lg font-medium hover:text-foreground hover:underline"
+                        >
+                          {CONTACT.primaryPhone}
+                        </Link>
+                      </CardDescription>
+                      <CardDescription>
+                        <Link
+                          href={`tel:${CONTACT.secondaryPhone.replace(
+                            /\D/g,
+                            ""
+                          )}`}
+                          className="text-lg font-medium hover:text-foreground hover:underline"
+                        >
+                          {CONTACT.secondaryPhone}
+                        </Link>
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </MotionDiv>
+                <MotionDiv
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <MapPin className="h-6 w-6" />
+                        <span>Social Media</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-4">
+                        <Link
+                          href={`${CONTACT.whatsapp}`}
+                          className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Contact us on WhatsApp"
+                        >
+                          <FaWhatsapp className="h-6 w-6 text-[#25D366]" />
+                          <span className="sr-only sm:not-sr-only">WhatsApp</span>
+                        </Link>
+                        <Link
+                          href={CONTACT.facebook}
+                          className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Follow us on Facebook"
+                        >
+                          <FaFacebookF className="h-6 w-6 text-[#1877F2]" />
+                          <span className="sr-only sm:not-sr-only">Facebook</span>
+                        </Link>
+                        <Link
+                          href={CONTACT.instagram}
+                          className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Follow us on Instagram"
+                        >
+                          <FaInstagram className="h-6 w-6 text-[#E4405F]" />
+                          <span className="sr-only sm:not-sr-only">
+                            Instagram
+                          </span>
+                        </Link>
+                        <Link
+                          href={CONTACT.tiktok}
+                          className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Follow us on TikTok"
+                        >
+                          <FaTiktok className="h-6 w-6 text-foreground" />
+                          <span className="sr-only sm:not-sr-only">TikTok</span>
+                        </Link>
+                        <Link
+                          href={CONTACT.line}
+                          className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Contact us on LINE"
+                        >
+                          <FaLine className="h-6 w-6 text-[#00C300]" />
+                          <span className="sr-only sm:not-sr-only">Line</span>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </MotionDiv>
+              </div>
               <MotionDiv
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Phone className="h-6 w-6" />
-                      <span>Phone</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <CardDescription>
-                      <Link
-                        href={`tel:${CONTACT.primaryPhone.replace(/\D/g, "")}`}
-                        className="text-lg font-medium hover:text-foreground hover:underline"
-                      >
-                        {CONTACT.primaryPhone}
-                      </Link>
-                    </CardDescription>
-                    <CardDescription>
-                      <Link
-                        href={`tel:${CONTACT.secondaryPhone.replace(
-                          /\D/g,
-                          ""
-                        )}`}
-                        className="text-lg font-medium hover:text-foreground hover:underline"
-                      >
-                        {CONTACT.secondaryPhone}
-                      </Link>
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </MotionDiv>
-              <MotionDiv
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <MapPin className="h-6 w-6" />
-                      <span>Social Media</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-4">
-                      <Link
-                        href={`${CONTACT.whatsapp}`}
-                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Contact us on WhatsApp"
-                      >
-                        <FaWhatsapp className="h-6 w-6 text-[#25D366]" />
-                        <span className="sr-only sm:not-sr-only">WhatsApp</span>
-                      </Link>
-                      <Link
-                        href={CONTACT.facebook}
-                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Follow us on Facebook"
-                      >
-                        <FaFacebookF className="h-6 w-6 text-[#1877F2]" />
-                        <span className="sr-only sm:not-sr-only">Facebook</span>
-                      </Link>
-                      <Link
-                        href={CONTACT.instagram}
-                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Follow us on Instagram"
-                      >
-                        <FaInstagram className="h-6 w-6 text-[#E4405F]" />
-                        <span className="sr-only sm:not-sr-only">
-                          Instagram
-                        </span>
-                      </Link>
-                      <Link
-                        href={CONTACT.tiktok}
-                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Follow us on TikTok"
-                      >
-                        <FaTiktok className="h-6 w-6 text-foreground" />
-                        <span className="sr-only sm:not-sr-only">TikTok</span>
-                      </Link>
-                      <Link
-                        href={CONTACT.line}
-                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Contact us on LINE"
-                      >
-                        <FaLine className="h-6 w-6 text-[#00C300]" />
-                        <span className="sr-only sm:not-sr-only">Line</span>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="rounded-lg border bg-card p-8 text-card-foreground shadow-sm">
+                  <h2 className="mb-4 text-2xl font-bold">Send us a Message</h2>
+                  <ContactForm />
+                </div>
               </MotionDiv>
             </div>
-            <MotionDiv
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="rounded-lg border bg-card p-8 text-card-foreground shadow-sm">
-                <h2 className="mb-4 text-2xl font-bold">Send us a Message</h2>
-                <ContactForm />
-              </div>
-            </MotionDiv>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </MotionDiv>
   )
 }

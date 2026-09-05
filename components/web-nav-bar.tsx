@@ -28,11 +28,11 @@ import { useAuthStore } from "@/stores/auth-store"
 
 const SITE_NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
   { label: "Service", href: "/service" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
+  { label: "FAQ", href: "/faq" },
   { label: "Pricing", href: "/pricing" },
+  { label: "Contact", href: "/contact" },
 ] as const
 
 export function WebNavBar() {

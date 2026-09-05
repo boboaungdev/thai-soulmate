@@ -7,7 +7,7 @@ interface AppNameProps {
 
 export function AppName({ className }: AppNameProps) {
   return (
-    <span className={cn("text-gradient", className)}>
+    <span className={cn("text-gradient font-bold", className)}>
       {APP_INFO.name}
     </span>
   )

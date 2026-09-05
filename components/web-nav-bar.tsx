@@ -281,9 +281,9 @@ export function WebNavBar() {
                       height={48}
                       className="size-9 shrink-0 object-contain"
                     />
-                    <div className="flex min-w-0 flex-col space-y-0.5 text-left">
-                      <AppName className="block text-sm font-black tracking-tight uppercase" />
-                      <p className="inline-flex items-center gap-1 text-[8px] font-bold tracking-[0.25em] text-[#E791A7] uppercase">
+                    <div className="flex min-w-0 flex-col items-center justify-center space-y-0.5 text-center">
+                      <AppName className="block truncate text-sm font-black tracking-tight uppercase" />
+                      <p className="inline-flex items-center justify-center gap-1 text-[8px] leading-tight font-bold tracking-[0.25em] text-[#E791A7] uppercase">
                         <span className="h-px w-2.5 bg-[#CA617D]/60" />
                         EXCLUSIVE
                         <span className="h-px w-2.5 bg-[#CA617D]/60" />

@@ -690,27 +690,28 @@ export function FaqContent() {
             )}
           </div>
 
-          {/* Category Tabs (with moving gradient on active tab) */}
+          {/* Category Tabs (Matching Pricing Page Tab Sizing) */}
           <div className="flex w-full justify-center">
-            <Tabs
-              value={selectedCategory}
-              onValueChange={(val) => setSelectedCategory(val as FaqCategory)}
-              className="w-full max-w-4xl"
-            >
-              <TabsList className="mx-auto flex w-full flex-wrap items-center justify-center gap-1.5 rounded-2xl border border-border/70 bg-card/80 p-1.5 backdrop-blur-sm group-data-horizontal/tabs:h-auto sm:gap-2">
-                {CATEGORIES.map((cat) => (
-                  <TabsTrigger
-                    key={cat.value}
-                    value={cat.value}
-                    variant="gradient"
-                    className="h-9 gap-1.5 rounded-xl px-3 text-xs font-semibold sm:h-10 sm:gap-2 sm:px-4 sm:text-sm"
-                  >
-                    {cat.icon}
-                    <span>{cat.label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+            <div className="w-full overflow-x-auto sm:w-auto">
+              <Tabs
+                value={selectedCategory}
+                onValueChange={(val) => setSelectedCategory(val as FaqCategory)}
+              >
+                <TabsList className="mx-auto flex w-max min-w-max rounded-xl border border-border/70 bg-card/80 p-1 backdrop-blur-sm group-data-horizontal/tabs:h-10">
+                  {CATEGORIES.map((cat) => (
+                    <TabsTrigger
+                      key={cat.value}
+                      value={cat.value}
+                      variant="gradient"
+                      className="h-full gap-2 rounded-lg px-4 text-xs font-semibold sm:px-5 sm:text-sm"
+                    >
+                      {cat.icon}
+                      <span>{cat.label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
         </div>
       </section>
@@ -740,17 +741,19 @@ export function FaqContent() {
             </Button>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="w-full space-y-4 sm:space-y-5">
             {filteredFaqs.map((faq, index) => (
               <MotionDiv
                 key={faq.id}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.35, delay: (index % 4) * 0.05 }}
-                className="h-full"
+                transition={{
+                  duration: 0.35,
+                  delay: Math.min((index % 6) * 0.05, 0.25),
+                }}
               >
-                <div className="group flex h-full flex-col justify-between rounded-2xl border border-border/70 bg-card/60 p-5 shadow-xs backdrop-blur-xs transition-all duration-200 hover:border-[#D3A753]/50 hover:shadow-md sm:p-6">
+                <div className="group rounded-2xl border border-border/70 bg-card/60 p-5 shadow-xs backdrop-blur-xs transition-all duration-200 hover:border-[#D3A753]/50 hover:shadow-md sm:p-6">
                   <div>
                     {/* Category Tag */}
                     <div className="mb-2.5 flex items-center justify-between">
@@ -771,7 +774,7 @@ export function FaqContent() {
                   </div>
 
                   {/* Answer (Directly under Question with Hairline Divider) */}
-                  <div className="mt-4 flex flex-1 items-start gap-3.5 border-t border-border/50 pt-3.5">
+                  <div className="mt-4 flex items-start gap-3.5 border-t border-border/50 pt-3.5">
                     <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-black text-primary uppercase">
                       A
                     </span>
@@ -797,6 +800,8 @@ export function FaqContent() {
           transition={{ duration: 0.5 }}
         >
           <div className="relative overflow-hidden rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card/90 via-card/70 to-[#D3A753]/10 p-8 text-center backdrop-blur-sm sm:p-12">
+            {/* Ambient subtle glow inside CTA */}
+            <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-64 w-96 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 to-transparent blur-3xl" />
             <div className="mx-auto max-w-2xl space-y-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
                 <Compass className="size-3.5" />

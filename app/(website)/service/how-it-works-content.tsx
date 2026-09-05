@@ -35,11 +35,7 @@ export function HowItWorksContent() {
   return (
     <div className="space-y-20 py-8 sm:py-14">
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden px-4 text-center sm:px-6 lg:px-8">
-        {/* Background Subtle Radial Glows */}
-        <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-96 w-full max-w-4xl -translate-x-1/2 rounded-full bg-gradient-to-tr from-[#D3A753]/15 via-[#E791A7]/10 to-transparent blur-3xl" />
-        <div className="pointer-events-none absolute top-1/2 -right-40 -z-10 size-[500px] rounded-full bg-gradient-to-br from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
-
+      <section className="px-4 text-center sm:px-6 lg:px-8">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

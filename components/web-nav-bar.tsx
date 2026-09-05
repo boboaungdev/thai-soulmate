@@ -122,7 +122,7 @@ export function WebNavBar() {
             priority
           />
           <div className="flex min-w-0 flex-col items-center justify-center space-y-0.5 text-center">
-            <AppName className="block truncate text-lg font-black tracking-tight uppercase sm:text-xl" />
+            <AppName className="block truncate text-lg font-black tracking-tight uppercase sm:text-lg" />
 
             <p className="inline-flex items-center justify-center gap-1.5 text-[8px] leading-tight font-semibold tracking-[0.3em] text-[#E791A7] uppercase sm:text-[9px]">
               <span className="h-px w-3 bg-[#CA617D]/60" />

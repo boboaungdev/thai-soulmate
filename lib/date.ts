@@ -40,11 +40,13 @@ export function calculateAge(
 }
 
 export function formatDOB(
-  date: string | Date,
+  date: string | Date | null | undefined,
   options?: {
     showAge?: boolean
   }
 ): string {
+  if (!date) return "-"
+
   const dob = new Date(date)
 
   if (!isValid(dob)) return "-"

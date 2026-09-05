@@ -13,20 +13,46 @@ export const RegisterInterestAdminNotificationEmail = ({
   prefix,
   name,
   email,
+  phone,
+  phoneCountry,
+  currentLocation,
+  relationshipGoal,
+  preferredContactTime,
 }: AdminNotificationDetails) => {
   const baseUrl =
     env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
 
+  const fields: { label: string; value: string }[] = [
+    { label: "Name", value: prefix ? `${prefix} ${name}` : name },
+    { label: "Email", value: email },
+  ]
+
+  if (phone) {
+    fields.push({
+      label: "Phone",
+      value: `${phoneCountry || ""} ${phone}`.trim(),
+    })
+  }
+
+  if (currentLocation) {
+    fields.push({ label: "Location", value: currentLocation })
+  }
+
+  if (relationshipGoal) {
+    fields.push({ label: "Looking For", value: relationshipGoal })
+  }
+
+  if (preferredContactTime) {
+    fields.push({ label: "Preferred Time", value: preferredContactTime })
+  }
+
   return (
     <AdminNotification
-      previewText={`[Register Interest] New registration from ${name}`}
-      category="Register Interest"
-      title="New Interest Registration"
-      description="A new visitor has registered their interest on the website."
-      fields={[
-        { label: "Name", value: prefix ? `${prefix} ${name}` : name },
-        { label: "Email", value: email },
-      ]}
+      previewText={`[Consultation] New consultation request from ${name}`}
+      category="Consultation Request"
+      title="New Consultation Request"
+      description="A visitor has requested a confidential matchmaking consultation."
+      fields={fields}
       buttonText="View in Dashboard"
       buttonUrl={`${baseUrl}/dashboard/register-interest`}
     />

@@ -24,7 +24,7 @@ const PREFERRED_CONTACT_TIMES = [
 ] as const
 
 const formSchema = z.object({
-  prefix: z.string(),
+  prefix: z.string().optional().default("Mr."),
 
   name: z.string().transform((val) =>
     val
@@ -35,17 +35,19 @@ const formSchema = z.object({
       .join(" ")
   ),
 
-  dob: z.string(),
+  dob: z.string().optional().nullable(),
 
-  gender: z.string(),
+  gender: z.string().optional().default("Male"),
 
-  nationality: z.string(),
+  nationality: z.string().optional().default(""),
 
-  nationalityRegion: z.string(),
+  nationalityRegion: z.string().optional().default(""),
 
   currentLocation: z.string(),
 
-  currentLocationRegion: z.string(),
+  currentLocationRegion: z.string().optional().default(""),
+
+  relationshipGoal: z.string().optional().nullable(),
 
   email: z.email().transform((val) => val.toLowerCase()),
 
@@ -53,16 +55,12 @@ const formSchema = z.object({
 
   phone: z.string(),
 
-  source: z.string(),
+  source: z.string().optional().default("Website Consultation"),
 
-  otherSource: z.string().optional(),
+  otherSource: z.string().optional().nullable(),
 
-  preferredContactDate: z.coerce.date({
-    message: "Invalid preferred contact date.",
-  }),
-  preferredContactTime: z.enum(PREFERRED_CONTACT_TIMES, {
-    message: "Please select a preferred contact time.",
-  }),
+  preferredContactDate: z.coerce.date().optional().nullable(),
+  preferredContactTime: z.string().optional().nullable(),
 })
 
 export async function POST(req: Request) {
@@ -95,48 +93,35 @@ export async function POST(req: Request) {
     }
 
     // -----------------------------------------
-    // DOB
+    // DOB & CONTACT DATE
     // -----------------------------------------
 
-    const birthDate = new Date(validatedData.dob)
+    const birthDate = validatedData.dob ? new Date(validatedData.dob) : null
+    const preferredContactDate = validatedData.preferredContactDate || null
 
-    // -----------------------------------------
-    // PREFERRED CONTACT DATE
-    // -----------------------------------------
-
-    const preferredContactDate = validatedData.preferredContactDate
     // -----------------------------------------
     // DATABASE DATA
     // -----------------------------------------
 
     const interestData = {
-      prefix: validatedData.prefix,
-
+      prefix: validatedData.prefix || "Mr.",
       name: validatedData.name,
-
       dob: birthDate,
-
-      gender: validatedData.gender,
-
-      nationality: validatedData.nationality,
-
-      nationalityRegion: validatedData.nationalityRegion,
-
+      gender: validatedData.gender || "Male",
+      nationality:
+        validatedData.nationality ||
+        validatedData.currentLocation ||
+        "International",
+      nationalityRegion: validatedData.nationalityRegion || "",
       currentLocation: validatedData.currentLocation,
-
-      currentLocationRegion: validatedData.currentLocationRegion,
-
+      currentLocationRegion: validatedData.currentLocationRegion || "",
+      relationshipGoal: validatedData.relationshipGoal || null,
       phoneCountry: validatedData.phoneCountry,
-
       phone: validatedData.phone,
-
       preferredContactDate,
-
-      preferredContactTime: validatedData.preferredContactTime,
-
-      source: validatedData.source,
-
-      otherSource: validatedData.otherSource,
+      preferredContactTime: validatedData.preferredContactTime || null,
+      source: validatedData.source || "Website Consultation",
+      otherSource: validatedData.otherSource || null,
     }
 
     // -----------------------------------------
@@ -145,19 +130,16 @@ export async function POST(req: Request) {
 
     const { data: userData, error: userError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.register}>`,
-
       to: validatedData.email,
-
       replyTo: EMAIL.contact,
-
-      subject: `[Register Interest] Thank you for your interest in ${APP_INFO.name}!`,
-
+      subject: `[Consultation Request] Thank you for contacting ${APP_INFO.name}!`,
       react: RegisterInterestMemberConfirmationEmail({
         ...validatedData,
-
-        preferredContactDate: formatDate(preferredContactDate),
-
-        preferredContactTime: validatedData.preferredContactTime,
+        dob: validatedData.dob || undefined,
+        preferredContactDate: preferredContactDate
+          ? formatDate(preferredContactDate)
+          : undefined,
+        preferredContactTime: validatedData.preferredContactTime || undefined,
       }),
     })
 
@@ -185,9 +167,7 @@ export async function POST(req: Request) {
         where: {
           email: validatedData.email,
         },
-
         update: interestData,
-
         create: {
           email: validatedData.email,
           ...interestData,
@@ -212,18 +192,16 @@ export async function POST(req: Request) {
     const { data: adminData, error: adminError } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
       to: EMAIL.NOTIFICATIONS,
-      subject: `[Register Interest] New Interest Registration from ${validatedData.prefix} ${validatedData.name}`,
-
+      subject: `[Consultation Request] New Request from ${validatedData.prefix} ${validatedData.name}`,
       react: RegisterInterestAdminNotificationEmail({
         ...validatedData,
-
-        age: calculateAge(validatedData.dob),
-
+        age: validatedData.dob ? calculateAge(validatedData.dob) : undefined,
         location: validatedData.currentLocation,
-
-        preferredContactDate: formatDate(preferredContactDate),
-
-        preferredContactTime: validatedData.preferredContactTime,
+        preferredContactDate: preferredContactDate
+          ? formatDate(preferredContactDate)
+          : undefined,
+        preferredContactTime: validatedData.preferredContactTime || undefined,
+        relationshipGoal: validatedData.relationshipGoal || undefined,
       }),
     })
 

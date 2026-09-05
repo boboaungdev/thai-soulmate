@@ -30,12 +30,13 @@ model RegisterInterest {
 
   prefix                String
   name                  String
-  dob                   DateTime
+  dob                   DateTime?
   gender                String
   nationality           String
   nationalityRegion     String
   currentLocation       String
   currentLocationRegion String
+  relationshipGoal      String?
 
   email                String    @unique
   phoneCountry         String

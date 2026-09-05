@@ -51,7 +51,7 @@ export function Footer() {
 
               {/* Brand */}
               <div className="flex min-w-0 flex-col items-center justify-center space-y-1">
-                <AppName className="block text-lg leading-none font-black tracking-tight uppercase sm:text-xl" />
+                <AppName className="block text-lg leading-none font-black tracking-tight uppercase sm:text-lg" />
 
                 <p className="inline-flex items-center justify-center gap-1.5 text-[9px] leading-none font-bold tracking-[0.25em] text-[#E791A7] uppercase sm:text-[10px]">
                   <span className="h-px w-3 bg-[#CA617D]/60" />

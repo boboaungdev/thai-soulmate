@@ -1,6 +1,13 @@
+import type { Metadata } from "next"
 import { AppName } from "@/components/app-name"
 import { Cta } from "@/components/cta"
 import { MotionDiv } from "@/components/motion"
+
+export const metadata: Metadata = {
+  title: "How It Works | Thai Soulmate",
+  description:
+    "Learn how our exclusive 1-2-1 Thai matchmaking service works, from consultation to meeting your match.",
+}
 
 export default function ServicePage() {
   return (
@@ -14,7 +21,7 @@ export default function ServicePage() {
           <div className="mx-auto w-full max-w-7xl space-y-12 px-4 sm:px-6 lg:px-8">
             <div className="space-y-4 text-center">
               <h1 className="text-gradient text-4xl font-bold tracking-tighter md:text-5xl">
-                Our Services
+                How It Works
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                 <AppName className="font-bold" /> takes a personalised approach

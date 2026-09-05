@@ -66,8 +66,14 @@ function UserCard({ profile }: { profile: Profile }) {
         <div className="absolute inset-x-0 bottom-0 p-4 text-white">
           <p className="text-lg font-semibold">
             <span className="text-gold">
-              ID-{String(profile.applicationForm.customId).padStart(4, "0")} (
-              {personalDetails?.nickname})
+              {personalDetails?.nickname?.trim()
+                ? `${personalDetails.nickname.trim()} (ID-${String(
+                    profile.applicationForm.customId
+                  ).padStart(4, "0")})`
+                : `ID-${String(profile.applicationForm.customId).padStart(
+                    4,
+                    "0"
+                  )}`}
             </span>
             , <span className="text-pink">{age}</span>
           </p>
@@ -127,13 +133,15 @@ export default function GalleryPage() {
     const lowerCaseSearchTerm = searchTerm.toLowerCase()
 
     const id = String(profile.applicationForm.customId).padStart(4, "0")
-    const name = profile.applicationForm.personalDetails?.name?.toLowerCase() || ""
+    const name =
+      profile.applicationForm.personalDetails?.name?.toLowerCase() || ""
     const nickname =
       profile.applicationForm.personalDetails?.nickname?.toLowerCase() || ""
     const nationality =
       profile.applicationForm.personalDetails?.nationality?.toLowerCase() || ""
     const currentLocation =
-      profile.applicationForm.personalDetails?.currentLocation?.toLowerCase() || ""
+      profile.applicationForm.personalDetails?.currentLocation?.toLowerCase() ||
+      ""
     return (
       name.includes(lowerCaseSearchTerm) ||
       nickname.includes(lowerCaseSearchTerm) ||

@@ -28,8 +28,8 @@ import { useAuthStore } from "@/stores/auth-store"
 
 const SITE_NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "Service", href: "/service" },
-  { label: "Gallery", href: "/gallery" },
+  { label: "How It Works", href: "/service" },
+  { label: "Meet Our Members", href: "/gallery" },
   { label: "FAQ", href: "/faq" },
   { label: "Pricing", href: "/pricing" },
   { label: "Contact", href: "/contact" },

@@ -1,6 +1,13 @@
+import type { Metadata } from "next"
 import { Cta } from "@/components/cta"
 import { ProfileGallery } from "@/components/profile-gallery"
 import { MotionDiv } from "@/components/motion"
+
+export const metadata: Metadata = {
+  title: "Meet Our Members | Thai Soulmate",
+  description:
+    "Explore the profiles of our vibrant community. Your next soulmate could be just a click away.",
+}
 
 export default function GalleryPage() {
   return (

@@ -3,10 +3,8 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { MotionDiv } from "./motion"
-import { useAuthStore } from "@/stores/auth-store"
 
 export function Cta() {
-  const { user } = useAuthStore()
   return (
     <section className="py-16 sm:py-20">
       <MotionDiv
@@ -23,14 +21,9 @@ export function Cta() {
             Join our community today and start your journey towards finding a
             meaningful connection.
           </p>
-          <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+          <div className="flex justify-center">
             <Button asChild size="lg" className="btn-gradient">
-              <Link href="/#register-interest">Register Interest</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href={user ? "/dashboard" : "/auth"}>
-                {user ? "Dashboard" : "Login"}
-              </Link>
+              <Link href="/#register-interest">Start Your Journey</Link>
             </Button>
           </div>
         </div>

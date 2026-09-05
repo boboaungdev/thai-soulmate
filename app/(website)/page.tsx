@@ -75,6 +75,8 @@ export default function HomePage() {
         </MotionDiv>
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative mx-auto w-full max-w-7xl px-4 pt-60 sm:px-6 sm:pt-0 lg:px-8">
+          {/* Subtle golden ambient glow behind hero */}
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 via-[#E791A7]/10 to-transparent blur-3xl" />
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -152,8 +154,13 @@ export default function HomePage() {
       {/* ========================================================= */}
       <section
         id="gallery"
-        className="border-b border-border/40 py-16 sm:py-20"
+        className="relative overflow-hidden border-b border-border/40 py-16 sm:py-24"
       >
+        {/* Unified Atmospheric Ambient Glow */}
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(207,161,79,0.08),transparent_70%)]" />
+        <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 size-[600px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/15 via-[#E791A7]/10 to-transparent blur-3xl" />
+        <div className="pointer-events-none absolute -right-40 -bottom-40 -z-10 size-[500px] rounded-full bg-gradient-to-br from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
+
         <div className="mx-auto w-full max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}
@@ -162,7 +169,7 @@ export default function HomePage() {
             transition={{ duration: 0.5 }}
             className="space-y-3 text-center"
           >
-            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/15 to-[#CA617D]/15 px-4 py-1.5 text-xs font-semibold text-[#D3A753] sm:text-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/15 to-[#CA617D]/15 px-4 py-1.5 text-xs font-semibold text-[#D3A753] sm:text-sm">
               <ShieldCheck className="size-4 text-[#CA617D]" />
               <span>All Profiles Verified &amp; Shown With Permission</span>
             </div>
@@ -191,7 +198,7 @@ export default function HomePage() {
             <Button
               asChild
               size="lg"
-              className="btn-gradient font-semibold shadow-md"
+              className="btn-gradient font-semibold shadow-md transition-all duration-300 hover:shadow-xl hover:shadow-[#D3A753]/20"
             >
               <Link href="/gallery">View All Members</Link>
             </Button>
@@ -202,7 +209,11 @@ export default function HomePage() {
       {/* ========================================================= */}
       {/* WHY MEN CHOOSE THAI SOULMATE — MASSIVE TRUST SECTION */}
       {/* ========================================================= */}
-      <section className="border-b border-border/40 bg-muted/30 py-16 sm:py-24">
+      <section className="relative overflow-hidden border-b border-border/40 bg-muted/20 py-16 sm:py-24">
+        {/* Atmospheric Ambient Glow */}
+        <div className="pointer-events-none absolute top-10 -left-40 -z-10 size-[550px] rounded-full bg-gradient-to-tr from-[#D3A753]/10 via-[#E791A7]/5 to-transparent blur-3xl" />
+        <div className="pointer-events-none absolute -right-40 -bottom-20 -z-10 size-[600px] rounded-full bg-gradient-to-bl from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
+
         <div className="mx-auto w-full max-w-7xl space-y-12 px-4 sm:px-6 lg:px-8">
           <div className="space-y-4 text-center">
             <MotionDiv
@@ -268,9 +279,9 @@ export default function HomePage() {
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.4, delay: index * 0.08 }}
                 >
-                  <Card className="h-full border border-border/70 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+                  <Card className="group h-full rounded-2xl border border-[#D3A753]/20 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
                     <CardHeader className="space-y-3">
-                      <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
+                      <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753] transition-transform duration-300 group-hover:scale-110">
                         <Icon className="size-6 text-[#CA617D]" />
                       </div>
                       <CardTitle className="text-xl font-bold">
@@ -294,11 +305,12 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.5 }}
-            className="overflow-hidden rounded-2xl border border-[#D3A753]/40 bg-gradient-to-br from-card via-card to-background p-6 shadow-lg sm:p-10"
+            className="relative overflow-hidden rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card/90 via-card/70 to-[#D3A753]/10 p-6 shadow-xl backdrop-blur-sm sm:p-10"
           >
+            <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-64 w-96 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 to-transparent blur-3xl" />
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-2xl space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#D3A753]/10 px-3.5 py-1 text-xs font-semibold text-[#D3A753]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-3.5 py-1 text-xs font-semibold text-[#D3A753]">
                   <ShieldCheck className="size-4 text-[#D3A753]" />
                   <span>Strict Member Verification Standards</span>
                 </div>
@@ -322,7 +334,7 @@ export default function HomePage() {
                   ].map((item, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2 text-xs font-medium sm:text-sm"
+                      className="flex items-center gap-2 rounded-lg border border-border/40 bg-card/50 px-2.5 py-1.5 text-xs font-medium sm:text-sm"
                     >
                       <CheckCircle2 className="size-4 shrink-0 text-[#CA617D]" />
                       <span>{item}</span>
@@ -338,7 +350,7 @@ export default function HomePage() {
                 <Button
                   asChild
                   size="lg"
-                  className="btn-gradient w-full font-semibold shadow-md sm:w-auto"
+                  className="btn-gradient w-full font-semibold shadow-md transition-all duration-300 hover:shadow-xl hover:shadow-[#D3A753]/20 sm:w-auto"
                 >
                   <Link href="/#register-interest">
                     Arrange a Confidential Consultation
@@ -356,7 +368,11 @@ export default function HomePage() {
       {/* ========================================================= */}
       {/* WHAT DOES 1-2-1 MATCHMAKING MEAN? */}
       {/* ========================================================= */}
-      <section className="border-b border-border/40 py-16 sm:py-24">
+      <section className="relative overflow-hidden border-b border-border/40 py-16 sm:py-24">
+        {/* Atmospheric Ambient Glow */}
+        <div className="pointer-events-none absolute -top-40 right-1/4 -z-10 size-[600px] rounded-full bg-gradient-to-b from-[#D3A753]/10 via-[#E791A7]/5 to-transparent blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 left-1/4 -z-10 size-[600px] rounded-full bg-gradient-to-tr from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
+
         <div className="mx-auto w-full max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="space-y-4 text-center">
@@ -396,13 +412,13 @@ export default function HomePage() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5 }}
             >
-              <Card className="h-full border border-destructive/20 bg-card/40 backdrop-blur-sm">
+              <Card className="h-full rounded-2xl border border-destructive/25 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:border-destructive/40">
                 <CardHeader className="space-y-2 border-b border-border/40 pb-6">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                       The Standard Dating Experience
                     </span>
-                    <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">
+                    <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-semibold text-destructive">
                       Frustrating & Impersonal
                     </span>
                   </div>
@@ -459,8 +475,8 @@ export default function HomePage() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5 }}
             >
-              <Card className="relative h-full overflow-hidden border border-[#D3A753]/60 bg-gradient-to-br from-card via-card to-background shadow-xl">
-                <div className="absolute -top-12 -right-12 size-40 rounded-full bg-[#D3A753]/10 blur-2xl" />
+              <Card className="relative h-full overflow-hidden rounded-2xl border border-[#D3A753]/60 bg-gradient-to-br from-card via-card to-background shadow-xl backdrop-blur-sm transition-all duration-300 hover:border-[#D3A753]/90 hover:shadow-2xl hover:shadow-[#D3A753]/15">
+                <div className="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-[#D3A753]/15 blur-2xl" />
                 <CardHeader className="space-y-2 border-b border-[#D3A753]/20 pb-6">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold tracking-wider text-[#D3A753] uppercase">
@@ -589,13 +605,13 @@ export default function HomePage() {
                         : ""
                     }
                   >
-                    <div className="group relative flex h-full flex-col justify-between rounded-xl border border-border/60 bg-card/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-md">
+                    <div className="group relative flex h-full flex-col justify-between rounded-2xl border border-border/70 bg-card/80 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <div className="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#D3A753]/15 to-[#CA617D]/15 text-[#CA617D] transition-transform group-hover:scale-110">
+                          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#CA617D] transition-transform duration-300 group-hover:scale-110">
                             <Icon className="size-5" />
                           </div>
-                          <span className="font-mono text-xs font-semibold text-[#D3A753]/70">
+                          <span className="font-mono text-xs font-semibold text-[#D3A753]">
                             {item.number}
                           </span>
                         </div>
@@ -619,10 +635,11 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.5 }}
-            className="rounded-2xl border border-[#D3A753]/30 bg-muted/40 p-8 text-center sm:p-10"
+            className="relative overflow-hidden rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card/90 via-card/70 to-[#D3A753]/10 p-8 text-center shadow-xl backdrop-blur-sm sm:p-12"
           >
+            <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-64 w-96 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 to-transparent blur-3xl" />
             <div className="mx-auto max-w-3xl space-y-4">
-              <h3 className="text-xl font-bold sm:text-2xl">
+              <h3 className="text-xl font-bold sm:text-2xl md:text-3xl">
                 Then we use that information when considering potential
                 introductions.
               </h3>
@@ -634,7 +651,7 @@ export default function HomePage() {
                 <Button
                   asChild
                   size="lg"
-                  className="btn-gradient font-semibold shadow-md"
+                  className="btn-gradient font-semibold shadow-md transition-all duration-300 hover:shadow-xl hover:shadow-[#D3A753]/20"
                 >
                   <Link href="/#register-interest">
                     Arrange a Confidential Consultation
@@ -657,7 +674,14 @@ export default function HomePage() {
       {/* ========================================================= */}
       {/* ABOUT US — REFINED LUXURY STORY & PILLARS */}
       {/* ========================================================= */}
-      <section id="about" className="border-b border-border/40 py-16 sm:py-24">
+      <section
+        id="about"
+        className="relative overflow-hidden border-b border-border/40 py-16 sm:py-24"
+      >
+        {/* Atmospheric Ambient Glow */}
+        <div className="pointer-events-none absolute top-1/4 -right-40 -z-10 size-[600px] rounded-full bg-gradient-to-bl from-[#D3A753]/10 via-[#E791A7]/5 to-transparent blur-3xl" />
+        <div className="pointer-events-none absolute bottom-10 -left-40 -z-10 size-[550px] rounded-full bg-gradient-to-tr from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
+
         <div className="mx-auto w-full max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="space-y-4 text-center">
@@ -687,10 +711,10 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-card via-card to-background p-8 shadow-xl sm:p-12 lg:p-16"
+            className="relative overflow-hidden rounded-3xl border border-[#D3A753]/35 bg-gradient-to-br from-card/90 via-card/75 to-background p-8 shadow-2xl backdrop-blur-md sm:p-12 lg:p-16"
           >
-            <div className="absolute top-0 right-0 -mt-8 -mr-8 size-48 rounded-full bg-[#D3A753]/5 blur-3xl" />
-            <div className="absolute bottom-0 left-0 -mb-8 -ml-8 size-48 rounded-full bg-[#CA617D]/5 blur-3xl" />
+            <div className="pointer-events-none absolute top-0 right-0 -mt-10 -mr-10 size-60 rounded-full bg-[#D3A753]/15 blur-3xl" />
+            <div className="pointer-events-none absolute bottom-0 left-0 -mb-10 -ml-10 size-60 rounded-full bg-[#CA617D]/15 blur-3xl" />
 
             <div className="relative grid gap-10 lg:grid-cols-12 lg:gap-14">
               {/* Left Column - Philosophy */}
@@ -792,7 +816,7 @@ export default function HomePage() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <Card className="h-full border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+              <Card className="h-full rounded-2xl border border-border/70 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
                 <CardHeader className="space-y-3">
                   <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
                     <Target className="size-6 text-[#CA617D]" />
@@ -832,7 +856,7 @@ export default function HomePage() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Card className="h-full border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+              <Card className="h-full rounded-2xl border border-border/70 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
                 <CardHeader className="space-y-3">
                   <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
                     <Eye className="size-6 text-[#D3A753]" />
@@ -874,7 +898,7 @@ export default function HomePage() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Card className="h-full border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+              <Card className="h-full rounded-2xl border border-border/70 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
                 <CardHeader className="space-y-3">
                   <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#CA617D]">
                     <Handshake className="size-6 text-[#CA617D]" />
@@ -925,8 +949,11 @@ export default function HomePage() {
       <section
         id="register-interest"
         ref={registerInterestRef}
-        className="py-16 sm:py-20"
+        className="relative overflow-hidden py-16 sm:py-24"
       >
+        {/* Atmospheric Ambient Glow behind form */}
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(207,161,79,0.08),transparent_70%)]" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 size-[650px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/15 via-[#E791A7]/10 to-transparent blur-3xl" />
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <RegisterInterestForm />
         </div>

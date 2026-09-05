@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import Image from "next/image"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
@@ -12,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Target, Eye, Handshake } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { RegisterInterestForm } from "@/components/register-interest-form"
 import { MotionDiv } from "@/components/motion"
 import { useRouter } from "next/navigation"
@@ -29,7 +31,7 @@ export default function HomePage() {
 
   return (
     <main>
-      <section className="relative flex h-[80vh] min-h-[520px] flex-col justify-center overflow-hidden text-white">
+      <section className="relative flex h-[85vh] min-h-[580px] flex-col justify-center overflow-hidden text-white">
         <MotionDiv
           initial={{ scale: 1.1, opacity: 0.8 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -57,34 +59,68 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="flex max-w-lg flex-col items-center space-y-4 text-center"
+            className="flex max-w-xl flex-col items-center space-y-4 text-center"
           >
             <Image
               src="/logo.png"
               alt={`${APP_INFO.name} Logo`}
               width={160}
               height={160}
-              className="h-28 w-28 object-contain sm:h-36 sm:w-36 md:h-40 md:w-40"
+              className="h-24 w-24 object-contain sm:h-32 sm:w-32 md:h-36 md:w-36"
               priority
             />
 
             <div className="space-y-3">
               <AppName className="text-4xl font-black tracking-tight uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-5xl md:text-6xl" />
 
-              <div className="space-y-1.5">
-                <p className="inline-flex items-center justify-center gap-2 text-[10px] font-bold tracking-[0.35em] text-[#E791A7] uppercase sm:text-xs">
+              <div className="space-y-2">
+                <p className="inline-flex items-center justify-center gap-2 text-[9px] font-semibold tracking-[0.35em] text-[#E791A7] uppercase sm:text-[10px]">
                   <span className="h-px w-6 bg-[#CA617D]/70" />
                   EXCLUSIVE
                   <span className="h-px w-6 bg-[#CA617D]/70" />
                 </p>
 
-                <p className="text-sm font-semibold tracking-[0.2em] text-[#D3A753] sm:text-base md:text-lg">
+                <p className="text-sm font-semibold tracking-[0.2em] text-[#D3A753] uppercase sm:text-base md:text-lg">
                   {APP_INFO.tagline}
                 </p>
 
-                <p className="pt-2 text-sm leading-relaxed font-medium whitespace-pre-line text-white/85 sm:text-base md:text-lg">
+                <p className="pt-1 text-sm font-medium whitespace-pre-line text-white/85 sm:text-base md:text-lg">
                   {APP_INFO.secondaryTagline}
                 </p>
+
+                <p className="pt-2 text-base font-bold tracking-wide text-white sm:text-lg md:text-xl">
+                  Personal Assistant in Your Search for a Life Partner in
+                  Thailand
+                </p>
+
+                <p className="pt-1 text-sm leading-relaxed font-medium text-white/90 sm:text-base md:text-lg">
+                  Stop searching. Let us do the matching.
+                  <span className="mt-1 block text-xs font-normal text-white/75 sm:text-sm">
+                    Real 1-2-1 personal matchmaking for men seeking genuine,
+                    lasting relationships with Thai women.
+                  </span>
+                </p>
+              </div>
+
+              {/* Two Hero CTAs */}
+              <div className="flex w-full flex-col items-center justify-center gap-3 pt-4 sm:flex-row">
+                <Button
+                  asChild
+                  size="lg"
+                  className="btn-gradient w-full font-semibold shadow-lg sm:w-auto"
+                >
+                  <Link href="/#register-interest">
+                    Arrange a Confidential Consultation
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="w-full border-white/25 bg-black/40 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white sm:w-auto"
+                >
+                  <Link href="/service">See How It Works</Link>
+                </Button>
               </div>
             </div>
           </MotionDiv>

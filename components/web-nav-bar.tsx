@@ -122,15 +122,15 @@ export function WebNavBar() {
             priority
           />
           <div className="flex min-w-0 flex-col items-center justify-center space-y-0.5 text-center">
-            <AppName className="block truncate text-base font-black tracking-tight uppercase sm:text-lg" />
+            <AppName className="block truncate text-lg font-black tracking-tight uppercase sm:text-xl" />
 
-            <p className="inline-flex items-center justify-center gap-1.5 text-[9px] leading-tight font-bold tracking-[0.25em] text-[#E791A7] uppercase sm:text-[10px]">
+            <p className="inline-flex items-center justify-center gap-1.5 text-[8px] leading-tight font-semibold tracking-[0.3em] text-[#E791A7] uppercase sm:text-[9px]">
               <span className="h-px w-3 bg-[#CA617D]/60" />
               EXCLUSIVE
               <span className="h-px w-3 bg-[#CA617D]/60" />
             </p>
 
-            <p className="truncate text-[10px] leading-tight font-medium tracking-[0.08em] text-[#D3A753] sm:text-xs">
+            <p className="truncate text-[9px] leading-tight font-medium tracking-[0.08em] text-[#D3A753] sm:text-[10px]">
               {APP_INFO.tagline}
             </p>
           </div>

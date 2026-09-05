@@ -288,6 +288,9 @@ export function WebNavBar() {
                         EXCLUSIVE
                         <span className="h-px w-2.5 bg-[#CA617D]/60" />
                       </p>
+                      <p className="truncate text-[9px] leading-tight font-medium tracking-[0.08em] text-[#D3A753]">
+                        {APP_INFO.tagline}
+                      </p>
                     </div>
                   </Link>
                   <SheetTitle className="sr-only">Navigation Menu</SheetTitle>

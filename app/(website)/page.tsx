@@ -1,8 +1,6 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
 // import { ProfileGallery } from "@/components/profile-gallery"
@@ -16,17 +14,6 @@ export default function HomePage() {
   const router = useRouter()
   const registerInterestRef = useRef<HTMLDivElement>(null)
 
-  const handleClickRegisterInterest = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault()
-    if (window.location.hash === "#register-interest") {
-      registerInterestRef.current?.scrollIntoView({ behavior: "smooth" })
-    } else {
-      router.push("/#register-interest")
-    }
-  }
-
   useEffect(() => {
     if (window.location.hash === "#register-interest") {
       registerInterestRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -35,7 +22,7 @@ export default function HomePage() {
 
   return (
     <main>
-      <section className="relative flex h-[80vh] min-h-[500px] flex-col justify-center overflow-hidden text-white">
+      <section className="relative flex h-[80vh] min-h-[520px] flex-col justify-center overflow-hidden text-white">
         <MotionDiv
           initial={{ scale: 1.1, opacity: 0.8 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -63,56 +50,36 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="flex max-w-md flex-col items-center space-y-5 text-center"
+            className="flex max-w-lg flex-col items-center space-y-4 text-center"
           >
-            <>
-              <Image
-                src="/logo.png"
-                alt={`${APP_INFO.name} Logo`}
-                width={120}
-                height={120}
-                className="h-auto w-auto object-contain"
-              />
+            <Image
+              src="/logo.png"
+              alt={`${APP_INFO.name} Logo`}
+              width={160}
+              height={160}
+              className="h-28 w-28 object-contain sm:h-36 sm:w-36 md:h-40 md:w-40"
+              priority
+            />
 
-              <div className="space-y-3">
-                <AppName className="text-3xl font-bold sm:text-4xl md:text-4xl" />
+            <div className="space-y-3">
+              <AppName className="text-4xl font-black tracking-tight uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-5xl md:text-6xl" />
 
-                <div className="space-y-0">
-                  <p className="text-lg md:text-xl">
-                    <span className="text-[#CA617D]">EXCLUSIVE</span>
-                  </p>
+              <div className="space-y-1.5">
+                <p className="inline-flex items-center justify-center gap-2 text-[10px] font-bold tracking-[0.35em] text-[#E791A7] uppercase sm:text-xs">
+                  <span className="h-px w-6 bg-[#CA617D]/70" />
+                  EXCLUSIVE
+                  <span className="h-px w-6 bg-[#CA617D]/70" />
+                </p>
 
-                  <p className="text-lg md:text-xl">
-                    <span className="text-[#D3A753]">{APP_INFO.tagline}</span>
-                  </p>
+                <p className="text-sm font-semibold tracking-[0.2em] text-[#D3A753] sm:text-base md:text-lg">
+                  {APP_INFO.tagline}
+                </p>
 
-                  <p className="pt-4 text-lg font-bold md:text-2xl">
-                    <span className="text-gradient whitespace-pre-line">
-                      {APP_INFO.secondaryTagline}
-                    </span>
-                  </p>
-                </div>
+                <p className="pt-2 text-sm leading-relaxed font-medium whitespace-pre-line text-white/85 sm:text-base md:text-lg">
+                  {APP_INFO.secondaryTagline}
+                </p>
               </div>
-
-              <div className="flex flex-wrap justify-center gap-4">
-                <Button
-                  size="lg"
-                  className="btn-gradient"
-                  onClick={handleClickRegisterInterest}
-                >
-                  Register Interest
-                </Button>
-
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="bg-transparent text-white transition-opacity hover:bg-white/10 hover:opacity-100"
-                >
-                  <Link href="/service">Learn More</Link>
-                </Button>
-              </div>
-            </>
+            </div>
           </MotionDiv>
         </div>
       </section>

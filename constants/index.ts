@@ -2,8 +2,8 @@ import { Plan } from "@/types"
 import { env } from "@/lib/env"
 
 export const APP_INFO = {
-  name: "Thai Soulmate",
-  tagline: "1-2-1 MATCHMAKING SERVICE",
+  name: "THAI SOULMATE",
+  tagline: "1-2-1 Matchmaking Service",
   secondaryTagline:
     "Real People. Real Relationships.\nPersonally Matched in Thailand.",
   companyName: "Thai Soulmate Co., Ltd.",

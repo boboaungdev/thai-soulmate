@@ -371,24 +371,28 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="p-4">
-        <Link href="/dashboard">
-          <div className="flex items-center gap-2">
+      <SidebarHeader className="border-b border-sidebar-border/60 p-3.5">
+        <Link href="/dashboard" className="block">
+          <div className="flex items-center gap-3">
             <Image
               src="/logo.png"
               alt={`${APP_INFO.name} logo`}
-              width={32}
-              height={32}
-              className="size-8 shrink-0 rounded-lg object-cover"
+              width={72}
+              height={72}
+              className="mx-auto size-10 shrink-0 object-contain group-data-[collapsible=icon]:size-8"
               priority
             />
 
-            <div className="flex-1 text-center group-data-[collapsible=icon]:hidden">
-              <AppName className="text-base font-semibold" />
+            <div className="flex min-w-0 flex-1 flex-col items-center justify-center space-y-0.5 text-center group-data-[collapsible=icon]:hidden">
+              <AppName className="block truncate text-base font-black tracking-tight uppercase" />
 
-              <p className="text-xs text-muted-foreground">EXCLUSIVE</p>
+              <p className="inline-flex items-center justify-center gap-1.5 text-[9px] leading-tight font-bold tracking-[0.25em] text-[#E791A7] uppercase">
+                <span className="h-px w-3 bg-[#CA617D]/60" />
+                EXCLUSIVE
+                <span className="h-px w-3 bg-[#CA617D]/60" />
+              </p>
 
-              <p className="truncate text-xs text-muted-foreground">
+              <p className="truncate text-[10px] leading-tight font-medium tracking-[0.08em] text-[#D3A753]">
                 {APP_INFO.tagline}
               </p>
             </div>

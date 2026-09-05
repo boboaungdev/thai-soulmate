@@ -80,15 +80,19 @@ export function WebNavBar() {
             alt={`${APP_INFO.name} logo`}
             width={72}
             height={72}
-            className="size-10 shrink-0 rounded-2xl object-cover sm:size-11"
+            className="size-10 shrink-0 object-contain sm:size-11"
             priority
           />
-          <div className="min-w-0 text-center">
-            <AppName className="truncate text-base font-semibold sm:text-lg" />
+          <div className="flex min-w-0 flex-col items-center justify-center space-y-0.5 text-center">
+            <AppName className="block truncate text-base font-black tracking-tight uppercase sm:text-lg" />
 
-            <p className="text-xs text-muted-foreground">EXCLUSIVE</p>
+            <p className="inline-flex items-center justify-center gap-1.5 text-[9px] leading-tight font-bold tracking-[0.25em] text-[#E791A7] uppercase sm:text-[10px]">
+              <span className="h-px w-3 bg-[#CA617D]/60" />
+              EXCLUSIVE
+              <span className="h-px w-3 bg-[#CA617D]/60" />
+            </p>
 
-            <p className="truncate text-xs text-muted-foreground">
+            <p className="truncate text-[10px] leading-tight font-medium tracking-[0.08em] text-[#D3A753] sm:text-xs">
               {APP_INFO.tagline}
             </p>
           </div>

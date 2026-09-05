@@ -82,6 +82,7 @@ export function AppNavBar() {
     <>
       <header className="flex h-16 items-center border-b px-4">
         <SidebarTrigger />
+
         <div className="flex flex-1 justify-center">
           <Button
             variant="outline"

@@ -35,182 +35,49 @@ export function Footer() {
               BRAND
           ========================== */}
           <div className="flex justify-center lg:justify-start">
-            <div className="flex flex-col items-center gap-3 text-center">
+            <Link
+              href="/"
+              onClick={handleHomeClick}
+              className="flex flex-col items-center gap-2 text-center transition-opacity hover:opacity-90"
+            >
               {/* Logo */}
               <Image
                 src="/logo.png"
                 alt={`${APP_INFO.name} logo`}
-                width={72}
-                height={72}
-                className="size-14 shrink-0 rounded-2xl object-cover"
+                width={80}
+                height={80}
+                className="size-14 shrink-0 object-contain sm:size-16"
               />
 
               {/* Brand */}
-              <div className="min-w-0">
-                <AppName className="text-md font-semibold" />
+              <div className="flex min-w-0 flex-col items-center justify-center space-y-1">
+                <AppName className="block text-lg leading-none font-black tracking-tight uppercase sm:text-xl" />
 
-                <p className="text-sm text-[#CA617D]">
+                <p className="inline-flex items-center justify-center gap-1.5 text-[9px] leading-none font-bold tracking-[0.25em] text-[#E791A7] uppercase sm:text-[10px]">
+                  <span className="h-px w-3 bg-[#CA617D]/60" />
                   EXCLUSIVE
+                  <span className="h-px w-3 bg-[#CA617D]/60" />
                 </p>
 
-                <p className="text-sm text-[#D3A753]">{APP_INFO.tagline}</p>
-
-                {/* <p className="text-gradient mt-2 text-sm whitespace-pre-line">
-                  {APP_INFO.secondaryTagline}
-                </p> */}
+                <p className="text-xs leading-none font-medium tracking-[0.08em] text-[#D3A753] sm:text-sm">
+                  {APP_INFO.tagline}
+                </p>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* =========================
-              CONTACT / SOCIAL
+              CONTACT & SOCIAL (CENTERED)
           ========================== */}
           <div className="flex justify-center lg:justify-end">
-            <div className="flex flex-col items-center gap-2 lg:items-end">
-              {/* =================================================
-                  MOBILE — SOCIAL / CONTACT ICONS
-                  One centered row
-              ================================================== */}
-              <div className="flex flex-wrap justify-center gap-2 lg:hidden">
-                {/* WhatsApp */}
-                <Button
-                  asChild
-                  variant="outline"
-                  size="icon-sm"
-                  className="rounded-full"
-                >
-                  <a
-                    href={CONTACT.whatsapp}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="WhatsApp"
-                  >
-                    <FaWhatsapp className="size-4 text-[#25D366]" />
-                  </a>
-                </Button>
-
-                {/* Email */}
-                <Button
-                  asChild
-                  variant="outline"
-                  size="icon-sm"
-                  className="rounded-full"
-                >
-                  <a href={`mailto:${CONTACT.email}`} aria-label="Email">
-                    <FaEnvelope className="size-4" />
-                  </a>
-                </Button>
-
-                {/* Facebook */}
-                <Button
-                  asChild
-                  variant="outline"
-                  size="icon-sm"
-                  className="rounded-full"
-                >
-                  <a
-                    href={CONTACT.facebook}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Facebook"
-                  >
-                    <FaFacebook className="size-4 text-[#1877F2]" />
-                  </a>
-                </Button>
-
-                {/* Instagram */}
-                <Button
-                  asChild
-                  variant="outline"
-                  size="icon-sm"
-                  className="rounded-full"
-                >
-                  <a
-                    href={CONTACT.instagram}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Instagram"
-                  >
-                    <FaInstagram className="size-4 text-[#E4405F]" />
-                  </a>
-                </Button>
-
-                {/* TikTok */}
-                <Button
-                  asChild
-                  variant="outline"
-                  size="icon-sm"
-                  className="rounded-full"
-                >
-                  <a
-                    href={CONTACT.tiktok}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="TikTok"
-                  >
-                    <FaTiktok className="size-4 text-foreground" />
-                  </a>
-                </Button>
-
-                {/* LINE */}
-                <Button
-                  asChild
-                  variant="outline"
-                  size="icon-sm"
-                  className="rounded-full"
-                >
-                  <a
-                    href={CONTACT.line}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="LINE"
-                  >
-                    <FaLine className="size-4 text-[#00C300]" />
-                  </a>
-                </Button>
-              </div>
-
-              {/* =================================================
-                  MOBILE — PHONE NUMBERS
-                  One centered row
-              ================================================== */}
-              <div className="flex flex-wrap justify-center gap-2 lg:hidden">
-                {/* Primary Phone */}
+            <div className="flex flex-col items-center justify-center gap-3 text-center">
+              {/* Row 1: WhatsApp & Email (First) */}
+              <div className="flex flex-wrap items-center justify-center gap-2">
                 <Button
                   asChild
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
-                >
-                  <a href={`tel:${CONTACT.primaryPhone}`}>
-                    <FaPhoneAlt className="size-4 text-[#0A84FF]" />
-                    <span>{CONTACT.primaryPhone}</span>
-                  </a>
-                </Button>
-
-                {/* Secondary Phone */}
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full"
-                >
-                  <a href={`tel:${CONTACT.secondaryPhone}`}>
-                    <FaPhoneAlt className="size-4 text-[#0A84FF]" />
-                    <span>{CONTACT.secondaryPhone}</span>
-                  </a>
-                </Button>
-              </div>
-
-              {/* =================================================
-                  DESKTOP — WHATSAPP + EMAIL
-              ================================================== */}
-              <div className="hidden flex-wrap justify-end gap-2 lg:flex">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full"
+                  className="rounded-full hover:border-[#25D366]/50 hover:bg-[#25D366]/10"
                 >
                   <a
                     href={CONTACT.whatsapp}
@@ -227,24 +94,49 @@ export function Footer() {
                   asChild
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
+                  className="rounded-full hover:border-amber-500/50 hover:bg-amber-500/10"
                 >
                   <a href={`mailto:${CONTACT.email}`} aria-label="Email">
-                    <FaEnvelope className="size-4" />
+                    <FaEnvelope className="size-4 text-[#D3A753]" />
                     <span>Email</span>
                   </a>
                 </Button>
               </div>
 
-              {/* =================================================
-                  DESKTOP — SOCIAL MEDIA
-              ================================================== */}
-              <div className="hidden flex-wrap justify-end gap-2 lg:flex">
+              {/* Row 2: Phone Numbers (Middle) */}
+              <div className="flex flex-wrap items-center justify-center gap-2">
                 <Button
                   asChild
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
+                  className="rounded-full hover:border-[#0A84FF]/50 hover:bg-[#0A84FF]/10"
+                >
+                  <a href={`tel:${CONTACT.primaryPhone}`}>
+                    <FaPhoneAlt className="size-3.5 text-[#0A84FF]" />
+                    <span>{CONTACT.primaryPhone}</span>
+                  </a>
+                </Button>
+
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full hover:border-[#0A84FF]/50 hover:bg-[#0A84FF]/10"
+                >
+                  <a href={`tel:${CONTACT.secondaryPhone}`}>
+                    <FaPhoneAlt className="size-3.5 text-[#0A84FF]" />
+                    <span>{CONTACT.secondaryPhone}</span>
+                  </a>
+                </Button>
+              </div>
+
+              {/* Row 3: Social Media (Under) */}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full hover:border-[#1877F2]/50 hover:bg-[#1877F2]/10"
                 >
                   <a
                     href={CONTACT.facebook}
@@ -261,7 +153,7 @@ export function Footer() {
                   asChild
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
+                  className="rounded-full hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10"
                 >
                   <a
                     href={CONTACT.instagram}
@@ -278,7 +170,7 @@ export function Footer() {
                   asChild
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
+                  className="rounded-full hover:border-foreground/50 hover:bg-foreground/10"
                 >
                   <a
                     href={CONTACT.tiktok}
@@ -295,7 +187,7 @@ export function Footer() {
                   asChild
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
+                  className="rounded-full hover:border-[#00C300]/50 hover:bg-[#00C300]/10"
                 >
                   <a
                     href={CONTACT.line}
@@ -305,35 +197,6 @@ export function Footer() {
                   >
                     <FaLine className="size-4 text-[#00C300]" />
                     <span>LINE</span>
-                  </a>
-                </Button>
-              </div>
-
-              {/* =================================================
-                  DESKTOP — PHONE NUMBERS
-              ================================================== */}
-              <div className="hidden flex-wrap justify-end gap-2 lg:flex">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full"
-                >
-                  <a href={`tel:${CONTACT.primaryPhone}`}>
-                    <FaPhoneAlt className="size-4 text-[#0A84FF]" />
-                    <span>{CONTACT.primaryPhone}</span>
-                  </a>
-                </Button>
-
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full"
-                >
-                  <a href={`tel:${CONTACT.secondaryPhone}`}>
-                    <FaPhoneAlt className="size-4 text-[#0A84FF]" />
-                    <span>{CONTACT.secondaryPhone}</span>
                   </a>
                 </Button>
               </div>

@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
-// import { ProfileGallery } from "@/components/profile-gallery"
+import { ProfileGallery } from "@/components/profile-gallery"
 import {
   Card,
   CardContent,
@@ -12,7 +12,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Target, Eye, Handshake } from "lucide-react"
+import {
+  Target,
+  Eye,
+  Handshake,
+  ShieldCheck,
+  UserCheck,
+  Lock,
+  SearchX,
+  Users,
+  MapPin,
+  CheckCircle2,
+  HeartHandshake,
+  Sparkles,
+  Smile,
+  Compass,
+  Heart,
+  History,
+  Check,
+  X,
+  Quote,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { RegisterInterestForm } from "@/components/register-interest-form"
 import { MotionDiv } from "@/components/motion"
@@ -127,193 +147,774 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* <section id="gallery" className="py-16 sm:py-20">
-        <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+      {/* ========================================================= */}
+      {/* FEATURED MEMBERS PREVIEW */}
+      {/* ========================================================= */}
+      <section
+        id="gallery"
+        className="border-b border-border/40 py-16 sm:py-20"
+      >
+        <div className="mx-auto w-full max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
+            viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.5 }}
-            className="text-center"
+            className="space-y-3 text-center"
           >
-            <h2 className="text-gradient mb-2 text-3xl font-bold">
-              Featured Members
+            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/15 to-[#CA617D]/15 px-4 py-1.5 text-xs font-semibold text-[#D3A753] sm:text-sm">
+              <ShieldCheck className="size-4 text-[#CA617D]" />
+              <span>All Profiles Verified &amp; Shown With Permission</span>
+            </div>
+
+            <h2 className="text-gradient text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              Meet Our Members
             </h2>
-            <p className="mb-6 text-muted-foreground">
-              Meet some of our amazing members.
+            <p className="mx-auto max-w-2xl text-muted-foreground md:text-lg">
+              We work with relationship-minded Thai women who are interested in
+              genuine relationships and introductions to foreign men. Every
+              profile is shared respectfully and with the member&apos;s
+              permission.
             </p>
           </MotionDiv>
+
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
           >
             <ProfileGallery layout="scroll" />
           </MotionDiv>
-        </div>
-      </section> */}
 
-      {/* About Us */}
-      <section id="about" className="py-12 md:py-24">
+          <div className="flex justify-center pt-2">
+            <Button
+              asChild
+              size="lg"
+              className="btn-gradient font-semibold shadow-md"
+            >
+              <Link href="/gallery">View All Members</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* WHY MEN CHOOSE THAI SOULMATE — MASSIVE TRUST SECTION */}
+      {/* ========================================================= */}
+      <section className="border-b border-border/40 bg-muted/30 py-16 sm:py-24">
         <div className="mx-auto w-full max-w-7xl space-y-12 px-4 sm:px-6 lg:px-8">
-          {/* Centered title */}
           <div className="space-y-4 text-center">
             <MotionDiv
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="text-gradient text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-                About Us
+              <p className="text-xs font-bold tracking-[0.25em] text-[#D3A753] uppercase sm:text-sm">
+                Trust Is The Product
+              </p>
+              <h2 className="text-gradient mt-2 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                Why Men Choose Thai Soulmate
               </h2>
+              <p className="mx-auto mt-3 max-w-2xl text-muted-foreground md:text-lg">
+                Not another dating app. We take the time to understand you
+                personally and find real compatibility—saving you the months of
+                uncertainty, ghosting, and endless swiping.
+              </p>
             </MotionDiv>
           </div>
 
-          {/* Content text */}
+          {/* 6 Trust Pillars Grid */}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                icon: UserCheck,
+                title: "Genuine People",
+                desc: "We focus on genuine introductions rather than anonymous profiles, bots, or endless time-wasting conversations.",
+              },
+              {
+                icon: HeartHandshake,
+                title: "Personal 1-2-1 Matching",
+                desc: "We take the time to deeply understand your personality, lifestyle, and values before recommending any match.",
+              },
+              {
+                icon: Lock,
+                title: "100% Confidential & Discreet",
+                desc: "Your personal information, background, and conversations are handled with absolute discretion and strict privacy.",
+              },
+              {
+                icon: SearchX,
+                title: "No Endless Searching",
+                desc: "You don't have to spend months browsing dating apps. Your dedicated matchmaker handles the entire search and vetting for you.",
+              },
+              {
+                icon: Users,
+                title: "Both Sides Choose",
+                desc: "An introduction only happens when there is genuine interest and consent from both people. Never one-sided.",
+              },
+              {
+                icon: MapPin,
+                title: "Based in Thailand",
+                desc: "Our matchmaking team is based locally in Bangkok, Thailand—giving us real presence and personal contact with every member.",
+              },
+            ].map((pillar, index) => {
+              const Icon = pillar.icon
+              return (
+                <MotionDiv
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
+                >
+                  <Card className="h-full border border-border/70 bg-card/70 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+                    <CardHeader className="space-y-3">
+                      <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
+                        <Icon className="size-6 text-[#CA617D]" />
+                      </div>
+                      <CardTitle className="text-xl font-bold">
+                        {pillar.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {pillar.desc}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </MotionDiv>
+              )
+            })}
+          </div>
+
+          {/* Verification Box / Process Banner */}
           <MotionDiv
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-4 text-left"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5 }}
+            className="overflow-hidden rounded-2xl border border-[#D3A753]/40 bg-gradient-to-br from-card via-card to-background p-6 shadow-lg sm:p-10"
           >
-            <p className="text-muted-foreground md:text-xl">
-              Welcome to <AppName className="font-bold" /> – where connections
-              are made and stories begin. We are dedicated to bringing people
-              together in meaningful ways.
-            </p>
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+              <div className="max-w-2xl space-y-4">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#D3A753]/10 px-3.5 py-1 text-xs font-semibold text-[#D3A753]">
+                  <ShieldCheck className="size-4 text-[#D3A753]" />
+                  <span>Strict Member Verification Standards</span>
+                </div>
+                <h3 className="text-2xl font-bold sm:text-3xl">
+                  You Deserve to Know Who You&apos;re Talking To
+                </h3>
+                <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                  Before introducing any member, our team verifies critical
+                  details so you can proceed with confidence, security, and
+                  peace of mind.
+                </p>
 
-            <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline font-bold" />
-              &nbsp;you don&apos;t have time for dating apps that offer no real
-              value, and you don&apos;t have the time to engage with individuals
-              who aren&apos;t the right fit for YOU.
-            </p>
+                <div className="grid grid-cols-2 gap-2.5 pt-2 sm:grid-cols-3">
+                  {[
+                    "Government ID & Age",
+                    "Current Location",
+                    "Relationship Status",
+                    "Background & Career",
+                    "Relationship Intentions",
+                    "In-Person / Video Interview",
+                  ].map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 text-xs font-medium sm:text-sm"
+                    >
+                      <CheckCircle2 className="size-4 shrink-0 text-[#CA617D]" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-            <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline font-bold" />
-              &nbsp;understands you are at a stage in your life where everything
-              is in place, and all that&apos;s missing is the right
-              person—someone with whom you can share the rest of your life in
-              happiness.
-            </p>
+              <div className="flex shrink-0 flex-col items-start justify-center gap-3 lg:items-center lg:border-l lg:border-border/60 lg:pl-8">
+                <p className="text-center text-sm font-semibold lg:text-left">
+                  Have questions before registering?
+                </p>
+                <Button
+                  asChild
+                  size="lg"
+                  className="btn-gradient w-full font-semibold shadow-md sm:w-auto"
+                >
+                  <Link href="/#register-interest">
+                    Arrange a Confidential Consultation
+                  </Link>
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Free · 100% Confidential · No Obligation
+                </p>
+              </div>
+            </div>
+          </MotionDiv>
+        </div>
+      </section>
 
-            <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline font-bold" />
-              &nbsp;is a personalised matchmaking service dedicated to creating
-              a genuine, meaningful connection between YOU and your future
-              partner.
-            </p>
+      {/* ========================================================= */}
+      {/* WHAT DOES 1-2-1 MATCHMAKING MEAN? */}
+      {/* ========================================================= */}
+      <section className="border-b border-border/40 py-16 sm:py-24">
+        <div className="mx-auto w-full max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="space-y-4 text-center">
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
+                <Sparkles className="size-3.5" />
+                <span>Real Human Service · Not An Algorithm</span>
+              </div>
+              <h2 className="text-gradient mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                What Does 1-2-1 Matchmaking Mean?
+              </h2>
+              <p className="mx-auto mt-4 max-w-3xl text-base text-muted-foreground md:text-lg">
+                It means you&apos;re dealing with a real person—not an
+                algorithm. Think of us as your{" "}
+                <span className="font-semibold text-foreground">
+                  personal assistant in your search for a life partner in
+                  Thailand
+                </span>
+                . You&apos;re not buying access to another crowded database;
+                you&apos;re having an expert do the searching, vetting, and
+                matching for you.
+              </p>
+            </MotionDiv>
+          </div>
 
-            <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline font-bold" />
-              &nbsp;takes the time to understand each individual&apos;s values,
-              lifestyle, and relationship goals to connect YOU with your future
-              life partner.
-            </p>
+          {/* Comparison Cards: Dating Apps vs Personal Matchmaker */}
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Card 1: Dating Apps */}
+            <MotionDiv
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card className="h-full border border-destructive/20 bg-card/40 backdrop-blur-sm">
+                <CardHeader className="space-y-2 border-b border-border/40 pb-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                      The Standard Dating Experience
+                    </span>
+                    <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">
+                      Frustrating & Impersonal
+                    </span>
+                  </div>
+                  <CardTitle className="text-2xl font-bold">
+                    Not Another Dating App
+                  </CardTitle>
+                  <CardDescription className="text-sm">
+                    Endless profiles, hours lost scrolling, and zero certainty.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 pt-6 text-sm text-muted-foreground">
+                  <div className="space-y-4">
+                    {[
+                      {
+                        title: "Endless profiles to swipe through",
+                        desc: "Dating apps dump thousands of unverified profiles on you with zero guidance.",
+                      },
+                      {
+                        title: "You message, wait, and get ghosted",
+                        desc: "You invest precious hours messaging people who never reply or disappear midway.",
+                      },
+                      {
+                        title: "Wondering who is genuine",
+                        desc: "You constantly second-guess if photos are real, filtered, or outright scammers.",
+                      },
+                      {
+                        title: "Starting all over again from scratch",
+                        desc: "Months pass feeling exhausted and discouraged, without meeting anyone real.",
+                      },
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-start gap-3">
+                        <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                          <X className="size-3.5" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-foreground/90">
+                            {item.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {item.desc}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </MotionDiv>
 
-            <p className="text-muted-foreground md:text-xl">
-              <AppName className="inline font-bold" />
-              &nbsp;approach is respectful and discreet, ensuring every
-              introduction is made with care and integrity.
-            </p>
+            {/* Card 2: Thai Soulmate Personal Matchmaker */}
+            <MotionDiv
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card className="relative h-full overflow-hidden border border-[#D3A753]/60 bg-gradient-to-br from-card via-card to-background shadow-xl">
+                <div className="absolute -top-12 -right-12 size-40 rounded-full bg-[#D3A753]/10 blur-2xl" />
+                <CardHeader className="space-y-2 border-b border-[#D3A753]/20 pb-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold tracking-wider text-[#D3A753] uppercase">
+                      The Thai Soulmate Difference
+                    </span>
+                    <span className="rounded-full bg-gradient-to-r from-[#D3A753]/20 to-[#CA617D]/20 px-2.5 py-0.5 text-xs font-semibold text-[#D3A753]">
+                      Personal & Curated
+                    </span>
+                  </div>
+                  <CardTitle className="text-2xl font-bold">
+                    Your Personal Matchmaker in Thailand
+                  </CardTitle>
+                  <CardDescription className="text-sm text-foreground/80">
+                    Stop searching. Let us do the matching for you.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 pt-6 text-sm">
+                  <div className="space-y-4">
+                    {[
+                      {
+                        title: "Dealing with a real human",
+                        desc: "No cold algorithms. A dedicated matchmaker based in Thailand handles your introductions.",
+                      },
+                      {
+                        title: "Personally vetted women",
+                        desc: "Every candidate is interviewed face-to-face or on video, with identity & background verified.",
+                      },
+                      {
+                        title: "Mutual agreement before introduction",
+                        desc: "Introductions happen only when both sides have reviewed profiles and expressed genuine interest.",
+                      },
+                      {
+                        title: "Quality over database quantity",
+                        desc: "Our success metric is meaningful, lasting relationships—not how many profiles are in our database.",
+                      },
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-start gap-3">
+                        <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/20 text-[#D3A753]">
+                          <Check className="size-3.5" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-foreground">
+                            {item.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {item.desc}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </MotionDiv>
+          </div>
+
+          {/* 7 Things We Take Time to Understand */}
+          <div className="space-y-8">
+            <div className="space-y-2 text-center">
+              <h3 className="text-2xl font-bold sm:text-3xl">
+                7 Things We Take Time to Understand About You
+              </h3>
+              <p className="mx-auto max-w-2xl text-sm text-muted-foreground sm:text-base">
+                Before recommending any match, we build a thorough understanding
+                of who you are and what you genuinely seek:
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {[
+                {
+                  icon: Smile,
+                  number: "01",
+                  title: "Your Personality",
+                  desc: "Your temperament, values, sense of humor, and emotional outlook.",
+                },
+                {
+                  icon: Compass,
+                  number: "02",
+                  title: "Your Lifestyle",
+                  desc: "Daily routines, career demands, hobbies, travel habits, and living pace.",
+                },
+                {
+                  icon: Target,
+                  number: "03",
+                  title: "Your Relationship Goals",
+                  desc: "Whether you're seeking marriage, lifelong companionship, or family-building.",
+                },
+                {
+                  icon: Heart,
+                  number: "04",
+                  title: "Your Preferences",
+                  desc: "Age preferences, cultural compatibility, language comfort, and shared interests.",
+                },
+                {
+                  icon: UserCheck,
+                  number: "05",
+                  title: "Your Expectations",
+                  desc: "What mutual respect, emotional commitment, and daily life look like to you.",
+                },
+                {
+                  icon: History,
+                  number: "06",
+                  title: "What Has & Hasn't Worked",
+                  desc: "Understanding past relationship experiences so we don't repeat mistakes.",
+                },
+                {
+                  icon: HeartHandshake,
+                  number: "07",
+                  title: "Your Ideal Life Partner",
+                  desc: "The kind of partner you believe would truly suit you and bring you lasting joy.",
+                  featured: true,
+                },
+              ].map((item, idx) => {
+                const Icon = item.icon
+                return (
+                  <MotionDiv
+                    key={idx}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.4, delay: idx * 0.05 }}
+                    className={
+                      item.featured
+                        ? "sm:col-span-2 lg:col-span-3 xl:col-span-1"
+                        : ""
+                    }
+                  >
+                    <div className="group relative flex h-full flex-col justify-between rounded-xl border border-border/60 bg-card/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-md">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#D3A753]/15 to-[#CA617D]/15 text-[#CA617D] transition-transform group-hover:scale-110">
+                            <Icon className="size-5" />
+                          </div>
+                          <span className="font-mono text-xs font-semibold text-[#D3A753]/70">
+                            {item.number}
+                          </span>
+                        </div>
+                        <h4 className="text-base font-bold text-foreground">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </MotionDiv>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Bottom Pitch Banner */}
+          <MotionDiv
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5 }}
+            className="rounded-2xl border border-[#D3A753]/30 bg-muted/40 p-8 text-center sm:p-10"
+          >
+            <div className="mx-auto max-w-3xl space-y-4">
+              <h3 className="text-xl font-bold sm:text-2xl">
+                Then we use that information when considering potential
+                introductions.
+              </h3>
+              <p className="text-sm text-muted-foreground sm:text-base">
+                This makes your service feel personal and premium. We save you
+                the time, uncertainty, and frustration of doing it all yourself.
+              </p>
+              <div className="flex flex-col items-center justify-center gap-4 pt-2 sm:flex-row">
+                <Button
+                  asChild
+                  size="lg"
+                  className="btn-gradient font-semibold shadow-md"
+                >
+                  <Link href="/#register-interest">
+                    Arrange a Confidential Consultation
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-[#D3A753]/40 hover:bg-[#D3A753]/10"
+                >
+                  <Link href="/service">See How It Works</Link>
+                </Button>
+              </div>
+            </div>
+          </MotionDiv>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* ABOUT US — REFINED LUXURY STORY & PILLARS */}
+      {/* ========================================================= */}
+      <section id="about" className="border-b border-border/40 py-16 sm:py-24">
+        <div className="mx-auto w-full max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="space-y-4 text-center">
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
+                <Sparkles className="size-3.5" />
+                <span>Our Story & Philosophy</span>
+              </div>
+              <h2 className="text-gradient mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                About Thai Soulmate
+              </h2>
+              <p className="mx-auto mt-3 max-w-3xl text-base text-muted-foreground md:text-lg">
+                Where genuine international connections are made and
+                life-changing stories begin.
+              </p>
+            </MotionDiv>
+          </div>
+
+          {/* Editorial Philosophy Showcase */}
+          <MotionDiv
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+            className="relative overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-card via-card to-background p-8 shadow-xl sm:p-12 lg:p-16"
+          >
+            <div className="absolute top-0 right-0 -mt-8 -mr-8 size-48 rounded-full bg-[#D3A753]/5 blur-3xl" />
+            <div className="absolute bottom-0 left-0 -mb-8 -ml-8 size-48 rounded-full bg-[#CA617D]/5 blur-3xl" />
+
+            <div className="relative grid gap-10 lg:grid-cols-12 lg:gap-14">
+              {/* Left Column - Philosophy */}
+              <div className="space-y-6 lg:col-span-6">
+                <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 to-[#CA617D]/20 text-[#CA617D]">
+                  <Quote className="size-6" />
+                </div>
+                <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  You are at a stage in life where everything is in place—except
+                  the right partner.
+                </h3>
+                <p className="text-base leading-relaxed text-muted-foreground">
+                  You have built your career, achieved stability, and know what
+                  truly matters. What you don&apos;t have is time for dating
+                  apps that offer endless noise, unverified profiles, and
+                  superficial swiping with people who aren&apos;t aligned with
+                  your future.
+                </p>
+                <p className="text-base leading-relaxed text-muted-foreground">
+                  <AppName className="inline font-semibold" /> was created to
+                  replace the frustration of modern dating with the discretion,
+                  warmth, and precision of a private matchmaking agency based
+                  locally in Thailand.
+                </p>
+              </div>
+
+              {/* Right Column - What We Stand For */}
+              <div className="space-y-6 lg:col-span-6 lg:border-l lg:border-border/60 lg:pl-10">
+                <h4 className="text-xs font-bold tracking-wider text-[#D3A753] uppercase sm:text-sm">
+                  The Boutique Matchmaking Difference
+                </h4>
+                <div className="space-y-4">
+                  {[
+                    {
+                      title: "A Human Bridge Between Two Worlds",
+                      desc: "We connect serious international gentlemen with genuine, relationship-minded Thai women seeking a loving marriage and shared future.",
+                    },
+                    {
+                      title: "Integrity Above Database Numbers",
+                      desc: "We take the time to understand each person's core values, lifestyle, and family vision before suggesting an introduction.",
+                    },
+                    {
+                      title: "Complete Discretion & Respect",
+                      desc: "Every interaction is handled with utmost privacy. Introductions only take place when both individuals have reviewed each other and agreed.",
+                    },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-4">
+                      <div className="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                        <CheckCircle2 className="size-4" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-semibold text-foreground">
+                          {item.title}
+                        </p>
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-2">
+                  <p className="text-xs text-muted-foreground/80 italic">
+                    &ldquo;Real relationships are built on mutual respect,
+                    verified sincerity, and shared values—never on random
+                    algorithms.&rdquo;
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Metrics Strip */}
+            <div className="mt-10 grid grid-cols-2 gap-4 border-t border-border/60 pt-8 sm:grid-cols-4">
+              {[
+                { label: "Matchmaking Service", value: "1-2-1 Personal" },
+                { label: "Profile Standard", value: "100% Verified" },
+                { label: "Local Presence", value: "Thailand" },
+                { label: "Introductions", value: "Mutual Consent" },
+              ].map((stat, i) => (
+                <div key={i} className="space-y-1 text-center sm:text-left">
+                  <p className="text-lg font-bold text-foreground sm:text-xl">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs tracking-wider text-muted-foreground uppercase">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
           </MotionDiv>
 
-          {/* Mission, Vision, Values */}
-          <div className="grid gap-8 md:grid-cols-3">
+          {/* Mission, Vision, Values — Modern Luxury Cards */}
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* Mission */}
             <MotionDiv
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card className="h-full border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+                <CardHeader className="space-y-3">
+                  <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
+                    <Target className="size-6 text-[#CA617D]" />
+                  </div>
+                  <CardTitle className="text-xl font-bold">
+                    Our Mission
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    To deliver an unparalleled personal matchmaking service that
+                    empowers individuals to find genuine companionship, mutual
+                    respect, and lasting love.
+                  </p>
+                  <ul className="space-y-2 border-t border-border/40 pt-3 text-xs text-muted-foreground/90">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
+                      <span>Fostering sincere, long-term relationships</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
+                      <span>Eliminating the time-wasting of dating apps</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
+                      <span>Bespoke introductions tailored to you</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </MotionDiv>
+
+            {/* Vision */}
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Card>
-                <CardHeader className="flex flex-col items-center">
-                  <Target className="mb-2 h-6 w-6 text-[var(--gold)]" />
-                  <CardTitle className="text-center">Our Mission</CardTitle>
+              <Card className="h-full border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+                <CardHeader className="space-y-3">
+                  <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
+                    <Eye className="size-6 text-[#D3A753]" />
+                  </div>
+                  <CardTitle className="text-xl font-bold">
+                    Our Vision
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    <ul className="list-inside list-disc space-y-2 text-muted-foreground">
-                      <li>
-                        Create a vibrant and secure platform that fosters
-                        genuine connections, empowering individuals to find
-                        companionship, friendship, and love.
-                      </li>
-                      <li>
-                        Provide an inclusive environment where everyone feels
-                        valued and respected.
-                      </li>
-                      <li>
-                        Is to offer YOU an unparalleled matchmaking service that
-                        meets with your expectations.
-                      </li>
-                    </ul>
-                  </CardDescription>
+                <CardContent className="space-y-3">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    To be the leading, most trusted private matchmaking service
+                    for meaningful international connections between foreign
+                    gentlemen and Thai women.
+                  </p>
+                  <ul className="space-y-2 border-t border-border/40 pt-3 text-xs text-muted-foreground/90">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
+                      <span>
+                        Setting the benchmark for integrity in Thailand
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
+                      <span>Building real marriages and life partnerships</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
+                      <span>Promoting cultural respect and understanding</span>
+                    </li>
+                  </ul>
                 </CardContent>
               </Card>
             </MotionDiv>
+
+            {/* Values */}
             <MotionDiv
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Card>
-                <CardHeader className="flex flex-col items-center">
-                  <Eye className="mb-2 h-6 w-6 text-[var(--gold)]" />
-                  <CardTitle className="text-center">Our Vision</CardTitle>
+              <Card className="h-full border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+                <CardHeader className="space-y-3">
+                  <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#CA617D]">
+                    <Handshake className="size-6 text-[#CA617D]" />
+                  </div>
+                  <CardTitle className="text-xl font-bold">
+                    Our Core Values
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    <ul className="list-inside list-disc space-y-2 text-muted-foreground">
-                      <li>
-                        To be the leading platform for meaningful international
-                        connections.
-                      </li>
-                      <li>
-                        To build a world where technology enhances human
-                        relationships, making it easier to build lasting bonds.
-                      </li>
-                      <li>
-                        To set the standard for excellence and integrity in the
-                        personalized matchmaking industry.
-                      </li>
-                    </ul>
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            </MotionDiv>
-            <MotionDiv
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <Card>
-                <CardHeader className="flex flex-col items-center">
-                  <Handshake className="mb-2 h-6 w-6 text-[var(--gold)]" />
-                  <CardTitle className="text-center">Our Values</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    <ul className="list-inside list-disc space-y-2 text-muted-foreground">
-                      <li>
-                        Integrity: Upholding honesty and transparency in all our
-                        interactions.
-                      </li>
-                      <li>
-                        Empathy: Understanding and respecting the feelings,
-                        needs, matches, and perspectives of our members.
-                      </li>
-                      <li>
-                        Discretion: Ensuring the privacy and confidentiality of
-                        all our clients.
-                      </li>
-                    </ul>
-                  </CardDescription>
+                <CardContent className="space-y-3">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    Our foundation rests on three unshakeable principles that
+                    guide every client interaction and introduction:
+                  </p>
+                  <ul className="space-y-2.5 border-t border-border/40 pt-3 text-xs text-muted-foreground/90">
+                    <li className="flex items-start gap-2">
+                      <span className="min-w-[70px] font-semibold text-foreground">
+                        Integrity:
+                      </span>
+                      <span>
+                        Absolute honesty, transparency, and verified identities.
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="min-w-[70px] font-semibold text-foreground">
+                        Empathy:
+                      </span>
+                      <span>
+                        Deeply understanding your feelings, goals, and history.
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="min-w-[70px] font-semibold text-foreground">
+                        Discretion:
+                      </span>
+                      <span>
+                        Strict confidentiality and privacy protection at all
+                        times.
+                      </span>
+                    </li>
+                  </ul>
                 </CardContent>
               </Card>
             </MotionDiv>

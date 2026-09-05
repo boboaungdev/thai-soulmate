@@ -36,6 +36,30 @@ export function PricingPageContents({
 
   const { user } = useAuthStore()
 
+  const tabParam = searchParams.get("tab")
+  const [activeCategory, setActiveCategory] = useState<string>(() => {
+    if (tabParam === "vip" || tabParam === "female") return "vip"
+    return "membership"
+  })
+
+  useEffect(() => {
+    const tab = searchParams.get("tab")
+    if (tab === "vip" || tab === "female") {
+      setActiveCategory("vip")
+    } else if (tab === "membership" || tab === "male") {
+      setActiveCategory("membership")
+    }
+  }, [searchParams])
+
+  const handleCategoryChange = (val: string) => {
+    setActiveCategory(val)
+    if (!isEmbedded && !isFromApplicationForm) {
+      const newParams = new URLSearchParams(searchParams.toString())
+      newParams.set("tab", val)
+      router.replace(`/pricing?${newParams.toString()}`, { scroll: false })
+    }
+  }
+
   useEffect(() => {
     const autoRenew = searchParams.get("autoRenew")
 
@@ -168,441 +192,107 @@ export function PricingPageContents({
           }}
           className="mt-10"
         >
-          <Tabs defaultValue="promotion" className="w-full">
+          <Tabs
+            value={activeCategory}
+            onValueChange={handleCategoryChange}
+            className="w-full"
+          >
             {/* ===================================================== */}
-            {/* TAB HEADER */}
+            {/* TOP-LEVEL GENDER CATEGORY (MEMBERSHIP vs VIP) */}
             {/* ===================================================== */}
 
-            <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <div className="flex w-full justify-center">
               <div className="w-full overflow-x-auto sm:w-auto">
                 <TabsList className="mx-auto flex w-max min-w-max">
                   <TabsTrigger
-                    value="promotion"
-                    variant="gradient"
-                    className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
-                  >
-                    <Flame className="size-4 shrink-0" />
-
-                    <span className="hidden sm:inline">
-                      Special Promotion Offers
-                    </span>
-
-                    <span className="sm:hidden">Promotions</span>
-                  </TabsTrigger>
-
-                  <TabsTrigger
-                    value="regular"
+                    value="membership"
                     variant="gradient"
                     className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
                   >
                     <Crown className="size-4 shrink-0" />
-
-                    <span className="hidden sm:inline">Regular Membership</span>
-
-                    <span className="sm:hidden">Regular</span>
+                    <span>Male Membership</span>
                   </TabsTrigger>
 
                   <TabsTrigger
-                    value="female"
+                    value="vip"
                     variant="gradient"
                     className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
                   >
                     <Venus className="size-4 shrink-0" />
-
-                    <span className="hidden sm:inline">Female VIP</span>
-
-                    <span className="sm:hidden">Female VIP</span>
+                    <span>Female VIP</span>
                   </TabsTrigger>
                 </TabsList>
-              </div>
-
-              {/* Auto Renew */}
-
-              <div className="flex shrink-0 items-center gap-2">
-                <Label
-                  htmlFor="auto-renew-toggle"
-                  className="cursor-pointer text-sm font-semibold"
-                >
-                  Auto-renew
-                </Label>
-
-                <Switch
-                  id="auto-renew-toggle"
-                  checked={isAutoRenew}
-                  onCheckedChange={setIsAutoRenew}
-                />
               </div>
             </div>
 
             {/* ===================================================== */}
-            {/* PROMOTION TAB */}
+            {/* MEMBERSHIP (MALE) TAB CONTENT */}
             {/* ===================================================== */}
 
-            <TabsContent value="promotion" className="mt-10">
-              {!isEmbedded && !isFromApplicationForm && (
-                <MotionDiv
-                  initial={{
-                    opacity: 0,
-                    y: 15,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.4,
-                  }}
-                >
-                  {/* Promotion Heading */}
+            <TabsContent value="membership" className="mt-6">
+              <Tabs defaultValue="promotion" className="w-full">
+                {/* ================================================= */}
+                {/* MALE SUB-TABS (PROMOTIONS vs REGULAR) */}
+                {/* ================================================= */}
 
-                  <div className="mx-auto max-w-3xl">
-                    <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-                      Special Promotion Offers
-                    </h2>
+                <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                  <div className="w-full overflow-x-auto sm:w-auto">
+                    <TabsList className="mx-auto flex w-max min-w-max">
+                      <TabsTrigger
+                        value="promotion"
+                        variant="gradient"
+                        className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                      >
+                        <Flame className="size-4 shrink-0" />
 
-                    <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-                      Special introductory packages created for the exclusive of
-                      our 1-2-1 matchmaking service.
-                    </p>
+                        <span className="hidden sm:inline">
+                          Special Promotion Offers
+                        </span>
 
-                    <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/10 to-[#CA617D]/10 px-4 py-2 text-sm font-semibold">
-                      <Clock className="size-4 animate-spin text-[#CA617D]" />
+                        <span className="sm:hidden">Promotions</span>
+                      </TabsTrigger>
 
-                      <span>
-                        Limited to the <strong>first 15 men</strong>
-                      </span>
-                    </div>
+                      <TabsTrigger
+                        value="regular"
+                        variant="gradient"
+                        className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                      >
+                        <Crown className="size-4 shrink-0" />
+
+                        <span className="hidden sm:inline">
+                          Regular Membership
+                        </span>
+
+                        <span className="sm:hidden">Regular</span>
+                      </TabsTrigger>
+                    </TabsList>
                   </div>
 
-                  {/* ================================================= */}
-                  {/* PROMOTION CARDS */}
-                  {/* ================================================= */}
+                  {/* Auto Renew */}
 
-                  <div className="mt-10 grid gap-6 md:grid-cols-3">
-                    {/* ================================================= */}
-                    {/* 1 MONTH */}
-                    {/* ================================================= */}
-
-                    <MotionDiv
-                      initial={{
-                        opacity: 0,
-                        y: 15,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.4,
-                        delay: 0 * 0.1,
-                      }}
-                      className="relative"
+                  <div className="flex shrink-0 items-center gap-2">
+                    <Label
+                      htmlFor="auto-renew-toggle"
+                      className="cursor-pointer text-sm font-semibold"
                     >
-                      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                        <div className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white">
-                          50% OFF
-                        </div>
+                      Auto-renew
+                    </Label>
 
-                        <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
-                          Special Offer
-                        </p>
-
-                        <h3 className="mt-2 text-2xl font-bold">1 Month</h3>
-
-                        <div className="mt-5">
-                          <span className="text-sm text-muted-foreground line-through">
-                            ฿29,999
-                          </span>
-
-                          <div className="mt-1 text-4xl font-bold">฿14,999</div>
-                        </div>
-
-                        <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
-                          <p className="font-semibold">
-                            {isAutoRenew
-                              ? "Subscribe for 1 month"
-                              : "Pay for 1 month"}
-                          </p>
-
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            Get 6 months of membership
-                          </p>
-                        </div>
-
-                        <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                          {PLANS[0]?.features?.map((feature, index) => (
-                            <li key={index} className="flex gap-2">
-                              <span className="text-[#D3A753]">✓</span>
-
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-
-                        <Button
-                          className="mt-7 w-full text-white"
-                          variant="outline"
-                          size="default"
-                          onClick={() => {
-                            const plan = PLANS.find(
-                              (item) => item.id === "1-month"
-                            )
-
-                            if (plan) {
-                              handleChoosePlan(plan)
-                            }
-                          }}
-                        >
-                          Claim Special Offer
-                        </Button>
-                      </div>
-                    </MotionDiv>
-
-                    {/* ================================================= */}
-                    {/* 3 MONTHS — MOST POPULAR */}
-                    {/* ================================================= */}
-
-                    <MotionDiv
-                      initial={{
-                        opacity: 0,
-                        y: 15,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.4,
-                        delay: 1 * 0.1,
-                      }}
-                      className="relative"
-                    >
-                      <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-                        <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
-                          {/* Most Popular */}
-
-                          <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
-                            <Flame className="size-4" />
-
-                            <span>Most Popular</span>
-                          </div>
-
-                          {/* Discount */}
-
-                          <div className="btn-gradient absolute top-4 right-4 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm">
-                            43% OFF
-                          </div>
-
-                          <p className="text-gradient mt-2 text-sm font-semibold tracking-wider uppercase">
-                            Best Special Value
-                          </p>
-
-                          <h3 className="mt-2 text-2xl font-bold">3 Months</h3>
-
-                          <div className="mt-5">
-                            <span className="text-sm text-muted-foreground line-through">
-                              ฿34,999
-                            </span>
-
-                            <div className="mt-1 text-4xl font-bold">
-                              ฿19,999
-                            </div>
-                          </div>
-
-                          <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
-                            <p className="font-semibold">
-                              {isAutoRenew
-                                ? "Subscribe for 3 months"
-                                : "Pay for 3 months"}
-                            </p>
-
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              Get 9 months of membership
-                            </p>
-                          </div>
-
-                          <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                            {PLANS.find(
-                              (item) => item.id === "3-months"
-                            )?.features?.map((feature, index) => (
-                              <li key={index} className="flex gap-2">
-                                <span className="text-[#CA617D]">✓</span>
-
-                                <span>{feature}</span>
-                              </li>
-                            ))}
-                          </ul>
-
-                          <Button
-                            className="btn-gradient mt-7 w-full text-white"
-                            size="default"
-                            onClick={() => {
-                              const plan = PLANS.find(
-                                (item) => item.id === "3-months"
-                              )
-
-                              if (plan) {
-                                handleChoosePlan(plan)
-                              }
-                            }}
-                          >
-                            Claim Special Offer
-                          </Button>
-                        </div>
-                      </div>
-                    </MotionDiv>
-
-                    {/* ================================================= */}
-                    {/* TRY BEFORE YOU BUY */}
-                    {/* ================================================= */}
-
-                    <MotionDiv
-                      initial={{
-                        opacity: 0,
-                        y: 15,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.4,
-                        delay: 2 * 0.1,
-                      }}
-                      className="relative"
-                    >
-                      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                        <div className="absolute top-4 right-4 rounded-full bg-[#D3A753]/15 px-3 py-1 text-xs font-bold text-[#B78D46]">
-                          Free Trial
-                        </div>
-
-                        <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
-                          New Member Experience
-                        </p>
-
-                        <h3 className="mt-2 text-2xl font-bold">
-                          Try Before You Buy
-                        </h3>
-
-                        <div className="mt-5">
-                          <span className="text-sm text-muted-foreground line-through">
-                            ฿14,999
-                          </span>
-
-                          <div className="mt-1 text-4xl font-bold">
-                            Free Trial
-                          </div>
-                        </div>
-
-                        <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
-                          <p className="font-semibold">
-                            {isAutoRenew
-                              ? "Subscribe for 1 month at ฿24,999"
-                              : "Continue with 1 month for ฿24,999"}
-                          </p>
-
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            Get 6 months of membership
-                          </p>
-                        </div>
-
-                        <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                          <li className="flex gap-2">
-                            <span className="shrink-0 text-[#D3A753]">✓</span>
-
-                            <span>Meet 1 personally selected matches</span>
-                          </li>
-
-                          <li className="flex gap-2">
-                            <span className="shrink-0 text-[#D3A753]">✓</span>
-
-                            <span>Personal 1-2-1 matchmaking service</span>
-                          </li>
-
-                          <li className="flex gap-2">
-                            <span className="shrink-0 text-[#D3A753]">✓</span>
-
-                            <span>Hand picked introductions</span>
-                          </li>
-
-                          <li className="flex gap-2">
-                            <span className="shrink-0 text-[#D3A753]">✓</span>
-
-                            <span>
-                              Experience the service before committing
-                            </span>
-                          </li>
-
-                          <li className="flex gap-2">
-                            <span className="shrink-0 text-[#D3A753]">✓</span>
-
-                            <span>Continue with 1 month membership</span>
-                          </li>
-
-                          <li className="flex gap-2">
-                            <span className="shrink-0 text-[#D3A753]">✓</span>
-
-                            <span>Get 6 months of membership for ฿24,999</span>
-                          </li>
-                        </ul>
-
-                        <Button
-                          variant="outline"
-                          size="default"
-                          className="mt-7 w-full border-[#D3A753]/40 hover:border-[#CA617D]/50 hover:bg-[#D3A753]/10"
-                          onClick={() => {
-                            console.log("Try Before You Buy selected")
-                          }}
-                        >
-                          Try Before You Buy
-                        </Button>
-                      </div>
-                    </MotionDiv>
+                    <Switch
+                      id="auto-renew-toggle"
+                      checked={isAutoRenew}
+                      onCheckedChange={setIsAutoRenew}
+                    />
                   </div>
-
-                  <p className="mt-7 text-sm text-muted-foreground">
-                    Special promotion is available to the first 15 eligible
-                    members only. Terms and availability may apply.
-                  </p>
-                </MotionDiv>
-              )}
-            </TabsContent>
-
-            {/* ===================================================== */}
-            {/* REGULAR MEMBERSHIP TAB */}
-            {/* ===================================================== */}
-
-            <TabsContent value="regular" className="mt-10">
-              <MotionDiv
-                initial={{
-                  opacity: 0,
-                  y: 15,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.4,
-                }}
-              >
-                <div className="mx-auto max-w-3xl">
-                  <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-                    Regular Membership
-                  </h2>
-
-                  <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-                    Choose your membership plan and enjoy our 1-2-1 matchmaking
-                    service.
-                  </p>
                 </div>
 
-                <div className="mt-10 grid gap-6 md:grid-cols-3">
-                  {PLANS.map((plan, index) => (
+                {/* ================================================= */}
+                {/* PROMOTION TAB */}
+                {/* ================================================= */}
+
+                <TabsContent value="promotion" className="mt-10">
+                  {!isEmbedded && !isFromApplicationForm && (
                     <MotionDiv
-                      key={plan.name}
                       initial={{
                         opacity: 0,
                         y: 15,
@@ -613,233 +303,615 @@ export function PricingPageContents({
                       }}
                       transition={{
                         duration: 0.4,
-                        delay: index * 0.1,
                       }}
-                      className="relative"
                     >
-                      {plan.popular ? (
-                        <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                          <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+                      {/* Promotion Heading */}
 
-                          <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
-                            <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
-                              <Flame className="size-4" />
+                      <div className="mx-auto max-w-3xl">
+                        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                          Special Promotion Offers
+                        </h2>
 
-                              <span>Most Popular</span>
+                        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+                          Special introductory packages created for the
+                          exclusive of our 1-2-1 matchmaking service.
+                        </p>
+
+                        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/10 to-[#CA617D]/10 px-4 py-2 text-sm font-semibold">
+                          <Clock className="size-4 animate-spin text-[#CA617D]" />
+
+                          <span>
+                            Limited to the <strong>first 15 men</strong>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* ================================================= */}
+                      {/* PROMOTION CARDS */}
+                      {/* ================================================= */}
+
+                      <div className="mt-10 grid gap-6 md:grid-cols-3">
+                        {/* ================================================= */}
+                        {/* 1 MONTH */}
+                        {/* ================================================= */}
+
+                        <MotionDiv
+                          initial={{
+                            opacity: 0,
+                            y: 15,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                          }}
+                          transition={{
+                            duration: 0.4,
+                            delay: 0 * 0.1,
+                          }}
+                          className="relative"
+                        >
+                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                            <div className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white">
+                              50% OFF
                             </div>
 
-                            <h3 className="text-gradient mt-2 text-2xl font-bold">
-                              {plan.name}
+                            <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
+                              Special Offer
+                            </p>
+
+                            <h3 className="mt-2 text-2xl font-bold">1 Month</h3>
+
+                            <div className="mt-5">
+                              <span className="text-sm text-muted-foreground line-through">
+                                ฿29,999
+                              </span>
+
+                              <div className="mt-1 text-4xl font-bold">
+                                ฿14,999
+                              </div>
+                            </div>
+
+                            <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
+                              <p className="font-semibold">
+                                {isAutoRenew
+                                  ? "Subscribe for 1 month"
+                                  : "Pay for 1 month"}
+                              </p>
+
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                Get 6 months of membership
+                              </p>
+                            </div>
+
+                            <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                              {PLANS[0]?.features?.map((feature, index) => (
+                                <li key={index} className="flex gap-2">
+                                  <span className="text-[#D3A753]">✓</span>
+
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+
+                            <Button
+                              className="mt-7 w-full text-white"
+                              variant="outline"
+                              size="default"
+                              onClick={() => {
+                                const plan = PLANS.find(
+                                  (item) => item.id === "1-month"
+                                )
+
+                                if (plan) {
+                                  handleChoosePlan(plan)
+                                }
+                              }}
+                            >
+                              Claim Special Offer
+                            </Button>
+                          </div>
+                        </MotionDiv>
+
+                        {/* ================================================= */}
+                        {/* 3 MONTHS — MOST POPULAR */}
+                        {/* ================================================= */}
+
+                        <MotionDiv
+                          initial={{
+                            opacity: 0,
+                            y: 15,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                          }}
+                          transition={{
+                            duration: 0.4,
+                            delay: 1 * 0.1,
+                          }}
+                          className="relative"
+                        >
+                          <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                            <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
+
+                            <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
+                              {/* Most Popular */}
+
+                              <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
+                                <Flame className="size-4" />
+
+                                <span>Most Popular</span>
+                              </div>
+
+                              {/* Discount */}
+
+                              <div className="btn-gradient absolute top-4 right-4 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm">
+                                43% OFF
+                              </div>
+
+                              <p className="text-gradient mt-2 text-sm font-semibold tracking-wider uppercase">
+                                Best Special Value
+                              </p>
+
+                              <h3 className="mt-2 text-2xl font-bold">
+                                3 Months
+                              </h3>
+
+                              <div className="mt-5">
+                                <span className="text-sm text-muted-foreground line-through">
+                                  ฿34,999
+                                </span>
+
+                                <div className="mt-1 text-4xl font-bold">
+                                  ฿19,999
+                                </div>
+                              </div>
+
+                              <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
+                                <p className="font-semibold">
+                                  {isAutoRenew
+                                    ? "Subscribe for 3 months"
+                                    : "Pay for 3 months"}
+                                </p>
+
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                  Get 9 months of membership
+                                </p>
+                              </div>
+
+                              <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                                {PLANS.find(
+                                  (item) => item.id === "3-months"
+                                )?.features?.map((feature, index) => (
+                                  <li key={index} className="flex gap-2">
+                                    <span className="text-[#CA617D]">✓</span>
+
+                                    <span>{feature}</span>
+                                  </li>
+                                ))}
+                              </ul>
+
+                              <Button
+                                className="btn-gradient mt-7 w-full text-white"
+                                size="default"
+                                onClick={() => {
+                                  const plan = PLANS.find(
+                                    (item) => item.id === "3-months"
+                                  )
+
+                                  if (plan) {
+                                    handleChoosePlan(plan)
+                                  }
+                                }}
+                              >
+                                Claim Special Offer
+                              </Button>
+                            </div>
+                          </div>
+                        </MotionDiv>
+
+                        {/* ================================================= */}
+                        {/* TRY BEFORE YOU BUY */}
+                        {/* ================================================= */}
+
+                        <MotionDiv
+                          initial={{
+                            opacity: 0,
+                            y: 15,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                          }}
+                          transition={{
+                            duration: 0.4,
+                            delay: 2 * 0.1,
+                          }}
+                          className="relative"
+                        >
+                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                            <div className="absolute top-4 right-4 rounded-full bg-[#D3A753]/15 px-3 py-1 text-xs font-bold text-[#B78D46]">
+                              Free Trial
+                            </div>
+
+                            <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
+                              New Member Experience
+                            </p>
+
+                            <h3 className="mt-2 text-2xl font-bold">
+                              Try Before You Buy
                             </h3>
 
                             <div className="mt-5">
-                              <div className="text-4xl font-bold">
-                                {plan.price}
-                              </div>
+                              <span className="text-sm text-muted-foreground line-through">
+                                ฿14,999
+                              </span>
 
-                              {plan.pricePerMonth && (
-                                <p className="mt-1 text-sm text-muted-foreground">
-                                  {plan.pricePerMonth}
-                                </p>
-                              )}
+                              <div className="mt-1 text-4xl font-bold">
+                                Free Trial
+                              </div>
                             </div>
 
-                            <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
+                            <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
                               <p className="font-semibold">
                                 {isAutoRenew
-                                  ? `Subscribe for ${plan.recurringInterval.paid}`
-                                  : `Pay for ${plan.duration.paid}`}
+                                  ? "Subscribe for 1 month at ฿24,999"
+                                  : "Continue with 1 month for ฿24,999"}
                               </p>
 
                               <p className="mt-1 text-sm text-muted-foreground">
-                                {isAutoRenew
-                                  ? `Get ${plan.recurringInterval.total} of membership`
-                                  : `Get ${plan.duration.total} of membership`}
+                                Get 6 months of membership
                               </p>
                             </div>
 
-                            <AnimatePresence>
-                              {!isEmbedded || expandedPlan === plan.name ? (
-                                <MotionDiv
-                                  initial={{
-                                    opacity: 0,
-                                    height: 0,
-                                  }}
-                                  animate={{
-                                    opacity: 1,
-                                    height: "auto",
-                                  }}
-                                  exit={{
-                                    opacity: 0,
-                                    height: 0,
-                                  }}
-                                  transition={{
-                                    duration: 0.3,
-                                  }}
-                                  className="overflow-hidden"
-                                >
-                                  <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                                    {plan.features.map(
-                                      (feature, featureIndex) => (
-                                        <li
-                                          key={featureIndex}
-                                          className="flex gap-2"
-                                        >
-                                          <span className="shrink-0 text-[#CA617D]">
-                                            ✓
-                                          </span>
+                            <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                              <li className="flex gap-2">
+                                <span className="shrink-0 text-[#D3A753]">
+                                  ✓
+                                </span>
 
-                                          <span>{feature}</span>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
+                                <span>Meet 1 personally selected matches</span>
+                              </li>
 
-                                  {isEmbedded && (
-                                    <Button
-                                      variant="link"
-                                      className="mt-4 px-0"
-                                      onClick={() => setExpandedPlan(null)}
-                                    >
-                                      Hide features
-                                    </Button>
-                                  )}
-                                </MotionDiv>
-                              ) : null}
-                            </AnimatePresence>
+                              <li className="flex gap-2">
+                                <span className="shrink-0 text-[#D3A753]">
+                                  ✓
+                                </span>
+
+                                <span>Personal 1-2-1 matchmaking service</span>
+                              </li>
+
+                              <li className="flex gap-2">
+                                <span className="shrink-0 text-[#D3A753]">
+                                  ✓
+                                </span>
+
+                                <span>Hand picked introductions</span>
+                              </li>
+
+                              <li className="flex gap-2">
+                                <span className="shrink-0 text-[#D3A753]">
+                                  ✓
+                                </span>
+
+                                <span>
+                                  Experience the service before committing
+                                </span>
+                              </li>
+
+                              <li className="flex gap-2">
+                                <span className="shrink-0 text-[#D3A753]">
+                                  ✓
+                                </span>
+
+                                <span>Continue with 1 month membership</span>
+                              </li>
+
+                              <li className="flex gap-2">
+                                <span className="shrink-0 text-[#D3A753]">
+                                  ✓
+                                </span>
+
+                                <span>
+                                  Get 6 months of membership for ฿24,999
+                                </span>
+                              </li>
+                            </ul>
 
                             <Button
-                              className="btn-gradient mt-7 w-full text-white"
+                              variant="outline"
                               size="default"
-                              onClick={() => handleChoosePlan(plan)}
+                              className="mt-7 w-full border-[#D3A753]/40 hover:border-[#CA617D]/50 hover:bg-[#D3A753]/10"
+                              onClick={() => {
+                                console.log("Try Before You Buy selected")
+                              }}
                             >
-                              Choose Plan
+                              Try Before You Buy
                             </Button>
-
-                            {isEmbedded && expandedPlan !== plan.name && (
-                              <Button
-                                variant="link"
-                                className="mt-4"
-                                onClick={() => setExpandedPlan(plan.name)}
-                              >
-                                Show features
-                              </Button>
-                            )}
                           </div>
-                        </div>
-                      ) : (
-                        <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                          <h3 className="mt-2 text-2xl font-bold">
-                            {plan.name}
-                          </h3>
+                        </MotionDiv>
+                      </div>
 
-                          <div className="mt-5">
-                            <div className="text-4xl font-bold">
-                              {plan.price}
-                            </div>
+                      <p className="mt-7 text-sm text-muted-foreground">
+                        Special promotion is available to the first 15 eligible
+                        members only. Terms and availability may apply.
+                      </p>
+                    </MotionDiv>
+                  )}
+                </TabsContent>
 
-                            {plan.pricePerMonth && (
-                              <p className="mt-1 text-sm text-muted-foreground">
-                                {plan.pricePerMonth}
-                              </p>
-                            )}
-                          </div>
+                {/* ===================================================== */}
+                {/* REGULAR MEMBERSHIP TAB */}
+                {/* ===================================================== */}
 
-                          <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
-                            <p className="font-semibold">
-                              {isAutoRenew
-                                ? `Subscribe for ${plan.recurringInterval.paid}`
-                                : `Pay for ${plan.duration.paid}`}
-                            </p>
+                <TabsContent value="regular" className="mt-10">
+                  <MotionDiv
+                    initial={{
+                      opacity: 0,
+                      y: 15,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                    }}
+                  >
+                    <div className="mx-auto max-w-3xl">
+                      <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                        Regular Membership
+                      </h2>
 
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              {isAutoRenew
-                                ? `Get ${plan.recurringInterval.total} of membership`
-                                : `Get ${plan.duration.total} of membership`}
-                            </p>
-                          </div>
+                      <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+                        Choose your membership plan and enjoy our 1-2-1
+                        matchmaking service.
+                      </p>
+                    </div>
 
-                          <AnimatePresence>
-                            {!isEmbedded || expandedPlan === plan.name ? (
-                              <MotionDiv
-                                initial={{
-                                  opacity: 0,
-                                  height: 0,
-                                }}
-                                animate={{
-                                  opacity: 1,
-                                  height: "auto",
-                                }}
-                                exit={{
-                                  opacity: 0,
-                                  height: 0,
-                                }}
-                                transition={{
-                                  duration: 0.3,
-                                }}
-                                className="overflow-hidden"
-                              >
-                                <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                                  {plan.features.map(
-                                    (feature, featureIndex) => (
-                                      <li
-                                        key={featureIndex}
-                                        className="flex gap-2"
-                                      >
-                                        <span className="shrink-0 text-[#D3A753]">
-                                          ✓
-                                        </span>
+                    <div className="mt-10 grid gap-6 md:grid-cols-3">
+                      {PLANS.map((plan, index) => (
+                        <MotionDiv
+                          key={plan.name}
+                          initial={{
+                            opacity: 0,
+                            y: 15,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                          }}
+                          transition={{
+                            duration: 0.4,
+                            delay: index * 0.1,
+                          }}
+                          className="relative"
+                        >
+                          {plan.popular ? (
+                            <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                              <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
 
-                                        <span>{feature}</span>
-                                      </li>
-                                    )
+                              <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
+                                <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
+                                  <Flame className="size-4" />
+
+                                  <span>Most Popular</span>
+                                </div>
+
+                                <h3 className="text-gradient mt-2 text-2xl font-bold">
+                                  {plan.name}
+                                </h3>
+
+                                <div className="mt-5">
+                                  <div className="text-4xl font-bold">
+                                    {plan.price}
+                                  </div>
+
+                                  {plan.pricePerMonth && (
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                      {plan.pricePerMonth}
+                                    </p>
                                   )}
-                                </ul>
+                                </div>
 
-                                {isEmbedded && (
+                                <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
+                                  <p className="font-semibold">
+                                    {isAutoRenew
+                                      ? `Subscribe for ${plan.recurringInterval.paid}`
+                                      : `Pay for ${plan.duration.paid}`}
+                                  </p>
+
+                                  <p className="mt-1 text-sm text-muted-foreground">
+                                    {isAutoRenew
+                                      ? `Get ${plan.recurringInterval.total} of membership`
+                                      : `Get ${plan.duration.total} of membership`}
+                                  </p>
+                                </div>
+
+                                <AnimatePresence>
+                                  {!isEmbedded || expandedPlan === plan.name ? (
+                                    <MotionDiv
+                                      initial={{
+                                        opacity: 0,
+                                        height: 0,
+                                      }}
+                                      animate={{
+                                        opacity: 1,
+                                        height: "auto",
+                                      }}
+                                      exit={{
+                                        opacity: 0,
+                                        height: 0,
+                                      }}
+                                      transition={{
+                                        duration: 0.3,
+                                      }}
+                                      className="overflow-hidden"
+                                    >
+                                      <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                                        {plan.features.map(
+                                          (feature, featureIndex) => (
+                                            <li
+                                              key={featureIndex}
+                                              className="flex gap-2"
+                                            >
+                                              <span className="shrink-0 text-[#CA617D]">
+                                                ✓
+                                              </span>
+
+                                              <span>{feature}</span>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+
+                                      {isEmbedded && (
+                                        <Button
+                                          variant="link"
+                                          className="mt-4 px-0"
+                                          onClick={() => setExpandedPlan(null)}
+                                        >
+                                          Hide features
+                                        </Button>
+                                      )}
+                                    </MotionDiv>
+                                  ) : null}
+                                </AnimatePresence>
+
+                                <Button
+                                  className="btn-gradient mt-7 w-full text-white"
+                                  size="default"
+                                  onClick={() => handleChoosePlan(plan)}
+                                >
+                                  Choose Plan
+                                </Button>
+
+                                {isEmbedded && expandedPlan !== plan.name && (
                                   <Button
                                     variant="link"
-                                    className="mt-4 px-0"
-                                    onClick={() => setExpandedPlan(null)}
+                                    className="mt-4"
+                                    onClick={() => setExpandedPlan(plan.name)}
                                   >
-                                    Hide features
+                                    Show features
                                   </Button>
                                 )}
-                              </MotionDiv>
-                            ) : null}
-                          </AnimatePresence>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                              <h3 className="mt-2 text-2xl font-bold">
+                                {plan.name}
+                              </h3>
 
-                          <Button
-                            variant="outline"
-                            size="default"
-                            className="mt-7 w-full border-[#D3A753]/40 hover:border-[#CA617D]/50 hover:bg-[#D3A753]/10"
-                            onClick={() => handleChoosePlan(plan)}
-                          >
-                            Choose Plan
-                          </Button>
+                              <div className="mt-5">
+                                <div className="text-4xl font-bold">
+                                  {plan.price}
+                                </div>
 
-                          {isEmbedded && expandedPlan !== plan.name && (
-                            <Button
-                              variant="link"
-                              className="mt-4"
-                              onClick={() => setExpandedPlan(plan.name)}
-                            >
-                              Show features
-                            </Button>
+                                {plan.pricePerMonth && (
+                                  <p className="mt-1 text-sm text-muted-foreground">
+                                    {plan.pricePerMonth}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
+                                <p className="font-semibold">
+                                  {isAutoRenew
+                                    ? `Subscribe for ${plan.recurringInterval.paid}`
+                                    : `Pay for ${plan.duration.paid}`}
+                                </p>
+
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                  {isAutoRenew
+                                    ? `Get ${plan.recurringInterval.total} of membership`
+                                    : `Get ${plan.duration.total} of membership`}
+                                </p>
+                              </div>
+
+                              <AnimatePresence>
+                                {!isEmbedded || expandedPlan === plan.name ? (
+                                  <MotionDiv
+                                    initial={{
+                                      opacity: 0,
+                                      height: 0,
+                                    }}
+                                    animate={{
+                                      opacity: 1,
+                                      height: "auto",
+                                    }}
+                                    exit={{
+                                      opacity: 0,
+                                      height: 0,
+                                    }}
+                                    transition={{
+                                      duration: 0.3,
+                                    }}
+                                    className="overflow-hidden"
+                                  >
+                                    <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+                                      {plan.features.map(
+                                        (feature, featureIndex) => (
+                                          <li
+                                            key={featureIndex}
+                                            className="flex gap-2"
+                                          >
+                                            <span className="shrink-0 text-[#D3A753]">
+                                              ✓
+                                            </span>
+
+                                            <span>{feature}</span>
+                                          </li>
+                                        )
+                                      )}
+                                    </ul>
+
+                                    {isEmbedded && (
+                                      <Button
+                                        variant="link"
+                                        className="mt-4 px-0"
+                                        onClick={() => setExpandedPlan(null)}
+                                      >
+                                        Hide features
+                                      </Button>
+                                    )}
+                                  </MotionDiv>
+                                ) : null}
+                              </AnimatePresence>
+
+                              <Button
+                                variant="outline"
+                                size="default"
+                                className="mt-7 w-full border-[#D3A753]/40 hover:border-[#CA617D]/50 hover:bg-[#D3A753]/10"
+                                onClick={() => handleChoosePlan(plan)}
+                              >
+                                Choose Plan
+                              </Button>
+
+                              {isEmbedded && expandedPlan !== plan.name && (
+                                <Button
+                                  variant="link"
+                                  className="mt-4"
+                                  onClick={() => setExpandedPlan(plan.name)}
+                                >
+                                  Show features
+                                </Button>
+                              )}
+                            </div>
                           )}
-                        </div>
-                      )}
-                    </MotionDiv>
-                  ))}
-                </div>
-              </MotionDiv>
+                        </MotionDiv>
+                      ))}
+                    </div>
+                  </MotionDiv>
+                </TabsContent>
+              </Tabs>
             </TabsContent>
 
             {/* ===================================================== */}
-            {/* FEMALE VIP TAB */}
+            {/* VIP (FEMALE) TAB */}
             {/* ===================================================== */}
 
-            <TabsContent value="female" className="mt-10">
+            <TabsContent value="vip" className="mt-10">
               <MotionDiv
                 initial={{
                   opacity: 0,
@@ -857,7 +929,7 @@ export function PricingPageContents({
 
                 <div className="mx-auto max-w-3xl">
                   <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-                    Female VIP Membership
+                    Female VIP
                   </h2>
 
                   <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">

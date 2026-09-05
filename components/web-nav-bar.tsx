@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { Menu, ArrowUpRight } from "lucide-react"
+import { Menu, ArrowUpRight, ChevronDown, Crown, Venus } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -26,14 +26,44 @@ import { useEffect, useState } from "react"
 
 import { useAuthStore } from "@/stores/auth-store"
 
-const SITE_NAV_LINKS = [
+interface SubNavLink {
+  label: string
+  href: string
+  icon: React.ComponentType<{ className?: string }>
+  iconColor: string
+}
+
+interface NavLinkItem {
+  label: string
+  href: string
+  subLinks?: SubNavLink[]
+}
+
+const SITE_NAV_LINKS: NavLinkItem[] = [
   { label: "Home", href: "/" },
   { label: "How It Works", href: "/service" },
   { label: "Meet Our Members", href: "/gallery" },
   { label: "FAQ", href: "/faq" },
-  { label: "Pricing", href: "/pricing" },
+  {
+    label: "Pricing",
+    href: "/pricing",
+    subLinks: [
+      {
+        label: "Male Membership",
+        href: "/pricing?tab=membership",
+        icon: Crown,
+        iconColor: "text-[#D3A753]",
+      },
+      {
+        label: "Female VIP",
+        href: "/pricing?tab=vip",
+        icon: Venus,
+        iconColor: "text-[#CA617D]",
+      },
+    ],
+  },
   { label: "Contact", href: "/contact" },
-] as const
+]
 
 export function WebNavBar() {
   const pathname = usePathname()
@@ -61,10 +91,18 @@ export function WebNavBar() {
   }, [])
 
   const handleNavClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
-    if (pathname === href) {
+    const [targetPath, targetQuery] = href.split("?")
+    const currentQuery =
+      typeof window !== "undefined"
+        ? window.location.search.replace(/^\?/, "")
+        : ""
+
+    if (pathname === targetPath && (targetQuery || "") === currentQuery) {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: "smooth" })
-    } else router.push(href)
+    } else {
+      router.push(href)
+    }
   }
 
   return (
@@ -106,6 +144,59 @@ export function WebNavBar() {
         >
           {SITE_NAV_LINKS.map((item) => {
             const active = pathname === item.href
+
+            if (item.subLinks) {
+              return (
+                <MotionDiv
+                  key={item.href}
+                  variants={navItemVariants}
+                  className="group relative"
+                >
+                  <Button
+                    asChild
+                    variant={active ? "default" : "ghost"}
+                    size="sm"
+                    className={cn(
+                      "gap-1 rounded-full px-3 font-medium transition-all",
+                      active && "btn-gradient text-white"
+                    )}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                    >
+                      <span>{item.label}</span>
+                      <ChevronDown className="size-3.5 opacity-70 transition-transform duration-200 group-hover:rotate-180" />
+                    </Link>
+                  </Button>
+
+                  {/* Hover Sub-Nav Dropdown */}
+                  <div className="pointer-events-none invisible absolute top-full left-1/2 z-50 -translate-x-1/2 pt-2 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100">
+                    <div className="min-w-[195px] rounded-xl border border-border/80 bg-background/95 p-1.5 shadow-xl backdrop-blur-md">
+                      {item.subLinks.map((subItem) => {
+                        const Icon = subItem.icon
+                        return (
+                          <Link
+                            key={subItem.href}
+                            href={subItem.href}
+                            onClick={(e) => handleNavClick(e, subItem.href)}
+                            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                          >
+                            <Icon
+                              className={cn(
+                                "size-4 shrink-0",
+                                subItem.iconColor
+                              )}
+                            />
+                            <span>{subItem.label}</span>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </MotionDiv>
+              )
+            }
 
             return (
               <MotionDiv key={item.href} variants={navItemVariants}>
@@ -175,17 +266,61 @@ export function WebNavBar() {
                   <SheetTitle>Menu</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-2 px-4">
-                  {SITE_NAV_LINKS.map((item) => (
-                    <SheetClose asChild key={item.href}>
-                      <a
-                        onClick={(e) => handleNavClick(e, item.href)}
-                        className="flex cursor-pointer items-center justify-between px-3 py-2.5"
-                      >
-                        <span>{item.label}</span>
-                        <ArrowUpRight className="size-4 text-muted-foreground" />
-                      </a>
-                    </SheetClose>
-                  ))}
+                  {SITE_NAV_LINKS.map((item) => {
+                    if (item.subLinks) {
+                      return (
+                        <div
+                          key={item.href}
+                          className="flex flex-col space-y-1"
+                        >
+                          <SheetClose asChild>
+                            <a
+                              onClick={(e) => handleNavClick(e, item.href)}
+                              className="flex cursor-pointer items-center justify-between px-3 py-2.5 font-medium"
+                            >
+                              <span>{item.label}</span>
+                              <ArrowUpRight className="size-4 text-muted-foreground" />
+                            </a>
+                          </SheetClose>
+                          <div className="ml-3 flex flex-col space-y-1 border-l-2 border-border/60 pl-3">
+                            {item.subLinks.map((subItem) => {
+                              const Icon = subItem.icon
+                              return (
+                                <SheetClose asChild key={subItem.href}>
+                                  <a
+                                    onClick={(e) =>
+                                      handleNavClick(e, subItem.href)
+                                    }
+                                    className="flex cursor-pointer items-center gap-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                  >
+                                    <Icon
+                                      className={cn(
+                                        "size-3.5 shrink-0",
+                                        subItem.iconColor
+                                      )}
+                                    />
+                                    <span>{subItem.label}</span>
+                                  </a>
+                                </SheetClose>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    return (
+                      <SheetClose asChild key={item.href}>
+                        <a
+                          onClick={(e) => handleNavClick(e, item.href)}
+                          className="flex cursor-pointer items-center justify-between px-3 py-2.5"
+                        >
+                          <span>{item.label}</span>
+                          <ArrowUpRight className="size-4 text-muted-foreground" />
+                        </a>
+                      </SheetClose>
+                    )
+                  })}
                   {isClient && (
                     <SheetClose asChild>
                       {user ? (

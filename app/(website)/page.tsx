@@ -256,7 +256,7 @@ export default function HomePage() {
               {
                 icon: MapPin,
                 title: "Based in Thailand",
-                desc: "Our matchmaking team is based locally in Bangkok, Thailand—giving us real presence and personal contact with every member.",
+                desc: "Our matchmaking team is based locally in Thailand—giving us real presence and personal contact with every member.",
               },
             ].map((pillar, index) => {
               const Icon = pillar.icon

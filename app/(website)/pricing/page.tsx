@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Flame, Crown, Clock, Venus } from "lucide-react"
+import { Flame, Crown, Clock, Venus, Check } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { PLANS } from "@/constants"
 import { MotionDiv } from "@/components/motion"
@@ -128,7 +128,9 @@ export function PricingPageContents({
   }
 
   return (
-    <section className="bg-muted/50 py-20 sm:py-24 dark:bg-muted/30">
+    <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(207,161,79,0.08),transparent_70%)]" />
+
       <div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
         {/* ========================================================= */}
         {/* HEADER */}
@@ -149,11 +151,16 @@ export function PricingPageContents({
         >
           {!isEmbedded && !isFromApplicationForm && (
             <>
-              <h1 className="text-gradient text-4xl font-bold md:text-5xl">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
+                <Crown className="size-3.5" />
+                <span>Exclusive Matchmaking</span>
+              </div>
+
+              <h1 className="text-gradient text-4xl font-bold tracking-tight md:text-5xl">
                 VIP Membership
               </h1>
 
-              <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                 Unlock exclusive features and get more matches!
               </p>
             </>
@@ -161,11 +168,16 @@ export function PricingPageContents({
 
           {isFromApplicationForm && (
             <>
-              <h1 className="text-gradient text-4xl font-bold md:text-5xl">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
+                <Crown className="size-3.5" />
+                <span>Member Consultation</span>
+              </div>
+
+              <h1 className="text-gradient text-4xl font-bold tracking-tight md:text-5xl">
                 VIP Membership Details
               </h1>
 
-              <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                 {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}
                 Here are the full details of our VIP plans.
               </p>
@@ -203,11 +215,11 @@ export function PricingPageContents({
 
             <div className="flex w-full justify-center">
               <div className="w-full overflow-x-auto sm:w-auto">
-                <TabsList className="mx-auto flex w-max min-w-max">
+                <TabsList className="mx-auto flex w-max min-w-max rounded-xl border border-border/70 bg-card/80 p-1 backdrop-blur-sm group-data-horizontal/tabs:h-10">
                   <TabsTrigger
                     value="membership"
                     variant="gradient"
-                    className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                    className="h-full gap-2 rounded-lg px-5 text-sm font-semibold sm:px-6"
                   >
                     <Crown className="size-4 shrink-0" />
                     <span>Male Membership</span>
@@ -216,7 +228,7 @@ export function PricingPageContents({
                   <TabsTrigger
                     value="vip"
                     variant="gradient"
-                    className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                    className="h-full gap-2 rounded-lg px-5 text-sm font-semibold sm:px-6"
                   >
                     <Venus className="size-4 shrink-0" />
                     <span>Female VIP</span>
@@ -229,19 +241,19 @@ export function PricingPageContents({
             {/* MEMBERSHIP (MALE) TAB CONTENT */}
             {/* ===================================================== */}
 
-            <TabsContent value="membership" className="mt-6">
+            <TabsContent value="membership" className="mt-8">
               <Tabs defaultValue="promotion" className="w-full">
                 {/* ================================================= */}
                 {/* MALE SUB-TABS (PROMOTIONS vs REGULAR) */}
                 {/* ================================================= */}
 
-                <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                <div className="flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
                   <div className="w-full overflow-x-auto sm:w-auto">
-                    <TabsList className="mx-auto flex w-max min-w-max">
+                    <TabsList className="mx-auto flex w-max min-w-max rounded-xl border border-border/70 bg-card/80 p-1 backdrop-blur-sm group-data-horizontal/tabs:h-10">
                       <TabsTrigger
                         value="promotion"
                         variant="gradient"
-                        className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                        className="h-full gap-2 rounded-lg px-4 text-xs font-semibold sm:px-5 sm:text-sm"
                       >
                         <Flame className="size-4 shrink-0" />
 
@@ -255,7 +267,7 @@ export function PricingPageContents({
                       <TabsTrigger
                         value="regular"
                         variant="gradient"
-                        className="gap-2 px-4 py-2.5 text-sm font-semibold sm:px-5"
+                        className="h-full gap-2 rounded-lg px-4 text-xs font-semibold sm:px-5 sm:text-sm"
                       >
                         <Crown className="size-4 shrink-0" />
 
@@ -270,10 +282,10 @@ export function PricingPageContents({
 
                   {/* Auto Renew */}
 
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex h-10 shrink-0 items-center gap-2.5 rounded-xl border border-border/70 bg-card/80 px-3.5 backdrop-blur-sm">
                     <Label
                       htmlFor="auto-renew-toggle"
-                      className="cursor-pointer text-sm font-semibold"
+                      className="cursor-pointer text-xs font-semibold text-muted-foreground sm:text-sm"
                     >
                       Auto-renew
                     </Label>
@@ -350,65 +362,68 @@ export function PricingPageContents({
                           }}
                           className="relative"
                         >
-                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                            <div className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white">
+                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl">
+                            <div className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white shadow-sm">
                               50% OFF
                             </div>
 
-                            <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
+                            <p className="mt-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
                               Special Offer
                             </p>
 
                             <h3 className="mt-2 text-2xl font-bold">1 Month</h3>
 
-                            <div className="mt-5">
+                            <div className="mt-4">
                               <span className="text-sm text-muted-foreground line-through">
                                 ฿29,999
                               </span>
 
-                              <div className="mt-1 text-4xl font-bold">
+                              <div className="mt-1 text-4xl font-bold tracking-tight">
                                 ฿14,999
                               </div>
                             </div>
 
-                            <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
-                              <p className="font-semibold">
+                            <div className="mt-5 rounded-xl border border-[#D3A753]/20 bg-[#D3A753]/10 p-4">
+                              <p className="font-semibold text-foreground">
                                 {isAutoRenew
                                   ? "Subscribe for 1 month"
                                   : "Pay for 1 month"}
                               </p>
 
-                              <p className="mt-1 text-sm text-muted-foreground">
+                              <p className="mt-1 text-xs text-muted-foreground">
                                 Get 6 months of membership
                               </p>
                             </div>
 
                             <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                               {PLANS[0]?.features?.map((feature, index) => (
-                                <li key={index} className="flex gap-2">
-                                  <span className="text-[#D3A753]">✓</span>
+                                <li key={index} className="flex items-start gap-2.5">
+                                  <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                                    <Check className="size-3 stroke-[2.5]" />
+                                  </span>
 
-                                  <span>{feature}</span>
+                                  <span className="leading-snug">{feature}</span>
                                 </li>
                               ))}
                             </ul>
 
-                            <Button
-                              className="mt-7 w-full text-white"
-                              variant="outline"
-                              size="default"
-                              onClick={() => {
-                                const plan = PLANS.find(
-                                  (item) => item.id === "1-month"
-                                )
+                            <div className="mt-auto pt-7">
+                              <Button
+                                className="h-10 w-full font-semibold border-border/80 hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground text-foreground"
+                                variant="outline"
+                                onClick={() => {
+                                  const plan = PLANS.find(
+                                    (item) => item.id === "1-month"
+                                  )
 
-                                if (plan) {
-                                  handleChoosePlan(plan)
-                                }
-                              }}
-                            >
-                              Claim Special Offer
-                            </Button>
+                                  if (plan) {
+                                    handleChoosePlan(plan)
+                                  }
+                                }}
+                              >
+                                Claim Special Offer
+                              </Button>
+                            </div>
                           </div>
                         </MotionDiv>
 
@@ -431,14 +446,12 @@ export function PricingPageContents({
                           }}
                           className="relative"
                         >
-                          <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                            <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-                            <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
+                          <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                            <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 sm:p-7 text-left">
                               {/* Most Popular */}
 
-                              <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
-                                <Flame className="size-4" />
+                              <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full px-4 py-1 text-xs font-bold whitespace-nowrap text-white shadow-lg">
+                                <Flame className="size-3.5 fill-current" />
 
                                 <span>Most Popular</span>
                               </div>
@@ -449,7 +462,7 @@ export function PricingPageContents({
                                 43% OFF
                               </div>
 
-                              <p className="text-gradient mt-2 text-sm font-semibold tracking-wider uppercase">
+                              <p className="text-gradient mt-2 text-xs font-semibold tracking-wider uppercase">
                                 Best Special Value
                               </p>
 
@@ -457,24 +470,24 @@ export function PricingPageContents({
                                 3 Months
                               </h3>
 
-                              <div className="mt-5">
+                              <div className="mt-4">
                                 <span className="text-sm text-muted-foreground line-through">
                                   ฿34,999
                                 </span>
 
-                                <div className="mt-1 text-4xl font-bold">
+                                <div className="mt-1 text-4xl font-bold tracking-tight">
                                   ฿19,999
                                 </div>
                               </div>
 
-                              <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
-                                <p className="font-semibold">
+                              <div className="mt-5 rounded-xl border border-[#CA617D]/20 bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/20 to-[#CA617D]/15 p-4">
+                                <p className="font-semibold text-foreground">
                                   {isAutoRenew
                                     ? "Subscribe for 3 months"
                                     : "Pay for 3 months"}
                                 </p>
 
-                                <p className="mt-1 text-sm text-muted-foreground">
+                                <p className="mt-1 text-xs text-muted-foreground">
                                   Get 9 months of membership
                                 </p>
                               </div>
@@ -483,29 +496,32 @@ export function PricingPageContents({
                                 {PLANS.find(
                                   (item) => item.id === "3-months"
                                 )?.features?.map((feature, index) => (
-                                  <li key={index} className="flex gap-2">
-                                    <span className="text-[#CA617D]">✓</span>
+                                  <li key={index} className="flex items-start gap-2.5">
+                                    <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#CA617D]/20 text-[#CA617D]">
+                                      <Check className="size-3 stroke-[2.5]" />
+                                    </span>
 
-                                    <span>{feature}</span>
+                                    <span className="leading-snug">{feature}</span>
                                   </li>
                                 ))}
                               </ul>
 
-                              <Button
-                                className="btn-gradient mt-7 w-full text-white"
-                                size="default"
-                                onClick={() => {
-                                  const plan = PLANS.find(
-                                    (item) => item.id === "3-months"
-                                  )
+                              <div className="mt-auto pt-7">
+                                <Button
+                                  className="btn-gradient h-10 w-full font-semibold text-white shadow-md shadow-[#D3A753]/20 hover:brightness-110"
+                                  onClick={() => {
+                                    const plan = PLANS.find(
+                                      (item) => item.id === "3-months"
+                                    )
 
-                                  if (plan) {
-                                    handleChoosePlan(plan)
-                                  }
-                                }}
-                              >
-                                Claim Special Offer
-                              </Button>
+                                    if (plan) {
+                                      handleChoosePlan(plan)
+                                    }
+                                  }}
+                                >
+                                  Claim Special Offer
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </MotionDiv>
@@ -529,12 +545,12 @@ export function PricingPageContents({
                           }}
                           className="relative"
                         >
-                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                            <div className="absolute top-4 right-4 rounded-full bg-[#D3A753]/15 px-3 py-1 text-xs font-bold text-[#B78D46]">
+                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl">
+                            <div className="absolute top-4 right-4 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/15 px-3 py-1 text-xs font-bold text-[#D3A753]">
                               Free Trial
                             </div>
 
-                            <p className="mt-2 text-sm font-semibold tracking-wider text-[#B78D46] uppercase">
+                            <p className="mt-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
                               New Member Experience
                             </p>
 
@@ -542,100 +558,103 @@ export function PricingPageContents({
                               Try Before You Buy
                             </h3>
 
-                            <div className="mt-5">
+                            <div className="mt-4">
                               <span className="text-sm text-muted-foreground line-through">
                                 ฿14,999
                               </span>
 
-                              <div className="mt-1 text-4xl font-bold">
+                              <div className="mt-1 text-4xl font-bold tracking-tight">
                                 Free Trial
                               </div>
                             </div>
 
-                            <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
-                              <p className="font-semibold">
+                            <div className="mt-5 rounded-xl border border-[#D3A753]/20 bg-[#D3A753]/10 p-4">
+                              <p className="font-semibold text-foreground">
                                 {isAutoRenew
                                   ? "Subscribe for 1 month at ฿24,999"
                                   : "Continue with 1 month for ฿24,999"}
                               </p>
 
-                              <p className="mt-1 text-sm text-muted-foreground">
+                              <p className="mt-1 text-xs text-muted-foreground">
                                 Get 6 months of membership
                               </p>
                             </div>
 
                             <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                              <li className="flex gap-2">
-                                <span className="shrink-0 text-[#D3A753]">
-                                  ✓
+                              <li className="flex items-start gap-2.5">
+                                <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                                  <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span>Meet 1 personally selected matches</span>
+                                <span className="leading-snug">Meet 1 personally selected matches</span>
                               </li>
 
-                              <li className="flex gap-2">
-                                <span className="shrink-0 text-[#D3A753]">
-                                  ✓
+                              <li className="flex items-start gap-2.5">
+                                <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                                  <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span>Personal 1-2-1 matchmaking service</span>
+                                <span className="leading-snug">Personal 1-2-1 matchmaking service</span>
                               </li>
 
-                              <li className="flex gap-2">
-                                <span className="shrink-0 text-[#D3A753]">
-                                  ✓
+                              <li className="flex items-start gap-2.5">
+                                <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                                  <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span>Hand picked introductions</span>
+                                <span className="leading-snug">Hand picked introductions</span>
                               </li>
 
-                              <li className="flex gap-2">
-                                <span className="shrink-0 text-[#D3A753]">
-                                  ✓
+                              <li className="flex items-start gap-2.5">
+                                <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                                  <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span>
+                                <span className="leading-snug">
                                   Experience the service before committing
                                 </span>
                               </li>
 
-                              <li className="flex gap-2">
-                                <span className="shrink-0 text-[#D3A753]">
-                                  ✓
+                              <li className="flex items-start gap-2.5">
+                                <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                                  <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span>Continue with 1 month membership</span>
+                                <span className="leading-snug">Continue with 1 month membership</span>
                               </li>
 
-                              <li className="flex gap-2">
-                                <span className="shrink-0 text-[#D3A753]">
-                                  ✓
+                              <li className="flex items-start gap-2.5">
+                                <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                                  <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span>
+                                <span className="leading-snug">
                                   Get 6 months of membership for ฿24,999
                                 </span>
                               </li>
                             </ul>
 
-                            <Button
-                              variant="outline"
-                              size="default"
-                              className="mt-7 w-full border-[#D3A753]/40 hover:border-[#CA617D]/50 hover:bg-[#D3A753]/10"
-                              onClick={() => {
-                                console.log("Try Before You Buy selected")
-                              }}
-                            >
-                              Try Before You Buy
-                            </Button>
+                            <div className="mt-auto pt-7">
+                              <Button
+                                variant="outline"
+                                className="h-10 w-full font-semibold border-border/80 hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground text-foreground"
+                                onClick={() => {
+                                  console.log("Try Before You Buy selected")
+                                }}
+                              >
+                                Try Before You Buy
+                              </Button>
+                            </div>
                           </div>
                         </MotionDiv>
                       </div>
 
-                      <p className="mt-7 text-sm text-muted-foreground">
-                        Special promotion is available to the first 15 eligible
-                        members only. Terms and availability may apply.
-                      </p>
+                      <div className="mx-auto mt-8 max-w-xl text-center">
+                        <p className="text-xs text-muted-foreground sm:text-sm">
+                          Special promotion is available to the first 15 eligible
+                          members only. Terms and availability may apply.
+                        </p>
+                      </div>
                     </MotionDiv>
                   )}
                 </TabsContent>
@@ -688,12 +707,10 @@ export function PricingPageContents({
                           className="relative"
                         >
                           {plan.popular ? (
-                            <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                              <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-                              <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
-                                <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
-                                  <Flame className="size-4" />
+                            <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                              <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 sm:p-7 text-left">
+                                <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full px-4 py-1 text-xs font-bold whitespace-nowrap text-white shadow-lg">
+                                  <Flame className="size-3.5 fill-current" />
 
                                   <span>Most Popular</span>
                                 </div>
@@ -702,8 +719,8 @@ export function PricingPageContents({
                                   {plan.name}
                                 </h3>
 
-                                <div className="mt-5">
-                                  <div className="text-4xl font-bold">
+                                <div className="mt-4">
+                                  <div className="text-4xl font-bold tracking-tight">
                                     {plan.price}
                                   </div>
 
@@ -714,14 +731,14 @@ export function PricingPageContents({
                                   )}
                                 </div>
 
-                                <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
-                                  <p className="font-semibold">
+                                <div className="mt-5 rounded-xl border border-[#CA617D]/20 bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/20 to-[#CA617D]/15 p-4">
+                                  <p className="font-semibold text-foreground">
                                     {isAutoRenew
                                       ? `Subscribe for ${plan.recurringInterval.paid}`
                                       : `Pay for ${plan.duration.paid}`}
                                   </p>
 
-                                  <p className="mt-1 text-sm text-muted-foreground">
+                                  <p className="mt-1 text-xs text-muted-foreground">
                                     {isAutoRenew
                                       ? `Get ${plan.recurringInterval.total} of membership`
                                       : `Get ${plan.duration.total} of membership`}
@@ -753,13 +770,13 @@ export function PricingPageContents({
                                           (feature, featureIndex) => (
                                             <li
                                               key={featureIndex}
-                                              className="flex gap-2"
+                                              className="flex items-start gap-2.5"
                                             >
-                                              <span className="shrink-0 text-[#CA617D]">
-                                                ✓
+                                              <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#CA617D]/20 text-[#CA617D]">
+                                                <Check className="size-3 stroke-[2.5]" />
                                               </span>
 
-                                              <span>{feature}</span>
+                                              <span className="leading-snug">{feature}</span>
                                             </li>
                                           )
                                         )}
@@ -778,13 +795,14 @@ export function PricingPageContents({
                                   ) : null}
                                 </AnimatePresence>
 
-                                <Button
-                                  className="btn-gradient mt-7 w-full text-white"
-                                  size="default"
-                                  onClick={() => handleChoosePlan(plan)}
-                                >
-                                  Choose Plan
-                                </Button>
+                                <div className="mt-auto pt-7">
+                                  <Button
+                                    className="btn-gradient h-10 w-full font-semibold text-white shadow-md shadow-[#D3A753]/20 hover:brightness-110"
+                                    onClick={() => handleChoosePlan(plan)}
+                                  >
+                                    Choose Plan
+                                  </Button>
+                                </div>
 
                                 {isEmbedded && expandedPlan !== plan.name && (
                                   <Button
@@ -798,13 +816,13 @@ export function PricingPageContents({
                               </div>
                             </div>
                           ) : (
-                            <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                            <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl">
                               <h3 className="mt-2 text-2xl font-bold">
                                 {plan.name}
                               </h3>
 
-                              <div className="mt-5">
-                                <div className="text-4xl font-bold">
+                              <div className="mt-4">
+                                <div className="text-4xl font-bold tracking-tight">
                                   {plan.price}
                                 </div>
 
@@ -815,14 +833,14 @@ export function PricingPageContents({
                                 )}
                               </div>
 
-                              <div className="mt-5 rounded-xl bg-[#D3A753]/10 p-4">
-                                <p className="font-semibold">
+                              <div className="mt-5 rounded-xl border border-[#D3A753]/20 bg-[#D3A753]/10 p-4">
+                                <p className="font-semibold text-foreground">
                                   {isAutoRenew
                                     ? `Subscribe for ${plan.recurringInterval.paid}`
                                     : `Pay for ${plan.duration.paid}`}
                                 </p>
 
-                                <p className="mt-1 text-sm text-muted-foreground">
+                                <p className="mt-1 text-xs text-muted-foreground">
                                   {isAutoRenew
                                     ? `Get ${plan.recurringInterval.total} of membership`
                                     : `Get ${plan.duration.total} of membership`}
@@ -854,13 +872,13 @@ export function PricingPageContents({
                                         (feature, featureIndex) => (
                                           <li
                                             key={featureIndex}
-                                            className="flex gap-2"
+                                            className="flex items-start gap-2.5"
                                           >
-                                            <span className="shrink-0 text-[#D3A753]">
-                                              ✓
+                                            <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
+                                              <Check className="size-3 stroke-[2.5]" />
                                             </span>
 
-                                            <span>{feature}</span>
+                                            <span className="leading-snug">{feature}</span>
                                           </li>
                                         )
                                       )}
@@ -879,14 +897,15 @@ export function PricingPageContents({
                                 ) : null}
                               </AnimatePresence>
 
-                              <Button
-                                variant="outline"
-                                size="default"
-                                className="mt-7 w-full border-[#D3A753]/40 hover:border-[#CA617D]/50 hover:bg-[#D3A753]/10"
-                                onClick={() => handleChoosePlan(plan)}
-                              >
-                                Choose Plan
-                              </Button>
+                              <div className="mt-auto pt-7">
+                                <Button
+                                  variant="outline"
+                                  className="h-10 w-full font-semibold border-border/80 hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground text-foreground"
+                                  onClick={() => handleChoosePlan(plan)}
+                                >
+                                  Choose Plan
+                                </Button>
+                              </div>
 
                               {isEmbedded && expandedPlan !== plan.name && (
                                 <Button
@@ -960,17 +979,21 @@ export function PricingPageContents({
                     }}
                     className="relative"
                   >
-                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                      <h3 className="py-1.5 text-2xl font-bold">
+                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#CA617D]/60 hover:shadow-2xl">
+                      <p className="mt-2 text-xs font-semibold tracking-wider text-[#CA617D] uppercase">
+                        Introductory VIP
+                      </p>
+
+                      <h3 className="mt-2 text-2xl font-bold">
                         Welcome Plan
                       </h3>
 
-                      <div className="mt-5 rounded-xl bg-[#CA617D]/10 p-4">
-                        <p className="font-semibold">
+                      <div className="mt-5 rounded-xl border border-[#CA617D]/20 bg-[#CA617D]/10 p-4">
+                        <p className="font-semibold text-foreground">
                           Welcome to Thai Soulmate
                         </p>
 
-                        <p className="mt-1 text-sm text-muted-foreground">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           Start your personalised matchmaking journey with
                           professional support.
                         </p>
@@ -978,22 +1001,25 @@ export function PricingPageContents({
 
                       <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                         {PLANS[0]?.features?.map((feature, index) => (
-                          <li key={index} className="flex gap-2">
-                            <span className="shrink-0 text-[#CA617D]">✓</span>
+                          <li key={index} className="flex items-start gap-2.5">
+                            <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#CA617D]/15 text-[#CA617D]">
+                              <Check className="size-3 stroke-[2.5]" />
+                            </span>
 
-                            <span>{feature}</span>
+                            <span className="leading-snug">{feature}</span>
                           </li>
                         ))}
                       </ul>
 
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="default"
-                        className="mt-7 w-full border-[#CA617D]/40 hover:border-[#CA617D]/60 hover:bg-[#CA617D]/10"
-                      >
-                        <Link href="/contact">Contact Us</Link>
-                      </Button>
+                      <div className="mt-auto pt-7">
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="h-10 w-full font-semibold border-border/80 hover:border-[#CA617D]/50 hover:bg-[#CA617D]/10 hover:text-foreground text-foreground"
+                        >
+                          <Link href="/contact">Contact Us</Link>
+                        </Button>
+                      </div>
                     </div>
                   </MotionDiv>
 
@@ -1016,28 +1042,30 @@ export function PricingPageContents({
                     }}
                     className="relative"
                   >
-                    <div className="relative flex h-full flex-col rounded-2xl bg-card p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D]" />
-
-                      <div className="relative flex h-full flex-col rounded-[14px] bg-card p-7 text-left">
+                    <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                      <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 sm:p-7 text-left">
                         {/* Most Popular */}
 
-                        <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
-                          <Flame className="size-4" />
+                        <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full px-4 py-1 text-xs font-bold whitespace-nowrap text-white shadow-lg">
+                          <Flame className="size-3.5 fill-current" />
 
                           <span>Most Popular</span>
                         </div>
 
-                        <h3 className="text-gradient mt-2 text-2xl font-bold">
+                        <p className="text-gradient mt-2 text-xs font-semibold tracking-wider uppercase">
+                          Signature VIP
+                        </p>
+
+                        <h3 className="mt-2 text-2xl font-bold">
                           6 Months
                         </h3>
 
-                        <div className="mt-5 rounded-xl bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/25 to-[#CA617D]/20 p-4">
-                          <p className="font-semibold">
+                        <div className="mt-5 rounded-xl border border-[#CA617D]/20 bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/20 to-[#CA617D]/15 p-4">
+                          <p className="font-semibold text-foreground">
                             Personalised Female VIP Service
                           </p>
 
-                          <p className="mt-1 text-sm text-muted-foreground">
+                          <p className="mt-1 text-xs text-muted-foreground">
                             Enjoy personalised matchmaking with carefully
                             selected introductions.
                           </p>
@@ -1045,21 +1073,24 @@ export function PricingPageContents({
 
                         <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                           {PLANS[0]?.features?.map((feature, index) => (
-                            <li key={index} className="flex gap-2">
-                              <span className="shrink-0 text-[#CA617D]">✓</span>
+                            <li key={index} className="flex items-start gap-2.5">
+                              <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#CA617D]/20 text-[#CA617D]">
+                                <Check className="size-3 stroke-[2.5]" />
+                              </span>
 
-                              <span>{feature}</span>
+                              <span className="leading-snug">{feature}</span>
                             </li>
                           ))}
                         </ul>
 
-                        <Button
-                          asChild
-                          className="btn-gradient mt-7 w-full text-white"
-                          size="default"
-                        >
-                          <Link href="/contact">Contact Us</Link>
-                        </Button>
+                        <div className="mt-auto pt-7">
+                          <Button
+                            asChild
+                            className="btn-gradient h-10 w-full font-semibold text-white shadow-md shadow-[#CA617D]/20 hover:brightness-110"
+                          >
+                            <Link href="/contact">Contact Us</Link>
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </MotionDiv>
@@ -1083,15 +1114,19 @@ export function PricingPageContents({
                     }}
                     className="relative"
                   >
-                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                      <h3 className="py-1.5 text-2xl font-bold">12 Months</h3>
+                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#CA617D]/60 hover:shadow-2xl">
+                      <p className="mt-2 text-xs font-semibold tracking-wider text-[#CA617D] uppercase">
+                        Prestige VIP
+                      </p>
 
-                      <div className="mt-5 rounded-xl bg-[#CA617D]/10 p-4">
-                        <p className="font-semibold">
+                      <h3 className="mt-2 text-2xl font-bold">12 Months</h3>
+
+                      <div className="mt-5 rounded-xl border border-[#CA617D]/20 bg-[#CA617D]/10 p-4">
+                        <p className="font-semibold text-foreground">
                           Exclusive Female VIP Service
                         </p>
 
-                        <p className="mt-1 text-sm text-muted-foreground">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           Enjoy ongoing personalised matchmaking and
                           professional support.
                         </p>
@@ -1099,22 +1134,25 @@ export function PricingPageContents({
 
                       <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                         {PLANS[0]?.features?.map((feature, index) => (
-                          <li key={index} className="flex gap-2">
-                            <span className="shrink-0 text-[#CA617D]">✓</span>
+                          <li key={index} className="flex items-start gap-2.5">
+                            <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#CA617D]/15 text-[#CA617D]">
+                              <Check className="size-3 stroke-[2.5]" />
+                            </span>
 
-                            <span>{feature}</span>
+                            <span className="leading-snug">{feature}</span>
                           </li>
                         ))}
                       </ul>
 
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="default"
-                        className="mt-7 w-full border-[#CA617D]/40 hover:border-[#CA617D]/60 hover:bg-[#CA617D]/10"
-                      >
-                        <Link href="/contact">Contact Us</Link>
-                      </Button>
+                      <div className="mt-auto pt-7">
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="h-10 w-full font-semibold border-border/80 hover:border-[#CA617D]/50 hover:bg-[#CA617D]/10 hover:text-foreground text-foreground"
+                        >
+                          <Link href="/contact">Contact Us</Link>
+                        </Button>
+                      </div>
                     </div>
                   </MotionDiv>
                 </div>
@@ -1124,20 +1162,62 @@ export function PricingPageContents({
         </MotionDiv>
 
         {/* ========================================================= */}
-        {/* CONTACT */}
+        {/* BOTTOM LUXURY CTA CARD */}
         {/* ========================================================= */}
 
-        <p className="mx-auto mt-16 max-w-3xl text-base text-muted-foreground">
-          For more details about any of our subscriptions, plans or membership
-          fees, please{" "}
-          <Link
-            href="/contact"
-            className="text-gradient font-semibold transition-all hover:underline hover:brightness-125"
-          >
-            contact us
-          </Link>
-          .
-        </p>
+        <MotionDiv
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+          className="mt-16 sm:mt-20"
+        >
+          <div className="relative overflow-hidden rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card/90 via-card/70 to-[#D3A753]/10 p-8 text-center backdrop-blur-sm sm:p-12">
+            <div className="mx-auto max-w-2xl space-y-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
+                <Crown className="size-3.5" />
+                <span>Confidential Concierge Service</span>
+              </div>
+
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                Questions About Our Membership?
+              </h2>
+
+              <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                For more details about any of our subscriptions, plans or membership
+                fees, please{" "}
+                <Link
+                  href="/contact"
+                  className="text-gradient font-semibold transition-all hover:underline hover:brightness-125"
+                >
+                  contact us
+                </Link>
+                . Our dedicated matchmaking team in Thailand is always here to assist you.
+              </p>
+
+              <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
+                <Button
+                  asChild
+                  className="btn-gradient h-10 px-6 font-semibold text-white shadow-lg shadow-[#D3A753]/20"
+                >
+                  <Link href="/contact">Contact Us</Link>
+                </Button>
+
+                <Button
+                  asChild
+                  variant="outline"
+                  className="h-10 border-border/80 px-6 font-semibold hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10"
+                >
+                  <Link href="/#register-interest">Register Interest</Link>
+                </Button>
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                100% confidential • Bespoke matchmaking • Direct personal support
+              </p>
+            </div>
+          </div>
+        </MotionDiv>
       </div>
     </section>
   )

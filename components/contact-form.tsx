@@ -89,10 +89,12 @@ export function ContactForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
-                <InputGroup>
+                <FormLabel className="text-xs font-semibold tracking-wider text-foreground uppercase">
+                  Name <span className="text-[#CA617D]">*</span>
+                </FormLabel>
+                <InputGroup className="h-9 rounded-lg border border-input bg-background transition-all focus-within:border-[#D3A753]/60 focus-within:ring-1 focus-within:ring-[#D3A753]/30 dark:bg-input/20">
                   <InputGroupAddon>
-                    <User className="h-4 w-4" />
+                    <User className="size-4 text-[#D3A753]" />
                   </InputGroupAddon>
                   <FormControl>
                     <InputGroupInput placeholder="Your Name" {...field} />
@@ -107,10 +109,12 @@ export function ContactForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
-                <InputGroup>
+                <FormLabel className="text-xs font-semibold tracking-wider text-foreground uppercase">
+                  Email <span className="text-[#CA617D]">*</span>
+                </FormLabel>
+                <InputGroup className="h-9 rounded-lg border border-input bg-background transition-all focus-within:border-[#D3A753]/60 focus-within:ring-1 focus-within:ring-[#D3A753]/30 dark:bg-input/20">
                   <InputGroupAddon>
-                    <Mail className="h-4 w-4" />
+                    <Mail className="size-4 text-[#D3A753]" />
                   </InputGroupAddon>
                   <FormControl>
                     <InputGroupInput
@@ -132,10 +136,12 @@ export function ContactForm() {
             name="subject"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Subject</FormLabel>
-                <InputGroup>
+                <FormLabel className="text-xs font-semibold tracking-wider text-foreground uppercase">
+                  Subject <span className="text-[#CA617D]">*</span>
+                </FormLabel>
+                <InputGroup className="h-9 rounded-lg border border-input bg-background transition-all focus-within:border-[#D3A753]/60 focus-within:ring-1 focus-within:ring-[#D3A753]/30 dark:bg-input/20">
                   <InputGroupAddon>
-                    <Type className="h-4 w-4" />
+                    <Type className="size-4 text-[#D3A753]" />
                   </InputGroupAddon>
                   <FormControl>
                     <InputGroupInput
@@ -153,10 +159,12 @@ export function ContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Message</FormLabel>
-                <InputGroup>
-                  <InputGroupAddon>
-                    <MessageSquare className="h-4 w-4" />
+                <FormLabel className="text-xs font-semibold tracking-wider text-foreground uppercase">
+                  Message <span className="text-[#CA617D]">*</span>
+                </FormLabel>
+                <InputGroup className="rounded-lg border border-input bg-background transition-all focus-within:border-[#D3A753]/60 focus-within:ring-1 focus-within:ring-[#D3A753]/30 dark:bg-input/20">
+                  <InputGroupAddon className="self-start pt-2.5">
+                    <MessageSquare className="size-4 text-[#D3A753]" />
                   </InputGroupAddon>
                   <FormControl>
                     <InputGroupTextarea
@@ -172,14 +180,18 @@ export function ContactForm() {
             )}
           />
         </fieldset>
-        <Button
-          type="submit"
-          className="btn-gradient w-full"
-          disabled={loading}
-        >
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {loading ? "Sending..." : "Send Message"}
-        </Button>
+        <div className="pt-2">
+          <Button
+            type="submit"
+            className="btn-gradient h-10 w-full font-semibold text-white shadow-lg shadow-[#D3A753]/20 transition-all hover:brightness-110"
+            disabled={loading}
+          >
+            {loading && (
+              <Loader2 className="mr-2 size-4 animate-spin text-white" />
+            )}
+            {loading ? "Sending..." : "Send Message"}
+          </Button>
+        </div>
       </form>
     </Form>
   )

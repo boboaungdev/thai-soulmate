@@ -36,6 +36,10 @@ export function HowItWorksContent() {
     <div className="space-y-20 py-8 sm:py-14">
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden px-4 text-center sm:px-6 lg:px-8">
+        {/* Background Subtle Radial Glows */}
+        <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-96 w-full max-w-4xl -translate-x-1/2 rounded-full bg-gradient-to-tr from-[#D3A753]/15 via-[#E791A7]/10 to-transparent blur-3xl" />
+        <div className="pointer-events-none absolute top-1/2 -right-40 -z-10 size-[500px] rounded-full bg-gradient-to-br from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
+
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -63,7 +67,7 @@ export function HowItWorksContent() {
             <AppName className="font-bold" /> was created to replace the
             superficial swiping, fake profiles, and frustration of dating apps
             with the discretion, human empathy, and precision of a private
-            matchmaking agency based locally in Bangkok.
+            matchmaking agency based in Thailand.
           </p>
 
           {/* 4 Feature Badges */}
@@ -82,7 +86,7 @@ export function HowItWorksContent() {
             </div>
             <div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-3.5 py-1.5 backdrop-blur-xs">
               <MapPin className="size-4 text-[#D3A753]" />
-              <span>Based Locally in Bangkok</span>
+              <span>Based in Thailand</span>
             </div>
           </div>
         </MotionDiv>
@@ -115,19 +119,25 @@ export function HowItWorksContent() {
                 <TabsTrigger
                   value="men"
                   variant="gradient"
-                  className="h-full gap-2 rounded-lg px-5 text-sm font-semibold sm:px-6"
+                  className="h-full gap-2 rounded-lg px-4 text-xs font-semibold sm:px-6 sm:text-sm"
                 >
                   <Compass className="size-4 shrink-0" />
-                  <span>For Gentlemen (International Men)</span>
+                  <span className="hidden sm:inline">
+                    For Gentlemen (International Men)
+                  </span>
+                  <span className="sm:hidden">For Gentlemen</span>
                 </TabsTrigger>
 
                 <TabsTrigger
                   value="women"
                   variant="gradient"
-                  className="h-full gap-2 rounded-lg px-5 text-sm font-semibold sm:px-6"
+                  className="h-full gap-2 rounded-lg px-4 text-xs font-semibold sm:px-6 sm:text-sm"
                 >
                   <Heart className="size-4 shrink-0" />
-                  <span>For Thai Ladies (Women in Thailand)</span>
+                  <span className="hidden sm:inline">
+                    For Thai Ladies (Women in Thailand)
+                  </span>
+                  <span className="sm:hidden">For Thai Ladies</span>
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -146,7 +156,7 @@ export function HowItWorksContent() {
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {/* Step 1 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#D3A753]/15 px-3 py-1 font-mono text-xs font-bold text-[#D3A753]">
                   STAGE 01
                 </div>
@@ -158,13 +168,13 @@ export function HowItWorksContent() {
                     Confidential Consultation & Values Intake
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     We start with an in-depth private conversation to understand
                     your personality, lifestyle, relationship goals, and partner
                     preferences.
                   </p>
-                  <ul className="space-y-1.5 border-t border-border/40 pt-2 text-xs">
+                  <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
                       <span>Zero public visibility of your profile</span>
@@ -182,7 +192,7 @@ export function HowItWorksContent() {
               </Card>
 
               {/* Step 2 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#D3A753]/15 px-3 py-1 font-mono text-xs font-bold text-[#D3A753]">
                   STAGE 02
                 </div>
@@ -194,13 +204,13 @@ export function HowItWorksContent() {
                     Curated Search Across Verified Members
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     Your matchmaker acts as your personal scout in Thailand,
                     personally reviewing candidates against your values rather
                     than relying on computer algorithms.
                   </p>
-                  <ul className="space-y-1.5 border-t border-border/40 pt-2 text-xs">
+                  <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
                       <span>100% ID, age, and intention verified</span>
@@ -218,7 +228,7 @@ export function HowItWorksContent() {
               </Card>
 
               {/* Step 3 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#D3A753]/15 px-3 py-1 font-mono text-xs font-bold text-[#D3A753]">
                   STAGE 03
                 </div>
@@ -230,14 +240,14 @@ export function HowItWorksContent() {
                     Mutual Profile Review & Double Consent
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     You receive an executive profile dossier of the lady. If you
                     are interested, we present your profile to her privately.
                     Both sides must say &ldquo;Yes&rdquo; before an introduction
                     happens.
                   </p>
-                  <ul className="space-y-1.5 border-t border-border/40 pt-2 text-xs">
+                  <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
                       <span>Complete transparency on background</span>
@@ -255,7 +265,7 @@ export function HowItWorksContent() {
               </Card>
 
               {/* Step 4 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#D3A753]/15 px-3 py-1 font-mono text-xs font-bold text-[#D3A753]">
                   STAGE 04
                 </div>
@@ -267,14 +277,14 @@ export function HowItWorksContent() {
                     Facilitated Video Date with Interpreter
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     We coordinate a secure Google Meet video date across your
                     respective time zones. Your matchmaker is on hand to
                     facilitate, break the ice, and provide bilingual
                     translation.
                   </p>
-                  <ul className="space-y-1.5 border-t border-border/40 pt-2 text-xs">
+                  <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
                       <span>Comfortable, relaxed virtual environment</span>
@@ -292,7 +302,7 @@ export function HowItWorksContent() {
               </Card>
 
               {/* Step 5 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg md:col-span-2 lg:col-span-2">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/50 hover:shadow-lg md:col-span-2 lg:col-span-2">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#D3A753]/15 px-3 py-1 font-mono text-xs font-bold text-[#D3A753]">
                   STAGE 05
                 </div>
@@ -304,18 +314,18 @@ export function HowItWorksContent() {
                     In-Person Meeting in Thailand & Ongoing Concierge
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
-                    When you are ready to visit Thailand, our Bangkok team is
-                    right here on the ground to assist you. We coordinate safe,
-                    romantic meeting locations, offer cultural advice, and
-                    continue supporting you until your connection flourishes
-                    into marriage or long-term partnership.
+                    When you are ready to visit Thailand, our local team in
+                    Thailand is right here on the ground to assist you. We
+                    coordinate safe, romantic meeting locations, offer cultural
+                    advice, and continue supporting you until your connection
+                    flourishes into marriage or long-term partnership.
                   </p>
-                  <div className="grid grid-cols-1 gap-2 border-t border-border/40 pt-2 text-xs sm:grid-cols-3">
+                  <div className="mt-auto grid grid-cols-1 gap-2 border-t border-border/40 pt-3 text-xs sm:grid-cols-3">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                      <span>Bangkok meeting coordination</span>
+                      <span>Thailand meeting coordination</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
@@ -344,7 +354,7 @@ export function HowItWorksContent() {
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {/* Step 1 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#E791A7]/15 px-3 py-1 font-mono text-xs font-bold text-[#CA617D]">
                   STAGE 01
                 </div>
@@ -356,14 +366,14 @@ export function HowItWorksContent() {
                     Free & Private Member Application
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     Apply online or speak directly with our friendly female
                     matchmakers. We verify your identity, understand your
                     lifestyle, and discuss what kind of gentleman would make you
                     happy.
                   </p>
-                  <ul className="space-y-1.5 border-t border-border/40 pt-2 text-xs">
+                  <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
                       <span>100% Free for Thai female applicants</span>
@@ -374,14 +384,14 @@ export function HowItWorksContent() {
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
-                      <span>Private, supportive female staff in Bangkok</span>
+                      <span>Private, supportive female staff in Thailand</span>
                     </li>
                   </ul>
                 </CardContent>
               </Card>
 
               {/* Step 2 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#E791A7]/15 px-3 py-1 font-mono text-xs font-bold text-[#CA617D]">
                   STAGE 02
                 </div>
@@ -393,13 +403,13 @@ export function HowItWorksContent() {
                     Vetted, Sincere International Gentlemen
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     We strictly vet every gentleman. They are financially
                     established, emotionally mature, and committed to finding a
                     life partner for marriage—not casual dating or games.
                   </p>
-                  <ul className="space-y-1.5 border-t border-border/40 pt-2 text-xs">
+                  <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
                       <span>Background & identity verified gentlemen</span>
@@ -417,7 +427,7 @@ export function HowItWorksContent() {
               </Card>
 
               {/* Step 3 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#E791A7]/15 px-3 py-1 font-mono text-xs font-bold text-[#CA617D]">
                   STAGE 03
                 </div>
@@ -429,13 +439,13 @@ export function HowItWorksContent() {
                     You Remain in Complete Control
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     When a suitable gentleman expresses interest in meeting you,
                     you receive his full profile and background. You decide
                     whether you want to proceed.
                   </p>
-                  <ul className="space-y-1.5 border-t border-border/40 pt-2 text-xs">
+                  <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
                       <span>Zero obligation to accept any introduction</span>
@@ -453,7 +463,7 @@ export function HowItWorksContent() {
               </Card>
 
               {/* Step 4 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#E791A7]/15 px-3 py-1 font-mono text-xs font-bold text-[#CA617D]">
                   STAGE 04
                 </div>
@@ -465,14 +475,14 @@ export function HowItWorksContent() {
                     Safe Video Meeting with Thai Translation
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     Meet in a relaxed, friendly video call. Don&apos;t worry
                     about speaking perfect English—our caring Thai matchmaker
                     will attend to assist, translate, and keep the conversation
                     flowing smoothly.
                   </p>
-                  <ul className="space-y-1.5 border-t border-border/40 pt-2 text-xs">
+                  <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
                       <span>Supportive Thai-speaking staff present</span>
@@ -490,7 +500,7 @@ export function HowItWorksContent() {
               </Card>
 
               {/* Step 5 */}
-              <Card className="relative overflow-hidden border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg md:col-span-2 lg:col-span-2">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E791A7]/50 hover:shadow-lg md:col-span-2 lg:col-span-2">
                 <div className="absolute top-0 right-0 rounded-bl-xl bg-[#E791A7]/15 px-3 py-1 font-mono text-xs font-bold text-[#CA617D]">
                   STAGE 05
                 </div>
@@ -502,21 +512,21 @@ export function HowItWorksContent() {
                     Safe In-Person Dates in Thailand & Continuous Care
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                   <p>
                     When the gentleman arrives in Thailand to meet you, we help
                     coordinate safe, public, and comfortable dinner dates in
-                    Bangkok. We support you before, during, and after each
+                    Thailand. We support you before, during, and after each
                     meeting so you always feel protected, valued, and respected.
                   </p>
-                  <div className="grid grid-cols-1 gap-2 border-t border-border/40 pt-2 text-xs sm:grid-cols-3">
+                  <div className="mt-auto grid grid-cols-1 gap-2 border-t border-border/40 pt-3 text-xs sm:grid-cols-3">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
                       <span>Safe, vetted public date venues</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
-                      <span>Local Bangkok support anytime</span>
+                      <span>Local Thailand support anytime</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
@@ -554,7 +564,7 @@ export function HowItWorksContent() {
 
           <div className="grid gap-8 md:grid-cols-2">
             {/* Conventional Dating Apps */}
-            <Card className="border border-destructive/30 bg-destructive/5 dark:bg-destructive/10">
+            <Card className="rounded-2xl border border-destructive/30 bg-destructive/5 backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:bg-destructive/10">
               <CardHeader className="space-y-2">
                 <div className="inline-flex w-fit items-center gap-2 rounded-md bg-destructive/15 px-3 py-1 text-xs font-bold text-destructive uppercase">
                   <XCircle className="size-4" />
@@ -605,7 +615,7 @@ export function HowItWorksContent() {
             </Card>
 
             {/* Thai Soulmate Private Matchmaking */}
-            <Card className="border border-[#D3A753]/40 bg-[#D3A753]/5 dark:bg-[#D3A753]/10">
+            <Card className="rounded-2xl border border-[#D3A753]/40 bg-[#D3A753]/5 backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:bg-[#D3A753]/10">
               <CardHeader className="space-y-2">
                 <div className="inline-flex w-fit items-center gap-2 rounded-md bg-[#D3A753]/20 px-3 py-1 text-xs font-bold text-[#D3A753] uppercase">
                   <CheckCircle2 className="size-4" />
@@ -647,7 +657,7 @@ export function HowItWorksContent() {
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#D3A753]" />
                     <span>
-                      <strong>Local Bangkok team:</strong> Video translation,
+                      <strong>Local Thailand team:</strong> Video translation,
                       date coordination, and real support on the ground in
                       Thailand.
                     </span>
@@ -677,7 +687,7 @@ export function HowItWorksContent() {
           </div>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="space-y-2 rounded-2xl border border-border/60 bg-background/50 p-6 text-center">
+            <div className="space-y-2 rounded-2xl border border-border/60 bg-background/50 p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/40 hover:shadow-md">
               <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-[#D3A753]/15 text-[#D3A753]">
                 <UserCheck className="size-6" />
               </div>
@@ -690,7 +700,7 @@ export function HowItWorksContent() {
               </p>
             </div>
 
-            <div className="space-y-2 rounded-2xl border border-border/60 bg-background/50 p-6 text-center">
+            <div className="space-y-2 rounded-2xl border border-border/60 bg-background/50 p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/40 hover:shadow-md">
               <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-[#E791A7]/20 text-[#CA617D]">
                 <Sparkles className="size-6" />
               </div>
@@ -701,7 +711,7 @@ export function HowItWorksContent() {
               </p>
             </div>
 
-            <div className="space-y-2 rounded-2xl border border-border/60 bg-background/50 p-6 text-center">
+            <div className="space-y-2 rounded-2xl border border-border/60 bg-background/50 p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/40 hover:shadow-md">
               <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-[#D3A753]/15 text-[#D3A753]">
                 <Languages className="size-6" />
               </div>
@@ -712,12 +722,12 @@ export function HowItWorksContent() {
               </p>
             </div>
 
-            <div className="space-y-2 rounded-2xl border border-border/60 bg-background/50 p-6 text-center">
+            <div className="space-y-2 rounded-2xl border border-border/60 bg-background/50 p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/40 hover:shadow-md">
               <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-[#CA617D]/20 text-[#CA617D]">
                 <CalendarCheck className="size-6" />
               </div>
               <h3 className="font-bold text-foreground">
-                Local Bangkok Support
+                Local Thailand Support
               </h3>
               <p className="text-xs text-muted-foreground">
                 Logistics, safety guidance, romantic venue planning, and
@@ -729,7 +739,7 @@ export function HowItWorksContent() {
       </section>
 
       {/* 5. BOTTOM SINGLE CTA */}
-      <section className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -737,6 +747,8 @@ export function HowItWorksContent() {
           transition={{ duration: 0.5 }}
         >
           <div className="relative overflow-hidden rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card/90 via-card/70 to-[#D3A753]/10 p-8 text-center backdrop-blur-sm sm:p-12">
+            {/* Ambient subtle glow inside CTA */}
+            <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-64 w-96 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 to-transparent blur-3xl" />
             <div className="mx-auto max-w-2xl space-y-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
                 <Compass className="size-3.5" />

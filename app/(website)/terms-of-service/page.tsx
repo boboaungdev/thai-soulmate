@@ -8,13 +8,14 @@ const TERMS_OF_SERVICE_CONTENT = [
     text: (
       <>
         By creating an account and using the services provided by{" "}
-        <AppName className="inline font-bold" /> (&quot;Service&quot;), you agree to be
-        bound by these Terms of Service (&quot;Terms&quot;). This agreement is a
-        legally binding contract between you and {APP_INFO.companyName}. If you
-        do not agree with these Terms, you must not use our Service. You affirm
-        that you are at least 18 years of age and are fully able and competent
-        to enter into the terms, conditions, obligations, affirmations,
-        representations, and warranties set forth in these Terms.
+        <AppName className="inline font-bold" /> (&quot;Service&quot;), you
+        agree to be bound by these Terms of Service (&quot;Terms&quot;). This
+        agreement is a legally binding contract between you and{" "}
+        {APP_INFO.companyName}. If you do not agree with these Terms, you must
+        not use our Service. You affirm that you are at least 18 years of age
+        and are fully able and competent to enter into the terms, conditions,
+        obligations, affirmations, representations, and warranties set forth in
+        these Terms.
       </>
     ),
   },

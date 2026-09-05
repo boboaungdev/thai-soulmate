@@ -331,20 +331,20 @@ export function RegisterInterestForm() {
       <MotionDiv
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="mx-auto w-full max-w-2xl rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card via-card to-background p-8 text-center shadow-2xl sm:p-12"
+        className="mx-auto w-full max-w-2xl rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card via-card to-background p-6 text-center shadow-2xl sm:p-10"
       >
-        <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
-          <Check className="size-7 text-[#CA617D]" />
+        <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
+          <Check className="size-6 text-[#CA617D]" />
         </div>
-        <h2 className="text-gradient mb-3 text-3xl font-bold">
+        <h2 className="text-gradient mb-2 text-2xl font-bold sm:text-3xl">
           Consultation Request Received
         </h2>
-        <p className="text-base leading-relaxed text-muted-foreground">
+        <p className="text-sm leading-relaxed text-muted-foreground">
           Thank you for taking the first step. Our matchmaking director will
           review your preferences and reach out confidentially at your selected
           appointment time.
         </p>
-        <p className="mt-4 text-xs text-muted-foreground">
+        <p className="mt-3 text-xs text-muted-foreground">
           A confirmation email has been sent to your address. (If you don&apos;t
           see it, please check your spam or promotions folder).
         </p>
@@ -363,35 +363,35 @@ export function RegisterInterestForm() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.5 }}
-        className="overflow-hidden rounded-3xl border border-[#D3A753]/30 bg-gradient-to-br from-card via-card to-background p-6 shadow-2xl sm:p-10 lg:p-12"
+        className="overflow-hidden rounded-3xl border border-[#D3A753]/30 bg-gradient-to-br from-card via-card to-background p-6 shadow-2xl sm:p-8 md:p-10"
       >
         {/* Section Header */}
-        <div className="space-y-3 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
+        <div className="space-y-2 text-center">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-3 py-1 text-[11px] font-semibold tracking-wider text-[#D3A753] uppercase">
             <ShieldCheck className="size-3.5" />
             <span>Confidential & Discreet</span>
           </div>
-          <h2 className="text-gradient text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+          <h2 className="text-gradient text-2xl font-bold tracking-tight sm:text-3xl">
             Start with a Confidential Consultation
           </h2>
-          <p className="mx-auto max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <p className="mx-auto max-w-lg text-xs leading-relaxed text-muted-foreground sm:text-sm">
             Tell us what you seek. A dedicated matchmaker will contact you
             confidentially at your preferred date and time—completely free with
             zero obligation.
           </p>
 
           {/* Trust strip */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2 text-xs text-muted-foreground sm:gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs text-muted-foreground sm:gap-5">
             <div className="flex items-center gap-1.5">
-              <Lock className="size-3.5 text-[#D3A753]" />
+              <Lock className="size-3 text-[#D3A753]" />
               <span>100% Confidential</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Phone className="size-3.5 text-[#D3A753]" />
+              <Phone className="size-3 text-[#D3A753]" />
               <span>1-2-1 Private Call</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Check className="size-3.5 text-[#D3A753]" />
+              <Check className="size-3 text-[#D3A753]" />
               <span>No Obligation</span>
             </div>
           </div>
@@ -401,11 +401,11 @@ export function RegisterInterestForm() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-8 space-y-6"
+            className="mt-6 space-y-4 sm:space-y-5"
           >
-            <fieldset disabled={isPending} className="space-y-6">
+            <fieldset disabled={isPending} className="space-y-4 sm:space-y-5">
               {/* ROW 1: PREFIX, FIRST NAME, LAST NAME (OPTIONAL) */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-[100px_1fr_1fr]">
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-[90px_1fr_1fr]">
                 {/* Prefix */}
                 <FormField
                   control={form.control}
@@ -420,7 +420,7 @@ export function RegisterInterestForm() {
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="h-10 rounded-lg border border-input bg-background dark:bg-input/20">
+                          <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
                             <SelectValue placeholder="Prefix" />
                           </SelectTrigger>
                         </FormControl>
@@ -446,13 +446,13 @@ export function RegisterInterestForm() {
                         First Name <span className="text-[#CA617D]">*</span>
                       </FormLabel>
                       <FormControl>
-                        <InputGroup className="h-10 rounded-lg border border-input bg-background dark:bg-input/20">
+                        <InputGroup className="h-9 rounded-lg border border-input bg-background dark:bg-input/20">
                           <InputGroupAddon className="pl-3">
-                            <User className="size-4 text-muted-foreground" />
+                            <User className="size-3.5 text-muted-foreground" />
                           </InputGroupAddon>
                           <InputGroupInput
                             placeholder="e.g. Alex"
-                            className="h-full text-sm"
+                            className="h-full text-xs sm:text-sm"
                             {...field}
                           />
                         </InputGroup>
@@ -477,13 +477,13 @@ export function RegisterInterestForm() {
                         </span>
                       </div>
                       <FormControl>
-                        <InputGroup className="h-10 rounded-lg border border-input bg-background dark:bg-input/20">
+                        <InputGroup className="h-9 rounded-lg border border-input bg-background dark:bg-input/20">
                           <InputGroupAddon className="pl-3">
-                            <User className="size-4 text-muted-foreground" />
+                            <User className="size-3.5 text-muted-foreground" />
                           </InputGroupAddon>
                           <InputGroupInput
                             placeholder="e.g. Johnson"
-                            className="h-full text-sm"
+                            className="h-full text-xs sm:text-sm"
                             {...field}
                           />
                         </InputGroup>
@@ -495,7 +495,7 @@ export function RegisterInterestForm() {
               </div>
 
               {/* ROW 2: GENDER & CURRENT LOCATION */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-[130px_1fr]">
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-[120px_1fr]">
                 {/* Gender */}
                 <FormField
                   control={form.control}
@@ -510,7 +510,7 @@ export function RegisterInterestForm() {
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="h-10 rounded-lg border border-input bg-background dark:bg-input/20">
+                          <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
                             <SelectValue placeholder="Gender" />
                           </SelectTrigger>
                         </FormControl>
@@ -554,18 +554,18 @@ export function RegisterInterestForm() {
                               variant="outline"
                               role="combobox"
                               className={cn(
-                                "h-10 w-full justify-between rounded-lg border-input bg-background px-3 text-left text-sm font-normal dark:bg-input/20",
+                                "h-9 w-full justify-between rounded-lg border-input bg-background px-3 text-left text-xs font-normal sm:text-sm dark:bg-input/20",
                                 !field.value && "text-muted-foreground"
                               )}
                             >
                               <span className="flex items-center gap-2 truncate">
-                                <MapPin className="size-4 shrink-0 text-[#D3A753]" />
+                                <MapPin className="size-3.5 shrink-0 text-[#D3A753]" />
                                 <span className="truncate">
                                   {field.value ||
                                     "Select your current country / location..."}
                                 </span>
                               </span>
-                              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                              <ChevronsUpDown className="size-3.5 shrink-0 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
@@ -621,7 +621,7 @@ export function RegisterInterestForm() {
               </div>
 
               {/* ROW 3: EMAIL & PHONE */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 {/* Email */}
                 <FormField
                   control={form.control}
@@ -632,14 +632,14 @@ export function RegisterInterestForm() {
                         Email Address <span className="text-[#CA617D]">*</span>
                       </FormLabel>
                       <FormControl>
-                        <InputGroup className="h-10 rounded-lg border border-input bg-background dark:bg-input/20">
+                        <InputGroup className="h-9 rounded-lg border border-input bg-background dark:bg-input/20">
                           <InputGroupAddon className="pl-3">
-                            <Mail className="size-4 text-muted-foreground" />
+                            <Mail className="size-3.5 text-muted-foreground" />
                           </InputGroupAddon>
                           <InputGroupInput
                             type="email"
                             placeholder="alex@example.com"
-                            className="h-full text-sm"
+                            className="h-full text-xs sm:text-sm"
                             {...field}
                           />
                         </InputGroup>
@@ -669,7 +669,7 @@ export function RegisterInterestForm() {
                             <Button
                               variant="outline"
                               role="combobox"
-                              className="h-10 w-[125px] shrink-0 justify-between rounded-lg border-input bg-background px-2.5 text-sm font-normal dark:bg-input/20"
+                              className="h-9 w-[115px] shrink-0 justify-between rounded-lg border-input bg-background px-2.5 text-xs font-normal dark:bg-input/20"
                             >
                               {selectedCountryObj ? (
                                 <span className="flex items-center gap-1.5 truncate text-xs">
@@ -734,14 +734,14 @@ export function RegisterInterestForm() {
 
                         {/* Phone Digits Input */}
                         <FormControl className="flex-1">
-                          <InputGroup className="h-10 rounded-lg border border-input bg-background dark:bg-input/20">
+                          <InputGroup className="h-9 rounded-lg border border-input bg-background dark:bg-input/20">
                             <InputGroupAddon className="pl-3">
-                              <Phone className="size-4 text-muted-foreground" />
+                              <Phone className="size-3.5 text-muted-foreground" />
                             </InputGroupAddon>
                             <InputGroupInput
                               type="tel"
-                              placeholder="Phone or WhatsApp number"
-                              className="h-full text-sm"
+                              placeholder="0123456789"
+                              className="h-full text-xs sm:text-sm"
                               {...field}
                             />
                           </InputGroup>
@@ -776,7 +776,7 @@ export function RegisterInterestForm() {
                               })
                             }
                             className={cn(
-                              "flex items-start gap-3 rounded-xl border p-3.5 text-left transition-all duration-200",
+                              "flex items-start gap-2.5 rounded-xl border p-2.5 text-left transition-all duration-200 sm:gap-3 sm:p-3",
                               isSelected
                                 ? "border-[#D3A753] bg-gradient-to-br from-[#D3A753]/15 to-[#CA617D]/10 shadow-sm ring-1 ring-[#D3A753]/50"
                                 : "border-border/70 bg-card/60 hover:border-border hover:bg-card/90"
@@ -784,18 +784,18 @@ export function RegisterInterestForm() {
                           >
                             <div
                               className={cn(
-                                "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors",
+                                "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors sm:size-8",
                                 isSelected
                                   ? "bg-[#D3A753] text-black"
                                   : "bg-muted text-muted-foreground"
                               )}
                             >
-                              <Icon className="size-4" />
+                              <Icon className="size-3.5 sm:size-4" />
                             </div>
                             <div className="space-y-0.5">
                               <p
                                 className={cn(
-                                  "text-sm font-semibold",
+                                  "text-xs font-semibold sm:text-sm",
                                   isSelected
                                     ? "text-foreground"
                                     : "text-foreground/80"
@@ -803,12 +803,12 @@ export function RegisterInterestForm() {
                               >
                                 {goal.label}
                               </p>
-                              <p className="text-xs leading-tight text-muted-foreground">
+                              <p className="text-[11px] leading-tight text-muted-foreground sm:text-xs">
                                 {goal.desc}
                               </p>
                             </div>
                             {isSelected && (
-                              <Check className="mt-1 ml-auto size-4 shrink-0 text-[#D3A753]" />
+                              <Check className="mt-0.5 ml-auto size-3.5 shrink-0 text-[#D3A753]" />
                             )}
                           </button>
                         )
@@ -820,7 +820,7 @@ export function RegisterInterestForm() {
               />
 
               {/* ROW 5: BOOKING APPOINTMENT CALENDAR & HOURS STYLE */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 {/* Preferred Contact Date (Calendar Popover with 7-day rule) */}
                 <FormField
                   control={form.control}
@@ -846,11 +846,11 @@ export function RegisterInterestForm() {
                               <Button
                                 variant="outline"
                                 className={cn(
-                                  "h-10 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 text-left font-normal shadow-none dark:bg-input/20",
+                                  "h-9 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 text-left text-xs font-normal shadow-none sm:text-sm dark:bg-input/20",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                <Calendar1 className="mr-2 size-4 text-[#D3A753]" />
+                                <Calendar1 className="mr-2 size-3.5 text-[#D3A753]" />
                                 {field.value
                                   ? format(field.value, "d MMM yyyy")
                                   : "Choose a date"}
@@ -911,7 +911,7 @@ export function RegisterInterestForm() {
                           <span className="text-[#CA617D]">*</span>
                         </FormLabel>
                         <span className="text-[11px] text-muted-foreground">
-                          Bangkok (ICT)
+                          Thailand (ICT)
                         </span>
                       </div>
 
@@ -921,8 +921,8 @@ export function RegisterInterestForm() {
                         disabled={!preferredContactDate}
                       >
                         <FormControl>
-                          <SelectTrigger className="h-10 w-full rounded-lg border border-input bg-background dark:bg-input/20">
-                            <Clock className="mr-2 size-4 text-[#D3A753]" />
+                          <SelectTrigger className="h-9 w-full rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
+                            <Clock className="mr-2 size-3.5 text-[#D3A753]" />
                             <SelectValue
                               placeholder={
                                 preferredContactDate
@@ -949,21 +949,21 @@ export function RegisterInterestForm() {
 
               <p className="text-xs text-muted-foreground">
                 Our matchmakers are available Monday to Friday from 10:00 –
-                20:00 (Bangkok Time / ICT). Select your preferred date and
+                20:00 (Thailand Time / ICT). Select your preferred date and
                 1-hour slot.
               </p>
 
               {/* SUBMIT BUTTON */}
-              <div className="space-y-3 pt-2">
+              <div className="space-y-2.5 pt-1">
                 <Button
                   type="submit"
                   size="lg"
                   disabled={isPending}
-                  className="btn-gradient w-full py-6 text-base font-bold shadow-lg transition-all hover:shadow-xl"
+                  className="btn-gradient h-10 w-full text-sm font-semibold shadow-md transition-all hover:shadow-lg"
                 >
                   {isPending ? (
                     <div className="flex items-center gap-2">
-                      <Spinner className="size-4" />
+                      <Spinner className="size-3.5" />
                       <span>Scheduling Consultation...</span>
                     </div>
                   ) : (

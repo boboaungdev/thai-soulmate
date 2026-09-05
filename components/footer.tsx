@@ -71,7 +71,7 @@ export function Footer() {
           ========================== */}
           <div className="flex justify-center lg:justify-end">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
-              {/* Row 1: WhatsApp & Email (First) */}
+              {/* Row 1: WhatsApp, LINE & Email (First) */}
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <Button
                   asChild
@@ -87,6 +87,23 @@ export function Footer() {
                   >
                     <FaWhatsapp className="size-4 text-[#25D366]" />
                     <span>WhatsApp</span>
+                  </a>
+                </Button>
+
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full hover:border-[#00C300]/50 hover:bg-[#00C300]/10"
+                >
+                  <a
+                    href={CONTACT.line}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Contact us on LINE"
+                  >
+                    <FaLine className="size-4 text-[#00C300]" />
+                    <span>LINE</span>
                   </a>
                 </Button>
 
@@ -180,23 +197,6 @@ export function Footer() {
                   >
                     <FaTiktok className="size-4 text-foreground" />
                     <span>TikTok</span>
-                  </a>
-                </Button>
-
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full hover:border-[#00C300]/50 hover:bg-[#00C300]/10"
-                >
-                  <a
-                    href={CONTACT.line}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Contact us on LINE"
-                  >
-                    <FaLine className="size-4 text-[#00C300]" />
-                    <span>LINE</span>
                   </a>
                 </Button>
               </div>

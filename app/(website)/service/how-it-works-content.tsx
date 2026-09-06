@@ -185,9 +185,9 @@ export function HowItWorksContent() {
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
-                      We start with an in-depth private conversation to understand
-                      your personality, lifestyle, relationship goals, and partner
-                      preferences.
+                      We start with an in-depth private conversation to
+                      understand your personality, lifestyle, relationship
+                      goals, and partner preferences.
                     </p>
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                       <li className="flex items-center gap-2">
@@ -275,10 +275,10 @@ export function HowItWorksContent() {
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
-                      You receive an executive profile dossier of the lady. If you
-                      are interested, we present your profile to her privately.
-                      Both sides must say &ldquo;Yes&rdquo; before an introduction
-                      happens.
+                      You receive an executive profile dossier of the lady. If
+                      you are interested, we present your profile to her
+                      privately. Both sides must say &ldquo;Yes&rdquo; before an
+                      introduction happens.
                     </p>
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                       <li className="flex items-center gap-2">
@@ -333,7 +333,9 @@ export function HowItWorksContent() {
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                        <span>Bilingual English & Thai translation support</span>
+                        <span>
+                          Bilingual English & Thai translation support
+                        </span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
@@ -369,9 +371,10 @@ export function HowItWorksContent() {
                     <p>
                       When you are ready to visit Thailand, our local team in
                       Thailand is right here on the ground to assist you. We
-                      coordinate safe, romantic meeting locations, offer cultural
-                      advice, and continue supporting you until your connection
-                      flourishes into marriage or long-term partnership.
+                      coordinate safe, romantic meeting locations, offer
+                      cultural advice, and continue supporting you until your
+                      connection flourishes into marriage or long-term
+                      partnership.
                     </p>
                     <div className="mt-auto grid grid-cols-1 gap-2 border-t border-border/40 pt-3 text-xs sm:grid-cols-3">
                       <div className="flex items-center gap-2">
@@ -430,8 +433,8 @@ export function HowItWorksContent() {
                     <p>
                       Apply online or speak directly with our friendly female
                       matchmakers. We verify your identity, understand your
-                      lifestyle, and discuss what kind of gentleman would make you
-                      happy.
+                      lifestyle, and discuss what kind of gentleman would make
+                      you happy.
                     </p>
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                       <li className="flex items-center gap-2">
@@ -444,7 +447,9 @@ export function HowItWorksContent() {
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
-                        <span>Private, supportive female staff in Thailand</span>
+                        <span>
+                          Private, supportive female staff in Thailand
+                        </span>
                       </li>
                     </ul>
                   </CardContent>
@@ -475,8 +480,8 @@ export function HowItWorksContent() {
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
                       We strictly vet every gentleman. They are financially
-                      established, emotionally mature, and committed to finding a
-                      life partner for marriage—not casual dating or games.
+                      established, emotionally mature, and committed to finding
+                      a life partner for marriage—not casual dating or games.
                     </p>
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                       <li className="flex items-center gap-2">
@@ -519,9 +524,9 @@ export function HowItWorksContent() {
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
-                      When a suitable gentleman expresses interest in meeting you,
-                      you receive his full profile and background. You decide
-                      whether you want to proceed.
+                      When a suitable gentleman expresses interest in meeting
+                      you, you receive his full profile and background. You
+                      decide whether you want to proceed.
                     </p>
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                       <li className="flex items-center gap-2">
@@ -566,8 +571,8 @@ export function HowItWorksContent() {
                     <p>
                       Meet in a relaxed, friendly video call. Don&apos;t worry
                       about speaking perfect English—our caring Thai matchmaker
-                      will attend to assist, translate, and keep the conversation
-                      flowing smoothly.
+                      will attend to assist, translate, and keep the
+                      conversation flowing smoothly.
                     </p>
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                       <li className="flex items-center gap-2">
@@ -610,10 +615,11 @@ export function HowItWorksContent() {
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
-                      When the gentleman arrives in Thailand to meet you, we help
-                      coordinate safe, public, and comfortable dinner dates in
-                      Thailand. We support you before, during, and after each
-                      meeting so you always feel protected, valued, and respected.
+                      When the gentleman arrives in Thailand to meet you, we
+                      help coordinate safe, public, and comfortable dinner dates
+                      in Thailand. We support you before, during, and after each
+                      meeting so you always feel protected, valued, and
+                      respected.
                     </p>
                     <div className="mt-auto grid grid-cols-1 gap-2 border-t border-border/40 pt-3 text-xs sm:grid-cols-3">
                       <div className="flex items-center gap-2">
@@ -702,9 +708,9 @@ export function HowItWorksContent() {
                     <li className="flex items-start gap-3">
                       <XCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
                       <span>
-                        <strong>Casual hookups & ghosting:</strong> Most users are
-                        looking for casual fun, validation, or disappear without
-                        warning.
+                        <strong>Casual hookups & ghosting:</strong> Most users
+                        are looking for casual fun, validation, or disappear
+                        without warning.
                       </span>
                     </li>
                     <li className="flex items-start gap-3">
@@ -747,9 +753,9 @@ export function HowItWorksContent() {
                     <li className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#D3A753]" />
                       <span>
-                        <strong>We do the work:</strong> Your dedicated matchmaker
-                        searches, screens, and filters candidates directly for
-                        you.
+                        <strong>We do the work:</strong> Your dedicated
+                        matchmaker searches, screens, and filters candidates
+                        directly for you.
                       </span>
                     </li>
                     <li className="flex items-start gap-3">
@@ -764,8 +770,8 @@ export function HowItWorksContent() {
                       <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#D3A753]" />
                       <span>
                         <strong>Serious relationship intentions:</strong> Only
-                        relationship-minded singles committed to lifelong marriage
-                        are accepted.
+                        relationship-minded singles committed to lifelong
+                        marriage are accepted.
                       </span>
                     </li>
                     <li className="flex items-start gap-3">

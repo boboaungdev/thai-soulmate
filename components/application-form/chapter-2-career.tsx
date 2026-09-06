@@ -5,6 +5,7 @@ import {
   Briefcase,
   GraduationCap,
   Building,
+  Home,
   Check,
   Languages,
   Cigarette,
@@ -187,8 +188,9 @@ export function Chapter2Career({
         </div>
       </div>
 
-      {/* Company / Industry */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {/* Company, Owns Property & Owns Business */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {/* Company / Industry */}
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Company / Industry
@@ -198,63 +200,71 @@ export function Chapter2Career({
             <Input
               value={data.company}
               onChange={(e) => onChange({ company: e.target.value })}
-              placeholder="e.g. Technology, Healthcare, Consulting..."
+              placeholder="e.g. Technology, Healthcare..."
               className="h-10 pl-9 text-xs sm:text-sm"
             />
           </div>
         </div>
 
-        {/* Financial Assets Checkboxes */}
-        <div className="space-y-2">
+        {/* Owns Property */}
+        <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Financial &amp; Enterprise Independence
+            Owns Property
           </Label>
-          <div className="flex flex-wrap gap-2 pt-1">
-            <button
-              type="button"
-              onClick={() => onChange({ ownBusiness: !data.ownBusiness })}
-              className={cn(
-                "flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium transition-colors",
-                data.ownBusiness
-                  ? "border-[#D3A753] bg-[#D3A753]/15 text-foreground"
-                  : "border-border/60 bg-card/60 text-muted-foreground hover:border-border"
-              )}
-            >
-              <div
-                className={cn(
-                  "flex size-4 items-center justify-center rounded-sm border",
-                  data.ownBusiness
-                    ? "border-[#D3A753] bg-[#D3A753] text-black"
-                    : "border-muted-foreground"
-                )}
-              >
-                {data.ownBusiness && <Check className="size-3 stroke-[3]" />}
-              </div>
-              <span>Owns a Business / Enterprise</span>
-            </button>
+          <div className="flex gap-2">
+            {(["Yes", "No"] as const).map((opt) => {
+              const isSelected =
+                data.ownProperty === opt ||
+                (opt === "Yes" && data.ownProperty === true) ||
+                (opt === "No" && data.ownProperty === false)
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => onChange({ ownProperty: opt })}
+                  className={cn(
+                    "flex flex-1 items-center justify-center gap-1.5 rounded-xl border h-10 text-xs font-medium transition-all duration-200",
+                    isSelected
+                      ? "border-[#D3A753] bg-[#D3A753]/15 font-semibold text-[#D3A753] ring-1 ring-[#D3A753]/50"
+                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                  )}
+                >
+                  <Home className="size-3.5" />
+                  <span>{opt}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
-            <button
-              type="button"
-              onClick={() => onChange({ ownProperty: !data.ownProperty })}
-              className={cn(
-                "flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium transition-colors",
-                data.ownProperty
-                  ? "border-[#D3A753] bg-[#D3A753]/15 text-foreground"
-                  : "border-border/60 bg-card/60 text-muted-foreground hover:border-border"
-              )}
-            >
-              <div
-                className={cn(
-                  "flex size-4 items-center justify-center rounded-sm border",
-                  data.ownProperty
-                    ? "border-[#D3A753] bg-[#D3A753] text-black"
-                    : "border-muted-foreground"
-                )}
-              >
-                {data.ownProperty && <Check className="size-3 stroke-[3]" />}
-              </div>
-              <span>Homeowner / Property Owner</span>
-            </button>
+        {/* Owns Business */}
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+            Owns Business
+          </Label>
+          <div className="flex gap-2">
+            {(["Yes", "No"] as const).map((opt) => {
+              const isSelected =
+                data.ownBusiness === opt ||
+                (opt === "Yes" && data.ownBusiness === true) ||
+                (opt === "No" && data.ownBusiness === false)
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => onChange({ ownBusiness: opt })}
+                  className={cn(
+                    "flex flex-1 items-center justify-center gap-1.5 rounded-xl border h-10 text-xs font-medium transition-all duration-200",
+                    isSelected
+                      ? "border-[#D3A753] bg-[#D3A753]/15 font-semibold text-[#D3A753] ring-1 ring-[#D3A753]/50"
+                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                  )}
+                >
+                  <Building className="size-3.5" />
+                  <span>{opt}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       </div>

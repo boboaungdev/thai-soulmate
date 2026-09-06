@@ -207,9 +207,11 @@ function ApplicationFormContent() {
           drinking: formData.drinking,
           exercise: formData.exercise,
           interests: formData.interests,
-          otherInterest: "",
-          travelDestinations: [],
-          weekendActivity: "",
+          otherInterest: formData.otherInterest || "",
+          travelDestinations: (formData.travelDestinations || []).filter(
+            (d) => d && d.trim().length > 0
+          ),
+          weekendActivity: formData.weekendActivity || "",
           familyImportance: formData.familyImportance,
           futureChildren: formData.futureChildren,
           values: formData.values,
@@ -232,8 +234,14 @@ function ApplicationFormContent() {
           settleDown: formData.settleDown,
         },
         financial: {
-          ownBusiness: formData.ownBusiness,
-          ownProperty: formData.ownProperty,
+          ownBusiness:
+            formData.ownBusiness === "Yes" || formData.ownBusiness === true
+              ? "Yes"
+              : "No",
+          ownProperty:
+            formData.ownProperty === "Yes" || formData.ownProperty === true
+              ? "Yes"
+              : "No",
         },
         photos: {
           headshot: formData.headshotUrl || "",

@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -82,6 +83,7 @@ const HOBBIES_LIST = [
   "Pets & Animals",
   "Reading",
   "Art & Design",
+  "Other",
 ]
 
 export function Chapter3Personality({
@@ -103,6 +105,12 @@ export function Chapter3Personality({
     }
     if (data.interests.length !== 5) {
       newErrors.interests = `Please select exactly 5 hobbies & interests (${data.interests.length}/5 selected).`
+    }
+    if (
+      data.interests.includes("Other") &&
+      !(data.otherInterest || "").trim()
+    ) {
+      newErrors.otherInterest = "Please specify your other interest."
     }
     const bio = (data.about || "").trim()
     if (!bio || bio.length < 10) {
@@ -126,7 +134,12 @@ export function Chapter3Personality({
     const updated = isSelected
       ? list.filter((i) => i !== item)
       : [...list, item]
-    onChange({ [key]: updated })
+
+    const updates: Partial<ApplicationFormData> = { [key]: updated }
+    if (key === "interests" && item === "Other" && isSelected) {
+      updates.otherInterest = ""
+    }
+    onChange(updates)
 
     if (touched) {
       setErrors((prev) => {
@@ -141,6 +154,15 @@ export function Chapter3Personality({
           if (key === "interests")
             next.interests = `Please select exactly 5 hobbies & interests (${updated.length}/5 selected).`
         }
+
+        if (key === "interests") {
+          if (!updated.includes("Other")) {
+            delete next.otherInterest
+          } else if (!(data.otherInterest || "").trim()) {
+            next.otherInterest = "Please specify your other interest."
+          }
+        }
+
         return next
       })
     }
@@ -151,7 +173,7 @@ export function Chapter3Personality({
     const isValid = validate()
     if (!isValid) {
       toast.error(
-        "Please complete all required fields (select 5 traits, 5 values, 5 hobbies, and write a bio of at least 10 characters)."
+        "Please complete all required fields correctly before continuing."
       )
       return
     }
@@ -199,7 +221,9 @@ export function Chapter3Personality({
                 How many children?
               </Label>
               <Select
-                value={data.childrenCount ? String(data.childrenCount) : undefined}
+                value={
+                  data.childrenCount ? String(data.childrenCount) : undefined
+                }
                 onValueChange={(val) =>
                   onChange({ childrenCount: Number(val) })
                 }
@@ -427,9 +451,97 @@ export function Chapter3Personality({
             <span>{errors.interests}</span>
           </p>
         )}
+
+        {data.interests.includes("Other") && (
+          <div className="pt-2">
+            <Label className="text-xs font-medium text-muted-foreground">
+              Please specify your other interest <span className="text-[#CA617D]">*</span>
+            </Label>
+            <Input
+              value={data.otherInterest || ""}
+              onChange={(e) => {
+                const val = e.target.value
+                onChange({ otherInterest: val })
+                if (touched) {
+                  setErrors((prev) => {
+                    const next = { ...prev }
+                    if (val.trim().length > 0) {
+                      delete next.otherInterest
+                    } else {
+                      next.otherInterest = "Please specify your other interest."
+                    }
+                    return next
+                  })
+                }
+              }}
+              placeholder="e.g. Sailing, Antique Collecting, Classical Piano..."
+              className={cn(
+                "mt-1 h-10 bg-background text-xs sm:text-sm",
+                touched &&
+                  errors.otherInterest &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            />
+            {touched && errors.otherInterest && (
+              <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.otherInterest}</span>
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* SECTION 5: BIO / ABOUT ME */}
+      {/* SECTION 5: FAVOURITE TRAVEL DESTINATIONS */}
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
+          Favourite Travel Destinations (Top 3)
+        </Label>
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+          {[0, 1, 2].map((index) => {
+            const placeholders = ["e.g. Paris", "e.g. Tokyo", "e.g. New York"]
+            const currentDest =
+              (data.travelDestinations && data.travelDestinations[index]) || ""
+            return (
+              <div key={index} className="relative">
+                <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xs font-bold text-[#D3A753]">
+                  #{index + 1}
+                </span>
+                <Input
+                  placeholder={placeholders[index]}
+                  value={currentDest}
+                  onChange={(e) => {
+                    const current =
+                      Array.isArray(data.travelDestinations) &&
+                      data.travelDestinations.length === 3
+                        ? [...data.travelDestinations]
+                        : ["", "", ""]
+                    current[index] = e.target.value
+                    onChange({ travelDestinations: current })
+                  }}
+                  className="h-10 bg-background pl-9 text-xs sm:text-sm"
+                />
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* SECTION 6: FAVOURITE WAY TO SPEND A WEEKEND */}
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
+          Favourite Way to Spend a Weekend
+        </Label>
+        <Textarea
+          value={data.weekendActivity || ""}
+          onChange={(e) => onChange({ weekendActivity: e.target.value })}
+          placeholder="e.g. Reading a book, hiking, exploring cafes, or cooking with friends..."
+          rows={2}
+          className="bg-background text-xs leading-relaxed sm:text-sm"
+        />
+      </div>
+
+      {/* SECTION 7: BIO / ABOUT ME */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">

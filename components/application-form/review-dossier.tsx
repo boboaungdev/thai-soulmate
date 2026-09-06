@@ -277,6 +277,22 @@ export function ReviewDossier({
             <span className="text-muted-foreground">Exercise:</span>
             <p className="font-semibold text-foreground">{data.exercise}</p>
           </div>
+          <div>
+            <span className="text-muted-foreground">Owns Property:</span>
+            <p className="font-semibold text-foreground">
+              {data.ownProperty === true || data.ownProperty === "Yes"
+                ? "Yes"
+                : "No"}
+            </p>
+          </div>
+          <div>
+            <span className="text-muted-foreground">Owns Business:</span>
+            <p className="font-semibold text-foreground">
+              {data.ownBusiness === true || data.ownBusiness === "Yes"
+                ? "Yes"
+                : "No"}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -358,16 +374,54 @@ export function ReviewDossier({
               Hobbies &amp; Interests:
             </span>
             <div className="mt-1 flex flex-wrap gap-1.5">
-              {data.interests.map((h) => (
-                <span
-                  key={h}
-                  className="rounded-full border border-border/80 bg-background/50 px-2.5 py-0.5 text-[11px] font-medium text-foreground"
-                >
-                  {h}
-                </span>
-              ))}
+              {data.interests.map((h) => {
+                const label =
+                  h === "Other" && data.otherInterest
+                    ? `Other (${data.otherInterest})`
+                    : h
+                return (
+                  <span
+                    key={h}
+                    className="rounded-full border border-border/80 bg-background/50 px-2.5 py-0.5 text-[11px] font-medium text-foreground"
+                  >
+                    {label}
+                  </span>
+                )
+              })}
             </div>
           </div>
+
+          {Array.isArray(data.travelDestinations) &&
+            data.travelDestinations.some((d) => d && d.trim().length > 0) && (
+              <div>
+                <span className="text-muted-foreground">
+                  Favourite Travel Destinations:
+                </span>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {data.travelDestinations
+                    .filter((d) => d && d.trim().length > 0)
+                    .map((dest, idx) => (
+                      <span
+                        key={idx}
+                        className="rounded-full bg-[#D3A753]/15 px-2.5 py-0.5 text-[11px] font-semibold text-[#D3A753]"
+                      >
+                        #{idx + 1} {dest}
+                      </span>
+                    ))}
+                </div>
+              </div>
+            )}
+
+          {data.weekendActivity && (
+            <div>
+              <span className="text-muted-foreground">
+                Favourite Way to Spend a Weekend:
+              </span>
+              <p className="mt-1 rounded-xl bg-background/50 p-2.5 text-foreground">
+                {data.weekendActivity}
+              </p>
+            </div>
+          )}
 
           {data.about && (
             <div>

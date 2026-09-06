@@ -6,7 +6,6 @@ import { motion } from "framer-motion"
 import {
   ShieldCheck,
   Calendar,
-  Clock,
   MapPin,
   Heart,
   ArrowRight,
@@ -14,7 +13,7 @@ import {
   Sparkles,
   Lock,
   UserCheck,
-  CheckCircle2,
+  ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -140,7 +139,7 @@ export function IntakeGatekeeper({
               className="btn-gradient h-11 w-full gap-2 text-sm font-semibold shadow-lg transition-all hover:scale-[1.01]"
             >
               <span>Start Application Form</span>
-              <ArrowRight className="size-4" />
+              <ChevronRight className="size-4" />
             </Button>
 
             <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">

@@ -3,15 +3,7 @@
 import React, { useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import {
-  CheckCircle2,
-  Calendar,
-  ShieldCheck,
-  ArrowRight,
-  Heart,
-  Phone,
-  Sparkles,
-} from "lucide-react"
+import { Sparkles, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import confetti from "canvas-confetti"
 
@@ -135,7 +127,7 @@ export function ThankYouScreen({
           >
             <Link href="/">
               <span>Return to Home</span>
-              <ArrowRight className="size-4" />
+              <ChevronRight className="size-4" />
             </Link>
           </Button>
 

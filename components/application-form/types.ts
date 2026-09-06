@@ -21,8 +21,8 @@ export interface ApplicationFormData {
   education: string
   occupation: string
   company: string
-  ownBusiness: boolean
-  ownProperty: boolean
+  ownBusiness: boolean | string
+  ownProperty: boolean | string
   englishFluency: number // 0-100
   thaiFluency: number // 0-100
   smoking: string // "Never", "Occasionally", "Regularly"
@@ -38,6 +38,9 @@ export interface ApplicationFormData {
   personality: string[] // e.g. ["Kind", "Loyal", "Ambitious", "Romantic"]
   values: string[] // e.g. ["Honesty", "Family", "Trust", "Loyalty"]
   interests: string[] // e.g. ["Travel", "Golf", "Fine Dining", "Cooking"]
+  otherInterest?: string
+  travelDestinations?: string[]
+  weekendActivity?: string
   about: string // Bio / paragraph
   bestQualities: string[]
   lookingForQualities: string[]
@@ -83,8 +86,8 @@ export const INITIAL_APPLICATION_FORM_DATA: ApplicationFormData = {
   education: "Bachelor's Degree",
   occupation: "",
   company: "",
-  ownBusiness: false,
-  ownProperty: false,
+  ownBusiness: "No",
+  ownProperty: "No",
   englishFluency: 70,
   thaiFluency: 50,
   smoking: "Never",
@@ -99,6 +102,9 @@ export const INITIAL_APPLICATION_FORM_DATA: ApplicationFormData = {
   personality: ["Kind", "Family-Oriented"],
   values: ["Honesty", "Loyalty", "Trust"],
   interests: ["Travel", "Cooking"],
+  otherInterest: "",
+  travelDestinations: ["", "", ""],
+  weekendActivity: "",
   about: "",
   bestQualities: ["Kind", "Honest"],
   lookingForQualities: ["Loyal", "Kind"],

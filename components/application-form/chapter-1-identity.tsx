@@ -106,8 +106,10 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             value={data.gender}
             onValueChange={(val) => {
               const updates: Partial<ApplicationFormData> = { gender: val }
-              if (val === "Male" && data.prefix !== "Dr.") updates.prefix = "Mr."
-              if (val === "Female" && data.prefix !== "Dr.") updates.prefix = "Ms."
+              if (val === "Male" && data.prefix !== "Dr.")
+                updates.prefix = "Mr."
+              if (val === "Female" && data.prefix !== "Dr.")
+                updates.prefix = "Ms."
               onChange(updates)
             }}
           >
@@ -124,7 +126,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
 
       {/* CONDITIONAL: NICKNAME FOR THAI LADIES */}
       {isFemale && (
-        <div className="rounded-2xl border border-[#D3A753]/30 bg-[#D3A753]/5 p-4 space-y-1.5">
+        <div className="space-y-1.5 rounded-2xl border border-[#D3A753]/30 bg-[#D3A753]/5 p-4">
           <Label className="text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
             Nickname (ชื่อเล่น) · Optional
           </Label>
@@ -199,7 +201,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                 type="button"
                 onClick={() => onChange({ maritalStatus: status })}
                 className={cn(
-                  "flex items-center justify-center gap-2 rounded-xl border py-2.5 px-3 text-xs font-semibold transition-all duration-200 sm:text-sm",
+                  "flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all duration-200 sm:text-sm",
                   isSelected
                     ? "border-[#D3A753] bg-gradient-to-r from-[#D3A753]/20 to-[#CA617D]/10 text-foreground ring-1 ring-[#D3A753]/50"
                     : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:bg-card/90 hover:text-foreground"
@@ -255,7 +257,9 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             <Input
               type="email"
               value={data.email}
-              onChange={(e) => onChange({ email: e.target.value.toLowerCase() })}
+              onChange={(e) =>
+                onChange({ email: e.target.value.toLowerCase() })
+              }
               placeholder="alex@example.com"
               className="h-10 pl-9 text-xs sm:text-sm"
             />

@@ -39,7 +39,9 @@ function ApplicationFormContent() {
   const [searchedEmail, setSearchedEmail] = useState<string | null>(null)
   const [notFound, setNotFound] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submittedCustomId, setSubmittedCustomId] = useState<number | undefined>()
+  const [submittedCustomId, setSubmittedCustomId] = useState<
+    number | undefined
+  >()
 
   // 1. Check email in searchParams or on manual search
   const checkEmailInDatabase = async (emailToCheck: string) => {
@@ -306,7 +308,9 @@ function ApplicationFormContent() {
             onStartForm={() => setStage("form")}
             onSearchEmail={(email) => {
               if (email) {
-                router.replace(`/application-form?email=${encodeURIComponent(email)}`)
+                router.replace(
+                  `/application-form?email=${encodeURIComponent(email)}`
+                )
                 checkEmailInDatabase(email)
               } else {
                 router.replace(`/application-form`)

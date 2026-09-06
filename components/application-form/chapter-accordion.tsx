@@ -165,7 +165,7 @@ export function ChapterAccordion({
                 }
               }}
               className={cn(
-                "flex items-center justify-between p-4 sm:p-5 select-none",
+                "flex items-center justify-between p-4 select-none sm:p-5",
                 isAccessible ? "cursor-pointer" : "cursor-not-allowed"
               )}
             >

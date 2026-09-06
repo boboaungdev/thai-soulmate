@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
-import { RotateCw, ZoomIn, Check, RotateCcw, Image as ImageIcon } from "lucide-react"
+import {
+  RotateCw,
+  ZoomIn,
+  Check,
+  RotateCcw,
+  Image as ImageIcon,
+} from "lucide-react"
 import { Spinner } from "@/components/ui/spinner"
 
 interface ImageCropDialogProps {
@@ -251,7 +257,9 @@ export function ImageCropDialog({
                     maxWidth: "none",
                     transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom}) rotate(${rotation}deg)`,
                     transformOrigin: "center center",
-                    transition: isDragging ? "none" : "transform 0.15s ease-out",
+                    transition: isDragging
+                      ? "none"
+                      : "transform 0.15s ease-out",
                   }}
                 />
               </div>

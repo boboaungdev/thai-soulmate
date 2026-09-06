@@ -33,14 +33,34 @@ interface Chapter4Props {
 }
 
 const RELATIONSHIP_GOALS = [
-  { id: "Marriage / Life Partner", label: "Marriage / Life Partner", desc: "Seeking a sincere life partner and long-term marriage." },
-  { id: "Long-Term Relationship", label: "Long-Term Relationship", desc: "A committed, meaningful connection built on mutual trust." },
-  { id: "Companionship", label: "Companionship", desc: "Genuine friendship and sharing travel & life experiences." },
-  { id: "I'm Not Sure Yet", label: "I'm Not Sure Yet", desc: "Open to exploring how personal matchmaking can help." },
+  {
+    id: "Marriage / Life Partner",
+    label: "Marriage / Life Partner",
+    desc: "Seeking a sincere life partner and long-term marriage.",
+  },
+  {
+    id: "Long-Term Relationship",
+    label: "Long-Term Relationship",
+    desc: "A committed, meaningful connection built on mutual trust.",
+  },
+  {
+    id: "Companionship",
+    label: "Companionship",
+    desc: "Genuine friendship and sharing travel & life experiences.",
+  },
+  {
+    id: "I'm Not Sure Yet",
+    label: "I'm Not Sure Yet",
+    desc: "Open to exploring how personal matchmaking can help.",
+  },
 ]
 
 const TIMELINE_OPTIONS = ["Within 1 Year", "1–3 Years", "No Specific Timeline"]
-const RELOCATION_OPTIONS = ["Yes, willing to relocate", "Open to discussion / travel", "Prefer to stay in current location"]
+const RELOCATION_OPTIONS = [
+  "Yes, willing to relocate",
+  "Open to discussion / travel",
+  "Prefer to stay in current location",
+]
 
 const PARTNER_QUALITIES = [
   "Sincere & Honest",
@@ -89,7 +109,7 @@ export function Chapter4IdealPartner({
                 className={cn(
                   "flex items-start gap-3 rounded-2xl border p-3.5 text-left transition-all duration-200",
                   isSelected
-                    ? "border-[#D3A753] bg-gradient-to-br from-[#D3A753]/15 to-[#CA617D]/10 ring-1 ring-[#D3A753]/60 shadow-sm"
+                    ? "border-[#D3A753] bg-gradient-to-br from-[#D3A753]/15 to-[#CA617D]/10 shadow-sm ring-1 ring-[#D3A753]/60"
                     : "border-border/60 bg-card/60 hover:border-border hover:bg-card/90"
                 )}
               >
@@ -165,7 +185,7 @@ export function Chapter4IdealPartner({
       </div>
 
       {/* SECTION 3: AGE & HEIGHT RANGES */}
-      <div className="rounded-2xl border border-border/70 bg-card/60 p-4 space-y-4">
+      <div className="space-y-4 rounded-2xl border border-border/70 bg-card/60 p-4">
         <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
           <SlidersHorizontal className="size-4" />
           <span>Preferred Partner Age &amp; Height Criteria</span>
@@ -277,7 +297,7 @@ export function Chapter4IdealPartner({
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
                   isSelected
-                    ? "border-[#D3A753] bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/15 to-[#CA617D]/15 text-foreground ring-1 ring-[#D3A753]/60 shadow-xs"
+                    ? "border-[#D3A753] bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/15 to-[#CA617D]/15 text-foreground shadow-xs ring-1 ring-[#D3A753]/60"
                     : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >

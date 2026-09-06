@@ -39,7 +39,9 @@ export function ThankYouScreen({
     }
   }, [])
 
-  const refNumber = customId ? `#TSM-${String(customId).padStart(4, "0")}` : "#TSM-CONFIDENTIAL"
+  const refNumber = customId
+    ? `#TSM-${String(customId).padStart(4, "0")}`
+    : "#TSM-CONFIDENTIAL"
 
   return (
     <motion.div
@@ -55,7 +57,7 @@ export function ThankYouScreen({
         </div>
 
         {/* Ref Badge */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/40 bg-[#D3A753]/10 px-4 py-1 text-xs font-mono font-semibold text-[#D3A753]">
+        <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/40 bg-[#D3A753]/10 px-4 py-1 font-mono text-xs font-semibold text-[#D3A753]">
           <span>Application Reference: {refNumber}</span>
         </div>
 
@@ -102,7 +104,9 @@ export function ThankYouScreen({
                   Consultation Call:
                 </span>{" "}
                 We will speak with you confidentially
-                {contactTime ? ` at your scheduled slot (${contactTime})` : ""}{" "}
+                {contactTime
+                  ? ` at your scheduled slot (${contactTime})`
+                  : ""}{" "}
                 via WhatsApp or phone to finalize your preferences.
               </p>
             </div>

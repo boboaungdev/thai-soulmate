@@ -91,7 +91,7 @@ export function ReviewDossier({
             variant="outline"
             size="sm"
             onClick={onBackToAccordion}
-            className="h-8 self-start gap-1.5 text-xs sm:self-center"
+            className="h-8 gap-1.5 self-start text-xs sm:self-center"
           >
             <ArrowLeft className="size-3.5" />
             <span>Edit Form</span>
@@ -100,7 +100,7 @@ export function ReviewDossier({
       </div>
 
       {/* SECTION 1: IDENTITY & BACKGROUND */}
-      <div className="overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5 space-y-3">
+      <div className="space-y-3 overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5">
         <div className="flex items-center justify-between border-b border-border/40 pb-3">
           <div className="flex items-center gap-2">
             <User className="size-4 text-[#D3A753]" />
@@ -141,7 +141,9 @@ export function ReviewDossier({
           </div>
           <div>
             <span className="text-muted-foreground">Marital Status:</span>
-            <p className="font-semibold text-foreground">{data.maritalStatus}</p>
+            <p className="font-semibold text-foreground">
+              {data.maritalStatus}
+            </p>
           </div>
           <div>
             <span className="text-muted-foreground">Religion:</span>
@@ -171,7 +173,7 @@ export function ReviewDossier({
       </div>
 
       {/* SECTION 2: CAREER, EDUCATION & LIFESTYLE */}
-      <div className="overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5 space-y-3">
+      <div className="space-y-3 overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5">
         <div className="flex items-center justify-between border-b border-border/40 pb-3">
           <div className="flex items-center gap-2">
             <Briefcase className="size-4 text-[#D3A753]" />
@@ -238,7 +240,7 @@ export function ReviewDossier({
       </div>
 
       {/* SECTION 3: PERSONALITY, VALUES & HOBBIES */}
-      <div className="overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5 space-y-3">
+      <div className="space-y-3 overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5">
         <div className="flex items-center justify-between border-b border-border/40 pb-3">
           <div className="flex items-center gap-2">
             <Heart className="size-4 text-[#CA617D]" />
@@ -311,7 +313,9 @@ export function ReviewDossier({
           </div>
 
           <div>
-            <span className="text-muted-foreground">Hobbies &amp; Interests:</span>
+            <span className="text-muted-foreground">
+              Hobbies &amp; Interests:
+            </span>
             <div className="mt-1 flex flex-wrap gap-1.5">
               {data.interests.map((h) => (
                 <span
@@ -327,7 +331,7 @@ export function ReviewDossier({
           {data.about && (
             <div>
               <span className="text-muted-foreground">Personal Bio:</span>
-              <p className="mt-1 rounded-xl bg-background/50 p-3 italic text-foreground">
+              <p className="mt-1 rounded-xl bg-background/50 p-3 text-foreground italic">
                 &ldquo;{data.about}&rdquo;
               </p>
             </div>
@@ -336,7 +340,7 @@ export function ReviewDossier({
       </div>
 
       {/* SECTION 4: IDEAL PARTNER CRITERIA */}
-      <div className="overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5 space-y-3">
+      <div className="space-y-3 overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5">
         <div className="flex items-center justify-between border-b border-border/40 pb-3">
           <div className="flex items-center gap-2">
             <Target className="size-4 text-[#D3A753]" />
@@ -393,7 +397,7 @@ export function ReviewDossier({
       </div>
 
       {/* SECTION 5: PHOTOGRAPHS */}
-      <div className="overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5 space-y-3">
+      <div className="space-y-3 overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5">
         <div className="flex items-center justify-between border-b border-border/40 pb-3">
           <div className="flex items-center gap-2">
             <Camera className="size-4 text-[#D3A753]" />
@@ -484,8 +488,8 @@ export function ReviewDossier({
               className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
             />
             <span>
-              I certify that all details and photos in this application are true,
-              authentic, and complete.
+              I certify that all details and photos in this application are
+              true, authentic, and complete.
             </span>
           </label>
 

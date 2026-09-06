@@ -73,7 +73,12 @@ export function Chapter5Photos({
     }
   }
 
-  const openRecrop = (url: string, slot: PhotoSlot, aspect: number, label: string) => {
+  const openRecrop = (
+    url: string,
+    slot: PhotoSlot,
+    aspect: number,
+    label: string
+  ) => {
     setSelectedRawImage(url)
     setActiveSlot(slot)
     setActiveAspect(aspect)
@@ -82,12 +87,13 @@ export function Chapter5Photos({
   }
 
   const hasAtLeastOnePhoto = Boolean(data.headshotUrl || data.fullLengthUrl)
-  const isValid = hasAtLeastOnePhoto && data.agreedToTruth && data.agreedToPrivacy
+  const isValid =
+    hasAtLeastOnePhoto && data.agreedToTruth && data.agreedToPrivacy
 
   return (
     <div className="space-y-6 pt-2">
       {/* SECTION HEADER & GUIDELINES */}
-      <div className="rounded-2xl border border-[#D3A753]/30 bg-[#D3A753]/5 p-4 space-y-2">
+      <div className="space-y-2 rounded-2xl border border-[#D3A753]/30 bg-[#D3A753]/5 p-4">
         <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
           <Camera className="size-4" />
           <span>Profile Photography Guidelines</span>
@@ -105,7 +111,7 @@ export function Chapter5Photos({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-              <Star className="size-3 text-[#D3A753] fill-[#D3A753]" />
+              <Star className="size-3 fill-[#D3A753] text-[#D3A753]" />
               <span>1. Primary Headshot</span>
             </span>
             <span className="rounded-md border border-[#D3A753]/30 bg-[#D3A753]/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-[#D3A753]">
@@ -162,7 +168,7 @@ export function Chapter5Photos({
               <button
                 type="button"
                 onClick={() => headshotInputRef.current?.click()}
-                className="flex size-full flex-col items-center justify-center gap-2 p-4 text-center cursor-pointer"
+                className="flex size-full cursor-pointer flex-col items-center justify-center gap-2 p-4 text-center"
               >
                 <div className="flex size-10 items-center justify-center rounded-full bg-[#D3A753]/10 text-[#D3A753]">
                   <Upload className="size-5" />
@@ -250,7 +256,7 @@ export function Chapter5Photos({
               <button
                 type="button"
                 onClick={() => fullLengthInputRef.current?.click()}
-                className="flex size-full flex-col items-center justify-center gap-2 p-4 text-center cursor-pointer"
+                className="flex size-full cursor-pointer flex-col items-center justify-center gap-2 p-4 text-center"
               >
                 <div className="flex size-10 items-center justify-center rounded-full bg-[#D3A753]/10 text-[#D3A753]">
                   <Upload className="size-5" />
@@ -338,7 +344,7 @@ export function Chapter5Photos({
               <button
                 type="button"
                 onClick={() => lifestyleInputRef.current?.click()}
-                className="flex size-full flex-col items-center justify-center gap-2 p-4 text-center cursor-pointer"
+                className="flex size-full cursor-pointer flex-col items-center justify-center gap-2 p-4 text-center"
               >
                 <div className="flex size-10 items-center justify-center rounded-full bg-[#D3A753]/10 text-[#D3A753]">
                   <Upload className="size-5" />
@@ -360,12 +366,7 @@ export function Chapter5Photos({
               accept="image/*"
               className="hidden"
               onChange={(e) =>
-                handleFileSelect(
-                  e,
-                  "casualLifestyle",
-                  4 / 3,
-                  "4:3 (Lifestyle)"
-                )
+                handleFileSelect(e, "casualLifestyle", 4 / 3, "4:3 (Lifestyle)")
               }
             />
           </div>

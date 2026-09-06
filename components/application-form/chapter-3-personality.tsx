@@ -106,7 +106,7 @@ export function Chapter3Personality({
   return (
     <div className="space-y-6 pt-2">
       {/* SECTION 1: CHILDREN & FAMILY OUTLOOK */}
-      <div className="rounded-2xl border border-border/70 bg-card/60 p-4 space-y-4">
+      <div className="space-y-4 rounded-2xl border border-border/70 bg-card/60 p-4">
         <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
           <Users className="size-4" />
           <span>Family &amp; Children Status</span>
@@ -145,7 +145,9 @@ export function Chapter3Personality({
               </Label>
               <Select
                 value={String(data.childrenCount || 1)}
-                onValueChange={(val) => onChange({ childrenCount: Number(val) })}
+                onValueChange={(val) =>
+                  onChange({ childrenCount: Number(val) })
+                }
               >
                 <SelectTrigger className="h-9 bg-background text-xs">
                   <SelectValue />
@@ -195,7 +197,9 @@ export function Chapter3Personality({
               <SelectContent>
                 <SelectItem value="Very Important">Very Important</SelectItem>
                 <SelectItem value="Important">Important</SelectItem>
-                <SelectItem value="Somewhat Important">Somewhat Important</SelectItem>
+                <SelectItem value="Somewhat Important">
+                  Somewhat Important
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -226,7 +230,7 @@ export function Chapter3Personality({
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
                   isSelected
-                    ? "border-[#D3A753] bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/15 to-[#CA617D]/15 text-foreground ring-1 ring-[#D3A753]/60 shadow-xs"
+                    ? "border-[#D3A753] bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/15 to-[#CA617D]/15 text-foreground shadow-xs ring-1 ring-[#D3A753]/60"
                     : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >
@@ -264,7 +268,7 @@ export function Chapter3Personality({
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
                   isSelected
-                    ? "border-[#CA617D] bg-gradient-to-r from-[#CA617D]/20 to-[#D3A753]/15 text-foreground ring-1 ring-[#CA617D]/60 shadow-xs"
+                    ? "border-[#CA617D] bg-gradient-to-r from-[#CA617D]/20 to-[#D3A753]/15 text-foreground shadow-xs ring-1 ring-[#CA617D]/60"
                     : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >
@@ -284,9 +288,12 @@ export function Chapter3Personality({
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Hobbies &amp; What You Enjoy <span className="text-[#CA617D]">*</span>
+            Hobbies &amp; What You Enjoy{" "}
+            <span className="text-[#CA617D]">*</span>
           </Label>
-          <span className="text-xs text-muted-foreground">Select all that apply</span>
+          <span className="text-xs text-muted-foreground">
+            Select all that apply
+          </span>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -300,7 +307,7 @@ export function Chapter3Personality({
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
                   isSelected
-                    ? "border-[#D3A753] bg-[#D3A753]/20 text-foreground ring-1 ring-[#D3A753]/60 shadow-xs"
+                    ? "border-[#D3A753] bg-[#D3A753]/20 text-foreground shadow-xs ring-1 ring-[#D3A753]/60"
                     : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >

@@ -247,7 +247,7 @@ export function IntakeGatekeeper({
           ].map((item, idx) => (
             <div
               key={idx}
-              className="rounded-2xl border border-border/50 bg-background/50 p-3.5 space-y-1"
+              className="space-y-1 rounded-2xl border border-border/50 bg-background/50 p-3.5"
             >
               <span className="font-mono text-xs font-bold text-[#D3A753]">
                 {item.step}

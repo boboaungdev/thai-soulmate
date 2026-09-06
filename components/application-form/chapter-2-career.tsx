@@ -47,12 +47,36 @@ const DRINKING_HABITS = ["Never", "Socially", "Regularly"]
 const EXERCISE_HABITS = ["Daily", "Weekly", "Occasionally", "Never"]
 
 const LIFESTYLE_TYPES = [
-  { id: "Family-Focused", label: "Family-Focused", desc: "Values quality home time and relationships." },
-  { id: "Active", label: "Active & Energetic", desc: "Enjoys outdoors, fitness, and staying on the move." },
-  { id: "Career-Focused", label: "Career & Driven", desc: "Passionate about professional growth." },
-  { id: "Relaxed", label: "Relaxed & Balanced", desc: "Appreciates a calm, peaceful pace of life." },
-  { id: "Luxury-Oriented", label: "Luxury & Fine Living", desc: "Appreciates fine dining, travel, and high quality." },
-  { id: "Adventurous", label: "Adventurous", desc: "Love exploring new cultures, destinations, and food." },
+  {
+    id: "Family-Focused",
+    label: "Family-Focused",
+    desc: "Values quality home time and relationships.",
+  },
+  {
+    id: "Active",
+    label: "Active & Energetic",
+    desc: "Enjoys outdoors, fitness, and staying on the move.",
+  },
+  {
+    id: "Career-Focused",
+    label: "Career & Driven",
+    desc: "Passionate about professional growth.",
+  },
+  {
+    id: "Relaxed",
+    label: "Relaxed & Balanced",
+    desc: "Appreciates a calm, peaceful pace of life.",
+  },
+  {
+    id: "Luxury-Oriented",
+    label: "Luxury & Fine Living",
+    desc: "Appreciates fine dining, travel, and high quality.",
+  },
+  {
+    id: "Adventurous",
+    label: "Adventurous",
+    desc: "Love exploring new cultures, destinations, and food.",
+  },
 ]
 
 export function Chapter2Career({
@@ -179,7 +203,7 @@ export function Chapter2Career({
       </div>
 
       {/* SECTION 2: LANGUAGE FLUENCY */}
-      <div className="rounded-2xl border border-border/70 bg-card/60 p-4 space-y-4">
+      <div className="space-y-4 rounded-2xl border border-border/70 bg-card/60 p-4">
         <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
           <Languages className="size-4" />
           <span>Language Fluency</span>
@@ -215,7 +239,9 @@ export function Chapter2Career({
           {/* Thai */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-foreground">Thai Fluency</span>
+              <span className="font-semibold text-foreground">
+                Thai Fluency
+              </span>
               <span className="font-mono text-muted-foreground">
                 {data.thaiFluency}%
               </span>

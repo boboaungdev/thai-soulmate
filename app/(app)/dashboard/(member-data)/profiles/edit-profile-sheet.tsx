@@ -122,11 +122,17 @@ export function EditProfileSheet({
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="about-textarea">About</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="about-textarea">About</Label>
+                <span className="text-xs text-muted-foreground">
+                  {about.length} / 300
+                </span>
+              </div>
               <Textarea
                 id="about-textarea"
                 value={about}
-                onChange={(e) => setAbout(e.target.value)}
+                maxLength={300}
+                onChange={(e) => setAbout(e.target.value.slice(0, 300))}
                 rows={8}
                 placeholder="Tell us about this person..."
                 disabled={isSaving}

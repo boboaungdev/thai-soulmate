@@ -424,20 +424,49 @@ export function Chapter3Personality({
 
       {/* SECTION 5: BIO / ABOUT ME */}
       <div className="space-y-1.5">
-        <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-          A Few Words About Yourself (Bio)
-        </Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
+            A Few Words About Yourself (Bio)
+          </Label>
+          <span
+            className={cn(
+              "text-xs font-medium tabular-nums transition-colors",
+              (data.about || "").length >= 300
+                ? "font-semibold text-[#CA617D]"
+                : (data.about || "").length >= 260
+                  ? "text-[#D3A753]"
+                  : "text-muted-foreground"
+            )}
+          >
+            {(data.about || "").length} / 300
+          </span>
+        </div>
         <Textarea
-          value={data.about}
-          onChange={(e) => onChange({ about: e.target.value })}
+          value={data.about || ""}
+          maxLength={300}
+          onChange={(e) => {
+            const text = e.target.value.slice(0, 300)
+            onChange({ about: text })
+          }}
           rows={3}
           placeholder="Share a little about what brings you joy, your passions, or what you enjoy doing on relaxed weekends..."
-          className="bg-background text-xs sm:text-sm"
+          className={cn(
+            "bg-background text-xs sm:text-sm",
+            (data.about || "").length >= 300 &&
+              "border-[#CA617D]/60 ring-1 ring-[#CA617D]/30"
+          )}
         />
-        <p className="text-[11px] text-muted-foreground">
-          This helps your matchmaker introduce you warmly and authentically to
-          compatible matches.
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+          <p className="text-muted-foreground">
+            This helps your matchmaker introduce you warmly and authentically to
+            compatible matches.
+          </p>
+          {(data.about || "").length >= 300 && (
+            <span className="font-medium text-[#CA617D]">
+              Maximum 300 characters reached
+            </span>
+          )}
+        </div>
       </div>
 
       {/* FOOTER ACTIONS */}

@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import {
   ShieldCheck,
   Pencil,
-  ArrowLeft,
+  ChevronLeft,
   Check,
   Star,
   User,
@@ -118,7 +118,7 @@ export function ReviewDossier({
             onClick={onBackToAccordion}
             className="h-8 gap-1.5 self-start text-xs sm:self-center"
           >
-            <ArrowLeft className="size-3.5" />
+            <ChevronLeft className="size-3.5" />
             <span>Edit Form</span>
           </Button>
         </div>

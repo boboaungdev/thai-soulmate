@@ -10,6 +10,8 @@ import {
   Check,
   Plus,
   AlertCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
@@ -475,17 +477,19 @@ export function Chapter3Personality({
           type="button"
           variant="outline"
           onClick={onBack}
-          className="h-10 px-5 text-xs sm:text-sm"
+          className="inline-flex items-center gap-1.5 h-10 px-5 text-xs sm:text-sm"
         >
-          ← Back to Career
+          <ChevronLeft className="size-4" />
+          <span>Back to Career</span>
         </Button>
 
         <Button
           type="button"
           onClick={handleNextClick}
-          className="btn-gradient h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
+          className="btn-gradient inline-flex items-center gap-1.5 h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
-          Continue to Ideal Partner →
+          <span>Continue to Ideal Partner</span>
+          <ChevronRight className="size-4" />
         </Button>
       </div>
     </div>

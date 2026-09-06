@@ -12,6 +12,8 @@ import {
   Activity,
   Sparkles,
   AlertCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
@@ -438,17 +440,19 @@ export function Chapter2Career({
           type="button"
           variant="outline"
           onClick={onBack}
-          className="h-10 px-5 text-xs sm:text-sm"
+          className="inline-flex items-center gap-1.5 h-10 px-5 text-xs sm:text-sm"
         >
-          ← Back to Identity
+          <ChevronLeft className="size-4" />
+          <span>Back to Identity</span>
         </Button>
 
         <Button
           type="button"
           onClick={handleNextClick}
-          className="btn-gradient h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
+          className="btn-gradient inline-flex items-center gap-1.5 h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
-          Continue to Personality &amp; Values →
+          <span>Continue to Personality &amp; Values</span>
+          <ChevronRight className="size-4" />
         </Button>
       </div>
     </div>

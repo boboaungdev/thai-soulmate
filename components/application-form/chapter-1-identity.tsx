@@ -12,6 +12,7 @@ import {
   ChevronsUpDown,
   Lock,
   AlertCircle,
+  ChevronRight,
 } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -870,9 +871,10 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
         <Button
           type="button"
           onClick={handleNextClick}
-          className="btn-gradient h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
+          className="btn-gradient inline-flex items-center gap-1.5 h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
-          Continue to Career &amp; Lifestyle →
+          <span>Continue to Career &amp; Lifestyle</span>
+          <ChevronRight className="size-4" />
         </Button>
       </div>
     </div>

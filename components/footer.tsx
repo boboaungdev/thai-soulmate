@@ -32,7 +32,7 @@ export function Footer() {
     <footer className="relative overflow-hidden border-t border-border/70 bg-background">
       {/* Ambient Atmospheric Glow Orbs */}
       <div className="pointer-events-none absolute -top-24 left-1/4 -z-10 h-72 w-96 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/12 via-[#E791A7]/6 to-transparent blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 right-1/4 -z-10 h-72 w-96 rounded-full bg-gradient-to-t from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
+      <div className="pointer-events-none absolute right-1/4 -bottom-24 -z-10 h-72 w-96 rounded-full bg-gradient-to-t from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
 
       {/* Radiant Top Border Highlight */}
       <div className="absolute top-0 right-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-[#D3A753]/40 to-transparent" />

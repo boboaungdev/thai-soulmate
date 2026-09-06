@@ -27,7 +27,13 @@ export function HeroSoulWaves() {
       >
         <defs>
           {/* Gold Gentleman Big Wave Gradient */}
-          <linearGradient id="goldWaveGradBig" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient
+            id="goldWaveGradBig"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="#D3A753" stopOpacity="0" />
             <stop offset="25%" stopColor="#D3A753" stopOpacity="0.85" />
             <stop offset="70%" stopColor="#F5D77F" stopOpacity="1" />
@@ -35,7 +41,13 @@ export function HeroSoulWaves() {
           </linearGradient>
 
           {/* Rose Lady Big Wave Gradient */}
-          <linearGradient id="roseWaveGradBig" x1="100%" y1="0%" x2="0%" y2="100%">
+          <linearGradient
+            id="roseWaveGradBig"
+            x1="100%"
+            y1="0%"
+            x2="0%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="#CA617D" stopOpacity="0" />
             <stop offset="25%" stopColor="#CA617D" stopOpacity="0.85" />
             <stop offset="70%" stopColor="#E791A7" stopOpacity="1" />
@@ -72,7 +84,13 @@ export function HeroSoulWaves() {
           </radialGradient>
 
           {/* Heart Silhouette Glow */}
-          <linearGradient id="heartFillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient
+            id="heartFillGrad"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="#D3A753" stopOpacity="0.35" />
             <stop offset="50%" stopColor="#E791A7" stopOpacity="0.3" />
             <stop offset="100%" stopColor="#CA617D" stopOpacity="0.35" />

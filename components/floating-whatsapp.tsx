@@ -68,7 +68,7 @@ export function FloatingWhatsapp() {
                       <Sparkles className="size-3 text-[#D3A753]" />
                     </div>
                     <div className="flex items-center gap-1 text-[10px] font-medium text-emerald-500">
-                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
                       <span>Online & Ready to Help</span>
                     </div>
                   </div>
@@ -96,7 +96,7 @@ export function FloatingWhatsapp() {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E] px-3.5 py-2 text-xs font-semibold text-white shadow-md shadow-[#25D366]/20 transition-all duration-200 hover:brightness-110 hover:shadow-lg hover:shadow-[#25D366]/35"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E] px-3.5 py-2 text-xs font-semibold text-white shadow-md shadow-[#25D366]/20 transition-all duration-200 hover:shadow-lg hover:shadow-[#25D366]/35 hover:brightness-110"
                 >
                   <FaWhatsapp className="size-4" />
                   <span>Start Chat on WhatsApp</span>
@@ -133,7 +133,7 @@ export function FloatingWhatsapp() {
           <FaWhatsapp className="size-7 transition-transform duration-300 group-hover:scale-110 sm:size-8" />
 
           {/* Active Online Radar Beacon (Positioned at bottom) */}
-          <span className="absolute bottom-0 right-0.5 flex size-4 sm:bottom-0.5 sm:right-1">
+          <span className="absolute right-0 bottom-0 flex size-4 sm:right-0 sm:bottom-0">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-80" />
             <span className="relative inline-flex size-4 rounded-full border-2 border-background bg-emerald-500" />
           </span>

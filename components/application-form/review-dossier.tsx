@@ -87,6 +87,12 @@ export function ReviewDossier({
       return
     }
 
+    if (!data.company?.trim()) {
+      toast.error("Please enter your company / industry.")
+      onEditChapter(2)
+      return
+    }
+
     onSubmitFinal()
   }
 

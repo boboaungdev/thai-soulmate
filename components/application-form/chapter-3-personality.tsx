@@ -530,7 +530,8 @@ export function Chapter3Personality({
               )}
             />
             <p className="mt-1 text-[11px] text-muted-foreground">
-              Enter only one interest without commas or periods (spaces are allowed).
+              Enter only one interest without commas or periods (spaces are
+              allowed).
             </p>
             {touched && errors.otherInterest && (
               <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">

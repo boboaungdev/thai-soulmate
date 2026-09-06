@@ -101,6 +101,9 @@ export function Chapter2Career({
     if (!data.occupation.trim()) {
       newErrors.occupation = "Please enter your occupation / profession."
     }
+    if (!data.company.trim()) {
+      newErrors.company = "Please enter your company / industry."
+    }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -193,17 +196,31 @@ export function Chapter2Career({
         {/* Company / Industry */}
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Company / Industry
+            Company / Industry <span className="text-[#CA617D]">*</span>
           </Label>
           <div className="relative">
             <Building className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={data.company}
-              onChange={(e) => onChange({ company: e.target.value })}
+              onChange={(e) => {
+                onChange({ company: e.target.value })
+                if (touched) validate()
+              }}
               placeholder="e.g. Technology, Healthcare..."
-              className="h-10 pl-9 text-xs sm:text-sm"
+              className={cn(
+                "h-10 pl-9 text-xs sm:text-sm",
+                touched &&
+                  errors.company &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
             />
           </div>
+          {touched && errors.company && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.company}</span>
+            </p>
+          )}
         </div>
 
         {/* Owns Property */}

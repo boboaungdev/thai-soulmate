@@ -195,8 +195,9 @@ export function Chapter2Career({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {/* Company / Industry */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Company / Industry <span className="text-[#CA617D]">*</span>
+          <Label className="flex h-5 items-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+            <span>Company / Industry</span>
+            <span className="ml-1 text-[#CA617D]">*</span>
           </Label>
           <div className="relative">
             <Building className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -225,7 +226,7 @@ export function Chapter2Career({
 
         {/* Owns Property */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <Label className="flex h-5 items-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Owns Property
           </Label>
           <div className="flex gap-2">
@@ -256,7 +257,7 @@ export function Chapter2Career({
 
         {/* Owns Business */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <Label className="flex h-5 items-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Owns Business
           </Label>
           <div className="flex gap-2">

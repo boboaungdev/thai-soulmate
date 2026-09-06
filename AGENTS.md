@@ -84,3 +84,27 @@ The **Register Interest** consultation flow on the home page (`components/regist
 - **Not a Dating App**: We never refer to Thai Soulmate as an app, dating site, or automated algorithm.
 - **Positioning**: "Personal Assistant in Your Search for a Life Partner in Thailand" — 1-2-1 dedicated, confidential, curated human matchmaking.
 - **Values**: Integrity, Empathy, Discretion, Mutual Consent, In-person/Video verification.
+
+---
+
+## 7. Responsive & Adaptive Layout Design Standards
+
+All layouts, pages, components, and interactive widgets must be built strictly mobile-first and responsive across all viewports (Mobile `< 640px`, Tablet `640px - 1024px`, Desktop `> 1024px`).
+
+### Layout & Container Rules
+- **Zero Horizontal Overflow**: Never allow unintentional horizontal scrolling. Outer containers must use `overflow-x-clip` or `overflow-x-hidden`.
+- **Standard Page Padding**: Always use standard responsive horizontal container padding: `px-4 sm:px-6 lg:px-8` with `mx-auto max-w-7xl` (or `max-w-5xl` for content/forms).
+- **Section Spacing**: Vertical rhythm should scale responsively: `py-12 sm:py-16 md:py-24`.
+- **Fluid Typography**: Scale headings fluidly across breakpoints (e.g. `text-2xl sm:text-3xl md:text-4xl lg:text-5xl`).
+
+### Forms & Interactive Elements
+- **Grid Adaptability**: Form rows and grids must collapse to single-column on mobile (`grid-cols-1`) and expand cleanly on desktop (`sm:grid-cols-2`, `lg:grid-cols-3`).
+- **Touch Targets**: All buttons, triggers, comboboxes, and form inputs must maintain accessible touch-friendly heights (minimum `h-9` to `h-11` on mobile) and accessible tap padding.
+- **Popovers, Dialogs & Sheets**:
+  - Ensure popovers (calendars, country comboboxes) fit viewport widths with `max-w-[calc(100vw-2rem)]` or responsive width classes (`w-[300px] sm:w-[400px]`).
+  - Sheets and slide-over drawers should use `w-full sm:max-w-md` or `w-[90vw] sm:w-[540px]`.
+
+### Sticky Elements & Overlays
+- **Floating Widgets**: The floating WhatsApp button must have mobile-safe offsets (`right-4 bottom-4 sm:right-6 sm:bottom-6`) with high z-index, ensuring it never obstructs submit buttons or essential form actions.
+- **Navigation Bar**: Responsive mobile hamburger menu with full slide-over navigation sheet, blur backdrop, and lock scroll when open.
+- **Data Tables (Dashboard)**: Wrap tables in scroll containers (`overflow-x-auto`) or provide card views for mobile screens.

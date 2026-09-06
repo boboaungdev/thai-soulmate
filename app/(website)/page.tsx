@@ -75,7 +75,7 @@ export default function HomePage() {
       {/* ========================================================= */}
       {/* HERO SECTION */}
       {/* ========================================================= */}
-      <section className="relative flex min-h-[640px] h-[90vh] max-h-[960px] flex-col justify-center overflow-hidden text-white">
+      <section className="relative flex h-[85vh] min-h-[580px] flex-col justify-center overflow-hidden text-white">
         <motion.div
           style={{ y: heroBgY }}
           initial={{ scale: 1.1, opacity: 0.8 }}
@@ -98,16 +98,16 @@ export default function HomePage() {
             priority
           />
         </motion.div>
-        <div className="absolute inset-0 bg-black/35" />
+        <div className="absolute inset-0 bg-black/30" />
 
         <motion.div
           style={{ opacity: heroContentOpacity }}
-          className="relative mx-auto w-full max-w-7xl px-4 pt-16 pb-8 sm:px-6 sm:py-0 lg:px-8"
+          className="relative mx-auto w-full max-w-7xl px-4 pt-60 sm:px-6 sm:pt-0 lg:px-8"
         >
           {/* Subtle golden ambient glow behind hero */}
-          <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/25 via-[#E791A7]/15 to-transparent blur-3xl" />
+          <div className="pointer-events-none absolute top-1/2 left-1/4 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 via-[#E791A7]/10 to-transparent blur-3xl" />
 
-          <div className="mx-auto flex max-w-2xl flex-col items-center space-y-5 text-center">
+          <div className="flex max-w-2xl flex-col items-center space-y-5 text-center">
             {/* Signature Two Souls Converging Wave & Logo Animation */}
             <HeroSoulWaves />
 
@@ -770,8 +770,8 @@ export default function HomePage() {
                   7 Things We Take Time to Understand About You
                 </h3>
                 <p className="mx-auto max-w-2xl text-sm text-muted-foreground sm:text-base">
-                  Before recommending any match, we build a thorough understanding
-                  of who you are and what you genuinely seek:
+                  Before recommending any match, we build a thorough
+                  understanding of who you are and what you genuinely seek:
                 </p>
               </motion.div>
             </div>

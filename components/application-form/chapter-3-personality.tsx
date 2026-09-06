@@ -133,6 +133,14 @@ export function Chapter3Personality({
     ) {
       newErrors.otherInterest = "Please specify your other interest."
     }
+    const destinations = data.travelDestinations || ["", "", ""]
+    const filledDestinations = destinations.filter(
+      (d) => d && d.trim().length > 0
+    )
+    if (filledDestinations.length < 3) {
+      newErrors.travelDestinations =
+        "Please enter all 3 favourite travel destinations."
+    }
     const bio = (data.about || "").trim()
     if (!bio || bio.length < 10) {
       newErrors.about =
@@ -516,14 +524,34 @@ export function Chapter3Personality({
 
       {/* SECTION 5: FAVOURITE TRAVEL DESTINATIONS */}
       <div className="space-y-2">
-        <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-          Favourite Travel Destinations (Top 3)
-        </Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
+            Favourite Travel Destinations (Top 3){" "}
+            <span className="text-[#CA617D]">*</span>
+          </Label>
+          <span
+            className={cn(
+              "text-xs font-medium tabular-nums",
+              (data.travelDestinations || []).filter(
+                (d) => d && d.trim().length > 0
+              ).length === 3
+                ? "text-[#D3A753]"
+                : "text-muted-foreground"
+            )}
+          >
+            {(data.travelDestinations || []).filter(
+              (d) => d && d.trim().length > 0
+            ).length}
+            /3 entered
+          </span>
+        </div>
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
           {[0, 1, 2].map((index) => {
             const placeholders = ["e.g. Paris", "e.g. Tokyo", "e.g. New York"]
             const currentDest =
               (data.travelDestinations && data.travelDestinations[index]) || ""
+            const isInvalid =
+              touched && (!currentDest || currentDest.trim().length === 0)
             return (
               <div key={index} className="relative">
                 <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xs font-bold text-[#D3A753]">
@@ -540,13 +568,37 @@ export function Chapter3Personality({
                         : ["", "", ""]
                     current[index] = e.target.value
                     onChange({ travelDestinations: current })
+                    if (touched) {
+                      setErrors((prev) => {
+                        const next = { ...prev }
+                        const filled = current.filter(
+                          (d) => d && d.trim().length > 0
+                        )
+                        if (filled.length === 3) {
+                          delete next.travelDestinations
+                        } else {
+                          next.travelDestinations =
+                            "Please enter all 3 favourite travel destinations."
+                        }
+                        return next
+                      })
+                    }
                   }}
-                  className="h-10 bg-background pl-9 text-xs sm:text-sm"
+                  className={cn(
+                    "h-10 bg-background pl-9 text-xs sm:text-sm",
+                    isInvalid && "border-destructive ring-1 ring-destructive"
+                  )}
                 />
               </div>
             )
           })}
         </div>
+        {touched && errors.travelDestinations && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.travelDestinations}</span>
+          </p>
+        )}
       </div>
 
       {/* SECTION 6: FAVOURITE WAY TO SPEND A WEEKEND */}

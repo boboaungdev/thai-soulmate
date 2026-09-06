@@ -77,6 +77,16 @@ export function ReviewDossier({
       return
     }
 
+    const destinationCount = (data.travelDestinations || []).filter(
+      (d) => d && d.trim().length > 0
+    ).length
+
+    if (destinationCount < 3) {
+      toast.error("Please enter all 3 favourite travel destinations.")
+      onEditChapter(3)
+      return
+    }
+
     onSubmitFinal()
   }
 

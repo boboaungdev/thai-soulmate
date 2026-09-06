@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Check,
@@ -25,15 +25,23 @@ interface ChapterAccordionProps {
   data: ApplicationFormData
   onChange: (updates: Partial<ApplicationFormData>) => void
   onReview: () => void
+  initialChapter?: number
 }
 
 export function ChapterAccordion({
   data,
   onChange,
   onReview,
+  initialChapter = 1,
 }: ChapterAccordionProps) {
-  const [activeChapter, setActiveChapter] = useState<number>(1)
+  const [activeChapter, setActiveChapter] = useState<number>(initialChapter)
   const [completedChapters, setCompletedChapters] = useState<number[]>([])
+
+  useEffect(() => {
+    if (initialChapter) {
+      setActiveChapter(initialChapter)
+    }
+  }, [initialChapter])
 
   const markCompleted = (ch: number) => {
     if (!completedChapters.includes(ch)) {

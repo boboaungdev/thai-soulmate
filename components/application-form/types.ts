@@ -2,6 +2,8 @@ export interface ApplicationFormData {
   // Chapter 1: Identity & Background
   prefix: string // "Mr.", "Ms.", "Mrs.", "Dr."
   name: string
+  firstName: string
+  lastName: string
   nickname: string // Thai ladies
   gender: string // "Male" | "Female"
   dob: string // "YYYY-MM-DD"
@@ -63,6 +65,8 @@ export interface ApplicationFormData {
 export const INITIAL_APPLICATION_FORM_DATA: ApplicationFormData = {
   prefix: "Mr.",
   name: "",
+  firstName: "",
+  lastName: "",
   nickname: "",
   gender: "Male",
   dob: "",
@@ -131,4 +135,13 @@ export interface RegisterInterestLead {
   relationshipGoal?: string | null
   preferredContactDate?: string | null
   preferredContactTime?: string | null
+}
+
+export type Country = {
+  name: string
+  nationality: string
+  flag: string
+  code: string
+  callCode: string
+  region: string
 }

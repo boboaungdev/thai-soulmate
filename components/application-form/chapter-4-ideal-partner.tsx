@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import {
   Heart,
   Target,
@@ -10,7 +10,9 @@ import {
   Check,
   Plus,
   SlidersHorizontal,
+  AlertCircle,
 } from "lucide-react"
+import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
@@ -82,6 +84,29 @@ export function Chapter4IdealPartner({
   onNext,
   onBack,
 }: Chapter4Props) {
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [touched, setTouched] = useState(false)
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {}
+    if (!data.relationshipGoal) {
+      newErrors.relationshipGoal =
+        "Please select what you are seeking in a partner."
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleNextClick = () => {
+    setTouched(true)
+    const isValid = validate()
+    if (!isValid) {
+      toast.error("Please select what you are seeking before continuing.")
+      return
+    }
+    onNext()
+  }
+
   const toggleQuality = (quality: string) => {
     const list = data.dealBreakers || []
     if (list.includes(quality)) {
@@ -105,12 +130,23 @@ export function Chapter4IdealPartner({
               <button
                 key={goal.id}
                 type="button"
-                onClick={() => onChange({ relationshipGoal: goal.label })}
+                onClick={() => {
+                  onChange({ relationshipGoal: goal.label })
+                  if (touched) {
+                    setErrors((prev) => {
+                      const next = { ...prev }
+                      delete next.relationshipGoal
+                      return next
+                    })
+                  }
+                }}
                 className={cn(
                   "flex items-start gap-3 rounded-2xl border p-3.5 text-left transition-all duration-200",
                   isSelected
                     ? "border-[#D3A753] bg-gradient-to-br from-[#D3A753]/15 to-[#CA617D]/10 shadow-sm ring-1 ring-[#D3A753]/60"
-                    : "border-border/60 bg-card/60 hover:border-border hover:bg-card/90"
+                    : touched && errors.relationshipGoal
+                      ? "border-destructive/60 bg-card/60 hover:border-destructive"
+                      : "border-border/60 bg-card/60 hover:border-border hover:bg-card/90"
                 )}
               >
                 <div
@@ -135,6 +171,12 @@ export function Chapter4IdealPartner({
             )
           })}
         </div>
+        {touched && errors.relationshipGoal && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.relationshipGoal}</span>
+          </p>
+        )}
       </div>
 
       {/* SECTION 2: TIMELINE & RELOCATION */}
@@ -326,8 +368,8 @@ export function Chapter4IdealPartner({
 
         <Button
           type="button"
-          onClick={onNext}
-          className="btn-gradient h-10 px-6 text-xs font-semibold sm:text-sm"
+          onClick={handleNextClick}
+          className="btn-gradient h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
           Continue to Verified Photos →
         </Button>

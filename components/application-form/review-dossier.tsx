@@ -14,7 +14,9 @@ import {
   Target,
   Camera,
   Lock,
+  AlertCircle,
 } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { ApplicationFormData } from "./types"
@@ -36,8 +38,31 @@ export function ReviewDossier({
 }: ReviewDossierProps) {
   const [confirmedTruth, setConfirmedTruth] = useState(data.agreedToTruth)
   const [confirmedPrivacy, setConfirmedPrivacy] = useState(data.agreedToPrivacy)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [touched, setTouched] = useState(false)
 
-  const canSubmit = confirmedTruth && confirmedPrivacy && !isSubmitting
+  const handleFinalSubmit = () => {
+    setTouched(true)
+    const newErrors: Record<string, string> = {}
+    if (!confirmedTruth) {
+      newErrors.truth =
+        "Please certify that all details and photos are true and complete."
+    }
+    if (!confirmedPrivacy) {
+      newErrors.privacy =
+        "Please agree to our strict confidentiality and mutual consent policy."
+    }
+    setErrors(newErrors)
+
+    if (Object.keys(newErrors).length > 0) {
+      toast.error(
+        "Please confirm both declaration checkboxes before submitting."
+      )
+      return
+    }
+
+    onSubmitFinal()
+  }
 
   return (
     <motion.div
@@ -479,40 +504,74 @@ export function ReviewDossier({
 
       {/* FINAL DECLARATION & SUBMISSION */}
       <div className="space-y-4 rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card via-card to-background p-6 shadow-2xl">
-        <div className="space-y-2">
-          <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground hover:text-foreground">
-            <input
-              type="checkbox"
-              checked={confirmedTruth}
-              onChange={(e) => setConfirmedTruth(e.target.checked)}
-              className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
-            />
-            <span>
-              I certify that all details and photos in this application are
-              true, authentic, and complete.
-            </span>
-          </label>
+        <div className="space-y-2.5">
+          <div className="space-y-1">
+            <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground hover:text-foreground">
+              <input
+                type="checkbox"
+                checked={confirmedTruth}
+                onChange={(e) => {
+                  setConfirmedTruth(e.target.checked)
+                  if (touched && e.target.checked) {
+                    setErrors((prev) => {
+                      const next = { ...prev }
+                      delete next.truth
+                      return next
+                    })
+                  }
+                }}
+                className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
+              />
+              <span>
+                I certify that all details and photos in this application are
+                true, authentic, and complete.
+              </span>
+            </label>
+            {touched && errors.truth && (
+              <p className="flex items-center gap-1 pl-6 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.truth}</span>
+              </p>
+            )}
+          </div>
 
-          <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground hover:text-foreground">
-            <input
-              type="checkbox"
-              checked={confirmedPrivacy}
-              onChange={(e) => setConfirmedPrivacy(e.target.checked)}
-              className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
-            />
-            <span>
-              I understand that Thai Soulmate operates on strict confidentiality
-              and mutual consent for all member introductions.
-            </span>
-          </label>
+          <div className="space-y-1">
+            <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground hover:text-foreground">
+              <input
+                type="checkbox"
+                checked={confirmedPrivacy}
+                onChange={(e) => {
+                  setConfirmedPrivacy(e.target.checked)
+                  if (touched && e.target.checked) {
+                    setErrors((prev) => {
+                      const next = { ...prev }
+                      delete next.privacy
+                      return next
+                    })
+                  }
+                }}
+                className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
+              />
+              <span>
+                I understand that Thai Soulmate operates on strict
+                confidentiality and mutual consent for all member introductions.
+              </span>
+            </label>
+            {touched && errors.privacy && (
+              <p className="flex items-center gap-1 pl-6 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.privacy}</span>
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="pt-2">
           <Button
             type="button"
             size="lg"
-            onClick={onSubmitFinal}
-            disabled={!canSubmit}
+            onClick={handleFinalSubmit}
+            disabled={isSubmitting}
             className="btn-gradient h-12 w-full gap-2 text-sm font-semibold shadow-xl transition-all hover:scale-[1.01]"
           >
             {isSubmitting ? (

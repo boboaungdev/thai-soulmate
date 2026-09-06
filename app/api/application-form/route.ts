@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
-import { APP_INFO, CONTACT, EMAIL } from "@/constants"
+import { APP_INFO, EMAIL } from "@/constants"
 import { ApplicationFormAdminNotificationEmail } from "@/emails"
 import { PersonalDetails } from "@/types/application-form"
 
@@ -169,8 +169,8 @@ export async function POST(req: Request) {
     // Send email to admin
     const { data, error } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
-      to: [CONTACT.email],
-      // to: ['boolean405@gmail.com'],
+      // to: [CONTACT.email],
+      to: EMAIL.NOTIFICATIONS,
       replyTo: personalDetails.email,
       subject: `[New Application Form] New application received from ${personalDetails.prefix} ${personalDetails.name}`,
       react: ApplicationFormAdminNotificationEmail({

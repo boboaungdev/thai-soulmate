@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import {
   Heart,
   Sparkles,
@@ -9,7 +9,9 @@ import {
   Compass,
   Check,
   Plus,
+  AlertCircle,
 } from "lucide-react"
+import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -86,22 +88,61 @@ export function Chapter3Personality({
   onNext,
   onBack,
 }: Chapter3Props) {
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [touched, setTouched] = useState(false)
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {}
+    if (data.personality.length === 0) {
+      newErrors.personality = "Please select at least 1 personality trait."
+    }
+    if (data.values.length === 0) {
+      newErrors.values = "Please select at least 1 core value."
+    }
+    if (data.interests.length === 0) {
+      newErrors.interests = "Please select at least 1 hobby or interest."
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const toggleItem = (
     list: string[],
     item: string,
     key: "personality" | "values" | "interests"
   ) => {
-    if (list.includes(item)) {
-      onChange({ [key]: list.filter((i) => i !== item) })
-    } else {
-      onChange({ [key]: [...list, item] })
+    const updated = list.includes(item)
+      ? list.filter((i) => i !== item)
+      : [...list, item]
+    onChange({ [key]: updated })
+    if (touched) {
+      setTimeout(() => {
+        const newErrors = { ...errors }
+        if (updated.length > 0) {
+          delete newErrors[key]
+        } else {
+          if (key === "personality")
+            newErrors.personality =
+              "Please select at least 1 personality trait."
+          if (key === "values")
+            newErrors.values = "Please select at least 1 core value."
+          if (key === "interests")
+            newErrors.interests = "Please select at least 1 hobby or interest."
+        }
+        setErrors(newErrors)
+      }, 0)
     }
   }
 
-  const isValid =
-    data.personality.length > 0 &&
-    data.values.length > 0 &&
-    data.interests.length > 0
+  const handleNextClick = () => {
+    setTouched(true)
+    const isValid = validate()
+    if (!isValid) {
+      toast.error("Please complete all required fields correctly.")
+      return
+    }
+    onNext()
+  }
 
   return (
     <div className="space-y-6 pt-2">
@@ -244,6 +285,12 @@ export function Chapter3Personality({
             )
           })}
         </div>
+        {touched && errors.personality && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.personality}</span>
+          </p>
+        )}
       </div>
 
       {/* SECTION 3: CORE VALUES */}
@@ -282,6 +329,12 @@ export function Chapter3Personality({
             )
           })}
         </div>
+        {touched && errors.values && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.values}</span>
+          </p>
+        )}
       </div>
 
       {/* SECTION 4: HOBBIES & INTERESTS */}
@@ -321,6 +374,12 @@ export function Chapter3Personality({
             )
           })}
         </div>
+        {touched && errors.interests && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.interests}</span>
+          </p>
+        )}
       </div>
 
       {/* SECTION 5: BIO / ABOUT ME */}
@@ -354,9 +413,8 @@ export function Chapter3Personality({
 
         <Button
           type="button"
-          onClick={onNext}
-          disabled={!isValid}
-          className="btn-gradient h-10 px-6 text-xs font-semibold sm:text-sm"
+          onClick={handleNextClick}
+          className="btn-gradient h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
           Continue to Ideal Partner →
         </Button>

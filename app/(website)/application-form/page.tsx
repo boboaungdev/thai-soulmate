@@ -42,6 +42,7 @@ function ApplicationFormContent() {
   const [submittedCustomId, setSubmittedCustomId] = useState<
     number | undefined
   >()
+  const [activeChapter, setActiveChapter] = useState<number>(1)
 
   // 1. Check email in searchParams or on manual search
   const checkEmailInDatabase = async (emailToCheck: string) => {
@@ -81,10 +82,16 @@ function ApplicationFormContent() {
         setLead(parsedLead)
 
         // Pre-fill form data with known consultation details
+        const nameParts = (parsedLead.name || "").trim().split(/\s+/)
+        const fName = nameParts[0] || ""
+        const lName = nameParts.slice(1).join(" ")
+
         setFormData((prev) => ({
           ...prev,
           prefix: parsedLead.prefix,
           name: parsedLead.name,
+          firstName: fName,
+          lastName: lName,
           gender: parsedLead.gender,
           email: parsedLead.email,
           phoneCountry: parsedLead.phoneCountry,
@@ -121,9 +128,15 @@ function ApplicationFormContent() {
       const savedDraft = localStorage.getItem("tsm_app_form_draft")
       if (savedDraft) {
         const parsed = JSON.parse(savedDraft)
+        const nameParts = (lead?.name || parsed.name || "").trim().split(/\s+/)
         setFormData((prev) => ({
           ...prev,
           ...parsed,
+          firstName: parsed.firstName || nameParts[0] || prev.firstName,
+          lastName:
+            parsed.lastName !== undefined
+              ? parsed.lastName
+              : nameParts.slice(1).join(" ") || prev.lastName,
           // Preserve verified email and name from lead if available
           email: lead?.email || parsed.email || prev.email,
           name: lead?.name || parsed.name || prev.name,
@@ -152,10 +165,15 @@ function ApplicationFormContent() {
 
     try {
       // Map formData to API expected structure
+      const fullName =
+        [formData.firstName.trim(), (formData.lastName || "").trim()]
+          .filter(Boolean)
+          .join(" ") || formData.name
+
       const payload = {
         details: {
           prefix: formData.prefix,
-          name: formData.name,
+          name: fullName,
           gender: formData.gender,
           dob: formData.dob || new Date("1990-01-01").toISOString(),
           email: formData.email,
@@ -334,6 +352,7 @@ function ApplicationFormContent() {
               data={formData}
               onChange={handleFormChange}
               onReview={() => setStage("review")}
+              initialChapter={activeChapter}
             />
           </motion.div>
         )}
@@ -344,6 +363,7 @@ function ApplicationFormContent() {
             data={formData}
             isSubmitting={isSubmitting}
             onEditChapter={(ch) => {
+              setActiveChapter(ch)
               setStage("form")
             }}
             onBackToAccordion={() => setStage("form")}

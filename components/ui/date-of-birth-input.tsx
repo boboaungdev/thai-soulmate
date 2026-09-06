@@ -14,78 +14,50 @@ interface DateOfBirthInputProps {
   value: Date | undefined
   onSelect: (date: Date | undefined) => void
   disabled?: boolean
+  hasError?: boolean
+  className?: string
 }
 
 export function DateOfBirthInput({
   value,
   onSelect,
   disabled,
+  hasError,
+  className,
 }: DateOfBirthInputProps) {
-  const [day, setDay] = React.useState<string | undefined>()
-  const [month, setMonth] = React.useState<string | undefined>()
-  const [year, setYear] = React.useState<string | undefined>()
-  const isMounted = React.useRef(false)
+  const [day, setDay] = React.useState<string | undefined>(
+    value ? String(value.getDate()) : undefined
+  )
+  const [month, setMonth] = React.useState<string | undefined>(
+    value ? String(value.getMonth()) : undefined
+  )
+  const [year, setYear] = React.useState<string | undefined>(
+    value ? String(value.getFullYear()) : undefined
+  )
 
+  // Sync external value changes
   React.useEffect(() => {
-    const initialize = async () => {
-      if (value) {
-        setDay(String(value.getDate()))
-        setMonth(String(value.getMonth()))
-        setYear(String(value.getFullYear()))
-      }
+    if (value && !isNaN(value.getTime())) {
+      const vDay = String(value.getDate())
+      const vMonth = String(value.getMonth())
+      const vYear = String(value.getFullYear())
+      setDay((prev) => (prev !== vDay ? vDay : prev))
+      setMonth((prev) => (prev !== vMonth ? vMonth : prev))
+      setYear((prev) => (prev !== vYear ? vYear : prev))
+    } else if (!value) {
+      setDay(undefined)
+      setMonth(undefined)
+      setYear(undefined)
     }
-
-    initialize()
   }, [value])
 
-  React.useEffect(() => {
-    if (isMounted.current) {
-      if (day && month && year) {
-        const selectedMonth = parseInt(month, 10)
-        const selectedYear = parseInt(year, 10)
-        const selectedDay = parseInt(day, 10)
-
-        const date = new Date(selectedYear, selectedMonth, selectedDay)
-        // Check if the constructed date is valid
-        if (
-          date.getFullYear() === selectedYear &&
-          date.getMonth() === selectedMonth &&
-          date.getDate() === selectedDay
-        ) {
-          if (!value || value.getTime() !== date.getTime()) {
-            onSelect(date)
-          }
-        } else {
-          // Handle invalid dates, e.g., Feb 30
-          const lastDayOfMonth = new Date(
-            selectedYear,
-            selectedMonth + 1,
-            0
-          ).getDate()
-          if (selectedDay > lastDayOfMonth) {
-            setDay(String(lastDayOfMonth))
-            const newDate = new Date(
-              selectedYear,
-              selectedMonth,
-              lastDayOfMonth
-            )
-            if (!value || value.getTime() !== newDate.getTime()) {
-              onSelect(newDate)
-            }
-          }
-        }
-      } else {
-        if (value) {
-          onSelect(undefined)
-        }
-      }
-    } else {
-      isMounted.current = true
-    }
-  }, [day, month, year, onSelect, value])
-
   const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 100 }, (_, i) => currentYear - i)
+  const years = Array.from({ length: 85 }, (_, i) => currentYear - 18 - i)
+  if (year && !years.includes(parseInt(year, 10))) {
+    years.unshift(parseInt(year, 10))
+    years.sort((a, b) => b - a)
+  }
+
   const months = [
     { value: "0", label: "January" },
     { value: "1", label: "February" },
@@ -116,21 +88,63 @@ export function DateOfBirthInput({
   }
 
   const numDays =
-    month && year ? daysInMonth(parseInt(month, 10), parseInt(year, 10)) : 31
+    month !== undefined && year !== undefined
+      ? daysInMonth(parseInt(month, 10), parseInt(year, 10))
+      : 31
   const days = Array.from({ length: numDays }, (_, i) => i + 1)
 
+  const triggerUpdate = (
+    newDay: string | undefined,
+    newMonth: string | undefined,
+    newYear: string | undefined
+  ) => {
+    if (newDay && newMonth && newYear) {
+      const selectedYear = parseInt(newYear, 10)
+      const selectedMonth = parseInt(newMonth, 10)
+      let selectedDay = parseInt(newDay, 10)
+
+      const maxDays = daysInMonth(selectedMonth, selectedYear)
+      if (selectedDay > maxDays) {
+        selectedDay = maxDays
+        setDay(String(maxDays))
+      }
+
+      const constructed = new Date(selectedYear, selectedMonth, selectedDay)
+      onSelect(constructed)
+    } else {
+      onSelect(undefined)
+    }
+  }
+
+  const handleDayChange = (val: string) => {
+    setDay(val)
+    triggerUpdate(val, month, year)
+  }
+
+  const handleMonthChange = (val: string) => {
+    setMonth(val)
+    triggerUpdate(day, val, year)
+  }
+
+  const handleYearChange = (val: string) => {
+    setYear(val)
+    triggerUpdate(day, month, val)
+  }
+
   return (
-    <div className="grid grid-cols-3 gap-2">
-      <Select value={day} onValueChange={setDay} disabled={disabled}>
+    <div className={cn("grid grid-cols-3 gap-2", className)}>
+      {/* Day */}
+      <Select value={day} onValueChange={handleDayChange} disabled={disabled}>
         <SelectTrigger
           className={cn(
-            "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+            "h-9 w-full rounded-lg border border-input bg-background px-2.5 text-xs sm:text-sm dark:bg-input/20",
+            hasError && "border-destructive ring-1 ring-destructive",
             !day && "text-muted-foreground"
           )}
         >
           <SelectValue placeholder="Day" />
         </SelectTrigger>
-        <SelectContent className="max-h-[10rem] overflow-y-auto">
+        <SelectContent className="max-h-56">
           {days.map((d) => (
             <SelectItem key={d} value={String(d)}>
               {d}
@@ -138,16 +152,23 @@ export function DateOfBirthInput({
           ))}
         </SelectContent>
       </Select>
-      <Select value={month} onValueChange={setMonth} disabled={disabled}>
+
+      {/* Month */}
+      <Select
+        value={month}
+        onValueChange={handleMonthChange}
+        disabled={disabled}
+      >
         <SelectTrigger
           className={cn(
-            "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+            "h-9 w-full rounded-lg border border-input bg-background px-2.5 text-xs sm:text-sm dark:bg-input/20",
+            hasError && "border-destructive ring-1 ring-destructive",
             !month && "text-muted-foreground"
           )}
         >
           <SelectValue placeholder="Month" />
         </SelectTrigger>
-        <SelectContent className="max-h-[10rem] overflow-y-auto">
+        <SelectContent className="max-h-56">
           {months.map((m) => (
             <SelectItem key={m.value} value={m.value}>
               {m.label}
@@ -155,16 +176,19 @@ export function DateOfBirthInput({
           ))}
         </SelectContent>
       </Select>
-      <Select value={year} onValueChange={setYear} disabled={disabled}>
+
+      {/* Year */}
+      <Select value={year} onValueChange={handleYearChange} disabled={disabled}>
         <SelectTrigger
           className={cn(
-            "h-8 w-full justify-start rounded-lg border border-input bg-background py-1 pr-2.5 pl-3 shadow-none ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+            "h-9 w-full rounded-lg border border-input bg-background px-2.5 text-xs sm:text-sm dark:bg-input/20",
+            hasError && "border-destructive ring-1 ring-destructive",
             !year && "text-muted-foreground"
           )}
         >
           <SelectValue placeholder="Year" />
         </SelectTrigger>
-        <SelectContent className="max-h-[10rem] overflow-y-auto">
+        <SelectContent className="max-h-56">
           {years.map((y) => (
             <SelectItem key={y} value={String(y)}>
               {y}

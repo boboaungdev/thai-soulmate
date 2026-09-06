@@ -11,7 +11,9 @@ import {
   ShieldCheck,
   Sparkles,
   FileCheck,
+  AlertCircle,
 } from "lucide-react"
+import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { ImageCropDialog } from "@/components/image-crop-dialog"
@@ -86,9 +88,37 @@ export function Chapter5Photos({
     setCropDialogOpen(true)
   }
 
-  const hasAtLeastOnePhoto = Boolean(data.headshotUrl || data.fullLengthUrl)
-  const isValid =
-    hasAtLeastOnePhoto && data.agreedToTruth && data.agreedToPrivacy
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [touched, setTouched] = useState(false)
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {}
+    if (!data.headshotUrl && !data.fullLengthUrl) {
+      newErrors.photos =
+        "Please upload at least one verified photograph (Headshot or Full Length)."
+    }
+    if (!data.agreedToTruth) {
+      newErrors.agreedToTruth = "Please certify the accuracy of your details."
+    }
+    if (!data.agreedToPrivacy) {
+      newErrors.agreedToPrivacy =
+        "Please agree to the privacy and confidentiality policy."
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleReviewClick = () => {
+    setTouched(true)
+    const isValid = validate()
+    if (!isValid) {
+      toast.error(
+        "Please provide at least one photo and accept both declarations."
+      )
+      return
+    }
+    onReview()
+  }
 
   return (
     <div className="space-y-6 pt-2">
@@ -372,6 +402,12 @@ export function Chapter5Photos({
           </div>
         </div>
       </div>
+      {touched && errors.photos && (
+        <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+          <AlertCircle className="size-3" />
+          <span>{errors.photos}</span>
+        </p>
+      )}
 
       {/* SECTION: TRUTH & PRIVACY DECLARATION */}
       <div className="space-y-3 rounded-2xl border border-border/70 bg-card/60 p-4">
@@ -381,32 +417,66 @@ export function Chapter5Photos({
         </div>
 
         <div className="space-y-2.5 pt-1">
-          <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground hover:text-foreground">
-            <input
-              type="checkbox"
-              checked={data.agreedToTruth}
-              onChange={(e) => onChange({ agreedToTruth: e.target.checked })}
-              className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
-            />
-            <span>
-              I certify that all personal information and photographs provided
-              are accurate, recent, and represent my genuine identity.
-            </span>
-          </label>
+          <div className="space-y-1">
+            <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground hover:text-foreground">
+              <input
+                type="checkbox"
+                checked={data.agreedToTruth}
+                onChange={(e) => {
+                  onChange({ agreedToTruth: e.target.checked })
+                  if (touched && e.target.checked) {
+                    setErrors((prev) => {
+                      const next = { ...prev }
+                      delete next.agreedToTruth
+                      return next
+                    })
+                  }
+                }}
+                className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
+              />
+              <span>
+                I certify that all personal information and photographs provided
+                are accurate, recent, and represent my genuine identity.
+              </span>
+            </label>
+            {touched && errors.agreedToTruth && (
+              <p className="flex items-center gap-1 pl-6 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.agreedToTruth}</span>
+              </p>
+            )}
+          </div>
 
-          <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground hover:text-foreground">
-            <input
-              type="checkbox"
-              checked={data.agreedToPrivacy}
-              onChange={(e) => onChange({ agreedToPrivacy: e.target.checked })}
-              className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
-            />
-            <span>
-              I agree to Thai Soulmate&apos;s strict privacy and confidentiality
-              policy, understanding that introductions are conducted with mutual
-              consent and discretion.
-            </span>
-          </label>
+          <div className="space-y-1">
+            <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground hover:text-foreground">
+              <input
+                type="checkbox"
+                checked={data.agreedToPrivacy}
+                onChange={(e) => {
+                  onChange({ agreedToPrivacy: e.target.checked })
+                  if (touched && e.target.checked) {
+                    setErrors((prev) => {
+                      const next = { ...prev }
+                      delete next.agreedToPrivacy
+                      return next
+                    })
+                  }
+                }}
+                className="mt-0.5 size-4 rounded-sm border-border accent-[#D3A753]"
+              />
+              <span>
+                I agree to Thai Soulmate&apos;s strict privacy and
+                confidentiality policy, understanding that introductions are
+                conducted with mutual consent and discretion.
+              </span>
+            </label>
+            {touched && errors.agreedToPrivacy && (
+              <p className="flex items-center gap-1 pl-6 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.agreedToPrivacy}</span>
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -423,9 +493,8 @@ export function Chapter5Photos({
 
         <Button
           type="button"
-          onClick={onReview}
-          disabled={!isValid}
-          className="btn-gradient h-10 px-6 text-xs font-semibold sm:text-sm"
+          onClick={handleReviewClick}
+          className="btn-gradient h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
           Review My Application →
         </Button>

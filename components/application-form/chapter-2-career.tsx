@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import {
   Briefcase,
   GraduationCap,
@@ -11,7 +11,9 @@ import {
   Wine,
   Activity,
   Sparkles,
+  AlertCircle,
 } from "lucide-react"
+import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -85,7 +87,30 @@ export function Chapter2Career({
   onNext,
   onBack,
 }: Chapter2Props) {
-  const isValid = Boolean(data.occupation.trim()) && Boolean(data.education)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [touched, setTouched] = useState(false)
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {}
+    if (!data.education) {
+      newErrors.education = "Please select your education level."
+    }
+    if (!data.occupation.trim()) {
+      newErrors.occupation = "Please enter your occupation / profession."
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleNextClick = () => {
+    setTouched(true)
+    const isValid = validate()
+    if (!isValid) {
+      toast.error("Please complete all required fields correctly.")
+      return
+    }
+    onNext()
+  }
 
   return (
     <div className="space-y-6 pt-2">
@@ -98,9 +123,19 @@ export function Chapter2Career({
           </Label>
           <Select
             value={data.education}
-            onValueChange={(val) => onChange({ education: val })}
+            onValueChange={(val) => {
+              onChange({ education: val })
+              if (touched) validate()
+            }}
           >
-            <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
+            <SelectTrigger
+              className={cn(
+                "h-10 bg-background text-xs sm:text-sm",
+                touched &&
+                  errors.education &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            >
               <SelectValue placeholder="Select Education" />
             </SelectTrigger>
             <SelectContent>
@@ -111,6 +146,12 @@ export function Chapter2Career({
               ))}
             </SelectContent>
           </Select>
+          {touched && errors.education && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.education}</span>
+            </p>
+          )}
         </div>
 
         {/* Occupation */}
@@ -122,11 +163,25 @@ export function Chapter2Career({
             <Briefcase className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={data.occupation}
-              onChange={(e) => onChange({ occupation: e.target.value })}
+              onChange={(e) => {
+                onChange({ occupation: e.target.value })
+                if (touched) validate()
+              }}
               placeholder="e.g. Architect, Software Director, Entrepreneur..."
-              className="h-10 pl-9 text-xs sm:text-sm"
+              className={cn(
+                "h-10 pl-9 text-xs sm:text-sm",
+                touched &&
+                  errors.occupation &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
             />
           </div>
+          {touched && errors.occupation && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.occupation}</span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -390,9 +445,8 @@ export function Chapter2Career({
 
         <Button
           type="button"
-          onClick={onNext}
-          disabled={!isValid}
-          className="btn-gradient h-10 px-6 text-xs font-semibold sm:text-sm"
+          onClick={handleNextClick}
+          className="btn-gradient h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
           Continue to Personality &amp; Values →
         </Button>

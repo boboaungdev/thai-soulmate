@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react"
 import Link from "next/link"
 import { AppName } from "@/components/app-name"
 import { MotionDiv } from "@/components/motion"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -610,17 +611,24 @@ export function FaqContent() {
           1. HERO HEADER (Matching Service & Gallery Typography)
       ========================================================================= */}
       <section className="relative overflow-hidden px-4 text-center sm:px-6 lg:px-8">
-        <MotionDiv
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.15 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-4xl space-y-6"
         >
           {/* Trust Pill */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.4, delay: 0.05 }}
+            className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase"
+          >
             <ShieldCheck className="size-3.5" />
             <span>Substantial & Authoritative Guidance</span>
-          </div>
+          </motion.div>
 
           {/* Main Title */}
           <h1 className="text-gradient text-4xl font-bold tracking-tighter md:text-5xl">
@@ -641,31 +649,43 @@ export function FaqContent() {
 
           {/* 4 Feature Badges */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs font-medium text-foreground sm:gap-6 sm:text-sm">
-            <div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-3.5 py-1.5 backdrop-blur-xs">
-              <ShieldCheck className="size-4 text-[#D3A753]" />
-              <span>6-Point Verification Standard</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-3.5 py-1.5 backdrop-blur-xs">
-              <Handshake className="size-4 text-[#D3A753]" />
-              <span>100% Mutual Consent</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-3.5 py-1.5 backdrop-blur-xs">
-              <Lock className="size-4 text-[#D3A753]" />
-              <span>Zero Public Profiles</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-3.5 py-1.5 backdrop-blur-xs">
-              <MapPin className="size-4 text-[#D3A753]" />
-              <span>Based in Thailand</span>
-            </div>
+            {[
+              { icon: ShieldCheck, label: "6-Point Verification Standard" },
+              { icon: Handshake, label: "100% Mutual Consent" },
+              { icon: Lock, label: "Zero Public Profiles" },
+              { icon: MapPin, label: "Based in Thailand" },
+            ].map((badge, idx) => {
+              const Icon = badge.icon
+              return (
+                <motion.div
+                  key={badge.label}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false }}
+                  transition={{ duration: 0.4, delay: 0.12 + idx * 0.07 }}
+                  whileHover={{ y: -3, scale: 1.05 }}
+                  className="flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-3.5 py-1.5 shadow-xs backdrop-blur-xs transition-colors duration-200 hover:border-[#D3A753]/50 hover:bg-[#D3A753]/5"
+                >
+                  <Icon className="size-4 text-[#D3A753]" />
+                  <span>{badge.label}</span>
+                </motion.div>
+              )
+            })}
           </div>
-        </MotionDiv>
+        </motion.div>
       </section>
 
       {/* =========================================================================
           2. SEARCH BAR & CATEGORY TABS
       ========================================================================= */}
       <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.15 }}
+          transition={{ duration: 0.5, delay: 0.08 }}
+          className="space-y-6"
+        >
           {/* Search Input Box */}
           <div className="relative mx-auto max-w-2xl">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-muted-foreground">
@@ -676,7 +696,7 @@ export function FaqContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search questions by keyword (e.g. verify, cost, travel, language)..."
-              className="h-11 w-full rounded-2xl border border-border/80 bg-card/70 pr-10 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-[#D3A753] focus:ring-2 focus:ring-[#D3A753]/30 focus:outline-none sm:text-base"
+              className="h-11 w-full rounded-2xl border border-border/80 bg-card/70 pr-10 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 transition-all duration-200 focus:border-[#D3A753] focus:ring-2 focus:ring-[#D3A753]/30 focus:outline-none sm:text-base"
             />
             {searchQuery && (
               <button
@@ -713,7 +733,7 @@ export function FaqContent() {
               </Tabs>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* =========================================================================
@@ -743,17 +763,18 @@ export function FaqContent() {
         ) : (
           <div className="w-full space-y-4 sm:space-y-5">
             {filteredFaqs.map((faq, index) => (
-              <MotionDiv
+              <motion.div
                 key={faq.id}
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
+                viewport={{ once: false, amount: 0.12 }}
                 transition={{
                   duration: 0.35,
-                  delay: Math.min((index % 6) * 0.05, 0.25),
+                  delay: Math.min((index % 6) * 0.05, 0.22),
                 }}
+                whileHover={{ y: -4, scale: 1.008 }}
               >
-                <div className="group rounded-2xl border border-border/70 bg-card/60 p-5 shadow-xs backdrop-blur-xs transition-all duration-200 hover:border-[#D3A753]/50 hover:shadow-md sm:p-6">
+                <div className="group rounded-2xl border border-border/70 bg-card/60 p-5 shadow-xs backdrop-blur-xs transition-all duration-300 hover:border-[#D3A753]/60 hover:shadow-lg hover:shadow-[#D3A753]/5 sm:p-6">
                   <div>
                     {/* Category Tag */}
                     <div className="mb-2.5 flex items-center justify-between">
@@ -764,10 +785,10 @@ export function FaqContent() {
 
                     {/* Question */}
                     <div className="flex items-start gap-3.5">
-                      <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#D3A753]/15 text-xs font-black text-[#D3A753] uppercase">
+                      <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#D3A753]/15 text-xs font-black text-[#D3A753] uppercase transition-transform duration-200 group-hover:scale-110">
                         Q
                       </span>
-                      <h3 className="pt-0.5 text-base font-bold tracking-tight text-foreground sm:text-lg">
+                      <h3 className="pt-0.5 text-base font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-[#D3A753] sm:text-lg">
                         {faq.question}
                       </h3>
                     </div>
@@ -783,7 +804,7 @@ export function FaqContent() {
                     </div>
                   </div>
                 </div>
-              </MotionDiv>
+              </motion.div>
             ))}
           </div>
         )}
@@ -793,15 +814,16 @@ export function FaqContent() {
           4. BOTTOM SINGLE LUXURY CTA CARD (Matching /service Hero Proportion)
       ========================================================================= */}
       <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <MotionDiv
-          initial={{ opacity: 0, y: 20 }}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          whileHover={{ y: -4 }}
         >
-          <div className="relative overflow-hidden rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card/90 via-card/70 to-[#D3A753]/10 p-8 text-center backdrop-blur-sm sm:p-12">
+          <div className="relative overflow-hidden rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card/90 via-card/70 to-[#D3A753]/10 p-8 text-center shadow-xl backdrop-blur-sm transition-all duration-300 hover:border-[#D3A753]/60 sm:p-12">
             {/* Ambient subtle glow inside CTA */}
-            <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-64 w-96 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 to-transparent blur-3xl" />
+            <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-64 w-96 -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/25 to-transparent blur-3xl" />
             <div className="mx-auto max-w-2xl space-y-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
                 <Compass className="size-3.5" />
@@ -820,15 +842,21 @@ export function FaqContent() {
               </p>
 
               <div className="pt-2">
-                <Button
-                  asChild
-                  size="lg"
-                  className="btn-gradient font-semibold shadow-lg"
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-block"
                 >
-                  <Link href="/#register-interest">
-                    Arrange a Confidential Consultation
-                  </Link>
-                </Button>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="btn-gradient font-semibold shadow-lg shadow-[#D3A753]/20"
+                  >
+                    <Link href="/#register-interest">
+                      Arrange a Confidential Consultation
+                    </Link>
+                  </Button>
+                </motion.div>
               </div>
 
               <p className="text-xs text-muted-foreground">
@@ -836,7 +864,7 @@ export function FaqContent() {
               </p>
             </div>
           </div>
-        </MotionDiv>
+        </motion.div>
       </section>
     </div>
   )

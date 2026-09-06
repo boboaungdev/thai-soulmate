@@ -22,7 +22,8 @@ export default function GalleryPage() {
       <div className="mx-auto w-full max-w-7xl space-y-12 px-4 sm:px-6 lg:px-8">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.5 }}
           className="mx-auto max-w-3xl space-y-4 text-center"
         >

@@ -9,6 +9,7 @@ import confetti from "canvas-confetti"
 
 import { User2, Mail, CheckCircle2, Home, ChevronLeft } from "lucide-react"
 import { MotionDiv } from "@/components/motion"
+import type { Variants } from "framer-motion"
 
 import {
   Accordion,
@@ -268,21 +269,29 @@ export default function WebsiteReviewPage() {
     }
   }
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+  const itemVariants: Variants = {
+    hidden: { y: 24, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
+      transition: { duration: 0.5, ease: "easeOut" },
     },
   }
 
   return (
-    <MotionDiv layout className="container mx-auto max-w-4xl px-4 py-24">
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Unified Atmospheric Ambient Glow */}
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(207,161,79,0.08),transparent_70%)]" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 size-[600px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/15 via-[#E791A7]/10 to-transparent blur-3xl" />
+      <div className="pointer-events-none absolute top-1/3 -right-40 -z-10 size-[550px] rounded-full bg-gradient-to-br from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
+      <div className="pointer-events-none absolute bottom-10 -left-40 -z-10 size-[500px] rounded-full bg-gradient-to-tr from-[#D3A753]/10 via-[#E791A7]/5 to-transparent blur-3xl" />
+
+      <MotionDiv layout className="container relative z-10 mx-auto max-w-4xl px-4 py-24">
       <MotionDiv
         variants={itemVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.5 }}
+        viewport={{ once: false, amount: 0.15 }}
         className="text-center"
       >
         <h1 className="text-gradient mb-8 text-4xl font-bold tracking-tighter md:text-5xl">
@@ -293,7 +302,7 @@ export default function WebsiteReviewPage() {
         variants={itemVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.5 }}
+        viewport={{ once: false, amount: 0.15 }}
         className="mx-auto max-w-3xl space-y-4 text-center text-lg text-muted-foreground md:text-xl"
       >
         <p className="pb-10">
@@ -307,7 +316,7 @@ export default function WebsiteReviewPage() {
           variants={itemVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: false, amount: 0.15 }}
         >
           <Card className="w-full">
             <CardContent className="relative flex flex-col items-center justify-center space-y-6 py-12">
@@ -366,9 +375,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-1">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -503,9 +512,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-2">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -664,9 +673,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-3">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -814,9 +823,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-4">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -913,9 +922,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-5">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -1028,9 +1037,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-6">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -1176,9 +1185,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-7">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -1274,9 +1283,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-8">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -1414,9 +1423,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-9">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -1546,9 +1555,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-10">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -1725,9 +1734,9 @@ export default function WebsiteReviewPage() {
                 variants={itemVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.15 }}
               >
-                <Card className="mb-4">
+                <Card className="mb-4 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm transition-all duration-300 hover:border-[#D3A753]/50 hover:shadow-lg hover:shadow-[#D3A753]/5">
                   <AccordionItem value="item-11">
                     <CardHeader className="p-0">
                       <AccordionTrigger className="text-gradient flex items-center gap-2 px-6 pb-6 text-xl font-semibold">
@@ -1740,7 +1749,7 @@ export default function WebsiteReviewPage() {
                           variants={itemVariants}
                           initial="hidden"
                           whileInView="visible"
-                          viewport={{ once: true, amount: 0.5 }}
+                          viewport={{ once: false, amount: 0.15 }}
                         >
                           <Card>
                             <CardHeader>
@@ -1805,7 +1814,7 @@ export default function WebsiteReviewPage() {
               variants={itemVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: false, amount: 0.15 }}
               className="flex justify-center"
             >
               <Button
@@ -1826,6 +1835,7 @@ export default function WebsiteReviewPage() {
           </form>
         </Form>
       )}
-    </MotionDiv>
+      </MotionDiv>
+    </div>
   )
 }

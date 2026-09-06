@@ -141,9 +141,13 @@ export function PricingPageContents({
             opacity: 0,
             y: 20,
           }}
-          animate={{
+          whileInView={{
             opacity: 1,
             y: 0,
+          }}
+          viewport={{
+            once: false,
+            amount: 0.2,
           }}
           transition={{
             duration: 0.5,
@@ -194,9 +198,13 @@ export function PricingPageContents({
             opacity: 0,
             y: 20,
           }}
-          animate={{
+          whileInView={{
             opacity: 1,
             y: 0,
+          }}
+          viewport={{
+            once: false,
+            amount: 0.15,
           }}
           transition={{
             duration: 0.5,
@@ -309,9 +317,13 @@ export function PricingPageContents({
                         opacity: 0,
                         y: 15,
                       }}
-                      animate={{
+                      whileInView={{
                         opacity: 1,
                         y: 0,
+                      }}
+                      viewport={{
+                        once: false,
+                        amount: 0.15,
                       }}
                       transition={{
                         duration: 0.4,
@@ -352,14 +364,19 @@ export function PricingPageContents({
                             opacity: 0,
                             y: 15,
                           }}
-                          animate={{
+                          whileInView={{
                             opacity: 1,
                             y: 0,
+                          }}
+                          viewport={{
+                            once: false,
+                            amount: 0.15,
                           }}
                           transition={{
                             duration: 0.4,
                             delay: 0 * 0.1,
                           }}
+                          whileHover={{ y: -8, scale: 1.02 }}
                           className="relative"
                         >
                           <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl">
@@ -436,17 +453,22 @@ export function PricingPageContents({
                             opacity: 0,
                             y: 15,
                           }}
-                          animate={{
+                          whileInView={{
                             opacity: 1,
                             y: 0,
+                          }}
+                          viewport={{
+                            once: false,
+                            amount: 0.15,
                           }}
                           transition={{
                             duration: 0.4,
                             delay: 1 * 0.1,
                           }}
+                          whileHover={{ y: -8, scale: 1.02 }}
                           className="relative"
                         >
-                          <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                          <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:shadow-2xl">
                             <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 sm:p-7 text-left">
                               {/* Most Popular */}
 
@@ -535,14 +557,19 @@ export function PricingPageContents({
                             opacity: 0,
                             y: 15,
                           }}
-                          animate={{
+                          whileInView={{
                             opacity: 1,
                             y: 0,
+                          }}
+                          viewport={{
+                            once: false,
+                            amount: 0.15,
                           }}
                           transition={{
                             duration: 0.4,
                             delay: 2 * 0.1,
                           }}
+                          whileHover={{ y: -8, scale: 1.02 }}
                           className="relative"
                         >
                           <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl">
@@ -669,9 +696,13 @@ export function PricingPageContents({
                       opacity: 0,
                       y: 15,
                     }}
-                    animate={{
+                    whileInView={{
                       opacity: 1,
                       y: 0,
+                    }}
+                    viewport={{
+                      once: false,
+                      amount: 0.15,
                     }}
                     transition={{
                       duration: 0.4,
@@ -696,14 +727,19 @@ export function PricingPageContents({
                             opacity: 0,
                             y: 15,
                           }}
-                          animate={{
+                          whileInView={{
                             opacity: 1,
                             y: 0,
+                          }}
+                          viewport={{
+                            once: false,
+                            amount: 0.15,
                           }}
                           transition={{
                             duration: 0.4,
                             delay: index * 0.1,
                           }}
+                          whileHover={{ y: -8, scale: 1.02 }}
                           className="relative"
                         >
                           {plan.popular ? (
@@ -936,9 +972,13 @@ export function PricingPageContents({
                   opacity: 0,
                   y: 15,
                 }}
-                animate={{
+                whileInView={{
                   opacity: 1,
                   y: 0,
+                }}
+                viewport={{
+                  once: false,
+                  amount: 0.15,
                 }}
                 transition={{
                   duration: 0.4,
@@ -969,17 +1009,22 @@ export function PricingPageContents({
                       opacity: 0,
                       y: 15,
                     }}
-                    animate={{
+                    whileInView={{
                       opacity: 1,
                       y: 0,
+                    }}
+                    viewport={{
+                      once: false,
+                      amount: 0.15,
                     }}
                     transition={{
                       duration: 0.4,
                       delay: 0 * 0.1,
                     }}
+                    whileHover={{ y: -8, scale: 1.02 }}
                     className="relative"
                   >
-                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#CA617D]/60 hover:shadow-2xl">
+                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-[#CA617D]/60 hover:shadow-2xl">
                       <p className="mt-2 text-xs font-semibold tracking-wider text-[#CA617D] uppercase">
                         Introductory VIP
                       </p>
@@ -1032,17 +1077,22 @@ export function PricingPageContents({
                       opacity: 0,
                       y: 15,
                     }}
-                    animate={{
+                    whileInView={{
                       opacity: 1,
                       y: 0,
+                    }}
+                    viewport={{
+                      once: false,
+                      amount: 0.15,
                     }}
                     transition={{
                       duration: 0.4,
                       delay: 1 * 0.1,
                     }}
+                    whileHover={{ y: -8, scale: 1.02 }}
                     className="relative"
                   >
-                    <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                    <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:shadow-2xl">
                       <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 sm:p-7 text-left">
                         {/* Most Popular */}
 
@@ -1104,17 +1154,22 @@ export function PricingPageContents({
                       opacity: 0,
                       y: 15,
                     }}
-                    animate={{
+                    whileInView={{
                       opacity: 1,
                       y: 0,
+                    }}
+                    viewport={{
+                      once: false,
+                      amount: 0.15,
                     }}
                     transition={{
                       duration: 0.4,
                       delay: 2 * 0.1,
                     }}
+                    whileHover={{ y: -8, scale: 1.02 }}
                     className="relative"
                   >
-                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#CA617D]/60 hover:shadow-2xl">
+                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-[#CA617D]/60 hover:shadow-2xl">
                       <p className="mt-2 text-xs font-semibold tracking-wider text-[#CA617D] uppercase">
                         Prestige VIP
                       </p>
@@ -1168,7 +1223,7 @@ export function PricingPageContents({
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: false, amount: 0.25 }}
           transition={{ duration: 0.5 }}
           className="mt-16 sm:mt-20"
         >

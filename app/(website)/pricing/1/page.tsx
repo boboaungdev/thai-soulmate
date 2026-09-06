@@ -100,12 +100,17 @@ export function PricingPageContents({
   }
 
   return (
-    <section className="bg-muted/50 py-20 sm:py-24 dark:bg-muted/30">
-      <div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-muted/50 py-20 sm:py-24 dark:bg-muted/30">
+      {/* Unified Atmospheric Ambient Glow */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 size-[600px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/15 via-[#E791A7]/10 to-transparent blur-3xl" />
+      <div className="pointer-events-none absolute top-1/3 -right-40 -z-10 size-[550px] rounded-full bg-gradient-to-br from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
+
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
         >
           {!isEmbedded && !isFromApplicationForm && (
             <>
@@ -130,8 +135,9 @@ export function PricingPageContents({
           )}
         </MotionDiv>
         <MotionDiv
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <div className="mt-8 flex items-center justify-center space-x-2">
@@ -147,12 +153,16 @@ export function PricingPageContents({
           {PLANS.map((plan, index) => (
             <MotionDiv
               key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.15 }}
+              transition={{ duration: 0.5, delay: 0.15 + index * 0.1 }}
+              whileHover={{ y: -8, scale: 1.02 }}
               className={clsx(
-                "relative flex w-full max-w-sm flex-col rounded-lg border bg-card p-8 text-card-foreground shadow-sm transition-transform duration-300",
-                plan.popular && "border-gold scale-105 transform border-2"
+                "relative flex w-full max-w-sm flex-col rounded-2xl border bg-card p-8 text-card-foreground shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-[#D3A753]/10",
+                plan.popular
+                  ? "border-gold border-2 shadow-lg shadow-[#D3A753]/15"
+                  : "border-border/70 hover:border-[#D3A753]/50"
               )}
             >
               {plan.popular && (
@@ -243,17 +253,24 @@ export function PricingPageContents({
             </MotionDiv>
           ))}
         </div>
-        <p className="mx-auto mt-16 max-w-3xl text-base text-muted-foreground">
-          For more details about any of our subscriptions, plans or membership
-          fees, please{" "}
-          <Link
-            href="/contact"
-            className="text-gradient font-semibold transition-all hover:underline hover:brightness-125"
-          >
-            contact us
-          </Link>
-          .
-        </p>
+        <MotionDiv
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <p className="mx-auto mt-16 max-w-3xl text-base text-muted-foreground">
+            For more details about any of our subscriptions, plans or membership
+            fees, please{" "}
+            <Link
+              href="/contact"
+              className="text-gradient font-semibold transition-all hover:underline hover:brightness-125"
+            >
+              contact us
+            </Link>
+            .
+          </p>
+        </MotionDiv>
       </div>
     </section>
   )

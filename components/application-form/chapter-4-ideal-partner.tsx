@@ -26,7 +26,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ApplicationFormData } from "./types"
+import {
+  ApplicationFormData,
+  formatPartnerAgeRange,
+  formatPartnerHeightRange,
+  cmToFeetAndInches,
+} from "./types"
 import { cn } from "@/lib/utils"
 
 interface Chapter4Props {
@@ -264,7 +269,10 @@ export function Chapter4IdealPartner({
             <div className="flex items-center justify-between text-xs font-medium">
               <span className="text-foreground">Preferred Age Range</span>
               <span className="font-mono text-[#D3A753]">
-                {data.idealPartnerMinAge} – {data.idealPartnerMaxAge} Years
+                {formatPartnerAgeRange(
+                  data.idealPartnerMinAge,
+                  data.idealPartnerMaxAge
+                )}
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -282,20 +290,27 @@ export function Chapter4IdealPartner({
                 }
                 className="flex-1"
               />
-              <span className="text-[11px] text-muted-foreground">70</span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                70+
+              </span>
             </div>
           </div>
 
           {/* Height Range Slider */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-medium">
+            <div className="flex flex-wrap items-center justify-between gap-1 text-xs font-medium">
               <span className="text-foreground">Preferred Height Range</span>
               <span className="font-mono text-[#D3A753]">
-                {data.idealPartnerMinHeight} – {data.idealPartnerMaxHeight} cm
+                {formatPartnerHeightRange(
+                  data.idealPartnerMinHeight,
+                  data.idealPartnerMaxHeight
+                )}
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[11px] text-muted-foreground">145cm</span>
+              <span className="shrink-0 text-[11px] text-muted-foreground">
+                145cm ({cmToFeetAndInches(145)})
+              </span>
               <Slider
                 min={145}
                 max={205}
@@ -309,7 +324,9 @@ export function Chapter4IdealPartner({
                 }
                 className="flex-1"
               />
-              <span className="text-[11px] text-muted-foreground">205cm</span>
+              <span className="shrink-0 text-[11px] font-medium text-muted-foreground">
+                205+ cm ({cmToFeetAndInches(205, true)})
+              </span>
             </div>
           </div>
         </div>

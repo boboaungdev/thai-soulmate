@@ -19,7 +19,11 @@ import {
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { ApplicationFormData } from "./types"
+import {
+  ApplicationFormData,
+  formatPartnerAgeRange,
+  formatPartnerHeightRange,
+} from "./types"
 
 interface ReviewDossierProps {
   data: ApplicationFormData
@@ -395,13 +399,19 @@ export function ReviewDossier({
           <div>
             <span className="text-muted-foreground">Desired Age:</span>
             <p className="font-semibold text-foreground">
-              {data.idealPartnerMinAge} – {data.idealPartnerMaxAge} Years
+              {formatPartnerAgeRange(
+                data.idealPartnerMinAge,
+                data.idealPartnerMaxAge
+              )}
             </p>
           </div>
           <div>
             <span className="text-muted-foreground">Desired Height:</span>
             <p className="font-semibold text-foreground">
-              {data.idealPartnerMinHeight} – {data.idealPartnerMaxHeight} cm
+              {formatPartnerHeightRange(
+                data.idealPartnerMinHeight,
+                data.idealPartnerMaxHeight
+              )}
             </p>
           </div>
           <div>

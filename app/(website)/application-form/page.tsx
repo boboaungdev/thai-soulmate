@@ -19,6 +19,8 @@ import {
   INITIAL_APPLICATION_FORM_DATA,
   ApplicationStage,
   RegisterInterestLead,
+  formatPartnerHeightRange,
+  formatPartnerAgeRange,
 } from "@/components/application-form/types"
 import { IntakeGatekeeper } from "@/components/application-form/intake-gatekeeper"
 import { ChapterAccordion } from "@/components/application-form/chapter-accordion"
@@ -211,10 +213,13 @@ function ApplicationFormContent() {
           familyImportance: formData.familyImportance,
           futureChildren: formData.futureChildren,
           values: formData.values,
-          idealPartnerAgeRange: `${formData.idealPartnerMinAge}-${formData.idealPartnerMaxAge}`,
+          idealPartnerAgeRange: `${formData.idealPartnerMinAge}-${formData.idealPartnerMaxAge >= 70 ? "70+" : formData.idealPartnerMaxAge}`,
           idealPartnerNationality: formData.idealPartnerNationality,
           idealPartnerLocation: formData.idealPartnerLocation,
-          idealPartnerHeight: `${formData.idealPartnerMinHeight}-${formData.idealPartnerMaxHeight}`,
+          idealPartnerHeight: formatPartnerHeightRange(
+            formData.idealPartnerMinHeight,
+            formData.idealPartnerMaxHeight
+          ),
           idealPartnerWeight: "Any",
           idealPartnerEducation: "Bachelor's Degree or above",
           idealPartnerPersonality: formData.personality,

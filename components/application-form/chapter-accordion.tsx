@@ -59,8 +59,11 @@ export function ChapterAccordion({
         return `${data.education || "Graduate"} · ${data.occupation || "Professional"}${data.company ? ` at ${data.company}` : ""}`
       case 3:
         return `${data.personality.slice(0, 3).join(", ") || "Personality"} · Values: ${data.values.slice(0, 2).join(", ") || "Family"}`
-      case 4:
-        return `Seeking: ${data.relationshipGoal || "Marriage"} · Partner Age ${data.idealPartnerMinAge}–${data.idealPartnerMaxAge}`
+      case 4: {
+        const ageMax =
+          data.idealPartnerMaxAge >= 70 ? "70+" : data.idealPartnerMaxAge
+        return `Seeking: ${data.relationshipGoal || "Marriage"} · Partner Age ${data.idealPartnerMinAge}–${ageMax}`
+      }
       case 5:
         return data.headshotUrl
           ? "Primary photos uploaded & verified"

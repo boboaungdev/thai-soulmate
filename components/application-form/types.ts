@@ -145,3 +145,33 @@ export type Country = {
   callCode: string
   region: string
 }
+
+/**
+ * Converts height in cm to feet and inches notation (e.g. 175 -> 5'9", 205 with isPlus -> 6'9"+)
+ */
+export function cmToFeetAndInches(cm: number, isPlus: boolean = false): string {
+  const totalInches = Math.round(cm / 2.54)
+  const feet = Math.floor(totalInches / 12)
+  const inches = totalInches % 12
+  return `${feet}'${inches}"${isPlus ? "+" : ""}`
+}
+
+/**
+ * Formats preferred partner age range with open upper bound (e.g. "25 – 70+ Years")
+ */
+export function formatPartnerAgeRange(min: number, max: number): string {
+  const maxLabel = max >= 70 ? "70+" : `${max}`
+  return `${min} – ${maxLabel} Years`
+}
+
+/**
+ * Formats preferred partner height range with both cm and feet/inches
+ * (e.g. "155 – 205+ cm (5'1" – 6'9"+)")
+ */
+export function formatPartnerHeightRange(min: number, max: number): string {
+  const isMaxPlus = max >= 205
+  const maxLabel = isMaxPlus ? "205+" : `${max}`
+  const minFt = cmToFeetAndInches(min)
+  const maxFt = cmToFeetAndInches(max, isMaxPlus)
+  return `${min} – ${maxLabel} cm (${minFt} – ${maxFt})`
+}

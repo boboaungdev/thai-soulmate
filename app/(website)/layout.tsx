@@ -2,6 +2,7 @@ import { Suspense } from "react"
 
 import { Footer } from "@/components/footer"
 import { WebNavBar } from "@/components/web-nav-bar"
+import { FloatingWhatsapp } from "@/components/floating-whatsapp"
 
 export default function WebsiteLayout({
   children,
@@ -17,6 +18,8 @@ export default function WebsiteLayout({
       <main className="flex-1">{children}</main>
 
       <Footer />
+
+      <FloatingWhatsapp />
     </div>
   )
 }

@@ -16,7 +16,7 @@ export function FloatingWhatsapp() {
       if (!isDismissed) {
         setIsOpen(true)
       }
-    }, 2500)
+    }, 5000)
     return () => clearTimeout(timer)
   }, [isDismissed])
 

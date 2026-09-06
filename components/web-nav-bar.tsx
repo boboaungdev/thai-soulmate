@@ -114,7 +114,7 @@ export function WebNavBar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       {/* Radiant Bottom Border Accent */}
-      <div className="pointer-events-none absolute bottom-0 right-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-[#D3A753]/35 to-transparent" />
+      <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-[#D3A753]/35 to-transparent" />
 
       <div className="mx-auto flex min-h-16 w-full max-w-7xl items-center gap-2 px-4 py-3 sm:px-6 md:min-h-18 md:gap-3 md:py-0 lg:px-8">
         <Link

@@ -263,7 +263,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             Prefix
           </Label>
           <Select
-            value={data.prefix}
+            value={data.prefix || undefined}
             onValueChange={(val) => {
               const updates: Partial<ApplicationFormData> = { prefix: val }
               if (val === "Mr.") {
@@ -279,7 +279,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             }}
           >
             <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
-              <SelectValue placeholder="Prefix" />
+              <SelectValue placeholder="Select prefix..." />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Mr.">Mr.</SelectItem>
@@ -361,7 +361,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             Gender
           </Label>
           <Select
-            value={data.gender}
+            value={data.gender || undefined}
             onValueChange={(val) => {
               const updates: Partial<ApplicationFormData> = { gender: val }
               if (val === "Male") {
@@ -378,7 +378,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             }}
           >
             <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
-              <SelectValue placeholder="Gender" />
+              <SelectValue placeholder="Select gender..." />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Male">Male</SelectItem>
@@ -495,11 +495,11 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             Religion
           </Label>
           <Select
-            value={data.religion}
+            value={data.religion || undefined}
             onValueChange={(val) => onChange({ religion: val })}
           >
             <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
-              <SelectValue placeholder="Religion" />
+              <SelectValue placeholder="Select religion..." />
             </SelectTrigger>
             <SelectContent>
               {RELIGIONS.map((r) => (

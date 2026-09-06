@@ -110,8 +110,8 @@ export const INITIAL_APPLICATION_FORM_DATA: ApplicationFormData = {
   idealPartnerMaxAge: 40,
   idealPartnerMinHeight: 155,
   idealPartnerMaxHeight: 175,
-  idealPartnerLocation: "Asia",
-  idealPartnerNationality: "Asian",
+  idealPartnerLocation: "",
+  idealPartnerNationality: "",
   dealBreakers: [],
 
   headshotUrl: null,

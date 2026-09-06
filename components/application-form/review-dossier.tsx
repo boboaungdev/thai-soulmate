@@ -425,7 +425,13 @@ export function ReviewDossier({
           <div>
             <span className="text-muted-foreground">Preferred Location:</span>
             <p className="font-semibold text-foreground">
-              {data.idealPartnerLocation}
+              {data.idealPartnerLocation || "Any"}
+            </p>
+          </div>
+          <div>
+            <span className="text-muted-foreground">Preferred Nationality:</span>
+            <p className="font-semibold text-foreground">
+              {data.idealPartnerNationality || "Any"}
             </p>
           </div>
         </div>

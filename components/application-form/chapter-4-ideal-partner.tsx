@@ -218,11 +218,11 @@ export function Chapter4IdealPartner({
             Ideal Timeline to Settle Down
           </Label>
           <Select
-            value={data.settleDown}
+            value={data.settleDown || undefined}
             onValueChange={(val) => onChange({ settleDown: val })}
           >
             <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
-              <SelectValue />
+              <SelectValue placeholder="Select timeline..." />
             </SelectTrigger>
             <SelectContent>
               {TIMELINE_OPTIONS.map((opt) => (
@@ -240,11 +240,11 @@ export function Chapter4IdealPartner({
             Relocation Willingness
           </Label>
           <Select
-            value={data.relocate}
+            value={data.relocate || undefined}
             onValueChange={(val) => onChange({ relocate: val })}
           >
             <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
-              <SelectValue />
+              <SelectValue placeholder="Select relocation preference..." />
             </SelectTrigger>
             <SelectContent>
               {RELOCATION_OPTIONS.map((opt) => (
@@ -340,11 +340,11 @@ export function Chapter4IdealPartner({
             Preferred Partner Location
           </Label>
           <Select
-            value={data.idealPartnerLocation || "Asia"}
+            value={data.idealPartnerLocation || undefined}
             onValueChange={(val) => onChange({ idealPartnerLocation: val })}
           >
             <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
-              <SelectValue placeholder="Select preferred location" />
+              <SelectValue placeholder="Select preferred location..." />
             </SelectTrigger>
             <SelectContent>
               {IDEAL_PARTNER_LOCATIONS.map((loc) => (
@@ -361,11 +361,11 @@ export function Chapter4IdealPartner({
             Preferred Nationality
           </Label>
           <Select
-            value={data.idealPartnerNationality || "Asian"}
+            value={data.idealPartnerNationality || undefined}
             onValueChange={(val) => onChange({ idealPartnerNationality: val })}
           >
             <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
-              <SelectValue placeholder="Select preferred nationality" />
+              <SelectValue placeholder="Select preferred nationality..." />
             </SelectTrigger>
             <SelectContent>
               {IDEAL_PARTNER_NATIONALITIES.map((nat) => (

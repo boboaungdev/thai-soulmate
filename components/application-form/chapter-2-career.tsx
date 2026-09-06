@@ -124,7 +124,7 @@ export function Chapter2Career({
             Education Level <span className="text-[#CA617D]">*</span>
           </Label>
           <Select
-            value={data.education}
+            value={data.education || undefined}
             onValueChange={(val) => {
               onChange({ education: val })
               if (touched) validate()
@@ -138,7 +138,7 @@ export function Chapter2Career({
                   "border-destructive ring-1 ring-destructive"
               )}
             >
-              <SelectValue placeholder="Select Education" />
+              <SelectValue placeholder="Select education level..." />
             </SelectTrigger>
             <SelectContent>
               {EDUCATION_LEVELS.map((edu) => (
@@ -335,11 +335,11 @@ export function Chapter2Career({
               <span>Smoking</span>
             </span>
             <Select
-              value={data.smoking}
+              value={data.smoking || undefined}
               onValueChange={(val) => onChange({ smoking: val })}
             >
               <SelectTrigger className="h-8 bg-card text-xs">
-                <SelectValue />
+                <SelectValue placeholder="Select habit..." />
               </SelectTrigger>
               <SelectContent>
                 {SMOKING_HABITS.map((opt) => (
@@ -358,11 +358,11 @@ export function Chapter2Career({
               <span>Alcohol</span>
             </span>
             <Select
-              value={data.drinking}
+              value={data.drinking || undefined}
               onValueChange={(val) => onChange({ drinking: val })}
             >
               <SelectTrigger className="h-8 bg-card text-xs">
-                <SelectValue />
+                <SelectValue placeholder="Select habit..." />
               </SelectTrigger>
               <SelectContent>
                 {DRINKING_HABITS.map((opt) => (
@@ -381,11 +381,11 @@ export function Chapter2Career({
               <span>Exercise</span>
             </span>
             <Select
-              value={data.exercise}
+              value={data.exercise || undefined}
               onValueChange={(val) => onChange({ exercise: val })}
             >
               <SelectTrigger className="h-8 bg-card text-xs">
-                <SelectValue />
+                <SelectValue placeholder="Select routine..." />
               </SelectTrigger>
               <SelectContent>
                 {EXERCISE_HABITS.map((opt) => (

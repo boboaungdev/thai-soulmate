@@ -174,7 +174,7 @@ export function Chapter3Personality({
               Do you have children?
             </Label>
             <Select
-              value={data.hasChildren}
+              value={data.hasChildren || undefined}
               onValueChange={(val) =>
                 onChange({
                   hasChildren: val,
@@ -183,7 +183,7 @@ export function Chapter3Personality({
               }
             >
               <SelectTrigger className="h-9 bg-background text-xs">
-                <SelectValue />
+                <SelectValue placeholder="Select option..." />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="No">No Children</SelectItem>
@@ -199,13 +199,13 @@ export function Chapter3Personality({
                 How many children?
               </Label>
               <Select
-                value={String(data.childrenCount || 1)}
+                value={data.childrenCount ? String(data.childrenCount) : undefined}
                 onValueChange={(val) =>
                   onChange({ childrenCount: Number(val) })
                 }
               >
                 <SelectTrigger className="h-9 bg-background text-xs">
-                  <SelectValue />
+                  <SelectValue placeholder="Select count..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="1">1 Child</SelectItem>
@@ -223,11 +223,11 @@ export function Chapter3Personality({
               Desire for future children?
             </Label>
             <Select
-              value={data.futureChildren}
+              value={data.futureChildren || undefined}
               onValueChange={(val) => onChange({ futureChildren: val })}
             >
               <SelectTrigger className="h-9 bg-background text-xs">
-                <SelectValue />
+                <SelectValue placeholder="Select desire..." />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Yes">Yes, would love to</SelectItem>
@@ -243,11 +243,11 @@ export function Chapter3Personality({
               Importance of Family
             </Label>
             <Select
-              value={data.familyImportance}
+              value={data.familyImportance || undefined}
               onValueChange={(val) => onChange({ familyImportance: val })}
             >
               <SelectTrigger className="h-9 bg-background text-xs">
-                <SelectValue />
+                <SelectValue placeholder="Select importance..." />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Very Important">Very Important</SelectItem>

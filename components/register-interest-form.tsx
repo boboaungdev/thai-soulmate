@@ -417,11 +417,11 @@ export function RegisterInterestForm() {
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        value={field.value}
+                        value={field.value || undefined}
                       >
                         <FormControl>
                           <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
-                            <SelectValue placeholder="Prefix" />
+                            <SelectValue placeholder="Select prefix..." />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -507,11 +507,11 @@ export function RegisterInterestForm() {
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        value={field.value}
+                        value={field.value || undefined}
                       >
                         <FormControl>
                           <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
-                            <SelectValue placeholder="Gender" />
+                            <SelectValue placeholder="Select gender..." />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>

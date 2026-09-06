@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-lg border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground data-[placeholder]:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30 [&>span]:line-clamp-1",
+      "flex h-10 w-full items-center justify-between rounded-lg border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground dark:bg-input/30 [&>span]:line-clamp-1",
       "group-data-[slot=input-group]:h-8 group-data-[slot=input-group]:flex-1 group-data-[slot=input-group]:rounded-none group-data-[slot=input-group]:border-0 group-data-[slot=input-group]:!bg-transparent group-data-[slot=input-group]:px-2.5 group-data-[slot=input-group]:py-1 group-data-[slot=input-group]:text-base group-data-[slot=input-group]:shadow-none group-data-[slot=input-group]:ring-0 group-data-[slot=input-group]:focus-visible:ring-0 group-data-[slot=input-group]:disabled:bg-transparent group-data-[slot=input-group]:aria-invalid:ring-0 group-data-[slot=input-group]:md:text-sm group-data-[slot=input-group]:dark:bg-transparent group-data-[slot=input-group]:dark:disabled:bg-transparent",
       className
     )}

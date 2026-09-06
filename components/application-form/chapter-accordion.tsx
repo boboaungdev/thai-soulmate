@@ -64,10 +64,16 @@ export function ChapterAccordion({
           data.idealPartnerMaxAge >= 70 ? "70+" : data.idealPartnerMaxAge
         return `Seeking: ${data.relationshipGoal || "Marriage"} · Partner Age ${data.idealPartnerMinAge}–${ageMax}`
       }
-      case 5:
-        return data.headshotUrl
-          ? "Primary photos uploaded & verified"
-          : "Pending upload"
+      case 5: {
+        const photoCount = [
+          data.headshotUrl,
+          data.fullLengthUrl,
+          data.casualLifestyleUrl,
+        ].filter(Boolean).length
+        return photoCount === 3
+          ? "All 3 verified photos uploaded"
+          : `${photoCount}/3 photos uploaded (3 required)`
+      }
       default:
         return ""
     }

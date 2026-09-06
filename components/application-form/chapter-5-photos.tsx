@@ -67,13 +67,68 @@ export function Chapter5Photos({
     e.target.value = ""
   }
 
+  const uploadedCount = [
+    data.headshotUrl,
+    data.fullLengthUrl,
+    data.casualLifestyleUrl,
+  ].filter(Boolean).length
+
   const handleCropComplete = (file: File, previewUrl: string) => {
+    const updates: Partial<ApplicationFormData> = {}
     if (activeSlot === "headshot") {
-      onChange({ headshotUrl: previewUrl })
+      updates.headshotUrl = previewUrl
     } else if (activeSlot === "fullLength") {
-      onChange({ fullLengthUrl: previewUrl })
+      updates.fullLengthUrl = previewUrl
     } else if (activeSlot === "casualLifestyle") {
-      onChange({ casualLifestyleUrl: previewUrl })
+      updates.casualLifestyleUrl = previewUrl
+    }
+    onChange(updates)
+
+    if (touched) {
+      const nextHeadshot =
+        activeSlot === "headshot" ? previewUrl : data.headshotUrl
+      const nextFull =
+        activeSlot === "fullLength" ? previewUrl : data.fullLengthUrl
+      const nextLifestyle =
+        activeSlot === "casualLifestyle" ? previewUrl : data.casualLifestyleUrl
+      const missing: string[] = []
+      if (!nextHeadshot) missing.push("1. Primary Headshot")
+      if (!nextFull) missing.push("2. Full Length / Posture")
+      if (!nextLifestyle) missing.push("3. Lifestyle / Social")
+
+      setErrors((prev) => {
+        const next = { ...prev }
+        if (missing.length === 0) {
+          delete next.photos
+        } else {
+          next.photos = `Please upload all 3 verified photographs (${3 - missing.length}/3 uploaded). Missing: ${missing.join(", ")}.`
+        }
+        return next
+      })
+    }
+  }
+
+  const handleRemovePhoto = (slot: PhotoSlot) => {
+    const updates: Partial<ApplicationFormData> = {}
+    if (slot === "headshot") updates.headshotUrl = null
+    else if (slot === "fullLength") updates.fullLengthUrl = null
+    else if (slot === "casualLifestyle") updates.casualLifestyleUrl = null
+    onChange(updates)
+
+    if (touched) {
+      const nextHeadshot = slot === "headshot" ? null : data.headshotUrl
+      const nextFull = slot === "fullLength" ? null : data.fullLengthUrl
+      const nextLifestyle =
+        slot === "casualLifestyle" ? null : data.casualLifestyleUrl
+      const missing: string[] = []
+      if (!nextHeadshot) missing.push("1. Primary Headshot")
+      if (!nextFull) missing.push("2. Full Length / Posture")
+      if (!nextLifestyle) missing.push("3. Lifestyle / Social")
+
+      setErrors((prev) => ({
+        ...prev,
+        photos: `Please upload all 3 verified photographs (${3 - missing.length}/3 uploaded). Missing: ${missing.join(", ")}.`,
+      }))
     }
   }
 
@@ -95,9 +150,13 @@ export function Chapter5Photos({
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
-    if (!data.headshotUrl && !data.fullLengthUrl) {
-      newErrors.photos =
-        "Please upload at least one verified photograph (Headshot or Full Length)."
+    const missing: string[] = []
+    if (!data.headshotUrl) missing.push("1. Primary Headshot")
+    if (!data.fullLengthUrl) missing.push("2. Full Length / Posture")
+    if (!data.casualLifestyleUrl) missing.push("3. Lifestyle / Social")
+
+    if (missing.length > 0) {
+      newErrors.photos = `Please upload all 3 verified photographs (${3 - missing.length}/3 uploaded). Missing: ${missing.join(", ")}.`
     }
     if (!data.agreedToTruth) {
       newErrors.agreedToTruth = "Please certify the accuracy of your details."
@@ -115,7 +174,7 @@ export function Chapter5Photos({
     const isValid = validate()
     if (!isValid) {
       toast.error(
-        "Please provide at least one photo and accept both declarations."
+        "Please upload all 3 verified photographs and accept both declarations."
       )
       return
     }
@@ -126,14 +185,28 @@ export function Chapter5Photos({
     <div className="space-y-6 pt-2">
       {/* SECTION HEADER & GUIDELINES */}
       <div className="space-y-2 rounded-2xl border border-[#D3A753]/30 bg-[#D3A753]/5 p-4">
-        <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
-          <Camera className="size-4" />
-          <span>Profile Photography Guidelines</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
+            <Camera className="size-4" />
+            <span>Profile Photography Guidelines</span>
+          </div>
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors",
+              uploadedCount === 3
+                ? "border border-emerald-500/30 bg-emerald-500/15 text-emerald-500"
+                : "border border-[#D3A753]/30 bg-[#D3A753]/15 text-[#D3A753]"
+            )}
+          >
+            {uploadedCount}/3 Photos Uploaded
+          </span>
         </div>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          Real human introductions require verified, clear photographs. We
-          recommend well-lit photos with a warm smile. Please avoid sunglasses,
-          heavy filters, or group photos where you cannot be identified.
+          All 3 verified photographs are strictly required to proceed with your
+          application (Headshot, Full Length Posture, and Lifestyle/Casual). We
+          recommend natural, well-lit photos with a warm smile. Please avoid
+          sunglasses, heavy filters, or group photos where you cannot be
+          identified.
         </p>
       </div>
 
@@ -144,7 +217,9 @@ export function Chapter5Photos({
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
               <Star className="size-3 fill-[#D3A753] text-[#D3A753]" />
-              <span>1. Primary Headshot</span>
+              <span>
+                1. Primary Headshot <span className="text-[#CA617D]">*</span>
+              </span>
             </span>
             <span className="rounded-md border border-[#D3A753]/30 bg-[#D3A753]/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-[#D3A753]">
               1:1
@@ -156,7 +231,9 @@ export function Chapter5Photos({
               "relative flex aspect-square w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all duration-200",
               data.headshotUrl
                 ? "border-[#D3A753] bg-black/60 shadow-md"
-                : "border-border/70 bg-card/40 hover:border-[#D3A753]/60 hover:bg-card/70"
+                : touched && !data.headshotUrl
+                  ? "border-destructive bg-card/40 ring-1 ring-destructive"
+                  : "border-border/70 bg-card/40 hover:border-[#D3A753]/60 hover:bg-card/70"
             )}
           >
             {data.headshotUrl ? (
@@ -188,7 +265,7 @@ export function Chapter5Photos({
                     type="button"
                     size="sm"
                     variant="destructive"
-                    onClick={() => onChange({ headshotUrl: null })}
+                    onClick={() => handleRemovePhoto("headshot")}
                     className="h-7 gap-1 text-xs"
                   >
                     <Trash2 className="size-3" />
@@ -232,7 +309,7 @@ export function Chapter5Photos({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-foreground">
-              2. Full Length / Posture
+              2. Full Length / Posture <span className="text-[#CA617D]">*</span>
             </span>
             <span className="rounded-md border border-[#D3A753]/30 bg-[#D3A753]/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-[#D3A753]">
               3:4
@@ -244,7 +321,9 @@ export function Chapter5Photos({
               "relative flex aspect-square w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all duration-200",
               data.fullLengthUrl
                 ? "border-[#D3A753] bg-black/60 shadow-md"
-                : "border-border/70 bg-card/40 hover:border-[#D3A753]/60 hover:bg-card/70"
+                : touched && !data.fullLengthUrl
+                  ? "border-destructive bg-card/40 ring-1 ring-destructive"
+                  : "border-border/70 bg-card/40 hover:border-[#D3A753]/60 hover:bg-card/70"
             )}
           >
             {data.fullLengthUrl ? (
@@ -276,7 +355,7 @@ export function Chapter5Photos({
                     type="button"
                     size="sm"
                     variant="destructive"
-                    onClick={() => onChange({ fullLengthUrl: null })}
+                    onClick={() => handleRemovePhoto("fullLength")}
                     className="h-7 gap-1 text-xs"
                   >
                     <Trash2 className="size-3" />
@@ -320,7 +399,7 @@ export function Chapter5Photos({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-foreground">
-              3. Lifestyle / Social
+              3. Lifestyle / Social <span className="text-[#CA617D]">*</span>
             </span>
             <span className="rounded-md border border-[#D3A753]/30 bg-[#D3A753]/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-[#D3A753]">
               4:3
@@ -332,7 +411,9 @@ export function Chapter5Photos({
               "relative flex aspect-square w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all duration-200",
               data.casualLifestyleUrl
                 ? "border-[#D3A753] bg-black/60 shadow-md"
-                : "border-border/70 bg-card/40 hover:border-[#D3A753]/60 hover:bg-card/70"
+                : touched && !data.casualLifestyleUrl
+                  ? "border-destructive bg-card/40 ring-1 ring-destructive"
+                  : "border-border/70 bg-card/40 hover:border-[#D3A753]/60 hover:bg-card/70"
             )}
           >
             {data.casualLifestyleUrl ? (
@@ -364,7 +445,7 @@ export function Chapter5Photos({
                     type="button"
                     size="sm"
                     variant="destructive"
-                    onClick={() => onChange({ casualLifestyleUrl: null })}
+                    onClick={() => handleRemovePhoto("casualLifestyle")}
                     className="h-7 gap-1 text-xs"
                   >
                     <Trash2 className="size-3" />

@@ -65,6 +65,18 @@ export function ReviewDossier({
       return
     }
 
+    const photoCount = [
+      data.headshotUrl,
+      data.fullLengthUrl,
+      data.casualLifestyleUrl,
+    ].filter(Boolean).length
+
+    if (photoCount < 3) {
+      toast.error("Please upload all 3 verified photographs before submitting.")
+      onEditChapter(5)
+      return
+    }
+
     onSubmitFinal()
   }
 
@@ -429,7 +441,9 @@ export function ReviewDossier({
             </p>
           </div>
           <div>
-            <span className="text-muted-foreground">Preferred Nationality:</span>
+            <span className="text-muted-foreground">
+              Preferred Nationality:
+            </span>
             <p className="font-semibold text-foreground">
               {data.idealPartnerNationality || "Any"}
             </p>
@@ -443,7 +457,7 @@ export function ReviewDossier({
           <div className="flex items-center gap-2">
             <Camera className="size-4 text-[#D3A753]" />
             <h3 className="text-sm font-bold text-foreground">
-              5. Photographs Uploaded
+              5. Photographs Uploaded (3 Verified)
             </h3>
           </div>
           <Button

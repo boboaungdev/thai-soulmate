@@ -407,7 +407,7 @@ export function Chapter4IdealPartner({
           type="button"
           variant="outline"
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 h-10 px-5 text-xs sm:text-sm"
+          className="inline-flex h-10 items-center gap-1.5 px-5 text-xs sm:text-sm"
         >
           <ChevronLeft className="size-4" />
           <span>Back to Personality</span>
@@ -416,7 +416,7 @@ export function Chapter4IdealPartner({
         <Button
           type="button"
           onClick={handleNextClick}
-          className="btn-gradient inline-flex items-center gap-1.5 h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
+          className="btn-gradient inline-flex h-10 items-center gap-1.5 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
           <span>Continue to Verified Photos</span>
           <ChevronRight className="size-4" />

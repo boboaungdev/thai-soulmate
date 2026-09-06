@@ -104,6 +104,11 @@ export function Chapter3Personality({
     if (data.interests.length !== 5) {
       newErrors.interests = `Please select exactly 5 hobbies & interests (${data.interests.length}/5 selected).`
     }
+    const bio = (data.about || "").trim()
+    if (!bio || bio.length < 10) {
+      newErrors.about =
+        "Please write a brief bio about yourself (minimum 10 characters)."
+    }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -146,7 +151,7 @@ export function Chapter3Personality({
     const isValid = validate()
     if (!isValid) {
       toast.error(
-        "Please select exactly 5 items for personality, values, and interests."
+        "Please complete all required fields (select 5 traits, 5 values, 5 hobbies, and write a bio of at least 10 characters)."
       )
       return
     }
@@ -428,7 +433,8 @@ export function Chapter3Personality({
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-            A Few Words About Yourself (Bio)
+            A Few Words About Yourself (Bio){" "}
+            <span className="text-[#CA617D]">*</span>
           </Label>
           <span
             className={cn(
@@ -449,15 +455,35 @@ export function Chapter3Personality({
           onChange={(e) => {
             const text = e.target.value.slice(0, 300)
             onChange({ about: text })
+            if (touched) {
+              setErrors((prev) => {
+                const next = { ...prev }
+                if (text.trim().length >= 10) {
+                  delete next.about
+                } else {
+                  next.about =
+                    "Please write a brief bio about yourself (minimum 10 characters)."
+                }
+                return next
+              })
+            }
           }}
           rows={3}
-          placeholder="Share a little about what brings you joy, your passions, or what you enjoy doing on relaxed weekends..."
+          placeholder="Share a little about what brings you joy, your passions, or what you enjoy doing on relaxed weekends (min. 10 characters)..."
           className={cn(
             "bg-background text-xs sm:text-sm",
-            (data.about || "").length >= 300 &&
-              "border-[#CA617D]/60 ring-1 ring-[#CA617D]/30"
+            touched && errors.about
+              ? "border-destructive ring-1 ring-destructive"
+              : (data.about || "").length >= 300 &&
+                  "border-[#CA617D]/60 ring-1 ring-[#CA617D]/30"
           )}
         />
+        {touched && errors.about && (
+          <p className="flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.about}</span>
+          </p>
+        )}
         <div className="flex flex-wrap items-center justify-between gap-1 text-[11px]">
           <p className="text-muted-foreground">
             This helps your matchmaker introduce you warmly and authentically to
@@ -477,7 +503,7 @@ export function Chapter3Personality({
           type="button"
           variant="outline"
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 h-10 px-5 text-xs sm:text-sm"
+          className="inline-flex h-10 items-center gap-1.5 px-5 text-xs sm:text-sm"
         >
           <ChevronLeft className="size-4" />
           <span>Back to Career</span>
@@ -486,7 +512,7 @@ export function Chapter3Personality({
         <Button
           type="button"
           onClick={handleNextClick}
-          className="btn-gradient inline-flex items-center gap-1.5 h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
+          className="btn-gradient inline-flex h-10 items-center gap-1.5 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
           <span>Continue to Ideal Partner</span>
           <ChevronRight className="size-4" />

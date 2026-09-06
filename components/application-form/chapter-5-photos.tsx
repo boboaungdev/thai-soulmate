@@ -488,7 +488,7 @@ export function Chapter5Photos({
           type="button"
           variant="outline"
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 h-10 px-5 text-xs sm:text-sm"
+          className="inline-flex h-10 items-center gap-1.5 px-5 text-xs sm:text-sm"
         >
           <ChevronLeft className="size-4" />
           <span>Back to Partner Criteria</span>
@@ -497,7 +497,7 @@ export function Chapter5Photos({
         <Button
           type="button"
           onClick={handleReviewClick}
-          className="btn-gradient inline-flex items-center gap-1.5 h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
+          className="btn-gradient inline-flex h-10 items-center gap-1.5 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
           <span>Submit &amp; Review Application</span>
           <ChevronRight className="size-4" />

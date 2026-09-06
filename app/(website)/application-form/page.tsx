@@ -45,6 +45,7 @@ function ApplicationFormContent() {
     number | string | undefined
   >()
   const [submittedStatus, setSubmittedStatus] = useState<string>("RECEIVED")
+  const [isExistingSubmission, setIsExistingSubmission] = useState(false)
   const [activeChapter, setActiveChapter] = useState<number>(1)
 
   // 1. Check email in searchParams or on manual search
@@ -53,6 +54,7 @@ function ApplicationFormContent() {
       setLead(null)
       setSearchedEmail(null)
       setNotFound(false)
+      setIsExistingSubmission(false)
       return
     }
 
@@ -66,7 +68,41 @@ function ApplicationFormContent() {
       )
       const data = await res.json()
 
+      // If user has ALREADY submitted an application form, show status immediately
+      if (res.ok && data.hasApplication && data.application) {
+        const app = data.application
+        const personal = (app.personalDetails || {}) as any
+        const applicantName =
+          personal.name ||
+          [personal.firstName, personal.lastName].filter(Boolean).join(" ") ||
+          ""
+
+        // Clear any old local draft
+        try {
+          localStorage.removeItem("tsm_app_form_draft")
+        } catch {
+          // ignore
+        }
+
+        setSubmittedCustomId(app.customId)
+        setSubmittedStatus(app.status || "RECEIVED")
+        setIsExistingSubmission(true)
+        if (applicantName) {
+          setFormData((prev) => ({
+            ...prev,
+            name: applicantName,
+            email: emailToCheck,
+          }))
+        }
+        setLead(null)
+        setNotFound(false)
+        setStage("thank-you")
+        return
+      }
+
+      // If consultation interest is registered but application form not yet filled
       if (res.ok && data.exists && data.interest) {
+        setIsExistingSubmission(false)
         const interest = data.interest
         const parsedLead: RegisterInterestLead = {
           id: interest.id,
@@ -130,6 +166,7 @@ function ApplicationFormContent() {
       } else {
         setLead(null)
         setNotFound(true)
+        setIsExistingSubmission(false)
       }
     } catch (err) {
       console.error("Error checking register interest:", err)
@@ -353,6 +390,22 @@ function ApplicationFormContent() {
         }
         setSubmittedCustomId(result.application?.customId)
         setSubmittedStatus(result.application?.status || "RECEIVED")
+        setIsExistingSubmission(false)
+        setStage("thank-you")
+        window.scrollTo({ top: 0, behavior: "instant" })
+      } else if (response.status === 409 && result.application) {
+        toast.info(
+          result.message ||
+            "An application has already been submitted with this email address."
+        )
+        try {
+          localStorage.removeItem("tsm_app_form_draft")
+        } catch {
+          // ignore
+        }
+        setSubmittedCustomId(result.application?.customId)
+        setSubmittedStatus(result.application?.status || "RECEIVED")
+        setIsExistingSubmission(true)
         setStage("thank-you")
         window.scrollTo({ top: 0, behavior: "instant" })
       } else {
@@ -469,12 +522,13 @@ function ApplicationFormContent() {
           />
         )}
 
-        {/* STAGE 4: THANK YOU CELEBRATION */}
+        {/* STAGE 4: THANK YOU CELEBRATION / STATUS VIEW */}
         {stage === "thank-you" && (
           <ThankYouScreen
             status={submittedStatus}
             customId={submittedCustomId}
             applicantName={formData.name}
+            isExisting={isExistingSubmission}
           />
         )}
       </div>

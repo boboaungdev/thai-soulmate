@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
-    const email = searchParams.get("email")
+    const email = searchParams.get("email")?.trim()
 
     if (!email) {
       return NextResponse.json(
@@ -13,19 +13,70 @@ export async function GET(req: Request) {
       )
     }
 
-    const existingInterest = await prisma.registerInterest.findUnique({
+    const normalizedEmail = email.toLowerCase()
+
+    // 1. Check if an application form has already been submitted for this email
+    let existingApplication = await prisma.applicationForm.findFirst({
       where: {
-        email: email,
+        personalDetails: {
+          path: ["email"],
+          equals: normalizedEmail,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        customId: true,
+        status: true,
+        personalDetails: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    })
+
+    if (!existingApplication) {
+      existingApplication = await prisma.applicationForm.findFirst({
+        where: {
+          personalDetails: {
+            path: ["email"],
+            equals: email,
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          customId: true,
+          status: true,
+          personalDetails: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      })
+    }
+
+    // 2. Check register interest records
+    const existingInterest = await prisma.registerInterest.findFirst({
+      where: {
+        OR: [{ email: normalizedEmail }, { email: email }],
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     })
 
     return NextResponse.json({
       success: true,
-      exists: !!existingInterest,
+      exists: !!existingApplication || !!existingInterest,
+      hasApplication: !!existingApplication,
+      application: existingApplication,
       interest: existingInterest,
     })
   } catch (error) {
-    console.error("REGISTER INTEREST CHECK ERROR:", error)
+    console.error("REGISTER INTEREST & APPLICATION CHECK ERROR:", error)
     return NextResponse.json(
       { success: false, message: "Failed to check email existence." },
       { status: 500 }

@@ -19,6 +19,7 @@ interface ThankYouScreenProps {
   status?: string
   customId?: number | string
   applicantName?: string
+  isExisting?: boolean
 }
 
 const STATUS_CONFIG: Record<
@@ -37,13 +38,13 @@ const STATUS_CONFIG: Record<
     iconClass: "text-[#D3A753]",
   },
   PENDING: {
-    label: "Pending",
+    label: "Pending Review",
     icon: Clock,
     badgeClass: "border-amber-500/40 bg-amber-500/10 text-amber-400",
     iconClass: "text-amber-400",
   },
   COMPLETED: {
-    label: "Completed",
+    label: "Completed & Verified",
     icon: CircleCheck,
     badgeClass: "border-emerald-500/40 bg-emerald-500/10 text-emerald-400",
     iconClass: "text-emerald-400",
@@ -66,20 +67,23 @@ export function ThankYouScreen({
   status = "RECEIVED",
   customId,
   applicantName,
+  isExisting = false,
 }: ThankYouScreenProps) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
-    try {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ["#D3A753", "#E791A7", "#CA617D"],
-      })
-    } catch {
-      // fallback if canvas-confetti unavailable
+    if (!isExisting) {
+      try {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#D3A753", "#E791A7", "#CA617D"],
+        })
+      } catch {
+        // fallback if canvas-confetti unavailable
+      }
     }
-  }, [])
+  }, [isExisting])
 
   const currentStatus = (status || "RECEIVED").toUpperCase()
   const statusInfo = STATUS_CONFIG[currentStatus] || STATUS_CONFIG.RECEIVED
@@ -93,12 +97,12 @@ export function ThankYouScreen({
       className="mx-auto w-full max-w-2xl overflow-hidden rounded-3xl border border-[#D3A753]/40 bg-gradient-to-br from-card via-card to-background p-6 text-center shadow-2xl backdrop-blur-md sm:p-10"
     >
       <div className="space-y-6">
-        {/* Celebration Icon */}
+        {/* Celebration / Status Icon */}
         <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753] ring-1 ring-[#D3A753]/40">
           <Sparkles className="size-8 text-[#CA617D]" />
         </div>
 
-        {/* Application Status Badge */}
+        {/* Real-time Status Badge */}
         <div
           className={cn(
             "inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold shadow-xs",
@@ -112,15 +116,30 @@ export function ThankYouScreen({
         {/* Heading */}
         <div className="space-y-2">
           <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-            Application Received with Discretion
+            {isExisting
+              ? "Your Application Status"
+              : "Application Received with Discretion"}
           </h1>
           <p className="mx-auto max-w-lg text-xs leading-relaxed text-muted-foreground sm:text-sm">
-            Thank you,{" "}
-            <span className="font-semibold text-foreground">
-              {applicantName || "for completing your profile"}
-            </span>
-            . Your comprehensive matchmaking application has been securely
-            transferred to our matchmaking team.
+            {isExisting ? (
+              <>
+                Welcome back,{" "}
+                <span className="font-semibold text-foreground">
+                  {applicantName || "Member"}
+                </span>
+                . Your matchmaking application is securely on file. Below is the
+                real-time status of your profile with our matchmaking team.
+              </>
+            ) : (
+              <>
+                Thank you,{" "}
+                <span className="font-semibold text-foreground">
+                  {applicantName || "for completing your profile"}
+                </span>
+                . Your comprehensive matchmaking application has been securely
+                transferred to our matchmaking team.
+              </>
+            )}
           </p>
         </div>
 
@@ -186,7 +205,9 @@ export function ThankYouScreen({
           </Button>
 
           <p className="text-xs text-muted-foreground">
-            A confirmation has also been dispatched to your email address.
+            {isExisting
+              ? "Our matchmaking team will reach out directly as compatible introductions become available."
+              : "A confirmation has also been dispatched to your email address."}
           </p>
         </div>
       </div>

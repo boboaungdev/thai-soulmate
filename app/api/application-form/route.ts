@@ -65,6 +65,33 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
+    // Enforce one application per applicant email
+    const email = body.details?.email?.trim()?.toLowerCase()
+    if (email) {
+      const alreadySubmitted = await prisma.applicationForm.findFirst({
+        where: {
+          personalDetails: {
+            path: ["email"],
+            equals: email,
+          },
+        },
+      })
+      if (alreadySubmitted) {
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              "An application form has already been submitted for this email address.",
+            application: {
+              customId: alreadySubmitted.customId,
+              status: alreadySubmitted.status,
+            },
+          },
+          { status: 409 }
+        )
+      }
+    }
+
     const application = await prisma.$transaction(async (tx) => {
       const application = await tx.applicationForm.create({
         data: {

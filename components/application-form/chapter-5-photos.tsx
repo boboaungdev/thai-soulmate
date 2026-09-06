@@ -496,7 +496,7 @@ export function Chapter5Photos({
           onClick={handleReviewClick}
           className="btn-gradient h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
-          Review My Application →
+          Submit &amp; Review Application →
         </Button>
       </div>
 

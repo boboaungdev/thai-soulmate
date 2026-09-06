@@ -93,14 +93,14 @@ export function Chapter3Personality({
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
-    if (data.personality.length === 0) {
-      newErrors.personality = "Please select at least 1 personality trait."
+    if (data.personality.length !== 5) {
+      newErrors.personality = `Please select exactly 5 personality traits (${data.personality.length}/5 selected).`
     }
-    if (data.values.length === 0) {
-      newErrors.values = "Please select at least 1 core value."
+    if (data.values.length !== 5) {
+      newErrors.values = `Please select exactly 5 core values (${data.values.length}/5 selected).`
     }
-    if (data.interests.length === 0) {
-      newErrors.interests = "Please select at least 1 hobby or interest."
+    if (data.interests.length !== 5) {
+      newErrors.interests = `Please select exactly 5 hobbies & interests (${data.interests.length}/5 selected).`
     }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -111,26 +111,31 @@ export function Chapter3Personality({
     item: string,
     key: "personality" | "values" | "interests"
   ) => {
-    const updated = list.includes(item)
+    const isSelected = list.includes(item)
+    if (!isSelected && list.length >= 5) {
+      return
+    }
+
+    const updated = isSelected
       ? list.filter((i) => i !== item)
       : [...list, item]
     onChange({ [key]: updated })
+
     if (touched) {
-      setTimeout(() => {
-        const newErrors = { ...errors }
-        if (updated.length > 0) {
-          delete newErrors[key]
+      setErrors((prev) => {
+        const next = { ...prev }
+        if (updated.length === 5) {
+          delete next[key]
         } else {
           if (key === "personality")
-            newErrors.personality =
-              "Please select at least 1 personality trait."
+            next.personality = `Please select exactly 5 personality traits (${updated.length}/5 selected).`
           if (key === "values")
-            newErrors.values = "Please select at least 1 core value."
+            next.values = `Please select exactly 5 core values (${updated.length}/5 selected).`
           if (key === "interests")
-            newErrors.interests = "Please select at least 1 hobby or interest."
+            next.interests = `Please select exactly 5 hobbies & interests (${updated.length}/5 selected).`
         }
-        setErrors(newErrors)
-      }, 0)
+        return next
+      })
     }
   }
 
@@ -138,7 +143,9 @@ export function Chapter3Personality({
     setTouched(true)
     const isValid = validate()
     if (!isValid) {
-      toast.error("Please complete all required fields correctly.")
+      toast.error(
+        "Please select exactly 5 items for personality, values, and interests."
+      )
       return
     }
     onNext()
@@ -250,21 +257,30 @@ export function Chapter3Personality({
       {/* SECTION 2: PERSONALITY TRAITS */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Top Personality Traits <span className="text-[#CA617D]">*</span>
           </Label>
-          <span className="text-xs text-muted-foreground">
-            Select 3–5 that best describe you
+          <span
+            className={cn(
+              "text-xs font-medium",
+              data.personality.length === 5
+                ? "text-[#D3A753]"
+                : "text-muted-foreground"
+            )}
+          >
+            Choose 5 ({data.personality.length}/5 selected)
           </span>
         </div>
 
         <div className="flex flex-wrap gap-2">
           {PERSONALITY_TRAITS.map((trait) => {
             const isSelected = data.personality.includes(trait)
+            const isDisabled = !isSelected && data.personality.length >= 5
             return (
               <button
                 key={trait}
                 type="button"
+                disabled={isDisabled}
                 onClick={() =>
                   toggleItem(data.personality, trait, "personality")
                 }
@@ -272,7 +288,9 @@ export function Chapter3Personality({
                   "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
                   isSelected
                     ? "border-[#D3A753] bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/15 to-[#CA617D]/15 text-foreground shadow-xs ring-1 ring-[#D3A753]/60"
-                    : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                    : isDisabled
+                      ? "cursor-not-allowed border-border/30 bg-card/30 text-muted-foreground/40 opacity-50"
+                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >
                 {isSelected ? (
@@ -296,27 +314,38 @@ export function Chapter3Personality({
       {/* SECTION 3: CORE VALUES */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Core Values You Live By <span className="text-[#CA617D]">*</span>
           </Label>
-          <span className="text-xs text-muted-foreground">
-            Select 3–5 core values
+          <span
+            className={cn(
+              "text-xs font-medium",
+              data.values.length === 5
+                ? "text-[#CA617D]"
+                : "text-muted-foreground"
+            )}
+          >
+            Choose 5 ({data.values.length}/5 selected)
           </span>
         </div>
 
         <div className="flex flex-wrap gap-2">
           {CORE_VALUES.map((val) => {
             const isSelected = data.values.includes(val)
+            const isDisabled = !isSelected && data.values.length >= 5
             return (
               <button
                 key={val}
                 type="button"
+                disabled={isDisabled}
                 onClick={() => toggleItem(data.values, val, "values")}
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
                   isSelected
                     ? "border-[#CA617D] bg-gradient-to-r from-[#CA617D]/20 to-[#D3A753]/15 text-foreground shadow-xs ring-1 ring-[#CA617D]/60"
-                    : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                    : isDisabled
+                      ? "cursor-not-allowed border-border/30 bg-card/30 text-muted-foreground/40 opacity-50"
+                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >
                 {isSelected ? (
@@ -340,28 +369,39 @@ export function Chapter3Personality({
       {/* SECTION 4: HOBBIES & INTERESTS */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Hobbies &amp; What You Enjoy{" "}
             <span className="text-[#CA617D]">*</span>
           </Label>
-          <span className="text-xs text-muted-foreground">
-            Select all that apply
+          <span
+            className={cn(
+              "text-xs font-medium",
+              data.interests.length === 5
+                ? "text-[#D3A753]"
+                : "text-muted-foreground"
+            )}
+          >
+            Choose 5 ({data.interests.length}/5 selected)
           </span>
         </div>
 
         <div className="flex flex-wrap gap-2">
           {HOBBIES_LIST.map((hobby) => {
             const isSelected = data.interests.includes(hobby)
+            const isDisabled = !isSelected && data.interests.length >= 5
             return (
               <button
                 key={hobby}
                 type="button"
+                disabled={isDisabled}
                 onClick={() => toggleItem(data.interests, hobby, "interests")}
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
                   isSelected
                     ? "border-[#D3A753] bg-[#D3A753]/20 text-foreground shadow-xs ring-1 ring-[#D3A753]/60"
-                    : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                    : isDisabled
+                      ? "cursor-not-allowed border-border/30 bg-card/30 text-muted-foreground/40 opacity-50"
+                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >
                 {isSelected ? (

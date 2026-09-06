@@ -301,18 +301,6 @@ function ApplicationFormContent() {
                 </h1>
               </div>
             </div>
-
-            <div className="flex items-center gap-2 self-end sm:self-center">
-              {stage === "form" && (
-                <button
-                  type="button"
-                  onClick={() => setStage("review")}
-                  className="rounded-lg border border-[#D3A753]/40 bg-[#D3A753]/10 px-3 py-1.5 text-xs font-semibold text-[#D3A753] transition-colors hover:bg-[#D3A753]/20"
-                >
-                  Preview Review Sheet →
-                </button>
-              )}
-            </div>
           </motion.div>
         )}
 

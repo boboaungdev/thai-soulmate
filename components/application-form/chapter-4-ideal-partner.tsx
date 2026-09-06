@@ -93,6 +93,10 @@ export function Chapter4IdealPartner({
       newErrors.relationshipGoal =
         "Please select what you are seeking in a partner."
     }
+    const qualities = data.dealBreakers || []
+    if (qualities.length !== 5) {
+      newErrors.dealBreakers = `Please select exactly 5 partner qualities (${qualities.length}/5 selected).`
+    }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -101,7 +105,9 @@ export function Chapter4IdealPartner({
     setTouched(true)
     const isValid = validate()
     if (!isValid) {
-      toast.error("Please select what you are seeking before continuing.")
+      toast.error(
+        "Please complete all required fields (select relationship goal and exactly 5 partner qualities)."
+      )
       return
     }
     onNext()
@@ -109,10 +115,27 @@ export function Chapter4IdealPartner({
 
   const toggleQuality = (quality: string) => {
     const list = data.dealBreakers || []
-    if (list.includes(quality)) {
-      onChange({ dealBreakers: list.filter((q) => q !== quality) })
-    } else {
-      onChange({ dealBreakers: [...list, quality] })
+    const isSelected = list.includes(quality)
+    if (!isSelected && list.length >= 5) {
+      return
+    }
+
+    const updated = isSelected
+      ? list.filter((q) => q !== quality)
+      : [...list, quality]
+
+    onChange({ dealBreakers: updated })
+
+    if (touched) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        if (updated.length === 5) {
+          delete next.dealBreakers
+        } else {
+          next.dealBreakers = `Please select exactly 5 partner qualities (${updated.length}/5 selected).`
+        }
+        return next
+      })
     }
   }
 
@@ -322,25 +345,40 @@ export function Chapter4IdealPartner({
       {/* SECTION 5: TOP QUALITIES SOUGHT */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Top Qualities You Value in a Partner
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
+            Top Qualities You Value in a Partner{" "}
+            <span className="text-[#CA617D]">*</span>
           </Label>
-          <span className="text-xs text-muted-foreground">Select top 3–5</span>
+          <span
+            className={cn(
+              "text-xs font-medium",
+              (data.dealBreakers || []).length === 5
+                ? "text-[#D3A753]"
+                : "text-muted-foreground"
+            )}
+          >
+            Choose 5 ({(data.dealBreakers || []).length}/5 selected)
+          </span>
         </div>
 
         <div className="flex flex-wrap gap-2">
           {PARTNER_QUALITIES.map((quality) => {
-            const isSelected = (data.dealBreakers || []).includes(quality)
+            const list = data.dealBreakers || []
+            const isSelected = list.includes(quality)
+            const isDisabled = !isSelected && list.length >= 5
             return (
               <button
                 key={quality}
                 type="button"
+                disabled={isDisabled}
                 onClick={() => toggleQuality(quality)}
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
                   isSelected
                     ? "border-[#D3A753] bg-gradient-to-r from-[#D3A753]/20 via-[#E791A7]/15 to-[#CA617D]/15 text-foreground shadow-xs ring-1 ring-[#D3A753]/60"
-                    : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                    : isDisabled
+                      ? "cursor-not-allowed border-border/30 bg-card/30 text-muted-foreground/40 opacity-50"
+                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >
                 {isSelected ? (
@@ -353,6 +391,12 @@ export function Chapter4IdealPartner({
             )
           })}
         </div>
+        {touched && errors.dealBreakers && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.dealBreakers}</span>
+          </p>
+        )}
       </div>
 
       {/* FOOTER ACTIONS */}

@@ -871,7 +871,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
         <Button
           type="button"
           onClick={handleNextClick}
-          className="btn-gradient inline-flex items-center gap-1.5 h-10 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
+          className="btn-gradient inline-flex h-10 items-center gap-1.5 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
           <span>Continue to Career &amp; Lifestyle</span>
           <ChevronRight className="size-4" />

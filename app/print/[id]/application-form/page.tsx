@@ -540,8 +540,14 @@ export default async function ApplicationFormPrintPage({
                       value: application.personality?.personality,
                     },
                     {
-                      label: "Best Qualities",
-                      value: application.personality?.bestQualities,
+                      label: "Core Values",
+                      value:
+                        (application.lifestyle?.values?.length
+                          ? application.lifestyle.values
+                          : null) ||
+                        (application.personality?.bestQualities?.length
+                          ? application.personality.bestQualities
+                          : null),
                     },
                     {
                       label: "Marital Status",
@@ -557,7 +563,13 @@ export default async function ApplicationFormPrintPage({
                     },
                     {
                       label: "Looking For Qualities",
-                      value: application.personality?.lookingForQualities,
+                      value:
+                        (application.personality?.lookingForQualities?.length
+                          ? application.personality.lookingForQualities
+                          : null) ||
+                        (application.idealPartner?.qualities?.length
+                          ? application.idealPartner.qualities
+                          : null),
                     },
                     {
                       label: "Lifestyle",

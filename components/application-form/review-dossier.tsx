@@ -45,6 +45,9 @@ export function ReviewDossier({
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [touched, setTouched] = useState(false)
 
+  const fullName =
+    [data.firstName, data.lastName].filter(Boolean).join(" ") || data.name || ""
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
   }, [])
@@ -69,6 +72,300 @@ export function ReviewDossier({
       return
     }
 
+    // 1. Chapter 1: Identity & Background
+    if (!data.prefix) {
+      toast.error("Please select your prefix in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    const fName = (
+      data.firstName || (data.name ? data.name.split(" ")[0] : "")
+    ).trim()
+    if (!fName || fName.length < 2) {
+      toast.error("Please enter your first name in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    const lName = (
+      data.lastName ||
+      (data.name ? data.name.split(" ").slice(1).join(" ") : "")
+    ).trim()
+    if (!lName || lName.length < 2) {
+      toast.error("Please enter your last name in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    if (!data.gender) {
+      toast.error("Please select your gender in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    if (
+      data.gender === "Female" &&
+      (!data.nickname || data.nickname.trim().length < 2)
+    ) {
+      toast.error(
+        "Please enter your nickname (at least 2 characters) in Chapter 1."
+      )
+      onEditChapter(1)
+      return
+    }
+
+    if (!data.dob) {
+      toast.error("Please select your date of birth in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    const birthDate = new Date(data.dob)
+    const ageDiffMs = Date.now() - birthDate.getTime()
+    const ageDate = new Date(ageDiffMs)
+    const age = Math.abs(ageDate.getUTCFullYear() - 1970)
+    if (isNaN(age) || age < 20) {
+      toast.error("Applicants must be at least 20 years old.")
+      onEditChapter(1)
+      return
+    }
+
+    if (!data.religion) {
+      toast.error("Please select your religion in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    if (!data.maritalStatus) {
+      toast.error("Please select your marital status in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    if (!data.currentLocation || !data.currentLocation.trim()) {
+      toast.error("Please select your current location in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    if (!data.nationality || !data.nationality.trim()) {
+      toast.error("Please select your nationality in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    if (!data.phoneCountry || !data.phoneCountry.trim()) {
+      toast.error("Please select your country code in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    if (!data.phone || data.phone.trim().length < 6) {
+      toast.error("Please enter a valid phone number in Chapter 1.")
+      onEditChapter(1)
+      return
+    }
+
+    // 2. Chapter 2: Career & Lifestyle
+    if (!data.education) {
+      toast.error("Please select your education level in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    if (!data.occupation || !data.occupation.trim()) {
+      toast.error("Please enter your occupation in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    if (!data.company || !data.company.trim()) {
+      toast.error("Please enter your company / industry in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    if (
+      data.ownProperty === "" ||
+      data.ownProperty === undefined ||
+      data.ownProperty === null
+    ) {
+      toast.error("Please specify whether you own property in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    if (
+      data.ownBusiness === "" ||
+      data.ownBusiness === undefined ||
+      data.ownBusiness === null
+    ) {
+      toast.error("Please specify whether you own a business in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    if (!data.smoking) {
+      toast.error("Please select your smoking habit in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    if (!data.drinking) {
+      toast.error("Please select your alcohol habit in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    if (!data.exercise) {
+      toast.error("Please select your exercise routine in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    if (!data.lifestyle) {
+      toast.error("Please select your primary lifestyle focus in Chapter 2.")
+      onEditChapter(2)
+      return
+    }
+
+    // 3. Chapter 3: Personality, Values & Family
+    if (!data.hasChildren) {
+      toast.error("Please specify whether you have children in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    if (
+      data.hasChildren === "Yes" &&
+      (!data.childrenCount || data.childrenCount < 1)
+    ) {
+      toast.error("Please select how many children you have in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    if (!data.futureChildren) {
+      toast.error("Please select desire for future children in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    if (!data.familyImportance) {
+      toast.error("Please select family importance in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    if ((data.personality || []).length !== 5) {
+      toast.error("Please select exactly 5 personality traits in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    if ((data.values || []).length !== 5) {
+      toast.error("Please select exactly 5 core values in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    if ((data.interests || []).length !== 5) {
+      toast.error("Please select exactly 5 hobbies & interests in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    if (
+      data.interests?.includes("Other") &&
+      (!data.otherInterest || !data.otherInterest.trim())
+    ) {
+      toast.error("Please specify your other interest in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    const destinationCount = (data.travelDestinations || []).filter(
+      (d) => d && d.trim().length > 0
+    ).length
+
+    if (destinationCount < 3) {
+      toast.error(
+        "Please enter all 3 favourite travel destinations in Chapter 3."
+      )
+      onEditChapter(3)
+      return
+    }
+
+    if (
+      !data.weekendActivity ||
+      !data.weekendActivity.trim() ||
+      data.weekendActivity === "Other"
+    ) {
+      toast.error("Please select your favourite weekend activity in Chapter 3.")
+      onEditChapter(3)
+      return
+    }
+
+    if (!data.about || data.about.trim().length < 10) {
+      toast.error(
+        "Please write a brief bio (minimum 10 characters) in Chapter 3."
+      )
+      onEditChapter(3)
+      return
+    }
+
+    // 4. Chapter 4: Ideal Partner Preferences
+    if (!data.relationshipGoal) {
+      toast.error(
+        "Please select what you are seeking in a partner in Chapter 4."
+      )
+      onEditChapter(4)
+      return
+    }
+
+    if (!data.settleDown || !data.settleDown.trim()) {
+      toast.error(
+        "Please select your ideal timeline to settle down in Chapter 4."
+      )
+      onEditChapter(4)
+      return
+    }
+
+    if (!data.relocate || !data.relocate.trim()) {
+      toast.error("Please select your relocation willingness in Chapter 4.")
+      onEditChapter(4)
+      return
+    }
+
+    if (!data.idealPartnerLocation || !data.idealPartnerLocation.trim()) {
+      toast.error("Please select your preferred partner location in Chapter 4.")
+      onEditChapter(4)
+      return
+    }
+
+    if (!data.idealPartnerNationality || !data.idealPartnerNationality.trim()) {
+      toast.error(
+        "Please select your preferred partner nationality in Chapter 4."
+      )
+      onEditChapter(4)
+      return
+    }
+
+    if ((data.lookingForQualities || []).length !== 5) {
+      toast.error("Please select exactly 5 partner qualities in Chapter 4.")
+      onEditChapter(4)
+      return
+    }
+
+    const dealBreakersCount = (data.dealBreakers || []).length
+    if (dealBreakersCount < 1 || dealBreakersCount > 3) {
+      toast.error("Please select 1 to 3 deal breakers in Chapter 4.")
+      onEditChapter(4)
+      return
+    }
+
+    // 5. Chapter 5: Photographs
     const photoCount = [
       data.headshotUrl,
       data.fullLengthUrl,
@@ -78,28 +375,6 @@ export function ReviewDossier({
     if (photoCount < 3) {
       toast.error("Please upload all 3 verified photographs before submitting.")
       onEditChapter(5)
-      return
-    }
-
-    const destinationCount = (data.travelDestinations || []).filter(
-      (d) => d && d.trim().length > 0
-    ).length
-
-    if (destinationCount < 3) {
-      toast.error("Please enter all 3 favourite travel destinations.")
-      onEditChapter(3)
-      return
-    }
-
-    if (!data.company?.trim()) {
-      toast.error("Please enter your company / industry.")
-      onEditChapter(2)
-      return
-    }
-
-    if (!data.relocate || !data.relocate.trim()) {
-      toast.error("Please select your relocation willingness.")
-      onEditChapter(4)
       return
     }
 
@@ -142,7 +417,7 @@ export function ReviewDossier({
                 <span>Confidential Matchmaking Dossier</span>
               </div>
               <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                {data.prefix} {data.name || "Member Applicant"}
+                {data.prefix} {fullName || "Member Applicant"}
               </h2>
               <p className="text-xs text-muted-foreground">
                 {data.gender} · Based in {data.currentLocation} · Seeking{" "}
@@ -190,7 +465,7 @@ export function ReviewDossier({
         <div className="grid grid-cols-2 gap-3 text-xs sm:grid-cols-3">
           <div>
             <span className="text-muted-foreground">Full Name:</span>
-            <p className="font-semibold text-foreground">{data.name}</p>
+            <p className="font-semibold text-foreground">{fullName}</p>
           </div>
           {data.nickname && (
             <div>
@@ -519,7 +794,7 @@ export function ReviewDossier({
           <div>
             <span className="text-muted-foreground">Preferred Location:</span>
             <p className="font-semibold text-foreground">
-              {data.idealPartnerLocation || "Any"}
+              {data.idealPartnerLocation || "—"}
             </p>
           </div>
           <div>
@@ -527,7 +802,7 @@ export function ReviewDossier({
               Preferred Nationality:
             </span>
             <p className="font-semibold text-foreground">
-              {data.idealPartnerNationality || "Any"}
+              {data.idealPartnerNationality || "—"}
             </p>
           </div>
         </div>

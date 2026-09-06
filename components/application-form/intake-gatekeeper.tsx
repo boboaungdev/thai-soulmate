@@ -77,7 +77,7 @@ export function IntakeGatekeeper({
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/40 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold text-[#D3A753]">
             <Sparkles className="size-3.5 text-[#D3A753]" />
-            <span>Verified Member Profile</span>
+            <span>Application Form</span>
           </div>
 
           {/* Heading */}
@@ -114,7 +114,7 @@ export function IntakeGatekeeper({
               <p className="flex items-center gap-1.5 text-xs font-medium text-foreground sm:text-sm">
                 <Heart className="size-3.5 text-[#CA617D]" />
                 <span className="truncate">
-                  {lead.relationshipGoal || "Marriage / Life Partner"}
+                  {lead.relationshipGoal || "Not specified"}
                 </span>
               </p>
             </div>
@@ -146,7 +146,7 @@ export function IntakeGatekeeper({
             <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
               <Lock className="size-3 text-[#D3A753]" />
               <span>
-                100% Confidential · Your details are never made public
+                100% Confidential · Your private details are never made public
               </span>
             </p>
           </div>

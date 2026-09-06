@@ -104,6 +104,32 @@ export function Chapter2Career({
     if (!data.company.trim()) {
       newErrors.company = "Please enter your company / industry."
     }
+    if (
+      data.ownProperty === "" ||
+      data.ownProperty === undefined ||
+      data.ownProperty === null
+    ) {
+      newErrors.ownProperty = "Please specify whether you own property."
+    }
+    if (
+      data.ownBusiness === "" ||
+      data.ownBusiness === undefined ||
+      data.ownBusiness === null
+    ) {
+      newErrors.ownBusiness = "Please specify whether you own a business."
+    }
+    if (!data.smoking) {
+      newErrors.smoking = "Please select your smoking habit."
+    }
+    if (!data.drinking) {
+      newErrors.drinking = "Please select your alcohol habit."
+    }
+    if (!data.exercise) {
+      newErrors.exercise = "Please select your exercise routine."
+    }
+    if (!data.lifestyle) {
+      newErrors.lifestyle = "Please select your primary lifestyle focus."
+    }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -227,7 +253,8 @@ export function Chapter2Career({
         {/* Owns Property */}
         <div className="space-y-1.5">
           <Label className="flex h-5 items-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Owns Property
+            <span>Owns Property</span>
+            <span className="ml-1 text-[#CA617D]">*</span>
           </Label>
           <div className="flex gap-2">
             {(["Yes", "No"] as const).map((opt) => {
@@ -239,12 +266,23 @@ export function Chapter2Career({
                 <button
                   key={opt}
                   type="button"
-                  onClick={() => onChange({ ownProperty: opt })}
+                  onClick={() => {
+                    onChange({ ownProperty: opt })
+                    if (touched) {
+                      setErrors((prev) => {
+                        const next = { ...prev }
+                        delete next.ownProperty
+                        return next
+                      })
+                    }
+                  }}
                   className={cn(
                     "flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border text-xs font-medium transition-all duration-200",
                     isSelected
                       ? "border-[#D3A753] bg-[#D3A753]/15 font-semibold text-[#D3A753] ring-1 ring-[#D3A753]/50"
-                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                      : touched && errors.ownProperty
+                        ? "border-destructive/60 bg-card/60 text-muted-foreground hover:border-destructive hover:text-foreground"
+                        : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                   )}
                 >
                   <Home className="size-3.5" />
@@ -253,12 +291,19 @@ export function Chapter2Career({
               )
             })}
           </div>
+          {touched && errors.ownProperty && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.ownProperty}</span>
+            </p>
+          )}
         </div>
 
         {/* Owns Business */}
         <div className="space-y-1.5">
           <Label className="flex h-5 items-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Owns Business
+            <span>Owns Business</span>
+            <span className="ml-1 text-[#CA617D]">*</span>
           </Label>
           <div className="flex gap-2">
             {(["Yes", "No"] as const).map((opt) => {
@@ -270,12 +315,23 @@ export function Chapter2Career({
                 <button
                   key={opt}
                   type="button"
-                  onClick={() => onChange({ ownBusiness: opt })}
+                  onClick={() => {
+                    onChange({ ownBusiness: opt })
+                    if (touched) {
+                      setErrors((prev) => {
+                        const next = { ...prev }
+                        delete next.ownBusiness
+                        return next
+                      })
+                    }
+                  }}
                   className={cn(
                     "flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border text-xs font-medium transition-all duration-200",
                     isSelected
                       ? "border-[#D3A753] bg-[#D3A753]/15 font-semibold text-[#D3A753] ring-1 ring-[#D3A753]/50"
-                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                      : touched && errors.ownBusiness
+                        ? "border-destructive/60 bg-card/60 text-muted-foreground hover:border-destructive hover:text-foreground"
+                        : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
                   )}
                 >
                   <Building className="size-3.5" />
@@ -284,6 +340,12 @@ export function Chapter2Career({
               )
             })}
           </div>
+          {touched && errors.ownBusiness && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.ownBusiness}</span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -313,11 +375,15 @@ export function Chapter2Career({
               onValueChange={(val) => onChange({ englishFluency: val[0] })}
             />
             <p className="text-[11px] text-muted-foreground">
-              {data.englishFluency >= 80
-                ? "Fluent / Native"
-                : data.englishFluency >= 50
-                  ? "Conversational"
-                  : "Basic"}
+              {data.englishFluency >= 100
+                ? "Native"
+                : data.englishFluency >= 80
+                  ? "Fluent"
+                  : data.englishFluency >= 50
+                    ? "Conversational"
+                    : data.englishFluency > 0
+                      ? "Basic"
+                      : "None (0%)"}
             </p>
           </div>
 
@@ -339,11 +405,15 @@ export function Chapter2Career({
               onValueChange={(val) => onChange({ thaiFluency: val[0] })}
             />
             <p className="text-[11px] text-muted-foreground">
-              {data.thaiFluency >= 80
-                ? "Fluent / Native"
-                : data.thaiFluency >= 30
-                  ? "Conversational"
-                  : "Beginner / Basic Phrases"}
+              {data.thaiFluency >= 100
+                ? "Native"
+                : data.thaiFluency >= 80
+                  ? "Fluent"
+                  : data.thaiFluency >= 30
+                    ? "Conversational"
+                    : data.thaiFluency > 0
+                      ? "Beginner / Basic Phrases"
+                      : "None (0%)"}
             </p>
           </div>
         </div>
@@ -361,12 +431,29 @@ export function Chapter2Career({
             <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
               <Cigarette className="size-3.5 text-muted-foreground" />
               <span>Smoking</span>
+              <span className="text-[#CA617D]">*</span>
             </span>
             <Select
               value={data.smoking || undefined}
-              onValueChange={(val) => onChange({ smoking: val })}
+              onValueChange={(val) => {
+                onChange({ smoking: val })
+                if (touched) {
+                  setErrors((prev) => {
+                    const next = { ...prev }
+                    if (val) delete next.smoking
+                    return next
+                  })
+                }
+              }}
             >
-              <SelectTrigger className="h-8 bg-card text-xs">
+              <SelectTrigger
+                className={cn(
+                  "h-8 bg-card text-xs",
+                  touched &&
+                    errors.smoking &&
+                    "border-destructive ring-1 ring-destructive"
+                )}
+              >
                 <SelectValue placeholder="Select habit..." />
               </SelectTrigger>
               <SelectContent>
@@ -377,6 +464,12 @@ export function Chapter2Career({
                 ))}
               </SelectContent>
             </Select>
+            {touched && errors.smoking && (
+              <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.smoking}</span>
+              </p>
+            )}
           </div>
 
           {/* Drinking */}
@@ -384,12 +477,29 @@ export function Chapter2Career({
             <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
               <Wine className="size-3.5 text-muted-foreground" />
               <span>Alcohol</span>
+              <span className="text-[#CA617D]">*</span>
             </span>
             <Select
               value={data.drinking || undefined}
-              onValueChange={(val) => onChange({ drinking: val })}
+              onValueChange={(val) => {
+                onChange({ drinking: val })
+                if (touched) {
+                  setErrors((prev) => {
+                    const next = { ...prev }
+                    if (val) delete next.drinking
+                    return next
+                  })
+                }
+              }}
             >
-              <SelectTrigger className="h-8 bg-card text-xs">
+              <SelectTrigger
+                className={cn(
+                  "h-8 bg-card text-xs",
+                  touched &&
+                    errors.drinking &&
+                    "border-destructive ring-1 ring-destructive"
+                )}
+              >
                 <SelectValue placeholder="Select habit..." />
               </SelectTrigger>
               <SelectContent>
@@ -400,6 +510,12 @@ export function Chapter2Career({
                 ))}
               </SelectContent>
             </Select>
+            {touched && errors.drinking && (
+              <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.drinking}</span>
+              </p>
+            )}
           </div>
 
           {/* Exercise */}
@@ -407,12 +523,29 @@ export function Chapter2Career({
             <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
               <Activity className="size-3.5 text-muted-foreground" />
               <span>Exercise</span>
+              <span className="text-[#CA617D]">*</span>
             </span>
             <Select
               value={data.exercise || undefined}
-              onValueChange={(val) => onChange({ exercise: val })}
+              onValueChange={(val) => {
+                onChange({ exercise: val })
+                if (touched) {
+                  setErrors((prev) => {
+                    const next = { ...prev }
+                    if (val) delete next.exercise
+                    return next
+                  })
+                }
+              }}
             >
-              <SelectTrigger className="h-8 bg-card text-xs">
+              <SelectTrigger
+                className={cn(
+                  "h-8 bg-card text-xs",
+                  touched &&
+                    errors.exercise &&
+                    "border-destructive ring-1 ring-destructive"
+                )}
+              >
                 <SelectValue placeholder="Select routine..." />
               </SelectTrigger>
               <SelectContent>
@@ -423,6 +556,12 @@ export function Chapter2Career({
                 ))}
               </SelectContent>
             </Select>
+            {touched && errors.exercise && (
+              <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.exercise}</span>
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -430,7 +569,7 @@ export function Chapter2Career({
       {/* SECTION 4: GENERAL LIFESTYLE PACE */}
       <div className="space-y-2">
         <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-          Primary Lifestyle Focus
+          Primary Lifestyle Focus <span className="text-[#CA617D]">*</span>
         </Label>
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
           {LIFESTYLE_TYPES.map((item) => {
@@ -439,12 +578,23 @@ export function Chapter2Career({
               <button
                 key={item.id}
                 type="button"
-                onClick={() => onChange({ lifestyle: item.id })}
+                onClick={() => {
+                  onChange({ lifestyle: item.id })
+                  if (touched) {
+                    setErrors((prev) => {
+                      const next = { ...prev }
+                      delete next.lifestyle
+                      return next
+                    })
+                  }
+                }}
                 className={cn(
                   "flex flex-col items-start rounded-xl border p-3 text-left transition-all duration-200",
                   isSelected
                     ? "border-[#D3A753] bg-gradient-to-br from-[#D3A753]/15 to-[#CA617D]/10 ring-1 ring-[#D3A753]/50"
-                    : "border-border/60 bg-card/60 hover:border-border hover:bg-card/90"
+                    : touched && errors.lifestyle
+                      ? "border-destructive/60 bg-card/60 hover:border-destructive"
+                      : "border-border/60 bg-card/60 hover:border-border hover:bg-card/90"
                 )}
               >
                 <div className="flex w-full items-center justify-between">
@@ -460,6 +610,12 @@ export function Chapter2Career({
             )
           })}
         </div>
+        {touched && errors.lifestyle && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.lifestyle}</span>
+          </p>
+        )}
       </div>
 
       {/* FOOTER ACTIONS */}

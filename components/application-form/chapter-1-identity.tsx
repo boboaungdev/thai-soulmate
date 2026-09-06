@@ -192,6 +192,10 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
   const validate = () => {
     const newErrors: Record<string, string> = {}
 
+    if (!data.prefix) {
+      newErrors.prefix = "Please select your prefix."
+    }
+
     const fName = (
       data.firstName || (data.name ? data.name.split(" ")[0] : "")
     ).trim()
@@ -205,6 +209,10 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
     ).trim()
     if (!lName || lName.length < 2) {
       newErrors.lastName = "Last name must be at least 2 characters."
+    }
+
+    if (!data.gender) {
+      newErrors.gender = "Please select your gender."
     }
 
     if (isFemale && (!data.nickname || data.nickname.trim().length < 2)) {
@@ -223,8 +231,20 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
       }
     }
 
+    if (!data.religion) {
+      newErrors.religion = "Please select your religion."
+    }
+
+    if (!data.maritalStatus) {
+      newErrors.maritalStatus = "Please select your marital status."
+    }
+
     if (!data.currentLocation.trim()) {
       newErrors.currentLocation = "Please select your current location."
+    }
+
+    if (!data.nationality || !data.nationality.trim()) {
+      newErrors.nationality = "Please select your nationality."
     }
 
     if (!data.phone.trim() || data.phone.trim().length < 6) {
@@ -260,7 +280,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
         {/* Prefix */}
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-            Prefix
+            Prefix <span className="text-[#CA617D]">*</span>
           </Label>
           <Select
             value={data.prefix || undefined}
@@ -268,17 +288,50 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               const updates: Partial<ApplicationFormData> = { prefix: val }
               if (val === "Mr.") {
                 updates.gender = "Male"
+                updates.thaiFluency = 0
+                updates.englishFluency = 0
                 setErrors((prev) => {
                   const next = { ...prev }
                   delete next.nickname
+                  delete next.gender
+                  delete next.prefix
                   return next
                 })
               }
-              if (val === "Ms." || val === "Mrs.") updates.gender = "Female"
+              if (val === "Ms." || val === "Mrs.") {
+                updates.gender = "Female"
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  delete next.gender
+                  delete next.prefix
+                  return next
+                })
+                const isThai =
+                  (data.nationality || "").toLowerCase().includes("thai") ||
+                  (data.currentLocation || "").toLowerCase().includes("thai")
+                if (isThai) {
+                  updates.thaiFluency = 100
+                  updates.englishFluency = 0
+                }
+              }
+              if (val === "Dr.") {
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  delete next.prefix
+                  return next
+                })
+              }
               onChange(updates)
             }}
           >
-            <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
+            <SelectTrigger
+              className={cn(
+                "h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20",
+                touched &&
+                  errors.prefix &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            >
               <SelectValue placeholder="Select prefix..." />
             </SelectTrigger>
             <SelectContent>
@@ -288,6 +341,12 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               <SelectItem value="Dr.">Dr.</SelectItem>
             </SelectContent>
           </Select>
+          {touched && errors.prefix && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.prefix}</span>
+            </p>
+          )}
         </div>
 
         {/* First Name */}
@@ -358,7 +417,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
         {/* Gender */}
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-            Gender
+            Gender <span className="text-[#CA617D]">*</span>
           </Label>
           <Select
             value={data.gender || undefined}
@@ -366,18 +425,41 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               const updates: Partial<ApplicationFormData> = { gender: val }
               if (val === "Male") {
                 if (data.prefix !== "Dr.") updates.prefix = "Mr."
+                updates.thaiFluency = 0
+                updates.englishFluency = 0
                 setErrors((prev) => {
                   const next = { ...prev }
                   delete next.nickname
+                  delete next.gender
                   return next
                 })
               }
-              if (val === "Female" && data.prefix !== "Dr.")
-                updates.prefix = "Ms."
+              if (val === "Female") {
+                if (data.prefix !== "Dr.") updates.prefix = "Ms."
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  delete next.gender
+                  return next
+                })
+                const isThai =
+                  (data.nationality || "").toLowerCase().includes("thai") ||
+                  (data.currentLocation || "").toLowerCase().includes("thai")
+                if (isThai) {
+                  updates.thaiFluency = 100
+                  updates.englishFluency = 0
+                }
+              }
               onChange(updates)
             }}
           >
-            <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
+            <SelectTrigger
+              className={cn(
+                "h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20",
+                touched &&
+                  errors.gender &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            >
               <SelectValue placeholder="Select gender..." />
             </SelectTrigger>
             <SelectContent>
@@ -385,6 +467,12 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               <SelectItem value="Female">Female</SelectItem>
             </SelectContent>
           </Select>
+          {touched && errors.gender && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.gender}</span>
+            </p>
+          )}
         </div>
 
         {/* Date of Birth (Day, Month, Year 3-input style) */}
@@ -492,13 +580,29 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
         {/* Religion */}
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-            Religion
+            Religion <span className="text-[#CA617D]">*</span>
           </Label>
           <Select
             value={data.religion || undefined}
-            onValueChange={(val) => onChange({ religion: val })}
+            onValueChange={(val) => {
+              onChange({ religion: val })
+              if (touched) {
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  if (val) delete next.religion
+                  return next
+                })
+              }
+            }}
           >
-            <SelectTrigger className="h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20">
+            <SelectTrigger
+              className={cn(
+                "h-9 rounded-lg border border-input bg-background text-xs sm:text-sm dark:bg-input/20",
+                touched &&
+                  errors.religion &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            >
               <SelectValue placeholder="Select religion..." />
             </SelectTrigger>
             <SelectContent>
@@ -509,12 +613,18 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               ))}
             </SelectContent>
           </Select>
+          {touched && errors.religion && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.religion}</span>
+            </p>
+          )}
         </div>
 
         {/* Marital Status */}
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-            Marital Status
+            Marital Status <span className="text-[#CA617D]">*</span>
           </Label>
           <div className="grid grid-cols-3 gap-2">
             {MARITAL_STATUSES.map((status) => {
@@ -523,12 +633,23 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                 <button
                   key={status}
                   type="button"
-                  onClick={() => onChange({ maritalStatus: status })}
+                  onClick={() => {
+                    onChange({ maritalStatus: status })
+                    if (touched) {
+                      setErrors((prev) => {
+                        const next = { ...prev }
+                        delete next.maritalStatus
+                        return next
+                      })
+                    }
+                  }}
                   className={cn(
                     "flex h-9 items-center justify-center gap-1.5 rounded-lg border px-2 text-xs font-semibold transition-all duration-200 sm:text-sm",
                     isSelected
                       ? "border-[#D3A753] bg-gradient-to-r from-[#D3A753]/20 to-[#CA617D]/10 text-foreground shadow-xs ring-1 ring-[#D3A753]/50"
-                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:bg-card/90 hover:text-foreground"
+                      : touched && errors.maritalStatus
+                        ? "border-destructive/60 bg-card/60 text-muted-foreground hover:border-destructive hover:text-foreground"
+                        : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:bg-card/90 hover:text-foreground"
                   )}
                 >
                   {isSelected && <Check className="size-3.5 text-[#D3A753]" />}
@@ -537,6 +658,12 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               )
             })}
           </div>
+          {touched && errors.maritalStatus && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.maritalStatus}</span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -639,7 +766,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
         {/* Nationality (Searchable Dropdown) */}
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-            Nationality
+            Nationality <span className="text-[#CA617D]">*</span>
           </Label>
           <Popover open={openNationality} onOpenChange={setOpenNationality}>
             <PopoverTrigger asChild>
@@ -648,7 +775,10 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                 role="combobox"
                 className={cn(
                   "h-9 w-full justify-between rounded-lg border-input bg-background px-3 text-left text-xs font-normal sm:text-sm dark:bg-input/20",
-                  !data.nationality && "text-muted-foreground"
+                  !data.nationality && "text-muted-foreground",
+                  touched &&
+                    errors.nationality &&
+                    "border-destructive ring-1 ring-destructive"
                 )}
               >
                 <span className="flex items-center gap-2 truncate">
@@ -682,11 +812,32 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                         key={c.code}
                         value={`${c.nationality} ${c.name}`}
                         onSelect={() => {
-                          onChange({
-                            nationality: c.nationality || c.name,
+                          const selectedNat = c.nationality || c.name
+                          const isThai =
+                            selectedNat.toLowerCase().includes("thai") ||
+                            c.name.toLowerCase() === "thailand"
+                          const updates: Partial<ApplicationFormData> = {
+                            nationality: selectedNat,
                             nationalityRegion: c.region,
-                          })
+                          }
+                          if (data.gender === "Female") {
+                            if (isThai) {
+                              updates.thaiFluency = 100
+                              updates.englishFluency = 0
+                            }
+                          } else if (data.gender === "Male") {
+                            updates.thaiFluency = 0
+                            updates.englishFluency = 0
+                          }
+                          onChange(updates)
                           setOpenNationality(false)
+                          if (touched) {
+                            setErrors((prev) => {
+                              const next = { ...prev }
+                              delete next.nationality
+                              return next
+                            })
+                          }
                         }}
                         className="flex items-center gap-2 text-xs"
                       >
@@ -710,6 +861,12 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               </Command>
             </PopoverContent>
           </Popover>
+          {touched && errors.nationality && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.nationality}</span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -755,7 +912,12 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                 <Button
                   variant="outline"
                   role="combobox"
-                  className="h-9 w-[115px] shrink-0 justify-between rounded-lg border-input bg-background px-2.5 text-xs font-normal dark:bg-input/20"
+                  className={cn(
+                    "h-9 w-[115px] shrink-0 justify-between rounded-lg border-input bg-background px-2.5 text-xs font-normal dark:bg-input/20",
+                    touched &&
+                      errors.phoneCountry &&
+                      "border-destructive ring-1 ring-destructive"
+                  )}
                 >
                   {selectedPhoneCountryObj ? (
                     <span className="flex items-center gap-1.5 truncate text-xs">
@@ -770,7 +932,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                     </span>
                   ) : (
                     <span className="text-xs text-muted-foreground">
-                      {data.phoneCountry || "+66"}
+                      {data.phoneCountry || "Code..."}
                     </span>
                   )}
                   <ChevronsUpDown className="size-3.5 opacity-50" />

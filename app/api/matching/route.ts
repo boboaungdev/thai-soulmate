@@ -617,11 +617,15 @@ export async function GET(request: Request) {
         matched:
           intersectionCount(
             maleIdealPartner.qualities,
-            femalePersonality.bestQualities
+            femalePersonality.bestQualities?.length
+              ? femalePersonality.bestQualities
+              : femaleLifestyle.values
           ) > 0,
         points: intersectionCount(
           maleIdealPartner.qualities,
-          femalePersonality.bestQualities
+          femalePersonality.bestQualities?.length
+            ? femalePersonality.bestQualities
+            : femaleLifestyle.values
         ),
         possiblePoints: Math.max(toArray(maleIdealPartner.qualities).length, 1),
         score,

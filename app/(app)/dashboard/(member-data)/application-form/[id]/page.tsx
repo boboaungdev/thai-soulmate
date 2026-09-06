@@ -1009,13 +1009,23 @@ export default function ApplicationDetailPage() {
             />
             <DetailRow
               icon={<Sparkles />}
-              label="Best Qualities"
-              value={personality?.bestQualities}
+              label="Core Values"
+              value={
+                lifestyle?.values?.length
+                  ? lifestyle.values
+                  : personality?.bestQualities?.length
+                    ? personality.bestQualities
+                    : undefined
+              }
             />
             <DetailRow
               icon={<Heart />}
               label="Looking For Qualities"
-              value={personality?.lookingForQualities}
+              value={
+                personality?.lookingForQualities?.length
+                  ? personality.lookingForQualities
+                  : idealPartner?.qualities
+              }
             />
             <DetailRow
               icon={<Users2 />}
@@ -1152,7 +1162,11 @@ export default function ApplicationDetailPage() {
             <DetailRow
               icon={<Sparkles />}
               label="Desired Qualities"
-              value={idealPartner?.qualities}
+              value={
+                idealPartner?.qualities?.length
+                  ? idealPartner.qualities
+                  : personality?.lookingForQualities
+              }
             />
             <DetailRow
               icon={<HeartCrack />}

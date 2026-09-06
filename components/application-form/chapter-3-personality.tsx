@@ -197,6 +197,19 @@ export function Chapter3Personality({
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
+    if (!data.hasChildren) {
+      newErrors.hasChildren = "Please specify whether you have children."
+    } else if (data.hasChildren === "Yes") {
+      if (!data.childrenCount || data.childrenCount < 1) {
+        newErrors.childrenCount = "Please select how many children you have."
+      }
+    }
+    if (!data.futureChildren) {
+      newErrors.futureChildren = "Please select desire for future children."
+    }
+    if (!data.familyImportance) {
+      newErrors.familyImportance = "Please select the importance of family."
+    }
     if (data.personality.length !== 5) {
       newErrors.personality = `Please select exactly 5 personality traits (${data.personality.length}/5 selected).`
     }
@@ -222,6 +235,13 @@ export function Chapter3Personality({
     if (filledDestinations.length < 3) {
       newErrors.travelDestinations =
         "Please enter all 3 favourite travel destinations."
+    }
+    const weekend = (data.weekendActivity || "").trim()
+    if (!weekend) {
+      newErrors.weekendActivity =
+        "Please select your favourite weekend activity."
+    } else if (weekend === "Other") {
+      newErrors.weekendActivity = "Please specify your weekend activity."
     }
     const bio = (data.about || "").trim()
     if (!bio || bio.length < 10) {
@@ -309,18 +329,33 @@ export function Chapter3Personality({
           {/* Has Children? */}
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold text-foreground">
-              Do you have children?
+              Do you have children? <span className="text-[#CA617D]">*</span>
             </Label>
             <Select
               value={data.hasChildren || undefined}
-              onValueChange={(val) =>
+              onValueChange={(val) => {
                 onChange({
                   hasChildren: val,
                   childrenCount: val === "No" ? 0 : data.childrenCount || 1,
                 })
-              }
+                if (touched) {
+                  setErrors((prev) => {
+                    const next = { ...prev }
+                    if (val) delete next.hasChildren
+                    if (val === "No") delete next.childrenCount
+                    return next
+                  })
+                }
+              }}
             >
-              <SelectTrigger className="h-9 bg-background text-xs">
+              <SelectTrigger
+                className={cn(
+                  "h-9 bg-background text-xs",
+                  touched &&
+                    errors.hasChildren &&
+                    "border-destructive ring-1 ring-destructive"
+                )}
+              >
                 <SelectValue placeholder="Select option..." />
               </SelectTrigger>
               <SelectContent>
@@ -328,23 +363,43 @@ export function Chapter3Personality({
                 <SelectItem value="Yes">Yes, have children</SelectItem>
               </SelectContent>
             </Select>
+            {touched && errors.hasChildren && (
+              <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.hasChildren}</span>
+              </p>
+            )}
           </div>
 
           {/* Children count if Yes */}
           {data.hasChildren === "Yes" && (
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-foreground">
-                How many children?
+                How many children? <span className="text-[#CA617D]">*</span>
               </Label>
               <Select
                 value={
                   data.childrenCount ? String(data.childrenCount) : undefined
                 }
-                onValueChange={(val) =>
+                onValueChange={(val) => {
                   onChange({ childrenCount: Number(val) })
-                }
+                  if (touched) {
+                    setErrors((prev) => {
+                      const next = { ...prev }
+                      if (val) delete next.childrenCount
+                      return next
+                    })
+                  }
+                }}
               >
-                <SelectTrigger className="h-9 bg-background text-xs">
+                <SelectTrigger
+                  className={cn(
+                    "h-9 bg-background text-xs",
+                    touched &&
+                      errors.childrenCount &&
+                      "border-destructive ring-1 ring-destructive"
+                  )}
+                >
                   <SelectValue placeholder="Select count..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -354,19 +409,42 @@ export function Chapter3Personality({
                   <SelectItem value="4">4+ Children</SelectItem>
                 </SelectContent>
               </Select>
+              {touched && errors.childrenCount && (
+                <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+                  <AlertCircle className="size-3" />
+                  <span>{errors.childrenCount}</span>
+                </p>
+              )}
             </div>
           )}
 
           {/* Open to Future Children? */}
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold text-foreground">
-              Desire for future children?
+              Desire for future children?{" "}
+              <span className="text-[#CA617D]">*</span>
             </Label>
             <Select
               value={data.futureChildren || undefined}
-              onValueChange={(val) => onChange({ futureChildren: val })}
+              onValueChange={(val) => {
+                onChange({ futureChildren: val })
+                if (touched) {
+                  setErrors((prev) => {
+                    const next = { ...prev }
+                    if (val) delete next.futureChildren
+                    return next
+                  })
+                }
+              }}
             >
-              <SelectTrigger className="h-9 bg-background text-xs">
+              <SelectTrigger
+                className={cn(
+                  "h-9 bg-background text-xs",
+                  touched &&
+                    errors.futureChildren &&
+                    "border-destructive ring-1 ring-destructive"
+                )}
+              >
                 <SelectValue placeholder="Select desire..." />
               </SelectTrigger>
               <SelectContent>
@@ -375,18 +453,40 @@ export function Chapter3Personality({
                 <SelectItem value="No">No more children</SelectItem>
               </SelectContent>
             </Select>
+            {touched && errors.futureChildren && (
+              <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.futureChildren}</span>
+              </p>
+            )}
           </div>
 
           {/* Family Importance */}
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold text-foreground">
-              Importance of Family
+              Importance of Family <span className="text-[#CA617D]">*</span>
             </Label>
             <Select
               value={data.familyImportance || undefined}
-              onValueChange={(val) => onChange({ familyImportance: val })}
+              onValueChange={(val) => {
+                onChange({ familyImportance: val })
+                if (touched) {
+                  setErrors((prev) => {
+                    const next = { ...prev }
+                    if (val) delete next.familyImportance
+                    return next
+                  })
+                }
+              }}
             >
-              <SelectTrigger className="h-9 bg-background text-xs">
+              <SelectTrigger
+                className={cn(
+                  "h-9 bg-background text-xs",
+                  touched &&
+                    errors.familyImportance &&
+                    "border-destructive ring-1 ring-destructive"
+                )}
+              >
                 <SelectValue placeholder="Select importance..." />
               </SelectTrigger>
               <SelectContent>
@@ -397,6 +497,12 @@ export function Chapter3Personality({
                 </SelectItem>
               </SelectContent>
             </Select>
+            {touched && errors.familyImportance && (
+              <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+                <AlertCircle className="size-3" />
+                <span>{errors.familyImportance}</span>
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -706,7 +812,8 @@ export function Chapter3Personality({
       {/* SECTION 6: FAVOURITE WAY TO SPEND A WEEKEND */}
       <div className="space-y-1.5">
         <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-          Favourite Way to Spend a Weekend
+          Favourite Way to Spend a Weekend{" "}
+          <span className="text-[#CA617D]">*</span>
         </Label>
         <Select
           value={
@@ -721,10 +828,24 @@ export function Chapter3Personality({
               onChange({ weekendActivity: "Other" })
             } else {
               onChange({ weekendActivity: val })
+              if (touched) {
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  delete next.weekendActivity
+                  return next
+                })
+              }
             }
           }}
         >
-          <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
+          <SelectTrigger
+            className={cn(
+              "h-10 bg-background text-xs sm:text-sm",
+              touched &&
+                errors.weekendActivity &&
+                "border-destructive ring-1 ring-destructive"
+            )}
+          >
             <SelectValue placeholder="Select favourite weekend activity...">
               {(() => {
                 if (!data.weekendActivity) return undefined
@@ -777,7 +898,8 @@ export function Chapter3Personality({
             !WEEKEND_ACTIVITIES.includes(data.weekendActivity || ""))) && (
           <div className="pt-1.5">
             <Label className="text-xs font-medium text-muted-foreground">
-              Please specify your weekend activity
+              Please specify your weekend activity{" "}
+              <span className="text-[#CA617D]">*</span>
             </Label>
             <Input
               value={
@@ -785,13 +907,37 @@ export function Chapter3Personality({
                   ? ""
                   : data.weekendActivity || ""
               }
-              onChange={(e) =>
-                onChange({ weekendActivity: e.target.value || "Other" })
-              }
+              onChange={(e) => {
+                const val = e.target.value
+                onChange({ weekendActivity: val || "Other" })
+                if (touched) {
+                  setErrors((prev) => {
+                    const next = { ...prev }
+                    if (val.trim()) {
+                      delete next.weekendActivity
+                    } else {
+                      next.weekendActivity =
+                        "Please specify your favourite weekend activity."
+                    }
+                    return next
+                  })
+                }
+              }}
               placeholder="e.g. Sailing, antique shopping, gardening..."
-              className="mt-1 h-10 bg-background text-xs sm:text-sm"
+              className={cn(
+                "mt-1 h-10 bg-background text-xs sm:text-sm",
+                touched &&
+                  errors.weekendActivity &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
             />
           </div>
+        )}
+        {touched && errors.weekendActivity && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.weekendActivity}</span>
+          </p>
         )}
       </div>
 

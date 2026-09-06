@@ -102,8 +102,19 @@ export function Chapter4IdealPartner({
       newErrors.relationshipGoal =
         "Please select what you are seeking in a partner."
     }
+    if (!data.settleDown || !data.settleDown.trim()) {
+      newErrors.settleDown = "Please select your ideal timeline to settle down."
+    }
     if (!data.relocate || !data.relocate.trim()) {
       newErrors.relocate = "Please select your relocation willingness."
+    }
+    if (!data.idealPartnerLocation || !data.idealPartnerLocation.trim()) {
+      newErrors.idealPartnerLocation =
+        "Please select preferred partner location."
+    }
+    if (!data.idealPartnerNationality || !data.idealPartnerNationality.trim()) {
+      newErrors.idealPartnerNationality =
+        "Please select preferred partner nationality."
     }
     const qualities = data.lookingForQualities || []
     if (qualities.length !== 5) {
@@ -125,7 +136,7 @@ export function Chapter4IdealPartner({
     const isValid = validate()
     if (!isValid) {
       toast.error(
-        "Please complete all required fields (relationship goal, relocation willingness, 5 partner qualities, and up to 3 deal breakers)."
+        "Please complete all required fields (relationship goal, timeline to settle down, relocation willingness, preferred location & nationality, 5 partner qualities, and up to 3 deal breakers)."
       )
       return
     }
@@ -253,14 +264,31 @@ export function Chapter4IdealPartner({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Settle Down Timeline */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Ideal Timeline to Settle Down
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
+            Ideal Timeline to Settle Down{" "}
+            <span className="text-[#CA617D]">*</span>
           </Label>
           <Select
             value={data.settleDown || undefined}
-            onValueChange={(val) => onChange({ settleDown: val })}
+            onValueChange={(val) => {
+              onChange({ settleDown: val })
+              if (touched) {
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  if (val) delete next.settleDown
+                  return next
+                })
+              }
+            }}
           >
-            <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
+            <SelectTrigger
+              className={cn(
+                "h-10 bg-background text-xs sm:text-sm",
+                touched &&
+                  errors.settleDown &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            >
               <SelectValue placeholder="Select timeline..." />
             </SelectTrigger>
             <SelectContent>
@@ -271,6 +299,12 @@ export function Chapter4IdealPartner({
               ))}
             </SelectContent>
           </Select>
+          {touched && errors.settleDown && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.settleDown}</span>
+            </p>
+          )}
         </div>
 
         {/* Relocation Willingness */}
@@ -402,13 +436,29 @@ export function Chapter4IdealPartner({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-            Preferred Partner Location
+            Preferred Partner Location <span className="text-[#CA617D]">*</span>
           </Label>
           <Select
             value={data.idealPartnerLocation || undefined}
-            onValueChange={(val) => onChange({ idealPartnerLocation: val })}
+            onValueChange={(val) => {
+              onChange({ idealPartnerLocation: val })
+              if (touched) {
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  if (val) delete next.idealPartnerLocation
+                  return next
+                })
+              }
+            }}
           >
-            <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
+            <SelectTrigger
+              className={cn(
+                "h-10 bg-background text-xs sm:text-sm",
+                touched &&
+                  errors.idealPartnerLocation &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            >
               <SelectValue placeholder="Select preferred location..." />
             </SelectTrigger>
             <SelectContent>
@@ -419,17 +469,39 @@ export function Chapter4IdealPartner({
               ))}
             </SelectContent>
           </Select>
+          {touched && errors.idealPartnerLocation && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.idealPartnerLocation}</span>
+            </p>
+          )}
         </div>
 
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
-            Preferred Nationality
+            Preferred Nationality <span className="text-[#CA617D]">*</span>
           </Label>
           <Select
             value={data.idealPartnerNationality || undefined}
-            onValueChange={(val) => onChange({ idealPartnerNationality: val })}
+            onValueChange={(val) => {
+              onChange({ idealPartnerNationality: val })
+              if (touched) {
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  if (val) delete next.idealPartnerNationality
+                  return next
+                })
+              }
+            }}
           >
-            <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
+            <SelectTrigger
+              className={cn(
+                "h-10 bg-background text-xs sm:text-sm",
+                touched &&
+                  errors.idealPartnerNationality &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            >
               <SelectValue placeholder="Select preferred nationality..." />
             </SelectTrigger>
             <SelectContent>
@@ -440,6 +512,12 @@ export function Chapter4IdealPartner({
               ))}
             </SelectContent>
           </Select>
+          {touched && errors.idealPartnerNationality && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.idealPartnerNationality}</span>
+            </p>
+          )}
         </div>
       </div>
 

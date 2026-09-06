@@ -740,14 +740,22 @@ export default async function MatchComparisonPage({
               />
               <DetailRow
                 icon={<Sparkles />}
-                label="Best Qualities"
-                value={male.personality?.bestQualities?.join(", ")}
+                label="Core Values"
+                value={
+                  male.lifestyle?.values?.length
+                    ? male.lifestyle.values.join(", ")
+                    : male.personality?.bestQualities?.join(", ")
+                }
                 isMatch={getMaleMatch("qualities")}
               />
               <DetailRow
                 icon={<Heart />}
                 label="Looking For Qualities"
-                value={male.personality?.lookingForQualities?.join(", ")}
+                value={
+                  male.personality?.lookingForQualities?.length
+                    ? male.personality.lookingForQualities.join(", ")
+                    : male.idealPartner?.qualities?.join(", ")
+                }
               />
             </ProfileSection>
 
@@ -772,14 +780,22 @@ export default async function MatchComparisonPage({
               />
               <DetailRow
                 icon={<Sparkles />}
-                label="Best Qualities"
-                value={female.personality?.bestQualities?.join(", ")}
+                label="Core Values"
+                value={
+                  female.lifestyle?.values?.length
+                    ? female.lifestyle.values.join(", ")
+                    : female.personality?.bestQualities?.join(", ")
+                }
                 isMatch={getFemaleMatch("qualities")}
               />
               <DetailRow
                 icon={<Heart />}
                 label="Looking For Qualities"
-                value={female.personality?.lookingForQualities?.join(", ")}
+                value={
+                  female.personality?.lookingForQualities?.length
+                    ? female.personality.lookingForQualities.join(", ")
+                    : female.idealPartner?.qualities?.join(", ")
+                }
               />
             </ProfileSection>
           </div>

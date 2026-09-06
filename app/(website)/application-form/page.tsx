@@ -70,13 +70,13 @@ function ApplicationFormContent() {
         const interest = data.interest
         const parsedLead: RegisterInterestLead = {
           id: interest.id,
-          prefix: interest.prefix || "Mr.",
+          prefix: interest.prefix || "",
           name: interest.name || "",
-          gender: interest.gender || "Male",
+          gender: interest.gender || "",
           email: interest.email || emailToCheck,
-          phoneCountry: interest.phoneCountry || "+66",
+          phoneCountry: interest.phoneCountry || "",
           phone: interest.phone || "",
-          currentLocation: interest.currentLocation || "Thailand",
+          currentLocation: interest.currentLocation || "",
           relationshipGoal: interest.relationshipGoal || null,
           preferredContactDate: interest.preferredContactDate || null,
           preferredContactTime: interest.preferredContactTime || null,
@@ -89,21 +89,44 @@ function ApplicationFormContent() {
         const fName = nameParts[0] || ""
         const lName = nameParts.slice(1).join(" ")
 
-        setFormData((prev) => ({
-          ...prev,
-          prefix: parsedLead.prefix,
-          name: parsedLead.name,
-          firstName: fName,
-          lastName: lName,
-          gender: parsedLead.gender,
-          email: parsedLead.email,
-          phoneCountry: parsedLead.phoneCountry,
-          phone: parsedLead.phone,
-          currentLocation: parsedLead.currentLocation,
-          nationality: parsedLead.currentLocation || prev.nationality,
-          relationshipGoal:
-            parsedLead.relationshipGoal || prev.relationshipGoal,
-        }))
+        const leadLoc = parsedLead.currentLocation || ""
+        const isFemale = parsedLead.gender === "Female"
+        const isMale = parsedLead.gender === "Male"
+        const isThai =
+          leadLoc.toLowerCase().includes("thai") ||
+          (interest.nationality &&
+            interest.nationality.toLowerCase().includes("thai"))
+
+        setFormData((prev) => {
+          let englishFluency = prev.englishFluency
+          let thaiFluency = prev.thaiFluency
+
+          if (isFemale && isThai) {
+            thaiFluency = 100
+            englishFluency = 0
+          } else if (isMale) {
+            thaiFluency = 0
+            englishFluency = 0
+          }
+
+          return {
+            ...prev,
+            prefix: parsedLead.prefix || prev.prefix,
+            name: parsedLead.name || prev.name,
+            firstName: fName || prev.firstName,
+            lastName: lName || prev.lastName,
+            gender: parsedLead.gender || prev.gender,
+            email: parsedLead.email || prev.email,
+            phoneCountry: parsedLead.phoneCountry || prev.phoneCountry,
+            phone: parsedLead.phone || prev.phone,
+            currentLocation: parsedLead.currentLocation || prev.currentLocation,
+            nationality: parsedLead.currentLocation || prev.nationality,
+            relationshipGoal:
+              parsedLead.relationshipGoal || prev.relationshipGoal,
+            englishFluency,
+            thaiFluency,
+          }
+        })
       } else {
         setLead(null)
         setNotFound(true)
@@ -256,7 +279,10 @@ function ApplicationFormContent() {
           englishFluency: [formData.englishFluency],
           personality: formData.personality,
           about: formData.about || "",
-          bestQualities: formData.bestQualities,
+          bestQualities:
+            formData.values && formData.values.length > 0
+              ? formData.values
+              : formData.bestQualities || [],
           lookingForQualities: formData.lookingForQualities,
           maritalStatus: formData.maritalStatus,
           hasChildren: formData.hasChildren,

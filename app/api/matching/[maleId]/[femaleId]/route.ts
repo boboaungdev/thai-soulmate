@@ -436,16 +436,24 @@ const calculateMatchDetails = (male: any, female: any) => {
       category: "Ideal Partner",
       label: "Qualities",
       malePreference: male.idealPartner?.qualities,
-      femaleValue: female.personality?.bestQualities,
+      femaleValue: female.personality?.bestQualities?.length
+        ? female.personality.bestQualities
+        : female.lifestyle?.values,
       malePrefMatch: hasIntersection(
         male.idealPartner?.qualities,
-        female.personality?.bestQualities
+        female.personality?.bestQualities?.length
+          ? female.personality.bestQualities
+          : female.lifestyle?.values
       ),
       femalePreference: female.idealPartner?.qualities,
-      maleValue: male.personality?.bestQualities,
+      maleValue: male.personality?.bestQualities?.length
+        ? male.personality.bestQualities
+        : male.lifestyle?.values,
       femalePrefMatch: hasIntersection(
         female.idealPartner?.qualities,
-        male.personality?.bestQualities
+        male.personality?.bestQualities?.length
+          ? male.personality.bestQualities
+          : male.lifestyle?.values
       ),
       weight: 10,
     }),

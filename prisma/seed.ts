@@ -42,7 +42,9 @@ async function main() {
   await prisma.applicationForm.deleteMany()
 
   // 1. Seed Register Interests (strictly matching fields collected in home page form)
-  console.log("Seeding Register Interests matching website consultation form...")
+  console.log(
+    "Seeding Register Interests matching website consultation form..."
+  )
   for (let i = 0; i < applicationForms.length; i++) {
     const form = applicationForms[i]
     const personal = form.personalDetails
@@ -51,7 +53,7 @@ async function main() {
     // Extract country call code (e.g. "+66") and phone digits
     const match = personal.phone?.match(/^(\+\d{1,3})(\d+)$/)
     const phoneCountry = match ? match[1] : "+66"
-    const phone = match ? match[2] : (personal.phone || "")
+    const phone = match ? match[2] : personal.phone || ""
 
     // Relationship goal from user choices
     const lookingFor =
@@ -123,7 +125,9 @@ async function main() {
       },
     })
 
-    console.log(`Created application #${application.customId} (${form.personalDetails.name})`)
+    console.log(
+      `Created application #${application.customId} (${form.personalDetails.name})`
+    )
   }
 
   const totalInterests = await prisma.registerInterest.count()

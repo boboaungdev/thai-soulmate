@@ -86,6 +86,27 @@ const HOBBIES_LIST = [
   "Other",
 ]
 
+export const WEEKEND_ACTIVITIES = [
+  "Beach walks and photography",
+  "Cafe hopping and golfing",
+  "Cooking and visiting gardens",
+  "Cooking with family",
+  "Exploring cafés and dining",
+  "Family dinners and nature walks",
+  "Fitness, yoga & wellness",
+  "Gaming and movie nights",
+  "Golf and brunch with friends",
+  "Hiking and movies",
+  "Island hopping and beach sunsets",
+  "Live music and concerts",
+  "Morning cycling and brunch",
+  "Mountain trips & hiking",
+  "Museums and cultural events",
+  "Relaxing at home & reading",
+  "Travelling & weekend getaways",
+  "Other",
+]
+
 export function Chapter3Personality({
   data,
   onChange,
@@ -455,7 +476,8 @@ export function Chapter3Personality({
         {data.interests.includes("Other") && (
           <div className="pt-2">
             <Label className="text-xs font-medium text-muted-foreground">
-              Please specify your other interest <span className="text-[#CA617D]">*</span>
+              Please specify your other interest{" "}
+              <span className="text-[#CA617D]">*</span>
             </Label>
             <Input
               value={data.otherInterest || ""}
@@ -532,13 +554,55 @@ export function Chapter3Personality({
         <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
           Favourite Way to Spend a Weekend
         </Label>
-        <Textarea
-          value={data.weekendActivity || ""}
-          onChange={(e) => onChange({ weekendActivity: e.target.value })}
-          placeholder="e.g. Reading a book, hiking, exploring cafes, or cooking with friends..."
-          rows={2}
-          className="bg-background text-xs leading-relaxed sm:text-sm"
-        />
+        <Select
+          value={
+            data.weekendActivity
+              ? WEEKEND_ACTIVITIES.includes(data.weekendActivity)
+                ? data.weekendActivity
+                : "Other"
+              : undefined
+          }
+          onValueChange={(val) => {
+            if (val === "Other") {
+              onChange({ weekendActivity: "Other" })
+            } else {
+              onChange({ weekendActivity: val })
+            }
+          }}
+        >
+          <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
+            <SelectValue placeholder="Select favourite weekend activity..." />
+          </SelectTrigger>
+          <SelectContent>
+            {WEEKEND_ACTIVITIES.map((act) => (
+              <SelectItem key={act} value={act}>
+                {act}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {(data.weekendActivity === "Other" ||
+          (Boolean(data.weekendActivity) &&
+            !WEEKEND_ACTIVITIES.includes(data.weekendActivity || ""))) && (
+          <div className="pt-1.5">
+            <Label className="text-xs font-medium text-muted-foreground">
+              Please specify your weekend activity
+            </Label>
+            <Input
+              value={
+                data.weekendActivity === "Other"
+                  ? ""
+                  : data.weekendActivity || ""
+              }
+              onChange={(e) =>
+                onChange({ weekendActivity: e.target.value || "Other" })
+              }
+              placeholder="e.g. Sailing, antique shopping, gardening..."
+              className="mt-1 h-10 bg-background text-xs sm:text-sm"
+            />
+          </div>
+        )}
       </div>
 
       {/* SECTION 7: BIO / ABOUT ME */}

@@ -223,7 +223,7 @@ export function Chapter2Career({
                   type="button"
                   onClick={() => onChange({ ownProperty: opt })}
                   className={cn(
-                    "flex flex-1 items-center justify-center gap-1.5 rounded-xl border h-10 text-xs font-medium transition-all duration-200",
+                    "flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border text-xs font-medium transition-all duration-200",
                     isSelected
                       ? "border-[#D3A753] bg-[#D3A753]/15 font-semibold text-[#D3A753] ring-1 ring-[#D3A753]/50"
                       : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
@@ -254,7 +254,7 @@ export function Chapter2Career({
                   type="button"
                   onClick={() => onChange({ ownBusiness: opt })}
                   className={cn(
-                    "flex flex-1 items-center justify-center gap-1.5 rounded-xl border h-10 text-xs font-medium transition-all duration-200",
+                    "flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border text-xs font-medium transition-all duration-200",
                     isSelected
                       ? "border-[#D3A753] bg-[#D3A753]/15 font-semibold text-[#D3A753] ring-1 ring-[#D3A753]/50"
                       : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"

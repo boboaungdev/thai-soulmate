@@ -17,6 +17,7 @@ export const RegisterInterestAdminNotificationEmail = ({
   phoneCountry,
   currentLocation,
   relationshipGoal,
+  preferredContactDate,
   preferredContactTime,
 }: AdminNotificationDetails) => {
   const baseUrl =
@@ -42,8 +43,15 @@ export const RegisterInterestAdminNotificationEmail = ({
     fields.push({ label: "Looking For", value: relationshipGoal })
   }
 
+  if (preferredContactDate) {
+    fields.push({ label: "Preferred Date", value: preferredContactDate })
+  }
+
   if (preferredContactTime) {
-    fields.push({ label: "Preferred Time", value: preferredContactTime })
+    fields.push({
+      label: "Preferred Time",
+      value: `${preferredContactTime} (Thailand time)`,
+    })
   }
 
   return (

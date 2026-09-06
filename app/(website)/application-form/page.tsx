@@ -42,8 +42,9 @@ function ApplicationFormContent() {
   const [notFound, setNotFound] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submittedCustomId, setSubmittedCustomId] = useState<
-    number | undefined
+    number | string | undefined
   >()
+  const [submittedStatus, setSubmittedStatus] = useState<string>("RECEIVED")
   const [activeChapter, setActiveChapter] = useState<number>(1)
 
   // 1. Check email in searchParams or on manual search
@@ -109,7 +110,7 @@ function ApplicationFormContent() {
       }
     } catch (err) {
       console.error("Error checking register interest:", err)
-      toast.error("Unable to check consultation reservation. Please try again.")
+      toast.error("Unable to verify your registration. Please try again.")
       setNotFound(true)
     } finally {
       setLoadingLead(false)
@@ -149,6 +150,11 @@ function ApplicationFormContent() {
     }
   }, [lead])
 
+  // Scroll to top when stage changes (gatekeeper -> form, form -> review, review -> thank-you)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" })
+  }, [stage])
+
   const handleFormChange = (updates: Partial<ApplicationFormData>) => {
     setFormData((prev) => {
       const updated = { ...prev, ...updates }
@@ -166,6 +172,59 @@ function ApplicationFormContent() {
     setIsSubmitting(true)
 
     try {
+      // Safety net: ensure all photos are uploaded to Cloudflare R2
+      const uploadBlobIfAny = async (
+        url: string | null,
+        type: string
+      ): Promise<string> => {
+        if (!url) return ""
+        if (!url.startsWith("blob:")) return url
+
+        try {
+          const res = await fetch(url)
+          const blob = await res.blob()
+          const file = new File([blob], `${type}-${Date.now()}.webp`, {
+            type: blob.type || "image/webp",
+          })
+          const fd = new FormData()
+          fd.append("file", file)
+          const emailParam = encodeURIComponent(formData.email || "applicant")
+          const uploadRes = await fetch(
+            `/api/upload?email=${emailParam}&type=${type}&path=applications/photos`,
+            {
+              method: "POST",
+              body: fd,
+            }
+          )
+          const data = await uploadRes.json()
+          if (uploadRes.ok && data.url) {
+            return data.url as string
+          }
+        } catch (e) {
+          console.error("Failed to convert blob to R2:", e)
+        }
+        return url
+      }
+
+      const [headshotR2, fullLengthR2, lifestyleR2] = await Promise.all([
+        uploadBlobIfAny(formData.headshotUrl, "headshot"),
+        uploadBlobIfAny(formData.fullLengthUrl, "fullLength"),
+        uploadBlobIfAny(formData.casualLifestyleUrl, "casualLifestyle"),
+      ])
+
+      if (
+        headshotR2 !== formData.headshotUrl ||
+        fullLengthR2 !== formData.fullLengthUrl ||
+        lifestyleR2 !== formData.casualLifestyleUrl
+      ) {
+        setFormData((prev) => ({
+          ...prev,
+          headshotUrl: headshotR2 || prev.headshotUrl,
+          fullLengthUrl: fullLengthR2 || prev.fullLengthUrl,
+          casualLifestyleUrl: lifestyleR2 || prev.casualLifestyleUrl,
+        }))
+      }
+
       // Map formData to API expected structure
       const fullName =
         [formData.firstName.trim(), (formData.lastName || "").trim()]
@@ -244,9 +303,9 @@ function ApplicationFormContent() {
               : "No",
         },
         photos: {
-          headshot: formData.headshotUrl || "",
-          fullLength: formData.fullLengthUrl || "",
-          casualLifestyle: formData.casualLifestyleUrl || "",
+          headshot: headshotR2 || formData.headshotUrl || "",
+          fullLength: fullLengthR2 || formData.fullLengthUrl || "",
+          casualLifestyle: lifestyleR2 || formData.casualLifestyleUrl || "",
         },
       }
 
@@ -267,7 +326,9 @@ function ApplicationFormContent() {
           // ignore
         }
         setSubmittedCustomId(result.application?.customId)
+        setSubmittedStatus(result.application?.status || "RECEIVED")
         setStage("thank-you")
+        window.scrollTo({ top: 0, behavior: "instant" })
       } else {
         toast.error(result.message || "Submission failed. Please try again.")
       }
@@ -324,7 +385,10 @@ function ApplicationFormContent() {
             loading={loadingLead}
             searchedEmail={searchedEmail}
             notFound={notFound}
-            onStartForm={() => setStage("form")}
+            onStartForm={() => {
+              setStage("form")
+              window.scrollTo({ top: 0, behavior: "instant" })
+            }}
             onSearchEmail={(email) => {
               if (email) {
                 router.replace(
@@ -352,7 +416,10 @@ function ApplicationFormContent() {
             <ChapterAccordion
               data={formData}
               onChange={handleFormChange}
-              onReview={() => setStage("review")}
+              onReview={() => {
+                setStage("review")
+                window.scrollTo({ top: 0, behavior: "instant" })
+              }}
               initialChapter={activeChapter}
             />
           </motion.div>
@@ -366,8 +433,12 @@ function ApplicationFormContent() {
             onEditChapter={(ch) => {
               setActiveChapter(ch)
               setStage("form")
+              window.scrollTo({ top: 0, behavior: "instant" })
             }}
-            onBackToAccordion={() => setStage("form")}
+            onBackToAccordion={() => {
+              setStage("form")
+              window.scrollTo({ top: 0, behavior: "instant" })
+            }}
             onSubmitFinal={handleSubmitFinal}
           />
         )}
@@ -375,9 +446,9 @@ function ApplicationFormContent() {
         {/* STAGE 4: THANK YOU CELEBRATION */}
         {stage === "thank-you" && (
           <ThankYouScreen
+            status={submittedStatus}
             customId={submittedCustomId}
             applicantName={formData.name}
-            contactTime={lead?.preferredContactTime}
           />
         )}
       </div>

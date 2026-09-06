@@ -723,7 +723,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             </Label>
             <span className="flex items-center gap-1 text-[11px] font-semibold text-[#D3A753]">
               <Lock className="size-3" />
-              <span>Locked to Consultation</span>
+              <span>Verified Account Email</span>
             </span>
           </div>
           <InputGroup className="h-9 cursor-not-allowed border-dashed bg-muted/40 opacity-90">
@@ -739,7 +739,7 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
             />
           </InputGroup>
           <p className="text-[11px] text-muted-foreground">
-            Tied to your verified consultation record. Cannot be edited.
+            Tied to your verified registration record. Cannot be edited.
           </p>
         </div>
 

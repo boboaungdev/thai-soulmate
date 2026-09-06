@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Calendar,
   MapPin,
+  Phone,
   Heart,
   ArrowRight,
   Search,
@@ -54,7 +55,7 @@ export function IntakeGatekeeper({
           <Spinner className="size-6 text-[#D3A753]" />
         </div>
         <p className="text-sm font-medium tracking-wide text-foreground">
-          Checking your consultation reservation...
+          Checking your registration details...
         </p>
         <p className="text-xs text-muted-foreground">
           Verifying details for {searchedEmail || "your profile"}
@@ -76,21 +77,21 @@ export function IntakeGatekeeper({
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/40 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold text-[#D3A753]">
             <Sparkles className="size-3.5 text-[#D3A753]" />
-            <span>Verified Consultation Reservation</span>
+            <span>Verified Member Profile</span>
           </div>
 
           {/* Heading */}
           <div className="space-y-2">
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
-              Welcome back,{" "}
+              Welcome,{" "}
               <span className="text-gradient">
                 {lead.prefix} {lead.name}
               </span>
             </h1>
             <p className="mx-auto max-w-lg text-xs leading-relaxed text-muted-foreground sm:text-sm">
-              We have your consultation reservation on file. Complete your
-              confidential profile below so your matchmaker can review your
-              lifestyle and preferences before your call.
+              We have your registration on file. Complete your confidential
+              matchmaking profile below so our team can carefully review your
+              preferences and curate compatible introductions.
             </p>
           </div>
 
@@ -120,12 +121,12 @@ export function IntakeGatekeeper({
 
             <div className="space-y-1">
               <span className="text-[11px] font-semibold text-muted-foreground uppercase">
-                Consultation Call
+                Contact Number
               </span>
               <p className="flex items-center gap-1.5 text-xs font-medium text-foreground sm:text-sm">
-                <Calendar className="size-3.5 text-[#D3A753]" />
+                <Phone className="size-3.5 text-[#D3A753]" />
                 <span className="truncate">
-                  {lead.preferredContactTime || "Scheduled"}
+                  {lead.phoneCountry} {lead.phone}
                 </span>
               </p>
             </div>
@@ -166,10 +167,10 @@ export function IntakeGatekeeper({
           <UserCheck className="size-6" />
         </div>
         <h2 className="text-xl font-bold sm:text-2xl">
-          No Consultation Record Found
+          No Registration Record Found
         </h2>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-          We couldn&apos;t find an existing consultation for{" "}
+          We couldn&apos;t find an existing registration for{" "}
           <span className="font-semibold text-foreground">
             &quot;{searchedEmail}&quot;
           </span>
@@ -179,9 +180,7 @@ export function IntakeGatekeeper({
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Button asChild size="lg" className="btn-gradient text-xs sm:text-sm">
-            <Link href="/#register-interest">
-              Arrange a Confidential Consultation
-            </Link>
+            <Link href="/#register-interest">Register Your Interest</Link>
           </Button>
 
           <Button
@@ -220,8 +219,8 @@ export function IntakeGatekeeper({
           </h1>
           <p className="mx-auto max-w-lg text-xs leading-relaxed text-muted-foreground sm:text-sm">
             To ensure mutual suitability and verified authenticity, all
-            prospective members begin with an initial confidential consultation.
-            Once arranged, you can complete your full matchmaking profile.
+            prospective members begin by registering their interest. Once
+            registered, you can complete your full matchmaking profile.
           </p>
         </div>
 
@@ -230,8 +229,8 @@ export function IntakeGatekeeper({
           {[
             {
               step: "01",
-              title: "Consultation",
-              desc: "Arrange a confidential 1-2-1 phone/video call.",
+              title: "Register Interest",
+              desc: "Share your initial preferences with our advisory team.",
             },
             {
               step: "02",
@@ -269,7 +268,7 @@ export function IntakeGatekeeper({
             className="btn-gradient h-11 w-full gap-2 text-sm font-semibold shadow-xl transition-all hover:scale-[1.01]"
           >
             <Link href="/#register-interest">
-              <span>Arrange a Confidential Consultation</span>
+              <span>Register Your Interest</span>
               <ArrowRight className="size-4" />
             </Link>
           </Button>
@@ -307,7 +306,7 @@ export function IntakeGatekeeper({
             </Button>
           </div>
           <p className="text-[11px] text-muted-foreground">
-            Enter the email address you used when requesting your consultation.
+            Enter the email address you used when registering your interest.
           </p>
         </form>
       </div>

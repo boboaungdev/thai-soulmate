@@ -107,10 +107,10 @@ export const INITIAL_APPLICATION_FORM_DATA: ApplicationFormData = {
   weekendActivity: "",
   about: "",
   bestQualities: ["Kind", "Honest"],
-  lookingForQualities: ["Loyal", "Kind"],
+  lookingForQualities: [],
 
   relationshipGoal: "Marriage / Life Partner",
-  relocate: "Open to discussion",
+  relocate: "",
   settleDown: "1–3 Years",
   idealPartnerMinAge: 25,
   idealPartnerMaxAge: 40,
@@ -174,6 +174,20 @@ export const IDEAL_PARTNER_NATIONALITIES = [
   "Antarctic Ocean",
   "Antarctic",
   "Any",
+] as const
+
+export const DEAL_BREAKER_OPTIONS = [
+  "Smoking / Tobacco",
+  "Heavy Drinking",
+  "Already Has Children",
+  "Dishonesty / Deceit",
+  "Financial Irresponsibility",
+  "Gambling",
+  "Bad Temper / Anger Issues",
+  "Infidelity / Lack of Loyalty",
+  "Disrespectful Behavior",
+  "Poor Hygiene",
+  "Controlling / Jealous",
 ] as const
 
 /**

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Check,
@@ -36,12 +36,60 @@ export function ChapterAccordion({
 }: ChapterAccordionProps) {
   const [activeChapter, setActiveChapter] = useState<number>(initialChapter)
   const [completedChapters, setCompletedChapters] = useState<number[]>([])
+  const isFirstRender = useRef(true)
 
   useEffect(() => {
     if (initialChapter) {
       setActiveChapter(initialChapter)
     }
   }, [initialChapter])
+
+  // Automatically scroll to the newly active chapter's start
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      if (initialChapter && initialChapter > 1) {
+        const scrollToActive = () => {
+          const el = document.getElementById(`chapter-card-${initialChapter}`)
+          if (el) {
+            const navOffset = 85
+            const y =
+              el.getBoundingClientRect().top + window.pageYOffset - navOffset
+            window.scrollTo({
+              top: Math.max(0, y),
+              behavior: "smooth",
+            })
+          }
+        }
+        const timer = setTimeout(scrollToActive, 100)
+        return () => clearTimeout(timer)
+      }
+      return
+    }
+
+    const scrollToActive = () => {
+      const el = document.getElementById(`chapter-card-${activeChapter}`)
+      if (el) {
+        const navOffset = 85
+        const y =
+          el.getBoundingClientRect().top + window.pageYOffset - navOffset
+        window.scrollTo({
+          top: Math.max(0, y),
+          behavior: "smooth",
+        })
+      }
+    }
+
+    // Two-phase scroll: first triggers early as height begins animating,
+    // second ensures exact alignment once previous chapter collapses
+    const timer1 = setTimeout(scrollToActive, 80)
+    const timer2 = setTimeout(scrollToActive, 320)
+
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+    }
+  }, [activeChapter, initialChapter])
 
   const markCompleted = (ch: number) => {
     if (!completedChapters.includes(ch)) {
@@ -162,11 +210,12 @@ export function ChapterAccordion({
         return (
           <motion.div
             key={ch.number}
+            id={`chapter-card-${ch.number}`}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: ch.number * 0.05 }}
             className={cn(
-              "overflow-hidden rounded-2xl border transition-all duration-300",
+              "scroll-mt-24 overflow-hidden rounded-2xl border transition-all duration-300 sm:scroll-mt-28",
               isActive
                 ? "border-[#D3A753]/60 bg-gradient-to-br from-card via-card to-background shadow-xl ring-1 ring-[#D3A753]/40"
                 : isCompleted

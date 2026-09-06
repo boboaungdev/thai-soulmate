@@ -34,52 +34,59 @@ export const RegisterInterestMemberConfirmationEmail = ({
 
       {/* Paragraphs */}
       <Text style={paragraph}>
-        Thank you for registering your interest. We have successfully received
-        your details and are delighted to welcome you to our private matchmaking
-        service.
+        Thank you for registering your interest with {APP_INFO.name}. We have
+        successfully received your details.
       </Text>
 
-      <Text style={paragraph}>
-        Our matchmaking advisory team will carefully review your information and
-        contact you soon to discuss your requirements in detail
-        {preferredContactDate && preferredContactTime ? (
-          <>
-            , preferably on{" "}
-            <strong>
-              {preferredContactDate} between {preferredContactTime}
-            </strong>
-          </>
-        ) : (
-          ""
-        )}
-        .
-      </Text>
+      {preferredContactDate && preferredContactTime ? (
+        <Text style={paragraph}>
+          Our matchmaking advisory team will connect with you confidentially for
+          your scheduled consultation on{" "}
+          <strong style={boldText}>
+            {preferredContactDate} between {preferredContactTime} (Thailand
+            time)
+          </strong>
+          .
+        </Text>
+      ) : preferredContactDate ? (
+        <Text style={paragraph}>
+          Our matchmaking advisory team will connect with you confidentially for
+          your scheduled consultation on{" "}
+          <strong style={boldText}>
+            {preferredContactDate} (Thailand time)
+          </strong>
+          .
+        </Text>
+      ) : (
+        <Text style={paragraph}>
+          Our matchmaking advisory team will carefully review your information
+          and connect with you shortly to answer any questions and introduce our
+          service.
+        </Text>
+      )}
 
       <Text style={paragraph}>
-        To help us understand your personal values, lifestyle, and partner
-        preferences, please complete your private profile application form by
-        clicking the button below.
+        In the meantime, you are welcome to fill out our confidential
+        application form whenever you have a moment. This helps us understand
+        more about you, your lifestyle, and what you are seeking in a life
+        partner.
       </Text>
 
       {/* Action CTA Button */}
       <Section style={buttonContainer}>
         <Button style={button} href={applicationUrl}>
-          Complete Application Form
+          Fill Application Form
         </Button>
       </Section>
 
       <Text style={paragraph}>
-        If you have any questions or require immediate assistance, simply reply
-        directly to this email. Your dedicated matchmaking consultant will be
-        pleased to assist you.
+        If you have any questions, simply reply directly to this email at any
+        time. We are always here to assist you.
       </Text>
 
-      <Text style={paragraph}>
-        We look forward to assisting you in finding a meaningful, lasting
-        relationship.
-      </Text>
+      <Text style={paragraph}>We look forward to speaking with you.</Text>
 
-      <Text style={closingText}>Best regards,</Text>
+      <Text style={closingText}>Warm regards,</Text>
     </MemberEmailLayout>
   )
 }
@@ -103,6 +110,11 @@ const paragraph: React.CSSProperties = {
   lineHeight: "24px",
   color: "#374151",
   margin: "0 0 16px 0",
+}
+
+const boldText: React.CSSProperties = {
+  fontWeight: "700",
+  color: "#111827",
 }
 
 const buttonContainer: React.CSSProperties = {

@@ -8,20 +8,14 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
     const { searchParams } = new URL(req.url)
-    const email = searchParams.get("email")
+    const rawEmail = searchParams.get("email") || "applicant"
+    const cleanEmail =
+      rawEmail
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9._-]/g, "_") || "applicant"
     const type = searchParams.get("type") || "no-type"
     const path = searchParams.get("path") || "applications/photos"
-
-    if (!email) {
-      return NextResponse.json(
-        {
-          error: "Email is required for file upload.",
-        },
-        {
-          status: 400,
-        }
-      )
-    }
 
     const file = formData.get("file") as File | null
 
@@ -38,22 +32,34 @@ export async function POST(req: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer())
 
-    const extension = file.name.split(".").pop()
+    const ext = file.name.includes(".")
+      ? file.name.split(".").pop()
+      : file.type.includes("webp")
+        ? "webp"
+        : file.type.includes("png")
+          ? "png"
+          : "jpg"
 
-    const fileName = `${path}/${email}/${email}-${type}-${Date.now()}.${extension}`
+    const contentType = file.type || "image/webp"
+    const fileName = `${path}/${cleanEmail}/${cleanEmail}-${type}-${Date.now()}.${ext}`
 
     await r2.send(
       new PutObjectCommand({
         Bucket: env.R2.BUCKET,
         Key: fileName,
         Body: buffer,
-        ContentType: file.type,
+        ContentType: contentType,
       })
     )
 
+    const publicUrl =
+      env.R2.PUBLIC_URL?.replace(/\/+$/, "") ||
+      "https://pub-0d5b5771c8f8496e96d738e9b1f81daa.r2.dev"
+
     return NextResponse.json({
       success: true,
-      url: `${env.R2.PUBLIC_URL}/${fileName}`,
+      url: `${publicUrl}/${fileName}`,
+      key: fileName,
     })
   } catch (error) {
     console.error("UPLOAD ERROR:", error)

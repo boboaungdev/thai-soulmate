@@ -12,6 +12,21 @@ import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
+  Camera,
+  Coffee,
+  UtensilsCrossed,
+  Utensils,
+  Trees,
+  Dumbbell,
+  Film,
+  Flag,
+  Mountain,
+  Palmtree,
+  Music,
+  Bike,
+  Landmark,
+  BookOpen,
+  Plane,
 } from "lucide-react"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
@@ -86,26 +101,90 @@ const HOBBIES_LIST = [
   "Other",
 ]
 
-export const WEEKEND_ACTIVITIES = [
-  "Beach walks and photography",
-  "Cafe hopping and golfing",
-  "Cooking and visiting gardens",
-  "Cooking with family",
-  "Exploring cafés and dining",
-  "Family dinners and nature walks",
-  "Fitness, yoga & wellness",
-  "Gaming and movie nights",
-  "Golf and brunch with friends",
-  "Hiking and movies",
-  "Island hopping and beach sunsets",
-  "Live music and concerts",
-  "Morning cycling and brunch",
-  "Mountain trips & hiking",
-  "Museums and cultural events",
-  "Relaxing at home & reading",
-  "Travelling & weekend getaways",
-  "Other",
-]
+export const WEEKEND_ACTIVITY_OPTIONS = [
+  {
+    value: "Beach walks and photography",
+    label: "Beach walks and photography",
+    icon: Camera,
+  },
+  {
+    value: "Cafe hopping and golfing",
+    label: "Cafe hopping and golfing",
+    icon: Coffee,
+  },
+  {
+    value: "Cooking and visiting gardens",
+    label: "Cooking and visiting gardens",
+    icon: UtensilsCrossed,
+  },
+  { value: "Cooking with family", label: "Cooking with family", icon: Users },
+  {
+    value: "Exploring cafés and dining",
+    label: "Exploring cafés and dining",
+    icon: Utensils,
+  },
+  {
+    value: "Family dinners and nature walks",
+    label: "Family dinners and nature walks",
+    icon: Trees,
+  },
+  {
+    value: "Fitness, yoga & wellness",
+    label: "Fitness, yoga & wellness",
+    icon: Dumbbell,
+  },
+  {
+    value: "Gaming and movie nights",
+    label: "Gaming and movie nights",
+    icon: Film,
+  },
+  {
+    value: "Golf and brunch with friends",
+    label: "Golf and brunch with friends",
+    icon: Flag,
+  },
+  { value: "Hiking and movies", label: "Hiking and movies", icon: Mountain },
+  {
+    value: "Island hopping and beach sunsets",
+    label: "Island hopping and beach sunsets",
+    icon: Palmtree,
+  },
+  {
+    value: "Live music and concerts",
+    label: "Live music and concerts",
+    icon: Music,
+  },
+  {
+    value: "Morning cycling and brunch",
+    label: "Morning cycling and brunch",
+    icon: Bike,
+  },
+  {
+    value: "Mountain trips & hiking",
+    label: "Mountain trips & hiking",
+    icon: Compass,
+  },
+  {
+    value: "Museums and cultural events",
+    label: "Museums and cultural events",
+    icon: Landmark,
+  },
+  {
+    value: "Relaxing at home & reading",
+    label: "Relaxing at home & reading",
+    icon: BookOpen,
+  },
+  {
+    value: "Travelling & weekend getaways",
+    label: "Travelling & weekend getaways",
+    icon: Plane,
+  },
+  { value: "Other", label: "Other", icon: Sparkles },
+] as const
+
+export const WEEKEND_ACTIVITIES: string[] = WEEKEND_ACTIVITY_OPTIONS.map(
+  (o) => o.value
+)
 
 export function Chapter3Personality({
   data,
@@ -646,14 +725,50 @@ export function Chapter3Personality({
           }}
         >
           <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
-            <SelectValue placeholder="Select favourite weekend activity..." />
+            <SelectValue placeholder="Select favourite weekend activity...">
+              {(() => {
+                if (!data.weekendActivity) return undefined
+                const isOther =
+                  data.weekendActivity === "Other" ||
+                  !WEEKEND_ACTIVITIES.includes(data.weekendActivity)
+                const selected = isOther
+                  ? WEEKEND_ACTIVITY_OPTIONS.find((o) => o.value === "Other")
+                  : WEEKEND_ACTIVITY_OPTIONS.find(
+                      (o) => o.value === data.weekendActivity
+                    )
+                if (!selected) return undefined
+                const Icon = selected.icon
+                return (
+                  <div className="flex items-center gap-2">
+                    <Icon className="size-4 shrink-0 text-[#D3A753]" />
+                    <span className="truncate">
+                      {isOther &&
+                      data.weekendActivity &&
+                      data.weekendActivity !== "Other"
+                        ? `Other (${data.weekendActivity})`
+                        : selected.label}
+                    </span>
+                  </div>
+                )
+              })()}
+            </SelectValue>
           </SelectTrigger>
-          <SelectContent>
-            {WEEKEND_ACTIVITIES.map((act) => (
-              <SelectItem key={act} value={act}>
-                {act}
-              </SelectItem>
-            ))}
+          <SelectContent className="max-h-72 overflow-y-auto">
+            {WEEKEND_ACTIVITY_OPTIONS.map((opt) => {
+              const Icon = opt.icon
+              return (
+                <SelectItem
+                  key={opt.value}
+                  value={opt.value}
+                  className="text-xs sm:text-sm"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Icon className="size-4 shrink-0 text-[#D3A753]" />
+                    <span>{opt.label}</span>
+                  </div>
+                </SelectItem>
+              )
+            })}
           </SelectContent>
         </Select>
 

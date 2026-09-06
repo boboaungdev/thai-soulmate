@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 import { ImageCropDialog } from "@/components/image-crop-dialog"
 import { ApplicationFormData } from "./types"
 import { cn } from "@/lib/utils"
@@ -42,6 +43,18 @@ export function Chapter5Photos({
   const [activeAspectLabel, setActiveAspectLabel] = useState<string>("")
   const [selectedRawImage, setSelectedRawImage] = useState<string | null>(null)
   const [cropDialogOpen, setCropDialogOpen] = useState(false)
+  const [uploadingSlots, setUploadingSlots] = useState<
+    Record<PhotoSlot, boolean>
+  >({
+    headshot: false,
+    fullLength: false,
+    casualLifestyle: false,
+  })
+  const rawPhotosRef = useRef<Record<PhotoSlot, string | null>>({
+    headshot: null,
+    fullLength: null,
+    casualLifestyle: null,
+  })
 
   const headshotInputRef = useRef<HTMLInputElement>(null)
   const fullLengthInputRef = useRef<HTMLInputElement>(null)
@@ -57,6 +70,7 @@ export function Chapter5Photos({
     if (!file) return
 
     const objectUrl = URL.createObjectURL(file)
+    rawPhotosRef.current[slot] = objectUrl
     setSelectedRawImage(objectUrl)
     setActiveSlot(slot)
     setActiveAspect(aspect)
@@ -73,24 +87,61 @@ export function Chapter5Photos({
     data.casualLifestyleUrl,
   ].filter(Boolean).length
 
-  const handleCropComplete = (file: File, previewUrl: string) => {
-    const updates: Partial<ApplicationFormData> = {}
-    if (activeSlot === "headshot") {
-      updates.headshotUrl = previewUrl
-    } else if (activeSlot === "fullLength") {
-      updates.fullLengthUrl = previewUrl
-    } else if (activeSlot === "casualLifestyle") {
-      updates.casualLifestyleUrl = previewUrl
+  const handleCropComplete = async (file: File, previewUrl: string) => {
+    if (!activeSlot) return
+    const slot = activeSlot
+
+    // 1. Immediately show local preview
+    const localUpdates: Partial<ApplicationFormData> = {}
+    if (slot === "headshot") localUpdates.headshotUrl = previewUrl
+    else if (slot === "fullLength") localUpdates.fullLengthUrl = previewUrl
+    else if (slot === "casualLifestyle")
+      localUpdates.casualLifestyleUrl = previewUrl
+    onChange(localUpdates)
+
+    // 2. Upload to Cloudflare R2
+    setUploadingSlots((prev) => ({ ...prev, [slot]: true }))
+
+    try {
+      const formDataUpload = new FormData()
+      formDataUpload.append("file", file)
+
+      const emailParam = encodeURIComponent(data.email || "applicant")
+      const res = await fetch(
+        `/api/upload?email=${emailParam}&type=${slot}&path=applications/photos`,
+        {
+          method: "POST",
+          body: formDataUpload,
+        }
+      )
+
+      const json = await res.json()
+
+      if (res.ok && json.url) {
+        // 3. Save permanent Cloudflare R2 URL into form data
+        const r2Updates: Partial<ApplicationFormData> = {}
+        if (slot === "headshot") r2Updates.headshotUrl = json.url
+        else if (slot === "fullLength") r2Updates.fullLengthUrl = json.url
+        else if (slot === "casualLifestyle")
+          r2Updates.casualLifestyleUrl = json.url
+        onChange(r2Updates)
+
+        toast.success("Photo saved to Cloudflare R2.")
+      } else {
+        throw new Error(json.error || "Upload failed")
+      }
+    } catch (err) {
+      console.error("R2 upload error:", err)
+      toast.error("Failed to upload photo to Cloudflare R2. Please try again.")
+    } finally {
+      setUploadingSlots((prev) => ({ ...prev, [slot]: false }))
     }
-    onChange(updates)
 
     if (touched) {
-      const nextHeadshot =
-        activeSlot === "headshot" ? previewUrl : data.headshotUrl
-      const nextFull =
-        activeSlot === "fullLength" ? previewUrl : data.fullLengthUrl
+      const nextHeadshot = slot === "headshot" ? previewUrl : data.headshotUrl
+      const nextFull = slot === "fullLength" ? previewUrl : data.fullLengthUrl
       const nextLifestyle =
-        activeSlot === "casualLifestyle" ? previewUrl : data.casualLifestyleUrl
+        slot === "casualLifestyle" ? previewUrl : data.casualLifestyleUrl
       const missing: string[] = []
       if (!nextHeadshot) missing.push("1. Primary Headshot")
       if (!nextFull) missing.push("2. Full Length / Posture")
@@ -109,6 +160,7 @@ export function Chapter5Photos({
   }
 
   const handleRemovePhoto = (slot: PhotoSlot) => {
+    rawPhotosRef.current[slot] = null
     const updates: Partial<ApplicationFormData> = {}
     if (slot === "headshot") updates.headshotUrl = null
     else if (slot === "fullLength") updates.fullLengthUrl = null
@@ -138,7 +190,8 @@ export function Chapter5Photos({
     aspect: number,
     label: string
   ) => {
-    setSelectedRawImage(url)
+    const source = rawPhotosRef.current[slot] || url
+    setSelectedRawImage(source)
     setActiveSlot(slot)
     setActiveAspect(aspect)
     setActiveAspectLabel(label)
@@ -169,7 +222,18 @@ export function Chapter5Photos({
     return Object.keys(newErrors).length === 0
   }
 
+  const isAnyUploading =
+    uploadingSlots.headshot ||
+    uploadingSlots.fullLength ||
+    uploadingSlots.casualLifestyle
+
   const handleReviewClick = () => {
+    if (isAnyUploading) {
+      toast.info(
+        "Please wait for your photos to finish uploading to Cloudflare R2."
+      )
+      return
+    }
     setTouched(true)
     const isValid = validate()
     if (!isValid) {
@@ -178,6 +242,20 @@ export function Chapter5Photos({
       )
       return
     }
+
+    const hasBlobUrl = [
+      data.headshotUrl,
+      data.fullLengthUrl,
+      data.casualLifestyleUrl,
+    ].some((u) => u && u.startsWith("blob:"))
+
+    if (hasBlobUrl) {
+      toast.error(
+        "Photos are still uploading to Cloudflare R2. Please wait a moment."
+      )
+      return
+    }
+
     onReview()
   }
 
@@ -302,6 +380,15 @@ export function Chapter5Photos({
                 handleFileSelect(e, "headshot", 1, "1:1 (Headshot)")
               }
             />
+
+            {uploadingSlots.headshot && (
+              <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/75 backdrop-blur-xs">
+                <Spinner className="size-6 text-[#D3A753]" />
+                <span className="text-[11px] font-semibold text-[#D3A753]">
+                  Saving...
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -392,6 +479,15 @@ export function Chapter5Photos({
                 handleFileSelect(e, "fullLength", 3 / 4, "3:4 (Full Length)")
               }
             />
+
+            {uploadingSlots.fullLength && (
+              <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/75 backdrop-blur-xs">
+                <Spinner className="size-6 text-[#D3A753]" />
+                <span className="text-[11px] font-semibold text-[#D3A753]">
+                  Saving...
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -482,6 +578,15 @@ export function Chapter5Photos({
                 handleFileSelect(e, "casualLifestyle", 4 / 3, "4:3 (Lifestyle)")
               }
             />
+
+            {uploadingSlots.casualLifestyle && (
+              <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/75 backdrop-blur-xs">
+                <Spinner className="size-6 text-[#D3A753]" />
+                <span className="text-[11px] font-semibold text-[#D3A753]">
+                  Saving...
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -577,11 +682,21 @@ export function Chapter5Photos({
 
         <Button
           type="button"
+          disabled={isAnyUploading}
           onClick={handleReviewClick}
           className="btn-gradient inline-flex h-10 items-center gap-1.5 px-6 text-xs font-semibold shadow-md transition-all hover:scale-[1.01] sm:text-sm"
         >
-          <span>Submit &amp; Review Application</span>
-          <ChevronRight className="size-4" />
+          {isAnyUploading ? (
+            <>
+              <Spinner className="size-4" />
+              <span>Saving...</span>
+            </>
+          ) : (
+            <>
+              <span>Submit &amp; Review Application</span>
+              <ChevronRight className="size-4" />
+            </>
+          )}
         </Button>
       </div>
 

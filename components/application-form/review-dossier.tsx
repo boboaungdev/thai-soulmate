@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import {
   ShieldCheck,
@@ -44,6 +44,10 @@ export function ReviewDossier({
   const [confirmedPrivacy, setConfirmedPrivacy] = useState(data.agreedToPrivacy)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [touched, setTouched] = useState(false)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" })
+  }, [])
 
   const handleFinalSubmit = () => {
     setTouched(true)
@@ -90,6 +94,12 @@ export function ReviewDossier({
     if (!data.company?.trim()) {
       toast.error("Please enter your company / industry.")
       onEditChapter(2)
+      return
+    }
+
+    if (!data.relocate || !data.relocate.trim()) {
+      toast.error("Please select your relocation willingness.")
+      onEditChapter(4)
       return
     }
 
@@ -498,7 +508,9 @@ export function ReviewDossier({
           </div>
           <div>
             <span className="text-muted-foreground">Relocation:</span>
-            <p className="font-semibold text-foreground">{data.relocate}</p>
+            <p className="font-semibold text-foreground">
+              {data.relocate || "Not specified"}
+            </p>
           </div>
           <div>
             <span className="text-muted-foreground">Timeline:</span>
@@ -519,6 +531,44 @@ export function ReviewDossier({
             </p>
           </div>
         </div>
+
+        {Array.isArray(data.lookingForQualities) &&
+          data.lookingForQualities.length > 0 && (
+            <div className="border-t border-border/40 pt-3">
+              <span className="text-xs text-muted-foreground">
+                Top Qualities Valued in a Partner (
+                {data.lookingForQualities.length}):
+              </span>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {data.lookingForQualities.map((q) => (
+                  <span
+                    key={q}
+                    className="rounded-full bg-[#D3A753]/15 px-2.5 py-0.5 text-[11px] font-semibold text-[#D3A753]"
+                  >
+                    {q}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+        {Array.isArray(data.dealBreakers) && data.dealBreakers.length > 0 && (
+          <div className="border-t border-border/40 pt-3">
+            <span className="text-xs text-muted-foreground">
+              Deal Breakers / Non-Negotiables ({data.dealBreakers.length}):
+            </span>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {data.dealBreakers.map((db) => (
+                <span
+                  key={db}
+                  className="rounded-full bg-[#CA617D]/15 px-2.5 py-0.5 text-[11px] font-semibold text-[#CA617D]"
+                >
+                  {db}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* SECTION 5: PHOTOGRAPHS */}

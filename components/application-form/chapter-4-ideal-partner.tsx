@@ -32,6 +32,7 @@ import {
   cmToFeetAndInches,
   IDEAL_PARTNER_LOCATIONS,
   IDEAL_PARTNER_NATIONALITIES,
+  DEAL_BREAKER_OPTIONS,
 } from "./types"
 import { cn } from "@/lib/utils"
 
@@ -101,9 +102,19 @@ export function Chapter4IdealPartner({
       newErrors.relationshipGoal =
         "Please select what you are seeking in a partner."
     }
-    const qualities = data.dealBreakers || []
+    if (!data.relocate || !data.relocate.trim()) {
+      newErrors.relocate = "Please select your relocation willingness."
+    }
+    const qualities = data.lookingForQualities || []
     if (qualities.length !== 5) {
-      newErrors.dealBreakers = `Please select exactly 5 partner qualities (${qualities.length}/5 selected).`
+      newErrors.lookingForQualities = `Please select exactly 5 partner qualities (${qualities.length}/5 selected).`
+    }
+    const dealBreakers = data.dealBreakers || []
+    if (dealBreakers.length === 0) {
+      newErrors.dealBreakers =
+        "Please select at least 1 deal breaker (up to 3)."
+    } else if (dealBreakers.length > 3) {
+      newErrors.dealBreakers = "Please select a maximum of 3 deal breakers."
     }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -114,7 +125,7 @@ export function Chapter4IdealPartner({
     const isValid = validate()
     if (!isValid) {
       toast.error(
-        "Please complete all required fields (select relationship goal and exactly 5 partner qualities)."
+        "Please complete all required fields (relationship goal, relocation willingness, 5 partner qualities, and up to 3 deal breakers)."
       )
       return
     }
@@ -122,7 +133,7 @@ export function Chapter4IdealPartner({
   }
 
   const toggleQuality = (quality: string) => {
-    const list = data.dealBreakers || []
+    const list = data.lookingForQualities || []
     const isSelected = list.includes(quality)
     if (!isSelected && list.length >= 5) {
       return
@@ -132,15 +143,43 @@ export function Chapter4IdealPartner({
       ? list.filter((q) => q !== quality)
       : [...list, quality]
 
-    onChange({ dealBreakers: updated })
+    onChange({ lookingForQualities: updated })
 
     if (touched) {
       setErrors((prev) => {
         const next = { ...prev }
         if (updated.length === 5) {
-          delete next.dealBreakers
+          delete next.lookingForQualities
         } else {
-          next.dealBreakers = `Please select exactly 5 partner qualities (${updated.length}/5 selected).`
+          next.lookingForQualities = `Please select exactly 5 partner qualities (${updated.length}/5 selected).`
+        }
+        return next
+      })
+    }
+  }
+
+  const toggleDealBreaker = (item: string) => {
+    const list = data.dealBreakers || []
+    const isSelected = list.includes(item)
+    if (!isSelected && list.length >= 3) {
+      return
+    }
+
+    const updated = isSelected
+      ? list.filter((d) => d !== item)
+      : [...list, item]
+
+    onChange({ dealBreakers: updated })
+
+    if (touched) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        if (updated.length >= 1 && updated.length <= 3) {
+          delete next.dealBreakers
+        } else if (updated.length === 0) {
+          next.dealBreakers = "Please select at least 1 deal breaker (up to 3)."
+        } else {
+          next.dealBreakers = "Please select a maximum of 3 deal breakers."
         }
         return next
       })
@@ -236,15 +275,35 @@ export function Chapter4IdealPartner({
 
         {/* Relocation Willingness */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Relocation Willingness
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
+            Relocation Willingness <span className="text-[#CA617D]">*</span>
           </Label>
           <Select
-            value={data.relocate || undefined}
-            onValueChange={(val) => onChange({ relocate: val })}
+            value={
+              RELOCATION_OPTIONS.includes(data.relocate)
+                ? data.relocate
+                : undefined
+            }
+            onValueChange={(val) => {
+              onChange({ relocate: val })
+              if (touched) {
+                setErrors((prev) => {
+                  const next = { ...prev }
+                  if (val) delete next.relocate
+                  return next
+                })
+              }
+            }}
           >
-            <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
-              <SelectValue placeholder="Select relocation preference..." />
+            <SelectTrigger
+              className={cn(
+                "h-10 bg-background text-xs sm:text-sm",
+                touched &&
+                  errors.relocate &&
+                  "border-destructive ring-1 ring-destructive"
+              )}
+            >
+              <SelectValue placeholder="Select..." />
             </SelectTrigger>
             <SelectContent>
               {RELOCATION_OPTIONS.map((opt) => (
@@ -254,6 +313,12 @@ export function Chapter4IdealPartner({
               ))}
             </SelectContent>
           </Select>
+          {touched && errors.relocate && (
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+              <AlertCircle className="size-3" />
+              <span>{errors.relocate}</span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -388,18 +453,18 @@ export function Chapter4IdealPartner({
           <span
             className={cn(
               "text-xs font-medium",
-              (data.dealBreakers || []).length === 5
+              (data.lookingForQualities || []).length === 5
                 ? "text-[#D3A753]"
                 : "text-muted-foreground"
             )}
           >
-            Choose 5 ({(data.dealBreakers || []).length}/5 selected)
+            Choose 5 ({(data.lookingForQualities || []).length}/5 selected)
           </span>
         </div>
 
         <div className="flex flex-wrap gap-2">
           {PARTNER_QUALITIES.map((quality) => {
-            const list = data.dealBreakers || []
+            const list = data.lookingForQualities || []
             const isSelected = list.includes(quality)
             const isDisabled = !isSelected && list.length >= 5
             return (
@@ -423,6 +488,67 @@ export function Chapter4IdealPartner({
                   <Plus className="size-3 opacity-40" />
                 )}
                 <span>{quality}</span>
+              </button>
+            )
+          })}
+        </div>
+        {touched && errors.lookingForQualities && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
+            <AlertCircle className="size-3" />
+            <span>{errors.lookingForQualities}</span>
+          </p>
+        )}
+      </div>
+
+      {/* SECTION 6: DEAL BREAKERS / NON-NEGOTIABLES */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
+            Deal Breakers / Non-Negotiables{" "}
+            <span className="text-[#CA617D]">*</span>
+          </Label>
+          <span
+            className={cn(
+              "text-xs font-medium",
+              (data.dealBreakers || []).length >= 1 &&
+                (data.dealBreakers || []).length <= 3
+                ? "text-[#CA617D]"
+                : "text-muted-foreground"
+            )}
+          >
+            Select up to 3 ({(data.dealBreakers || []).length}/3 selected)
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Traits, habits, or circumstances you cannot accept in a life partner.
+        </p>
+
+        <div className="flex flex-wrap gap-2">
+          {DEAL_BREAKER_OPTIONS.map((item) => {
+            const list = data.dealBreakers || []
+            const isSelected = list.includes(item)
+            const isDisabled = !isSelected && list.length >= 3
+            return (
+              <button
+                key={item}
+                type="button"
+                disabled={isDisabled}
+                onClick={() => toggleDealBreaker(item)}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
+                  isSelected
+                    ? "border-[#CA617D] bg-gradient-to-r from-[#CA617D]/20 via-[#E791A7]/15 to-[#D3A753]/15 text-foreground shadow-xs ring-1 ring-[#CA617D]/60"
+                    : isDisabled
+                      ? "cursor-not-allowed border-border/30 bg-card/30 text-muted-foreground/40 opacity-50"
+                      : "border-border/60 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                )}
+              >
+                {isSelected ? (
+                  <Check className="size-3 text-[#CA617D]" />
+                ) : (
+                  <Plus className="size-3 opacity-40" />
+                )}
+                <span>{item}</span>
               </button>
             )
           })}

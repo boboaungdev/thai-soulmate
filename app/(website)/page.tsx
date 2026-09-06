@@ -117,7 +117,7 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{
                   duration: 0.75,
-                  delay: 0.8,
+                  delay: 2.3,
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
@@ -128,20 +128,20 @@ export default function HomePage() {
                 <motion.p
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: 1.0, ease: "easeOut" }}
+                  transition={{ duration: 0.6, delay: 2.5, ease: "easeOut" }}
                   className="inline-flex items-center justify-center gap-2 text-[9px] font-semibold tracking-[0.35em] text-[#E791A7] uppercase sm:text-[10px]"
                 >
                   <motion.span
                     initial={{ width: 0 }}
                     animate={{ width: 24 }}
-                    transition={{ duration: 0.6, delay: 1.05 }}
+                    transition={{ duration: 0.6, delay: 2.55 }}
                     className="h-px bg-[#CA617D]/70"
                   />
                   EXCLUSIVE
                   <motion.span
                     initial={{ width: 0 }}
                     animate={{ width: 24 }}
-                    transition={{ duration: 0.6, delay: 1.05 }}
+                    transition={{ duration: 0.6, delay: 2.55 }}
                     className="h-px bg-[#CA617D]/70"
                   />
                 </motion.p>
@@ -149,7 +149,7 @@ export default function HomePage() {
                 <motion.p
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 1.15 }}
+                  transition={{ duration: 0.6, delay: 2.65 }}
                   className="text-sm font-semibold tracking-[0.2em] text-[#D3A753] uppercase sm:text-base md:text-lg"
                 >
                   {APP_INFO.tagline}
@@ -162,7 +162,7 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{
                   duration: 0.75,
-                  delay: 1.25,
+                  delay: 2.8,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="text-xl font-bold tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] sm:text-2xl md:text-3xl lg:text-4xl"
@@ -174,7 +174,7 @@ export default function HomePage() {
               <motion.p
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 1.4 }}
+                transition={{ duration: 0.7, delay: 2.95 }}
                 className="mx-auto max-w-xl text-sm leading-relaxed text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] sm:text-base"
               >
                 <span className="font-semibold text-white">
@@ -188,7 +188,7 @@ export default function HomePage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.55 }}
+                transition={{ duration: 0.6, delay: 3.1 }}
                 className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:flex-row"
               >
                 <motion.div
@@ -226,7 +226,7 @@ export default function HomePage() {
               <motion.div
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.7 }}
+                transition={{ duration: 0.6, delay: 3.25 }}
                 className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-2 text-xs text-white/90 sm:gap-3 sm:text-sm"
               >
                 <motion.div

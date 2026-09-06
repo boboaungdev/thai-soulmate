@@ -18,7 +18,6 @@ import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -31,6 +30,8 @@ import {
   formatPartnerAgeRange,
   formatPartnerHeightRange,
   cmToFeetAndInches,
+  IDEAL_PARTNER_LOCATIONS,
+  IDEAL_PARTNER_NATIONALITIES,
 } from "./types"
 import { cn } from "@/lib/utils"
 
@@ -332,32 +333,48 @@ export function Chapter4IdealPartner({
         </div>
       </div>
 
-      {/* SECTION 4: LOCATION PREFERENCE */}
+      {/* SECTION 4: LOCATION & NATIONALITY PREFERENCES */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Preferred Partner Location
           </Label>
-          <Input
-            value={data.idealPartnerLocation}
-            onChange={(e) => onChange({ idealPartnerLocation: e.target.value })}
-            placeholder="e.g. Thailand, Open to International..."
-            className="h-10 text-xs sm:text-sm"
-          />
+          <Select
+            value={data.idealPartnerLocation || "Asia"}
+            onValueChange={(val) => onChange({ idealPartnerLocation: val })}
+          >
+            <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
+              <SelectValue placeholder="Select preferred location" />
+            </SelectTrigger>
+            <SelectContent>
+              {IDEAL_PARTNER_LOCATIONS.map((loc) => (
+                <SelectItem key={loc} value={loc}>
+                  {loc}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <Label className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Preferred Nationality
           </Label>
-          <Input
-            value={data.idealPartnerNationality}
-            onChange={(e) =>
-              onChange({ idealPartnerNationality: e.target.value })
-            }
-            placeholder="e.g. Thai, Asian, Western, Any..."
-            className="h-10 text-xs sm:text-sm"
-          />
+          <Select
+            value={data.idealPartnerNationality || "Asian"}
+            onValueChange={(val) => onChange({ idealPartnerNationality: val })}
+          >
+            <SelectTrigger className="h-10 bg-background text-xs sm:text-sm">
+              <SelectValue placeholder="Select preferred nationality" />
+            </SelectTrigger>
+            <SelectContent>
+              {IDEAL_PARTNER_NATIONALITIES.map((nat) => (
+                <SelectItem key={nat} value={nat}>
+                  {nat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

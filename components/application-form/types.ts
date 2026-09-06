@@ -110,8 +110,8 @@ export const INITIAL_APPLICATION_FORM_DATA: ApplicationFormData = {
   idealPartnerMaxAge: 40,
   idealPartnerMinHeight: 155,
   idealPartnerMaxHeight: 175,
-  idealPartnerLocation: "Thailand",
-  idealPartnerNationality: "Thai",
+  idealPartnerLocation: "Asia",
+  idealPartnerNationality: "Asian",
   dealBreakers: [],
 
   headshotUrl: null,
@@ -145,6 +145,30 @@ export type Country = {
   callCode: string
   region: string
 }
+
+export const IDEAL_PARTNER_LOCATIONS = [
+  "Asia",
+  "Europe",
+  "Africa",
+  "Oceania",
+  "Americas",
+  "Polar",
+  "Antarctic Ocean",
+  "Antarctic",
+  "Any",
+] as const
+
+export const IDEAL_PARTNER_NATIONALITIES = [
+  "Asian",
+  "European",
+  "African",
+  "Oceanian",
+  "American",
+  "Polar",
+  "Antarctic Ocean",
+  "Antarctic",
+  "Any",
+] as const
 
 /**
  * Converts height in cm to feet and inches notation (e.g. 175 -> 5'9", 205 with isPlus -> 6'9"+)

@@ -146,6 +146,14 @@ const REGIONS = [
   "any",
 ]
 
+const REGION_ALIASES: Record<string, string> = {
+  asian: "asia",
+  european: "europe",
+  african: "africa",
+  oceanian: "oceania",
+  american: "americas",
+}
+
 const matchRegion = (
   preferred: unknown,
   actualCountry: unknown,
@@ -160,8 +168,11 @@ const matchRegion = (
     return true
   }
 
-  if (REGIONS.includes(normalizedPreferred)) {
-    return normalize(actualRegion) === normalizedPreferred
+  const targetRegion =
+    REGION_ALIASES[normalizedPreferred] || normalizedPreferred
+
+  if (REGIONS.includes(targetRegion)) {
+    return normalize(actualRegion) === targetRegion
   }
 
   return normalize(actualCountry) === normalizedPreferred

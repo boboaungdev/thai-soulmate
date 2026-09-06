@@ -132,8 +132,8 @@ export function FloatingWhatsapp() {
           {/* WhatsApp Icon */}
           <FaWhatsapp className="size-7 transition-transform duration-300 group-hover:scale-110 sm:size-8" />
 
-          {/* Active Online Radar Beacon */}
-          <span className="absolute -top-0.5 -right-0.5 flex size-4">
+          {/* Active Online Radar Beacon (Positioned at bottom) */}
+          <span className="absolute bottom-0 right-0.5 flex size-4 sm:bottom-0.5 sm:right-1">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-80" />
             <span className="relative inline-flex size-4 rounded-full border-2 border-background bg-emerald-500" />
           </span>

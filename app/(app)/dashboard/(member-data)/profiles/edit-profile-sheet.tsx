@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { calculateAge } from "@/lib/date"
+import { cn } from "@/lib/utils"
 
 import { ProfileRow } from "./columns"
 
@@ -124,15 +125,24 @@ export function EditProfileSheet({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="about-textarea">About</Label>
-                <span className="text-xs text-muted-foreground">
-                  {about.length} / 300
+                <span
+                  className={cn(
+                    "text-xs tabular-nums transition-colors",
+                    about.length >= 500
+                      ? "font-semibold text-destructive"
+                      : about.length >= 450
+                        ? "text-amber-500 dark:text-amber-400"
+                        : "text-muted-foreground"
+                  )}
+                >
+                  {about.length} / 500
                 </span>
               </div>
               <Textarea
                 id="about-textarea"
                 value={about}
-                maxLength={300}
-                onChange={(e) => setAbout(e.target.value.slice(0, 300))}
+                maxLength={500}
+                onChange={(e) => setAbout(e.target.value.slice(0, 500))}
                 rows={8}
                 placeholder="Tell us about this person..."
                 disabled={isSaving}

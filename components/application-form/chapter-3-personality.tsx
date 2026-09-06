@@ -951,21 +951,21 @@ export function Chapter3Personality({
           <span
             className={cn(
               "text-xs font-medium tabular-nums transition-colors",
-              (data.about || "").length >= 300
+              (data.about || "").length >= 500
                 ? "font-semibold text-[#CA617D]"
-                : (data.about || "").length >= 260
+                : (data.about || "").length >= 450
                   ? "text-[#D3A753]"
                   : "text-muted-foreground"
             )}
           >
-            {(data.about || "").length} / 300
+            {(data.about || "").length} / 500
           </span>
         </div>
         <Textarea
           value={data.about || ""}
-          maxLength={300}
+          maxLength={500}
           onChange={(e) => {
-            const text = e.target.value.slice(0, 300)
+            const text = e.target.value.slice(0, 500)
             onChange({ about: text })
             if (touched) {
               setErrors((prev) => {
@@ -980,13 +980,13 @@ export function Chapter3Personality({
               })
             }
           }}
-          rows={3}
+          rows={4}
           placeholder="Share a little about what brings you joy, your passions, or what you enjoy doing on relaxed weekends (min. 10 characters)..."
           className={cn(
-            "bg-background text-xs sm:text-sm",
+            "min-h-24 bg-background text-xs sm:text-sm",
             touched && errors.about
               ? "border-destructive ring-1 ring-destructive"
-              : (data.about || "").length >= 300 &&
+              : (data.about || "").length >= 500 &&
                   "border-[#CA617D]/60 ring-1 ring-[#CA617D]/30"
           )}
         />
@@ -1001,9 +1001,9 @@ export function Chapter3Personality({
             This helps your matchmaker introduce you warmly and authentically to
             compatible matches.
           </p>
-          {(data.about || "").length >= 300 && (
+          {(data.about || "").length >= 500 && (
             <span className="font-medium text-[#CA617D]">
-              Maximum 300 characters reached
+              Maximum 500 characters reached
             </span>
           )}
         </div>

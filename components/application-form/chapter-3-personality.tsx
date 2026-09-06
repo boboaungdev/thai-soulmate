@@ -127,11 +127,14 @@ export function Chapter3Personality({
     if (data.interests.length !== 5) {
       newErrors.interests = `Please select exactly 5 hobbies & interests (${data.interests.length}/5 selected).`
     }
-    if (
-      data.interests.includes("Other") &&
-      !(data.otherInterest || "").trim()
-    ) {
-      newErrors.otherInterest = "Please specify your other interest."
+    if (data.interests.includes("Other")) {
+      const other = (data.otherInterest || "").trim()
+      if (!other) {
+        newErrors.otherInterest = "Please specify your other interest."
+      } else if (/[,.]/.test(other)) {
+        newErrors.otherInterest =
+          "Please enter only one interest (commas and periods are not allowed)."
+      }
     }
     const destinations = data.travelDestinations || ["", "", ""]
     const filledDestinations = destinations.filter(
@@ -189,6 +192,11 @@ export function Chapter3Personality({
             delete next.otherInterest
           } else if (!(data.otherInterest || "").trim()) {
             next.otherInterest = "Please specify your other interest."
+          } else if (/[,.]/.test(data.otherInterest || "")) {
+            next.otherInterest =
+              "Please enter only one interest (commas and periods are not allowed)."
+          } else {
+            delete next.otherInterest
           }
         }
 
@@ -484,27 +492,36 @@ export function Chapter3Personality({
         {data.interests.includes("Other") && (
           <div className="pt-2">
             <Label className="text-xs font-medium text-muted-foreground">
-              Please specify your other interest{" "}
+              Please specify one other interest (single interest only){" "}
               <span className="text-[#CA617D]">*</span>
             </Label>
             <Input
               value={data.otherInterest || ""}
+              onKeyDown={(e) => {
+                if (e.key === "," || e.key === ".") {
+                  e.preventDefault()
+                }
+              }}
               onChange={(e) => {
-                const val = e.target.value
+                const val = e.target.value.replace(/[,.]/g, "")
                 onChange({ otherInterest: val })
                 if (touched) {
                   setErrors((prev) => {
                     const next = { ...prev }
-                    if (val.trim().length > 0) {
-                      delete next.otherInterest
-                    } else {
+                    const trimmed = val.trim()
+                    if (!trimmed) {
                       next.otherInterest = "Please specify your other interest."
+                    } else if (/[,.]/.test(val)) {
+                      next.otherInterest =
+                        "Please enter only one interest (commas and periods are not allowed)."
+                    } else {
+                      delete next.otherInterest
                     }
                     return next
                   })
                 }
               }}
-              placeholder="e.g. Sailing, Antique Collecting, Classical Piano..."
+              placeholder="e.g. Scuba Diving or Classical Piano (one interest only)"
               className={cn(
                 "mt-1 h-10 bg-background text-xs sm:text-sm",
                 touched &&
@@ -512,6 +529,9 @@ export function Chapter3Personality({
                   "border-destructive ring-1 ring-destructive"
               )}
             />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Enter only one interest without commas or periods (spaces are allowed).
+            </p>
             {touched && errors.otherInterest && (
               <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-destructive">
                 <AlertCircle className="size-3" />
@@ -539,9 +559,11 @@ export function Chapter3Personality({
                 : "text-muted-foreground"
             )}
           >
-            {(data.travelDestinations || []).filter(
-              (d) => d && d.trim().length > 0
-            ).length}
+            {
+              (data.travelDestinations || []).filter(
+                (d) => d && d.trim().length > 0
+              ).length
+            }
             /3 entered
           </span>
         </div>

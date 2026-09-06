@@ -51,7 +51,9 @@ async function main() {
     const relGoals = form.relationshipGoals
 
     // Extract country call code (e.g. "+66") and phone digits
-    const match = personal.phone?.match(/^(\+\d{1,3})(\d+)$/)
+    const match =
+      personal.phone?.match(/^(\+\d{1,3})(\d+)$/) ||
+      personal.phone?.match(/^\((\+\d{1,3})\)\s*(\d+)$/)
     const phoneCountry = match ? match[1] : "+66"
     const phone = match ? match[2] : personal.phone || ""
 

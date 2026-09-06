@@ -635,9 +635,13 @@ export async function GET(request: Request) {
       ;({ score, possibleScore: totalPossibleScore } = addCriterionScore({
         enabled: activeCriteria["Relocation Preference"],
         weight: 6,
-        matched: ["yes", "maybe"].includes(
-          normalize(femaleRelationshipGoals.relocate)
-        ),
+        matched:
+          ["yes", "maybe"].includes(
+            normalize(femaleRelationshipGoals.relocate)
+          ) ||
+          normalize(femaleRelationshipGoals.relocate).includes("yes") ||
+          normalize(femaleRelationshipGoals.relocate).includes("open") ||
+          normalize(femaleRelationshipGoals.relocate).includes("willing"),
         score,
         possibleScore: totalPossibleScore,
       }))

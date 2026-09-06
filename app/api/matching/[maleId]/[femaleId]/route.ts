@@ -463,14 +463,22 @@ const calculateMatchDetails = (male: any, female: any) => {
       label: "Relocation",
       malePreference: "Yes or Maybe",
       femaleValue: female.relationshipGoals?.relocate,
-      malePrefMatch: ["yes", "maybe"].includes(
-        normalize(female.relationshipGoals?.relocate)
-      ),
+      malePrefMatch:
+        ["yes", "maybe"].includes(
+          normalize(female.relationshipGoals?.relocate)
+        ) ||
+        normalize(female.relationshipGoals?.relocate).includes("yes") ||
+        normalize(female.relationshipGoals?.relocate).includes("open") ||
+        normalize(female.relationshipGoals?.relocate).includes("willing"),
       femalePreference: "Yes or Maybe",
       maleValue: male.relationshipGoals?.relocate,
-      femalePrefMatch: ["yes", "maybe"].includes(
-        normalize(male.relationshipGoals?.relocate)
-      ),
+      femalePrefMatch:
+        ["yes", "maybe"].includes(
+          normalize(male.relationshipGoals?.relocate)
+        ) ||
+        normalize(male.relationshipGoals?.relocate).includes("yes") ||
+        normalize(male.relationshipGoals?.relocate).includes("open") ||
+        normalize(male.relationshipGoals?.relocate).includes("willing"),
       weight: 6,
     }),
     createBreakdownItem({

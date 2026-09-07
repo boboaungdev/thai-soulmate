@@ -46,7 +46,7 @@ const SITE_NAV_LINKS: NavLinkItem[] = [
   { label: "FAQ", href: "/faq" },
   {
     label: "Pricing",
-    href: "/pricing",
+    href: "#",
     subLinks: [
       {
         label: "Male Membership",

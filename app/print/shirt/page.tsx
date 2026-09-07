@@ -30,8 +30,8 @@ function BrandName({ size }: { size: "nav" | "hero" }) {
     <span
       className={
         size === "nav"
-          ? "block text-[13mm] leading-none font-black tracking-tight uppercase"
-          : "block text-[18mm] leading-none font-black tracking-tight uppercase"
+          ? "block text-[13mm] leading-none font-black tracking-tight uppercase no-underline"
+          : "block text-[13mm] leading-none font-black tracking-tight uppercase no-underline"
       }
       style={{
         background: "linear-gradient(to right, #D3A753, #E791A7, #CA617D)",
@@ -39,6 +39,7 @@ function BrandName({ size }: { size: "nav" | "hero" }) {
         WebkitBackgroundClip: "text",
         backgroundClip: "text",
         color: "transparent",
+        textDecoration: "none",
       }}
     >
       {APP_INFO.name}
@@ -48,7 +49,7 @@ function BrandName({ size }: { size: "nav" | "hero" }) {
 
 function PrimaryTagline() {
   return (
-    <p className="text-[3.5mm] font-semibold tracking-[0.18em] text-[#D3A753] uppercase">
+    <p className="text-[4.5mm] font-semibold tracking-[0.18em] text-[#D3A753] uppercase">
       {APP_INFO.tagline}
     </p>
   )
@@ -59,8 +60,8 @@ function ExclusiveLabel({ withLines = false }: { withLines?: boolean }) {
     <p
       className={
         withLines
-          ? "inline-flex items-center gap-[2mm] text-[3mm] font-semibold tracking-[0.35em] text-[#CA617D] uppercase"
-          : "text-[3mm] font-semibold tracking-[0.35em] text-[#CA617D] uppercase"
+          ? "inline-flex items-center gap-[2mm] text-[4mm] font-semibold tracking-[0.35em] text-[#CA617D] uppercase"
+          : "text-[4mm] font-semibold tracking-[0.35em] text-[#CA617D] uppercase"
       }
     >
       {withLines && <span className="h-px w-[7mm] bg-[#CA617D]/70" />}

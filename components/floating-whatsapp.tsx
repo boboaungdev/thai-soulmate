@@ -63,7 +63,7 @@ export function FloatingWhatsapp() {
                   <div>
                     <div className="flex items-center gap-1.5">
                       <span className="text-xs font-bold text-foreground">
-                        Matchmaker Concierge
+                        Matchmaker Agent
                       </span>
                       <Sparkles className="size-3 text-[#D3A753]" />
                     </div>
@@ -87,7 +87,7 @@ export function FloatingWhatsapp() {
               {/* Message Body */}
               <p className="mt-3 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                 👋 Hi there! Looking for your life partner in Thailand? Chat
-                directly with our private matchmaking concierge on WhatsApp.
+                directly with our private matchmaking agent on WhatsApp.
               </p>
 
               {/* Action Button inside Bubble */}
@@ -126,7 +126,7 @@ export function FloatingWhatsapp() {
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open live chat with Thai Soulmate concierge on WhatsApp"
+          aria-label="Open live chat with Thai Soulmate agent on WhatsApp"
           className="group relative flex size-14 items-center justify-center rounded-full border-2 border-[#D3A753]/40 bg-gradient-to-br from-[#25D366] via-[#20BA56] to-[#128C7E] text-white shadow-2xl shadow-[#25D366]/40 transition-all duration-300 hover:border-[#D3A753] hover:shadow-2xl hover:shadow-[#25D366]/60 sm:size-16"
         >
           {/* WhatsApp Icon */}

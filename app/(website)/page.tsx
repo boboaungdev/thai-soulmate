@@ -156,78 +156,12 @@ export default function HomePage() {
                 </motion.p>
               </div>
 
-              {/* Main Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 22, filter: "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{
-                  duration: 0.75,
-                  delay: 2.8,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="text-xl font-bold tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] sm:text-2xl md:text-3xl lg:text-4xl"
-              >
-                Personal Assistant in Your Search for a Life Partner in Thailand
-              </motion.h1>
-
-              {/* Subtitle / Description */}
-              <motion.p
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 2.95 }}
-                className="mx-auto max-w-xl text-sm leading-relaxed text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] sm:text-base"
-              >
-                <span className="font-semibold text-white">
-                  Stop searching. Let us do the matching.
-                </span>{" "}
-                Real 1-2-1 personal matchmaking for men seeking genuine, lasting
-                relationships with Thai women.
-              </motion.p>
-
-              {/* Two Hero CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 3.1 }}
-                className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:flex-row"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full sm:w-auto"
-                >
-                  <Button
-                    asChild
-                    size="lg"
-                    className="btn-gradient w-full font-semibold shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-[#D3A753]/30 sm:w-auto"
-                  >
-                    <Link href="/#register-interest">
-                      Arrange a Confidential Consultation
-                    </Link>
-                  </Button>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full sm:w-auto"
-                >
-                  <Button
-                    asChild
-                    size="lg"
-                    variant="outline"
-                    className="w-full border-white/30 bg-black/50 text-white backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/15 hover:text-white sm:w-auto"
-                  >
-                    <Link href="/service">See How It Works</Link>
-                  </Button>
-                </motion.div>
-              </motion.div>
-
               {/* Slogan Trust Ribbon */}
               <motion.div
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 3.25 }}
-                className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-2 text-xs text-white/90 sm:gap-3 sm:text-sm"
+                transition={{ duration: 0.6, delay: 2.8 }}
+                className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-white/90 sm:gap-3 sm:text-sm"
               >
                 <motion.div
                   animate={{ y: [0, -4, 0] }}
@@ -269,6 +203,44 @@ export default function HomePage() {
                 >
                   <MapPin className="size-3.5 text-[#D3A753]" />
                   <span>Personally Matched in Thailand</span>
+                </motion.div>
+              </motion.div>
+
+              {/* Two Hero CTAs */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 2.95 }}
+                className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:flex-row"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full sm:w-auto"
+                >
+                  <Button
+                    asChild
+                    size="lg"
+                    className="btn-gradient w-full font-semibold shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-[#D3A753]/30 sm:w-auto"
+                  >
+                    <Link href="/#register-interest">
+                      Arrange a Confidential Consultation
+                    </Link>
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full sm:w-auto"
+                >
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="w-full border-white/30 bg-black/50 text-white backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/15 hover:text-white sm:w-auto"
+                  >
+                    <Link href="/service">See How It Works</Link>
+                  </Button>
                 </motion.div>
               </motion.div>
             </div>

@@ -3,7 +3,13 @@
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { ChevronLeft, ChevronRight, MapPin, ShieldCheck } from "lucide-react"
+import {
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
+  ShieldCheck,
+  Briefcase,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -13,6 +19,7 @@ import { motion } from "framer-motion"
 import {
   ApplicationForm,
   PersonalDetails,
+  Career,
   Photos,
 } from "@/types/application-form"
 import { useAuthStore } from "@/stores/auth-store"
@@ -38,6 +45,18 @@ const getPersonalDetails = (
     }
   }
   return profile.applicationForm.personalDetails as PersonalDetails
+}
+
+const getCareer = (profile: ProfileWithApplicationForm): Career => {
+  if (!profile.applicationForm?.career) return {} as Career
+  if (typeof profile.applicationForm.career === "string") {
+    try {
+      return JSON.parse(profile.applicationForm.career)
+    } catch {
+      return {} as Career
+    }
+  }
+  return profile.applicationForm.career as unknown as Career
 }
 
 const getPhotos = (profile: ProfileWithApplicationForm): Photos => {
@@ -146,6 +165,7 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                 ))
               : users.map((profile) => {
                   const details = getPersonalDetails(profile)
+                  const career = getCareer(profile)
                   const photos = getPhotos(profile)
                   const nickname = details?.nickname?.trim()
 
@@ -205,12 +225,23 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                                 {calculateAge(details?.dob)} yrs
                               </span>
                             </div>
-                            <p className="mt-1 flex items-center gap-1 text-xs text-white/80">
-                              <MapPin className="size-3 text-[#D3A753]" />
-                              <span>
-                                {details?.currentLocation || "Thailand"}
-                              </span>
-                            </p>
+
+                            <div className="mt-1 space-y-0.5 text-xs">
+                              {career?.occupation && (
+                                <p className="flex items-center gap-1.5 text-white/90">
+                                  <Briefcase className="size-3 shrink-0 text-[#E791A7]" />
+                                  <span className="truncate">
+                                    {career.occupation}
+                                  </span>
+                                </p>
+                              )}
+                              <p className="flex items-center gap-1.5 text-white/80">
+                                <MapPin className="size-3 shrink-0 text-[#D3A753]" />
+                                <span className="truncate">
+                                  {details?.currentLocation || "Thailand"}
+                                </span>
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </Link>
@@ -253,6 +284,7 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
         : users.map((profile, index) => {
             const details = getPersonalDetails(profile)
             const photos = getPhotos(profile)
+            const career = getCareer(profile)
             const nickname = details?.nickname?.trim()
 
             return (
@@ -318,10 +350,22 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                         </span>
                       </div>
 
-                      <p className="mt-1 flex items-center gap-1 text-xs text-white/80">
-                        <MapPin className="size-3 text-[#D3A753]" />
-                        <span>{details?.currentLocation || "Thailand"}</span>
-                      </p>
+                      <div className="mt-1 space-y-0.5 text-xs">
+                        {career?.occupation && (
+                          <p className="flex items-center gap-1.5 text-white/90">
+                            <Briefcase className="size-3 shrink-0 text-[#E791A7]" />
+                            <span className="truncate">
+                              {career.occupation}
+                            </span>
+                          </p>
+                        )}
+                        <p className="flex items-center gap-1.5 text-white/80">
+                          <MapPin className="size-3 shrink-0 text-[#D3A753]" />
+                          <span className="truncate">
+                            {details?.currentLocation || "Thailand"}
+                          </span>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </Link>

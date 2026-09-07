@@ -15,11 +15,12 @@ import {
 
 import Link from "next/link"
 import Image from "next/image"
-import { MapPin } from "lucide-react"
+import { MapPin, Briefcase } from "lucide-react"
 import {
   ApplicationForm,
   PersonalDetails,
   Photos,
+  Career,
 } from "@/types/application-form"
 
 interface Profile {
@@ -38,6 +39,11 @@ function UserCard({ profile }: { profile: Profile }) {
     typeof profile.applicationForm.photos === "string"
       ? JSON.parse(profile.applicationForm.photos as string)
       : (profile.applicationForm.photos as unknown as Photos) || {}
+  const career: Career =
+    profile.applicationForm.career &&
+    typeof profile.applicationForm.career === "string"
+      ? JSON.parse(profile.applicationForm.career as string)
+      : (profile.applicationForm.career as unknown as Career) || {}
 
   const age = personalDetails.dob
     ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
@@ -77,10 +83,20 @@ function UserCard({ profile }: { profile: Profile }) {
             </span>
             , <span className="text-pink">{age}</span>
           </p>
-          <p className="flex items-center gap-1 text-sm">
-            <MapPin className="size-3" />
-            {personalDetails?.currentLocation || "N/A"}
-          </p>
+          <div className="mt-1 space-y-0.5 text-xs">
+            {career?.occupation && (
+              <p className="flex items-center gap-1.5 text-white/90">
+                <Briefcase className="size-3 shrink-0 text-[#E791A7]" />
+                <span className="truncate">{career.occupation}</span>
+              </p>
+            )}
+            <p className="flex items-center gap-1 text-white/80">
+              <MapPin className="size-3 shrink-0" />
+              <span className="truncate">
+                {personalDetails?.currentLocation || "N/A"}
+              </span>
+            </p>
+          </div>
         </div>
       </Card>
     </Link>

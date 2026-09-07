@@ -4,7 +4,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { APP_INFO } from "@/constants"
 import { AppName } from "@/components/app-name"
-import { ProfileGallery } from "@/components/profile-gallery"
 import {
   Card,
   CardContent,
@@ -14,8 +13,6 @@ import {
 } from "@/components/ui/card"
 import {
   Target,
-  Eye,
-  Handshake,
   ShieldCheck,
   UserCheck,
   Lock,
@@ -249,10 +246,10 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================= */}
-      {/* FEATURED MEMBERS PREVIEW */}
+      {/* ABOUT THAI SOULMATE */}
       {/* ========================================================= */}
       <section
-        id="gallery"
+        id="about"
         className="relative overflow-hidden border-b border-border/40 py-16 sm:py-24"
       >
         {/* Unified Atmospheric Ambient Glow */}
@@ -260,14 +257,9 @@ export default function HomePage() {
         <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 size-[600px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/15 via-[#E791A7]/10 to-transparent blur-3xl" />
         <div className="pointer-events-none absolute -right-40 -bottom-40 -z-10 size-[500px] rounded-full bg-gradient-to-br from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
 
-        <div className="mx-auto w-full max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="space-y-3 text-center"
-          >
+        <div className="mx-auto w-full max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
+          {/* Header & Main Story Narrative */}
+          <div className="space-y-6 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -275,53 +267,173 @@ export default function HomePage() {
               transition={{ duration: 0.5 }}
               className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/15 to-[#CA617D]/15 px-4 py-1.5 text-xs font-semibold text-[#D3A753] sm:text-sm"
             >
-              <ShieldCheck className="size-4 text-[#CA617D]" />
-              <span>All Profiles Verified &amp; Shown With Permission</span>
+              <Sparkles className="size-4 text-[#CA617D]" />
+              <span>About Thai Soulmate</span>
             </motion.div>
 
-            <h2 className="text-gradient text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-              Meet Our Members
-            </h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground md:text-lg">
-              We work with relationship-minded Thai women who are interested in
-              genuine relationships and introductions to foreign men. Every
-              profile is shared respectfully and with the member&apos;s
-              permission.
-            </p>
-          </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 25, filter: "blur(6px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="text-gradient mx-auto max-w-4xl text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+            >
+              Where Genuine International Connections Begin
+            </motion.h2>
 
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="mx-auto max-w-3xl space-y-6 leading-relaxed text-muted-foreground md:text-lg"
+            >
+              <p>
+                You are at a stage in life where everything is in place—except
+                the right partner. You have built your career, achieved
+                stability, and know what truly matters. What you don&apos;t have
+                is time for dating apps that offer endless noise, unverified
+                profiles, and superficial swiping with people who aren&apos;t
+                aligned with your future.
+              </p>
+              <div className="relative overflow-hidden rounded-2xl border border-[#D3A753]/25 bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/5 to-[#CA617D]/10 p-5 text-foreground shadow-sm sm:p-6">
+                <p className="text-base leading-relaxed font-medium sm:text-lg">
+                  <span className="font-semibold text-[#D3A753]">
+                    THAI SOULMATE
+                  </span>{" "}
+                  was created to replace the frustration of modern dating with
+                  the discretion, warmth, and precision of a private matchmaking
+                  agency based locally in Thailand.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* The Boutique Matchmaking Difference (3 Pillars) */}
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <p className="text-xs font-bold tracking-[0.25em] text-[#D3A753] uppercase sm:text-sm">
+                The Boutique Matchmaking Difference
+              </p>
+            </motion.div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  icon: HeartHandshake,
+                  title: "A Human Bridge Between Two Worlds",
+                  desc: "We connect serious international gentlemen with genuine, relationship-minded Thai women seeking a loving marriage and shared future.",
+                },
+                {
+                  icon: ShieldCheck,
+                  title: "Integrity Above Database Numbers",
+                  desc: "We take the time to understand each person's core values, lifestyle, and family vision before suggesting an introduction.",
+                },
+                {
+                  icon: Lock,
+                  title: "Complete Discretion & Respect",
+                  desc: "Every interaction is handled with utmost privacy. Introductions only take place when both individuals have reviewed each other and agreed.",
+                },
+              ].map((pillar, idx) => {
+                const Icon = pillar.icon
+                return (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
+                    whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    viewport={{ once: false, amount: 0.15 }}
+                    transition={{
+                      duration: 0.55,
+                      delay: idx * 0.12,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group relative flex flex-col rounded-2xl border border-border/60 bg-card/60 p-6 backdrop-blur-md transition-all duration-300 hover:border-[#D3A753]/40 hover:bg-card/90 hover:shadow-xl hover:shadow-[#D3A753]/5 sm:p-8"
+                  >
+                    <div className="mb-5 flex size-12 items-center justify-center rounded-xl border border-[#D3A753]/30 bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/15 to-[#CA617D]/10 text-[#D3A753] shadow-sm transition-transform duration-300 group-hover:scale-110">
+                      <Icon className="size-6 text-[#CA617D]" />
+                    </div>
+                    <h3 className="mb-3 text-lg font-bold text-foreground sm:text-xl">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                      {pillar.desc}
+                    </p>
+                  </motion.div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Philosophy Quote Banner */}
           <motion.div
-            initial={{ opacity: 0, y: 35, scale: 0.96, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{
-              duration: 0.7,
-              delay: 0.1,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+            initial={{ opacity: 0, scale: 0.96, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto max-w-4xl"
           >
-            <ProfileGallery layout="scroll" />
+            <div className="relative overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/10 to-[#CA617D]/10 p-6 text-center shadow-md backdrop-blur-sm sm:p-10">
+              <Quote className="mx-auto mb-4 size-8 rotate-180 text-[#D3A753]/60 sm:size-10" />
+              <blockquote className="font-serif text-lg leading-relaxed text-foreground italic sm:text-xl md:text-2xl">
+                &ldquo;Real relationships are built on mutual respect, verified
+                sincerity, and shared values—never on random algorithms.&rdquo;
+              </blockquote>
+            </div>
           </motion.div>
 
+          {/* 4 Proof / Metrics Badges */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex justify-center pt-2"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4"
           >
-            <motion.div
-              whileHover={{ scale: 1.04, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Button
-                asChild
-                size="lg"
-                className="btn-gradient font-semibold shadow-md transition-all duration-300 hover:shadow-xl hover:shadow-[#D3A753]/20"
-              >
-                <Link href="/gallery">View All Members</Link>
-              </Button>
-            </motion.div>
+            {[
+              {
+                icon: UserCheck,
+                value: "1-2-1 Personal",
+                label: "Matchmaking Service",
+              },
+              {
+                icon: ShieldCheck,
+                value: "100% Verified",
+                label: "Profile Standard",
+              },
+              {
+                icon: MapPin,
+                value: "Thailand",
+                label: "Local Presence",
+              },
+              {
+                icon: HeartHandshake,
+                value: "Mutual Consent",
+                label: "Introductions",
+              },
+            ].map((stat, idx) => {
+              const Icon = stat.icon
+              return (
+                <div
+                  key={idx}
+                  className="group relative flex flex-col items-center justify-center rounded-xl border border-border/50 bg-card/40 p-4 text-center backdrop-blur-sm transition-all duration-300 hover:border-[#D3A753]/40 hover:bg-card/70 sm:p-6"
+                >
+                  <Icon className="mb-2 size-5 text-[#CA617D] sm:size-6" />
+                  <div className="text-base font-bold text-foreground sm:text-lg md:text-xl">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs font-medium text-muted-foreground sm:text-sm">
+                    {stat.label}
+                  </div>
+                </div>
+              )
+            })}
           </motion.div>
         </div>
       </section>
@@ -729,7 +841,7 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          {/* 7 Things We Take Time to Understand */}
+          {/* 8 Things We Take Time to Understand */}
           <div className="space-y-8">
             <div className="space-y-2 text-center">
               <motion.div
@@ -739,7 +851,7 @@ export default function HomePage() {
                 transition={{ duration: 0.55 }}
               >
                 <h3 className="text-2xl font-bold sm:text-3xl">
-                  7 Things We Take Time to Understand About You
+                  8 Things We Take Time to Understand About You
                 </h3>
                 <p className="mx-auto max-w-2xl text-sm text-muted-foreground sm:text-base">
                   Before recommending any match, we build a thorough
@@ -748,7 +860,7 @@ export default function HomePage() {
               </motion.div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 {
                   icon: Smile,
@@ -791,7 +903,12 @@ export default function HomePage() {
                   number: "07",
                   title: "Your Ideal Life Partner",
                   desc: "The kind of partner you believe would truly suit you and bring you lasting joy.",
-                  featured: true,
+                },
+                {
+                  icon: MapPin,
+                  number: "08",
+                  title: "Your Future & Living Plans",
+                  desc: "Where you plan to live, retirement dreams, and long-term horizon in Thailand or abroad.",
                 },
               ].map((item, idx) => {
                 const Icon = item.icon
@@ -821,11 +938,6 @@ export default function HomePage() {
                       scale: 1.025,
                       transition: { duration: 0.2 },
                     }}
-                    className={
-                      item.featured
-                        ? "sm:col-span-2 lg:col-span-3 xl:col-span-1"
-                        : ""
-                    }
                   >
                     <div className="group relative flex h-full flex-col justify-between rounded-2xl border border-border/70 bg-card/80 p-5 backdrop-blur-sm transition-all duration-300 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
                       <div className="space-y-3">
@@ -900,343 +1012,6 @@ export default function HomePage() {
               </div>
             </div>
           </motion.div>
-        </div>
-      </section>
-
-      {/* ========================================================= */}
-      {/* ABOUT US — REFINED LUXURY STORY & PILLARS */}
-      {/* ========================================================= */}
-      <section
-        id="about"
-        className="relative overflow-hidden border-b border-border/40 py-16 sm:py-24"
-      >
-        {/* Atmospheric Ambient Glow */}
-        <div className="pointer-events-none absolute top-1/4 -right-40 -z-10 size-[600px] rounded-full bg-gradient-to-bl from-[#D3A753]/10 via-[#E791A7]/5 to-transparent blur-3xl" />
-        <div className="pointer-events-none absolute bottom-10 -left-40 -z-10 size-[550px] rounded-full bg-gradient-to-tr from-[#CA617D]/10 via-[#D3A753]/5 to-transparent blur-3xl" />
-
-        <div className="mx-auto w-full max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
-          <div className="space-y-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
-              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/10 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
-                <Sparkles className="size-3.5" />
-                <span>Our Story & Philosophy</span>
-              </div>
-              <h2 className="text-gradient mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-                About Thai Soulmate
-              </h2>
-              <p className="mx-auto mt-3 max-w-3xl text-base text-muted-foreground md:text-lg">
-                Where genuine international connections are made and
-                life-changing stories begin.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Editorial Philosophy Showcase */}
-          <motion.div
-            initial={{ opacity: 0, y: 35, scale: 0.97, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-3xl border border-[#D3A753]/35 bg-gradient-to-br from-card/90 via-card/75 to-background p-8 shadow-2xl backdrop-blur-md sm:p-12 lg:p-16"
-          >
-            <div className="pointer-events-none absolute top-0 right-0 -mt-10 -mr-10 size-60 rounded-full bg-[#D3A753]/15 blur-3xl" />
-            <div className="pointer-events-none absolute bottom-0 left-0 -mb-10 -ml-10 size-60 rounded-full bg-[#CA617D]/15 blur-3xl" />
-
-            <div className="relative grid gap-10 lg:grid-cols-12 lg:gap-14">
-              {/* Left Column - Philosophy */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.1,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="space-y-6 lg:col-span-6"
-              >
-                <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 to-[#CA617D]/20 text-[#CA617D]">
-                  <Quote className="size-6" />
-                </div>
-                <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  You are at a stage in life where everything is in place—except
-                  the right partner.
-                </h3>
-                <p className="text-base leading-relaxed text-muted-foreground">
-                  You have built your career, achieved stability, and know what
-                  truly matters. What you don&apos;t have is time for dating
-                  apps that offer endless noise, unverified profiles, and
-                  superficial swiping with people who aren&apos;t aligned with
-                  your future.
-                </p>
-                <p className="text-base leading-relaxed text-muted-foreground">
-                  <AppName className="inline font-semibold" /> was created to
-                  replace the frustration of modern dating with the discretion,
-                  warmth, and precision of a private matchmaking agency based
-                  locally in Thailand.
-                </p>
-              </motion.div>
-
-              {/* Right Column - What We Stand For */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.2,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="space-y-6 lg:col-span-6 lg:border-l lg:border-border/60 lg:pl-10"
-              >
-                <h4 className="text-xs font-bold tracking-wider text-[#D3A753] uppercase sm:text-sm">
-                  The Boutique Matchmaking Difference
-                </h4>
-                <div className="space-y-4">
-                  {[
-                    {
-                      title: "A Human Bridge Between Two Worlds",
-                      desc: "We connect serious international gentlemen with genuine, relationship-minded Thai women seeking a loving marriage and shared future.",
-                    },
-                    {
-                      title: "Integrity Above Database Numbers",
-                      desc: "We take the time to understand each person's core values, lifestyle, and family vision before suggesting an introduction.",
-                    },
-                    {
-                      title: "Complete Discretion & Respect",
-                      desc: "Every interaction is handled with utmost privacy. Introductions only take place when both individuals have reviewed each other and agreed.",
-                    },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-4">
-                      <div className="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
-                        <CheckCircle2 className="size-4" />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="font-semibold text-foreground">
-                          {item.title}
-                        </p>
-                        <p className="text-sm leading-relaxed text-muted-foreground">
-                          {item.desc}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="pt-2">
-                  <p className="text-xs text-muted-foreground/80 italic">
-                    &ldquo;Real relationships are built on mutual respect,
-                    verified sincerity, and shared values—never on random
-                    algorithms.&rdquo;
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Quick Metrics Strip */}
-            <div className="mt-10 grid grid-cols-2 gap-4 border-t border-border/60 pt-8 sm:grid-cols-4">
-              {[
-                { label: "Matchmaking Service", value: "1-2-1 Personal" },
-                { label: "Profile Standard", value: "100% Verified" },
-                { label: "Local Presence", value: "Thailand" },
-                { label: "Introductions", value: "Mutual Consent" },
-              ].map((stat, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.88, y: 15 }}
-                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                  viewport={{ once: false, amount: 0.2 }}
-                  transition={{
-                    duration: 0.45,
-                    delay: 0.25 + i * 0.08,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
-                  className="cursor-default space-y-1 text-center sm:text-left"
-                >
-                  <p className="text-lg font-bold text-foreground sm:text-xl">
-                    {stat.value}
-                  </p>
-                  <p className="text-xs tracking-wider text-muted-foreground uppercase">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Mission, Vision, Values — Modern Luxury Cards */}
-          <div className="grid gap-6 md:grid-cols-3">
-            {/* Mission (Left) */}
-            <motion.div
-              initial={{ opacity: 0, x: -35, y: 20, filter: "blur(6px)" }}
-              whileInView={{ opacity: 1, x: 0, y: 0, filter: "blur(0px)" }}
-              viewport={{ once: false, amount: 0.15 }}
-              transition={{
-                duration: 0.6,
-                delay: 0.05,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              whileHover={{
-                y: -7,
-                scale: 1.02,
-                transition: { duration: 0.25 },
-              }}
-              className="h-full"
-            >
-              <Card className="h-full rounded-2xl border border-border/70 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
-                <CardHeader className="space-y-3">
-                  <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
-                    <Target className="size-6 text-[#CA617D]" />
-                  </div>
-                  <CardTitle className="text-xl font-bold">
-                    Our Mission
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    To deliver an unparalleled personal matchmaking service that
-                    empowers individuals to find genuine companionship, mutual
-                    respect, and lasting love.
-                  </p>
-                  <ul className="space-y-2 border-t border-border/40 pt-3 text-xs text-muted-foreground/90">
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                      <span>Fostering sincere, long-term relationships</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                      <span>Eliminating the time-wasting of dating apps</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                      <span>Bespoke introductions tailored to you</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Vision (Center) */}
-            <motion.div
-              initial={{ opacity: 0, y: 35, scale: 0.95, filter: "blur(6px)" }}
-              whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-              viewport={{ once: false, amount: 0.15 }}
-              transition={{
-                duration: 0.6,
-                delay: 0.15,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              whileHover={{
-                y: -7,
-                scale: 1.02,
-                transition: { duration: 0.25 },
-              }}
-              className="h-full"
-            >
-              <Card className="h-full rounded-2xl border border-border/70 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
-                <CardHeader className="space-y-3">
-                  <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#D3A753]">
-                    <Eye className="size-6 text-[#D3A753]" />
-                  </div>
-                  <CardTitle className="text-xl font-bold">
-                    Our Vision
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    To be the leading, most trusted private matchmaking service
-                    for meaningful international connections between foreign
-                    gentlemen and Thai women.
-                  </p>
-                  <ul className="space-y-2 border-t border-border/40 pt-3 text-xs text-muted-foreground/90">
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                      <span>
-                        Setting the benchmark for integrity in Thailand
-                      </span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                      <span>Building real marriages and life partnerships</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                      <span>Promoting cultural respect and understanding</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Values (Right) */}
-            <motion.div
-              initial={{ opacity: 0, x: 35, y: 20, filter: "blur(6px)" }}
-              whileInView={{ opacity: 1, x: 0, y: 0, filter: "blur(0px)" }}
-              viewport={{ once: false, amount: 0.15 }}
-              transition={{
-                duration: 0.6,
-                delay: 0.25,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              whileHover={{
-                y: -7,
-                scale: 1.02,
-                transition: { duration: 0.25 },
-              }}
-              className="h-full"
-            >
-              <Card className="h-full rounded-2xl border border-border/70 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/10">
-                <CardHeader className="space-y-3">
-                  <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#D3A753]/20 via-[#E791A7]/20 to-[#CA617D]/20 text-[#CA617D]">
-                    <Handshake className="size-6 text-[#CA617D]" />
-                  </div>
-                  <CardTitle className="text-xl font-bold">
-                    Our Core Values
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Our foundation rests on three unshakeable principles that
-                    guide every client interaction and introduction:
-                  </p>
-                  <ul className="space-y-2.5 border-t border-border/40 pt-3 text-xs text-muted-foreground/90">
-                    <li className="flex items-start gap-2">
-                      <span className="min-w-[70px] font-semibold text-foreground">
-                        Integrity:
-                      </span>
-                      <span>
-                        Absolute honesty, transparency, and verified identities.
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="min-w-[70px] font-semibold text-foreground">
-                        Empathy:
-                      </span>
-                      <span>
-                        Deeply understanding your feelings, goals, and history.
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="min-w-[70px] font-semibold text-foreground">
-                        Discretion:
-                      </span>
-                      <span>
-                        Strict confidentiality and privacy protection at all
-                        times.
-                      </span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
         </div>
       </section>
 

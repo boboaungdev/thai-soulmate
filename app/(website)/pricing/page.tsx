@@ -379,7 +379,7 @@ export function PricingPageContents({
                           whileHover={{ y: -8, scale: 1.02 }}
                           className="relative"
                         >
-                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl">
+                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl sm:p-7">
                             <div className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white shadow-sm">
                               50% OFF
                             </div>
@@ -414,19 +414,24 @@ export function PricingPageContents({
 
                             <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                               {PLANS[0]?.features?.map((feature, index) => (
-                                <li key={index} className="flex items-start gap-2.5">
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2.5"
+                                >
                                   <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#D3A753]/15 text-[#D3A753]">
                                     <Check className="size-3 stroke-[2.5]" />
                                   </span>
 
-                                  <span className="leading-snug">{feature}</span>
+                                  <span className="leading-snug">
+                                    {feature}
+                                  </span>
                                 </li>
                               ))}
                             </ul>
 
                             <div className="mt-auto pt-7">
                               <Button
-                                className="h-10 w-full font-semibold border-border/80 hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground text-foreground"
+                                className="h-10 w-full border-border/80 font-semibold text-foreground hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground"
                                 variant="outline"
                                 onClick={() => {
                                   const plan = PLANS.find(
@@ -469,7 +474,7 @@ export function PricingPageContents({
                           className="relative"
                         >
                           <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:shadow-2xl">
-                            <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 sm:p-7 text-left">
+                            <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 text-left sm:p-7">
                               {/* Most Popular */}
 
                               <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full px-4 py-1 text-xs font-bold whitespace-nowrap text-white shadow-lg">
@@ -518,12 +523,17 @@ export function PricingPageContents({
                                 {PLANS.find(
                                   (item) => item.id === "3-months"
                                 )?.features?.map((feature, index) => (
-                                  <li key={index} className="flex items-start gap-2.5">
+                                  <li
+                                    key={index}
+                                    className="flex items-start gap-2.5"
+                                  >
                                     <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#CA617D]/20 text-[#CA617D]">
                                       <Check className="size-3 stroke-[2.5]" />
                                     </span>
 
-                                    <span className="leading-snug">{feature}</span>
+                                    <span className="leading-snug">
+                                      {feature}
+                                    </span>
                                   </li>
                                 ))}
                               </ul>
@@ -572,7 +582,7 @@ export function PricingPageContents({
                           whileHover={{ y: -8, scale: 1.02 }}
                           className="relative"
                         >
-                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl">
+                          <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl sm:p-7">
                             <div className="absolute top-4 right-4 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/15 px-3 py-1 text-xs font-bold text-[#D3A753]">
                               Free Trial
                             </div>
@@ -613,7 +623,9 @@ export function PricingPageContents({
                                   <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span className="leading-snug">Meet 1 personally selected matches</span>
+                                <span className="leading-snug">
+                                  Meet 1 personally selected matches
+                                </span>
                               </li>
 
                               <li className="flex items-start gap-2.5">
@@ -621,7 +633,9 @@ export function PricingPageContents({
                                   <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span className="leading-snug">Personal 1-2-1 matchmaking service</span>
+                                <span className="leading-snug">
+                                  Personal 1-2-1 matchmaking service
+                                </span>
                               </li>
 
                               <li className="flex items-start gap-2.5">
@@ -629,7 +643,9 @@ export function PricingPageContents({
                                   <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span className="leading-snug">Hand picked introductions</span>
+                                <span className="leading-snug">
+                                  Hand picked introductions
+                                </span>
                               </li>
 
                               <li className="flex items-start gap-2.5">
@@ -647,7 +663,9 @@ export function PricingPageContents({
                                   <Check className="size-3 stroke-[2.5]" />
                                 </span>
 
-                                <span className="leading-snug">Continue with 1 month membership</span>
+                                <span className="leading-snug">
+                                  Continue with 1 month membership
+                                </span>
                               </li>
 
                               <li className="flex items-start gap-2.5">
@@ -664,7 +682,7 @@ export function PricingPageContents({
                             <div className="mt-auto pt-7">
                               <Button
                                 variant="outline"
-                                className="h-10 w-full font-semibold border-border/80 hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground text-foreground"
+                                className="h-10 w-full border-border/80 font-semibold text-foreground hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground"
                                 onClick={() => {
                                   console.log("Try Before You Buy selected")
                                 }}
@@ -678,8 +696,9 @@ export function PricingPageContents({
 
                       <div className="mx-auto mt-8 max-w-xl text-center">
                         <p className="text-xs text-muted-foreground sm:text-sm">
-                          Special promotion is available to the first 15 eligible
-                          members only. Terms and availability may apply.
+                          Special promotion is available to the first 15
+                          eligible members only. Terms and availability may
+                          apply.
                         </p>
                       </div>
                     </MotionDiv>
@@ -744,7 +763,7 @@ export function PricingPageContents({
                         >
                           {plan.popular ? (
                             <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                              <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 sm:p-7 text-left">
+                              <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 text-left sm:p-7">
                                 <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full px-4 py-1 text-xs font-bold whitespace-nowrap text-white shadow-lg">
                                   <Flame className="size-3.5 fill-current" />
 
@@ -812,7 +831,9 @@ export function PricingPageContents({
                                                 <Check className="size-3 stroke-[2.5]" />
                                               </span>
 
-                                              <span className="leading-snug">{feature}</span>
+                                              <span className="leading-snug">
+                                                {feature}
+                                              </span>
                                             </li>
                                           )
                                         )}
@@ -852,7 +873,7 @@ export function PricingPageContents({
                               </div>
                             </div>
                           ) : (
-                            <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl">
+                            <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl sm:p-7">
                               <h3 className="mt-2 text-2xl font-bold">
                                 {plan.name}
                               </h3>
@@ -914,7 +935,9 @@ export function PricingPageContents({
                                               <Check className="size-3 stroke-[2.5]" />
                                             </span>
 
-                                            <span className="leading-snug">{feature}</span>
+                                            <span className="leading-snug">
+                                              {feature}
+                                            </span>
                                           </li>
                                         )
                                       )}
@@ -936,7 +959,7 @@ export function PricingPageContents({
                               <div className="mt-auto pt-7">
                                 <Button
                                   variant="outline"
-                                  className="h-10 w-full font-semibold border-border/80 hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground text-foreground"
+                                  className="h-10 w-full border-border/80 font-semibold text-foreground hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10 hover:text-foreground"
                                   onClick={() => handleChoosePlan(plan)}
                                 >
                                   Choose Plan
@@ -1024,14 +1047,12 @@ export function PricingPageContents({
                     whileHover={{ y: -8, scale: 1.02 }}
                     className="relative"
                   >
-                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-[#CA617D]/60 hover:shadow-2xl">
+                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-[#CA617D]/60 hover:shadow-2xl sm:p-7">
                       <p className="mt-2 text-xs font-semibold tracking-wider text-[#CA617D] uppercase">
                         Introductory VIP
                       </p>
 
-                      <h3 className="mt-2 text-2xl font-bold">
-                        Welcome Plan
-                      </h3>
+                      <h3 className="mt-2 text-2xl font-bold">Welcome Plan</h3>
 
                       <div className="mt-5 rounded-xl border border-[#CA617D]/20 bg-[#CA617D]/10 p-4">
                         <p className="font-semibold text-foreground">
@@ -1060,7 +1081,7 @@ export function PricingPageContents({
                         <Button
                           asChild
                           variant="outline"
-                          className="h-10 w-full font-semibold border-border/80 hover:border-[#CA617D]/50 hover:bg-[#CA617D]/10 hover:text-foreground text-foreground"
+                          className="h-10 w-full border-border/80 font-semibold text-foreground hover:border-[#CA617D]/50 hover:bg-[#CA617D]/10 hover:text-foreground"
                         >
                           <Link href="/contact">Contact Us</Link>
                         </Button>
@@ -1093,7 +1114,7 @@ export function PricingPageContents({
                     className="relative"
                   >
                     <div className="relative flex h-full flex-col rounded-2xl bg-gradient-to-b from-[#D3A753] via-[#E791A7] to-[#CA617D] p-[2px] shadow-xl transition-all duration-300 hover:shadow-2xl">
-                      <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 sm:p-7 text-left">
+                      <div className="relative flex h-full flex-col rounded-[14px] bg-card p-6 text-left sm:p-7">
                         {/* Most Popular */}
 
                         <div className="btn-gradient absolute -top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full px-4 py-1 text-xs font-bold whitespace-nowrap text-white shadow-lg">
@@ -1106,9 +1127,7 @@ export function PricingPageContents({
                           Signature VIP
                         </p>
 
-                        <h3 className="mt-2 text-2xl font-bold">
-                          6 Months
-                        </h3>
+                        <h3 className="mt-2 text-2xl font-bold">6 Months</h3>
 
                         <div className="mt-5 rounded-xl border border-[#CA617D]/20 bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/20 to-[#CA617D]/15 p-4">
                           <p className="font-semibold text-foreground">
@@ -1123,7 +1142,10 @@ export function PricingPageContents({
 
                         <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                           {PLANS[0]?.features?.map((feature, index) => (
-                            <li key={index} className="flex items-start gap-2.5">
+                            <li
+                              key={index}
+                              className="flex items-start gap-2.5"
+                            >
                               <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#CA617D]/20 text-[#CA617D]">
                                 <Check className="size-3 stroke-[2.5]" />
                               </span>
@@ -1169,7 +1191,7 @@ export function PricingPageContents({
                     whileHover={{ y: -8, scale: 1.02 }}
                     className="relative"
                   >
-                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 sm:p-7 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-[#CA617D]/60 hover:shadow-2xl">
+                    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-[#CA617D]/60 hover:shadow-2xl sm:p-7">
                       <p className="mt-2 text-xs font-semibold tracking-wider text-[#CA617D] uppercase">
                         Prestige VIP
                       </p>
@@ -1203,7 +1225,7 @@ export function PricingPageContents({
                         <Button
                           asChild
                           variant="outline"
-                          className="h-10 w-full font-semibold border-border/80 hover:border-[#CA617D]/50 hover:bg-[#CA617D]/10 hover:text-foreground text-foreground"
+                          className="h-10 w-full border-border/80 font-semibold text-foreground hover:border-[#CA617D]/50 hover:bg-[#CA617D]/10 hover:text-foreground"
                         >
                           <Link href="/contact">Contact Us</Link>
                         </Button>
@@ -1239,15 +1261,16 @@ export function PricingPageContents({
               </h2>
 
               <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-                For more details about any of our subscriptions, plans or membership
-                fees, please{" "}
+                For more details about any of our subscriptions, plans or
+                membership fees, please{" "}
                 <Link
                   href="/contact"
                   className="text-gradient font-semibold transition-all hover:underline hover:brightness-125"
                 >
                   contact us
                 </Link>
-                . Our dedicated matchmaking team in Thailand is always here to assist you.
+                . Our dedicated matchmaking team in Thailand is always here to
+                assist you.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
@@ -1263,12 +1286,15 @@ export function PricingPageContents({
                   variant="outline"
                   className="h-10 border-border/80 px-6 font-semibold hover:border-[#D3A753]/50 hover:bg-[#D3A753]/10"
                 >
-                  <Link href="/#register-interest">Register Interest</Link>
+                  <Link href="/#register-interest">
+                    Arrange a Confidential Consultation
+                  </Link>
                 </Button>
               </div>
 
               <p className="text-xs text-muted-foreground">
-                100% confidential • Bespoke matchmaking • Direct personal support
+                100% confidential • Bespoke matchmaking • Direct personal
+                support
               </p>
             </div>
           </div>

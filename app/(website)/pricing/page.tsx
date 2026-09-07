@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Flame, Crown, Clock, Venus, Check } from "lucide-react"
+import { Flame, Crown, Clock, Check } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { PLANS } from "@/constants"
 import { MotionDiv } from "@/components/motion"
@@ -161,11 +161,13 @@ export function PricingPageContents({
               </div>
 
               <h1 className="text-gradient text-4xl font-bold tracking-tight md:text-5xl">
-                VIP Membership
+                {activeCategory === "vip" ? "Female VIP" : "Male Membership"}
               </h1>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Unlock exclusive features and get more matches!
+                {activeCategory === "vip"
+                  ? "Exclusive matchmaking services designed specifically for female members."
+                  : "Unlock exclusive features and get more matches!"}
               </p>
             </>
           )}
@@ -178,12 +180,18 @@ export function PricingPageContents({
               </div>
 
               <h1 className="text-gradient text-4xl font-bold tracking-tight md:text-5xl">
-                VIP Membership Details
+                {activeCategory === "vip"
+                  ? "Female VIP Details"
+                  : "Male Membership Details"}
               </h1>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                 {userData?.name && `Dear ${userData.prefix} ${userData.name}, `}
-                Here are the full details of our VIP plans.
+                Here are the full details of our{" "}
+                {activeCategory === "vip"
+                  ? "Female VIP"
+                  : "Male Membership"}{" "}
+                plans.
               </p>
             </>
           )}
@@ -218,38 +226,10 @@ export function PricingPageContents({
             className="w-full"
           >
             {/* ===================================================== */}
-            {/* TOP-LEVEL GENDER CATEGORY (MEMBERSHIP vs VIP) */}
-            {/* ===================================================== */}
-
-            <div className="flex w-full justify-center">
-              <div className="w-full overflow-x-auto sm:w-auto">
-                <TabsList className="mx-auto flex w-max min-w-max rounded-xl border border-border/70 bg-card/80 p-1 backdrop-blur-sm group-data-horizontal/tabs:h-10">
-                  <TabsTrigger
-                    value="membership"
-                    variant="gradient"
-                    className="h-full gap-2 rounded-lg px-5 text-sm font-semibold sm:px-6"
-                  >
-                    <Crown className="size-4 shrink-0" />
-                    <span>Male Membership</span>
-                  </TabsTrigger>
-
-                  <TabsTrigger
-                    value="vip"
-                    variant="gradient"
-                    className="h-full gap-2 rounded-lg px-5 text-sm font-semibold sm:px-6"
-                  >
-                    <Venus className="size-4 shrink-0" />
-                    <span>Female VIP</span>
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-            </div>
-
-            {/* ===================================================== */}
             {/* MEMBERSHIP (MALE) TAB CONTENT */}
             {/* ===================================================== */}
 
-            <TabsContent value="membership" className="mt-8">
+            <TabsContent value="membership" className="mt-0">
               <Tabs defaultValue="promotion" className="w-full">
                 {/* ================================================= */}
                 {/* MALE SUB-TABS (PROMOTIONS vs REGULAR) */}
@@ -989,7 +969,7 @@ export function PricingPageContents({
             {/* VIP (FEMALE) TAB */}
             {/* ===================================================== */}
 
-            <TabsContent value="vip" className="mt-10">
+            <TabsContent value="vip" className="mt-0">
               <MotionDiv
                 initial={{
                   opacity: 0,
@@ -1007,22 +987,23 @@ export function PricingPageContents({
                   duration: 0.4,
                 }}
               >
-                {/* Female Heading */}
+                {/* Female Heading (Shown when embedded or from application form) */}
+                {(isEmbedded || isFromApplicationForm) && (
+                  <div className="mx-auto max-w-3xl">
+                    <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                      Female VIP
+                    </h2>
 
-                <div className="mx-auto max-w-3xl">
-                  <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-                    Female VIP
-                  </h2>
-
-                  <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-                    Exclusive matchmaking services designed specifically for
-                    female members.
-                  </p>
-                </div>
+                    <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+                      Exclusive matchmaking services designed specifically for
+                      female members.
+                    </p>
+                  </div>
+                )}
 
                 {/* Female Cards */}
 
-                <div className="mt-10 grid gap-6 md:grid-cols-3">
+                <div className="mt-8 grid gap-6 md:grid-cols-3">
                   {/* ================================================= */}
                   {/* WELCOME PLAN */}
                   {/* ================================================= */}

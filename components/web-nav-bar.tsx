@@ -4,7 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { Menu, ArrowUpRight, ChevronDown, Crown, Venus } from "lucide-react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -67,10 +67,33 @@ const SITE_NAV_LINKS: NavLinkItem[] = [
 
 export function WebNavBar() {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const router = useRouter()
   const { user } = useAuthStore()
   const [isClient, setIsClient] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const checkIsActive = (item: NavLinkItem) => {
+    if (item.href !== "#" && pathname === item.href) {
+      return true
+    }
+    if (item.subLinks && item.subLinks.length > 0) {
+      return item.subLinks.some((sub) => {
+        const [subPath] = sub.href.split("?")
+        return pathname === subPath
+      })
+    }
+    return false
+  }
+
+  const checkIsSubActive = (subHref: string) => {
+    const [subPath, subQuery] = subHref.split("?")
+    if (pathname !== subPath) return false
+    const subTab = new URLSearchParams(subQuery).get("tab")
+    const currentTab =
+      searchParams.get("tab") || (pathname === "/pricing" ? "membership" : "")
+    return subTab === currentTab
+  }
 
   const navContainerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -99,11 +122,12 @@ export function WebNavBar() {
   }, [])
 
   const handleNavClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
+    if (href === "#") {
+      e.preventDefault()
+      return
+    }
     const [targetPath, targetQuery] = href.split("?")
-    const currentQuery =
-      typeof window !== "undefined"
-        ? window.location.search.replace(/^\?/, "")
-        : ""
+    const currentQuery = searchParams.toString()
 
     if (pathname === targetPath && (targetQuery || "") === currentQuery) {
       e.preventDefault()
@@ -170,12 +194,12 @@ export function WebNavBar() {
           animate="show"
         >
           {SITE_NAV_LINKS.map((item) => {
-            const active = pathname === item.href
+            const active = checkIsActive(item)
 
             if (item.subLinks) {
               return (
                 <motion.div
-                  key={item.href}
+                  key={item.label}
                   variants={navItemVariants}
                   className="group relative"
                 >
@@ -209,20 +233,33 @@ export function WebNavBar() {
                     <div className="min-w-[210px] rounded-2xl border border-[#D3A753]/35 bg-background/95 p-2 shadow-2xl shadow-[#D3A753]/15 backdrop-blur-xl">
                       {item.subLinks.map((subItem) => {
                         const Icon = subItem.icon
+                        const isSubActive = checkIsSubActive(subItem.href)
                         return (
                           <Link
                             key={subItem.href}
                             href={subItem.href}
                             onClick={(e) => handleNavClick(e, subItem.href)}
-                            className="group/item flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:translate-x-1 hover:bg-[#D3A753]/15 hover:text-[#D3A753]"
+                            className={cn(
+                              "group/item flex items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 hover:translate-x-1",
+                              isSubActive
+                                ? "bg-[#D3A753]/15 font-semibold text-[#D3A753]"
+                                : "text-foreground hover:bg-[#D3A753]/10 hover:text-[#D3A753]"
+                            )}
                           >
-                            <Icon
-                              className={cn(
-                                "size-4 shrink-0 transition-transform duration-200 group-hover/item:scale-110",
-                                subItem.iconColor
-                              )}
-                            />
-                            <span>{subItem.label}</span>
+                            <div className="flex items-center gap-2.5">
+                              <Icon
+                                className={cn(
+                                  "size-4 shrink-0 transition-transform duration-200 group-hover/item:scale-110",
+                                  isSubActive
+                                    ? "text-[#D3A753]"
+                                    : subItem.iconColor
+                                )}
+                              />
+                              <span>{subItem.label}</span>
+                            </div>
+                            {isSubActive && (
+                              <span className="size-1.5 rounded-full bg-[#D3A753]" />
+                            )}
                           </Link>
                         )
                       })}
@@ -367,11 +404,11 @@ export function WebNavBar() {
                 <div className="flex flex-1 flex-col justify-between overflow-y-auto px-3 py-4">
                   <div className="flex flex-col gap-1.5">
                     {SITE_NAV_LINKS.map((item) => {
-                      const isActive = pathname === item.href
+                      const isActive = checkIsActive(item)
                       if (item.subLinks) {
                         return (
                           <div
-                            key={item.href}
+                            key={item.label}
                             className="flex flex-col space-y-1"
                           >
                             <motion.div whileTap={{ scale: 0.98 }}>
@@ -379,7 +416,9 @@ export function WebNavBar() {
                                 href={item.href}
                                 onClick={(e) => {
                                   handleNavClick(e, item.href)
-                                  setMobileOpen(false)
+                                  if (item.href !== "#") {
+                                    setMobileOpen(false)
+                                  }
                                 }}
                                 className={cn(
                                   "flex cursor-pointer items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200",
@@ -395,11 +434,9 @@ export function WebNavBar() {
                             <div className="ml-3 flex flex-col space-y-1 border-l border-[#D3A753]/30 pl-3">
                               {item.subLinks.map((subItem) => {
                                 const Icon = subItem.icon
-                                const isSubActive =
-                                  typeof window !== "undefined" &&
-                                  window.location.pathname +
-                                    window.location.search ===
-                                    subItem.href
+                                const isSubActive = checkIsSubActive(
+                                  subItem.href
+                                )
                                 return (
                                   <motion.div
                                     key={subItem.href}
@@ -412,19 +449,26 @@ export function WebNavBar() {
                                         setMobileOpen(false)
                                       }}
                                       className={cn(
-                                        "flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-all duration-200",
+                                        "flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs font-medium transition-all duration-200",
                                         isSubActive
                                           ? "bg-[#D3A753]/15 font-semibold text-[#D3A753]"
                                           : "text-muted-foreground hover:bg-[#D3A753]/10 hover:text-[#D3A753]"
                                       )}
                                     >
-                                      <Icon
-                                        className={cn(
-                                          "size-3.5 shrink-0",
-                                          subItem.iconColor
-                                        )}
-                                      />
-                                      <span>{subItem.label}</span>
+                                      <div className="flex items-center gap-2.5">
+                                        <Icon
+                                          className={cn(
+                                            "size-3.5 shrink-0",
+                                            isSubActive
+                                              ? "text-[#D3A753]"
+                                              : subItem.iconColor
+                                          )}
+                                        />
+                                        <span>{subItem.label}</span>
+                                      </div>
+                                      {isSubActive && (
+                                        <span className="size-1.5 rounded-full bg-[#D3A753]" />
+                                      )}
                                     </Link>
                                   </motion.div>
                                 )

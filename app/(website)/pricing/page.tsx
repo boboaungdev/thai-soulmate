@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Flame, Crown, Clock, Check } from "lucide-react"
+import { Flame, Crown, Clock, Check, BadgePercent, Sparkles } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { PLANS } from "@/constants"
 import { MotionDiv } from "@/components/motion"
@@ -241,15 +241,20 @@ export function PricingPageContents({
                       <TabsTrigger
                         value="promotion"
                         variant="gradient"
-                        className="h-full gap-2 rounded-lg px-4 text-xs font-semibold sm:px-5 sm:text-sm"
+                        className="group h-full gap-2 rounded-lg px-3.5 text-xs font-semibold sm:px-5 sm:text-sm"
                       >
-                        <Flame className="size-4 shrink-0" />
+                        <Flame className="size-4 shrink-0 transition-colors text-[#E791A7] group-data-[state=active]:text-white" />
 
                         <span className="hidden sm:inline">
                           Special Promotion Offers
                         </span>
 
                         <span className="sm:hidden">Promotions</span>
+
+                        <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm shadow-red-600/30 transition-all duration-200">
+                          <BadgePercent className="size-3 shrink-0" />
+                          <span>50% OFF</span>
+                        </span>
                       </TabsTrigger>
 
                       <TabsTrigger
@@ -360,8 +365,9 @@ export function PricingPageContents({
                           className="relative"
                         >
                           <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl sm:p-7">
-                            <div className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white shadow-sm">
-                              50% OFF
+                            <div className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#D3A753] to-[#B78D46] px-3 py-1 text-xs font-bold text-white shadow-sm shadow-[#D3A753]/20">
+                              <BadgePercent className="size-3.5 shrink-0" />
+                              <span>50% OFF</span>
                             </div>
 
                             <p className="mt-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">
@@ -465,8 +471,9 @@ export function PricingPageContents({
 
                               {/* Discount */}
 
-                              <div className="btn-gradient absolute top-4 right-4 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm">
-                                43% OFF
+                              <div className="btn-gradient absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm shadow-[#CA617D]/25">
+                                <BadgePercent className="size-3.5 shrink-0" />
+                                <span>43% OFF</span>
                               </div>
 
                               <p className="text-gradient mt-2 text-xs font-semibold tracking-wider uppercase">
@@ -563,8 +570,9 @@ export function PricingPageContents({
                           className="relative"
                         >
                           <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#D3A753]/30 bg-card/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D3A753]/60 hover:shadow-2xl sm:p-7">
-                            <div className="absolute top-4 right-4 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/15 px-3 py-1 text-xs font-bold text-[#D3A753]">
-                              Free Trial
+                            <div className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full border border-[#D3A753]/30 bg-[#D3A753]/15 px-3 py-1 text-xs font-bold text-[#D3A753]">
+                              <Sparkles className="size-3.5 shrink-0" />
+                              <span>Free Trial</span>
                             </div>
 
                             <p className="mt-2 text-xs font-semibold tracking-wider text-[#D3A753] uppercase">

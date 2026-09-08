@@ -84,8 +84,8 @@ function BrandName({ className = "" }: { className?: string }) {
         fill="url(#brand-gradient)"
         fontFamily="sans-serif"
         fontSize="18"
-        fontWeight="700"
-        letterSpacing="1"
+        fontWeight="bold"
+        letterSpacing="0"
         textAnchor="middle"
       >
         {APP_INFO.name}
@@ -372,8 +372,10 @@ export default function MarketingLeafletPrintPage() {
 
             <BrandName className="mt-[1mm] w-[47mm]" />
 
-            <p className="mt-[0.8mm] font-sans text-[2mm] font-semibold tracking-[0.3em] text-[#E791A7] uppercase">
-              Exclusive
+            <p className="mt-[0.8mm] inline-flex items-center justify-center gap-[1.5mm] font-sans text-[2mm] font-semibold tracking-[0.3em] text-[#E791A7] uppercase">
+              <span className="h-px w-[3.5mm] bg-[#CA617D]/60" />
+              EXCLUSIVE
+              <span className="h-px w-[3.5mm] bg-[#CA617D]/60" />
             </p>
 
             <p className="mt-[0.6mm] font-sans text-[2.3mm] font-semibold tracking-[0.24em] text-[#D3A753] uppercase">

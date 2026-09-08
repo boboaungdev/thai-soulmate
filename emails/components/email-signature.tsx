@@ -56,7 +56,6 @@ export function EmailSignature({
     : ""
   const whatsappNumber = whatsapp.replace(/[^0-9]/g, "")
   const whatsappUrl = `https://wa.me/${whatsappNumber}`
-  const currentYear = new Date().getFullYear()
 
   return (
     <Section style={cardContainer}>
@@ -332,25 +331,18 @@ export function EmailSignature({
       {/* ── LEGAL FOOTER ── */}
       <Section style={legalFooterSection}>
         <Text style={confidentialityNoticeText}>
-          <strong>CONFIDENTIALITY NOTICE:</strong> This email, including any
-          attachments, contains confidential and legally privileged information
-          intended solely for the use of the individual or entity named above.
-          If you have received this transmission in error, please immediately
-          notify the sender by reply email and permanently delete all copies.
-        </Text>
-
-        <div style={legalLinksRow}>
-          <Link href={`${websiteUrl}/terms`} style={legalLink}>
-            Terms of Service
-          </Link>
-          <span style={legalDividerDot}>•</span>
-          <Link href={`${websiteUrl}/privacy`} style={legalLink}>
-            Privacy Policy
-          </Link>
-        </div>
-
-        <Text style={copyrightText}>
-          Copyright © {currentYear} {APP_INFO.name}. All rights reserved.
+          <strong>CONFIDENTIALITY &amp; PRIVACY NOTICE:</strong> This email,
+          including any attachments, member profiles, photographs, and related
+          materials, contains confidential, proprietary, and legally privileged
+          information intended solely and exclusively for the use of the
+          individual or entity named above. Any unauthorized review, use,
+          disclosure, copying, distribution, or forwarding of this transmission
+          or its attachments is strictly prohibited. If you have received this
+          communication in error, please immediately notify the sender by reply
+          email and permanently delete all copies, attachments, and records from
+          your system without reading, printing, or disclosing them to any third
+          party. {APP_INFO.name} remains dedicated to the highest standards of
+          member discretion and personal privacy protection.
         </Text>
       </Section>
     </Section>
@@ -527,33 +519,4 @@ const confidentialityNoticeText: React.CSSProperties = {
   textAlign: "justify",
   fontFamily:
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-}
-
-const legalLinksRow: React.CSSProperties = {
-  margin: "8px 0 6px 0",
-  fontSize: "11px",
-  lineHeight: "14px",
-  textAlign: "center",
-}
-
-const legalLink: React.CSSProperties = {
-  color: "#111827",
-  textDecoration: "none",
-  fontWeight: "600",
-  fontSize: "11px",
-}
-
-const legalDividerDot: React.CSSProperties = {
-  padding: "0 8px",
-  color: "#9CA3AF",
-  fontSize: "10px",
-}
-
-const copyrightText: React.CSSProperties = {
-  margin: "6px 0 0 0",
-  fontSize: "10px",
-  lineHeight: "14px",
-  color: "#9CA3AF",
-  textAlign: "center",
-  fontWeight: "500",
 }

@@ -69,28 +69,30 @@ export function Footer() {
                   />
                 </motion.div>
 
-                <div className="flex flex-col items-center justify-center space-y-1.5">
+                <div className="flex flex-col items-center justify-center space-y-1">
                   <AppName className="block text-base leading-tight font-black tracking-tight uppercase" />
-                  <p className="inline-flex items-center justify-center gap-1.5 text-[9px] font-bold tracking-[0.25em] text-[#E791A7] uppercase sm:text-[10px]">
-                    <motion.span
-                      initial={{ width: 0 }}
-                      whileInView={{ width: 12 }}
-                      viewport={{ once: false }}
-                      transition={{ duration: 0.5, delay: 0.2 }}
-                      className="h-px bg-[#CA617D]/60"
-                    />
-                    EXCLUSIVE
-                    <motion.span
-                      initial={{ width: 0 }}
-                      whileInView={{ width: 12 }}
-                      viewport={{ once: false }}
-                      transition={{ duration: 0.5, delay: 0.2 }}
-                      className="h-px bg-[#CA617D]/60"
-                    />
-                  </p>
-                  <p className="text-xs font-medium tracking-[0.08em] text-[#D3A753]">
-                    {APP_INFO.tagline}
-                  </p>
+                  <div className="flex flex-col items-center justify-center space-y-0.5">
+                    <p className="inline-flex items-center justify-center gap-1.5 text-[9px] font-bold tracking-[0.25em] text-[#E791A7] uppercase sm:text-[10px]">
+                      <motion.span
+                        initial={{ width: 0 }}
+                        whileInView={{ width: 12 }}
+                        viewport={{ once: false }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="h-px bg-[#CA617D]/60"
+                      />
+                      EXCLUSIVE
+                      <motion.span
+                        initial={{ width: 0 }}
+                        whileInView={{ width: 12 }}
+                        viewport={{ once: false }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="h-px bg-[#CA617D]/60"
+                      />
+                    </p>
+                    <p className="text-xs font-medium tracking-[0.08em] text-[#D3A753]">
+                      {APP_INFO.tagline}
+                    </p>
+                  </div>
                 </div>
               </Link>
             </div>

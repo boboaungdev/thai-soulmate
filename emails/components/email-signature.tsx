@@ -3,6 +3,7 @@ import { Section, Row, Column, Img, Text, Link } from "react-email"
 
 import { APP_INFO, CONTACT } from "@/constants"
 import { env } from "@/lib/env"
+import { useAuthStore } from "@/stores/auth-store"
 
 export interface EmailSignatureProps {
   signOff?: string
@@ -21,7 +22,7 @@ export interface EmailSignatureProps {
 
 export function EmailSignature({
   signOff = "Best regards,",
-  name = APP_INFO.name,
+  name,
   role = APP_INFO.tagline,
   email = CONTACT.email,
   primaryPhone = CONTACT.primaryPhone,
@@ -33,6 +34,9 @@ export function EmailSignature({
   line = "https://line.me/ti/p/~thaisoulmate",
   tiktok = "https://tiktok.com/@thaisoulmate",
 }: EmailSignatureProps) {
+  const authUser = useAuthStore((state) => state.user)
+  const senderName = name !== undefined ? name : authUser?.name || `${APP_INFO.name} Team`
+
   const baseUrl =
     env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
   const logoUrl = `${baseUrl}/logo.png`
@@ -72,7 +76,10 @@ export function EmailSignature({
               verticalAlign: "middle",
             }}
           >
-            <Text style={columnHeading}>{signOff}</Text>
+            <Text style={senderName ? signOffText : columnHeading}>
+              {signOff}
+            </Text>
+            {senderName && <Text style={senderNameText}>{senderName}</Text>}
 
             {/* WhatsApp */}
             <Row style={contactRow}>
@@ -348,6 +355,22 @@ const taglineText: React.CSSProperties = {
 const bodySection: React.CSSProperties = {
   padding: "8px 0 16px",
   backgroundColor: "#FFFFFF",
+}
+
+const signOffText: React.CSSProperties = {
+  margin: "0 0 2px 0",
+  fontSize: "12.5px",
+  lineHeight: "16px",
+  fontWeight: "500",
+  color: "#4B5563",
+}
+
+const senderNameText: React.CSSProperties = {
+  margin: "0 0 10px 0",
+  fontSize: "14px",
+  lineHeight: "18px",
+  fontWeight: "700",
+  color: "#111827",
 }
 
 const columnHeading: React.CSSProperties = {

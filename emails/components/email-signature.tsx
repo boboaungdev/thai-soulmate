@@ -59,77 +59,15 @@ export function EmailSignature({
 
   return (
     <Section style={cardContainer}>
-      {/* ── BRAND HEADER WITH COLOR WORDMARK & EXCLUSIVE LABEL ── */}
-      <Section style={brandHeaderSection}>
-        <Row>
-          <Column align="center" style={{ textAlign: "center" }}>
-            {/* Logo */}
-            <Img
-              src={logoUrl}
-              alt={APP_INFO.name}
-              width="68"
-              height="68"
-              style={logoImage}
-            />
-
-            {/* Color Wordmark Image */}
-            <div style={{ textAlign: "center", margin: "6px auto 2px auto" }}>
-              <Img
-                src={wordmarkUrl}
-                alt={name}
-                width="165"
-                height="24"
-                style={{
-                  display: "block",
-                  margin: "0 auto",
-                  maxWidth: "100%",
-                  objectFit: "contain",
-                }}
-              />
-            </div>
-
-            {/* Exclusive Subtitle Badge */}
-            <Text style={exclusiveText}>EXCLUSIVE</Text>
-
-            {/* Service Subtitle */}
-            <Text style={serviceSubtitleText}>{role}</Text>
-
-            {/* Decorative Heart Divider Image */}
-            <div style={{ textAlign: "center", margin: "6px auto" }}>
-              <Img
-                src={heartDividerUrl}
-                alt="♥"
-                width="150"
-                height="17"
-                style={{
-                  display: "block",
-                  margin: "0 auto",
-                  maxWidth: "100%",
-                  objectFit: "contain",
-                }}
-              />
-            </div>
-
-            {/* Tagline */}
-            <Text style={taglineText}>
-              Real People. Real Relationships. Personally Matched in Thailand.
-            </Text>
-          </Column>
-        </Row>
-      </Section>
-
-      {/* ── SIMPLE DIVIDER ── */}
-      <div style={sectionDivider} />
-
-      {/* ── 2-COLUMN DETAILS ── */}
+      {/* ── 2-COLUMN DETAILS (LEFT: CONNECT WITH US, RIGHT: LOGO & BRAND) ── */}
       <Section style={bodySection}>
         <Row>
           {/* Left Column: Contact Details */}
           <Column
-            width="55%"
+            width="52%"
             style={{
               paddingRight: "16px",
-              verticalAlign: "top",
+              verticalAlign: "middle",
             }}
           >
             <Text style={columnHeading}>Connect with us</Text>
@@ -227,39 +165,68 @@ export function EmailSignature({
             </Row>
           </Column>
 
-          {/* Right Column: Exclusive Matchmaking */}
+          {/* Right Column: Logo & Brand Section */}
           <Column
-            width="45%"
+            width="48%"
+            align="center"
             style={{
               paddingLeft: "16px",
               borderLeft: "1px solid #E5E7EB",
-              verticalAlign: "top",
+              verticalAlign: "middle",
+              textAlign: "center",
             }}
           >
-            <Text style={columnHeading}>Exclusive Matchmaking</Text>
-            <Text style={companyDescription}>
-              Personal 1-2-1 introductions for genuine and meaningful
-              relationships in Thailand.
-            </Text>
+            {/* Logo */}
+            <Img
+              src={logoUrl}
+              alt={APP_INFO.name}
+              width="56"
+              height="56"
+              style={logoImage}
+            />
 
-            <div style={{ marginTop: "8px" }}>
-              <Text style={featureItem}>
-                <strong style={{ marginRight: "6px" }}>•</strong>
-                Personal 1-2-1 Matchmaking
-              </Text>
-              <Text style={featureItem}>
-                <strong style={{ marginRight: "6px" }}>•</strong>
-                100% Private & Confidential
-              </Text>
-              <Text style={featureItem}>
-                <strong style={{ marginRight: "6px" }}>•</strong>
-                Verified & Hand-Picked Matches
-              </Text>
-              <Text style={featureItem}>
-                <strong style={{ marginRight: "6px" }}>•</strong>
-                Discreet Global Introductions
-              </Text>
+            {/* Color Wordmark Image */}
+            <div style={{ textAlign: "center", margin: "4px auto 2px auto" }}>
+              <Img
+                src={wordmarkUrl}
+                alt={name}
+                width="145"
+                height="21"
+                style={{
+                  display: "block",
+                  margin: "0 auto",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
+              />
             </div>
+
+            {/* Exclusive Subtitle Badge */}
+            <Text style={exclusiveText}>EXCLUSIVE</Text>
+
+            {/* Service Subtitle */}
+            <Text style={serviceSubtitleText}>{role}</Text>
+
+            {/* Decorative Heart Divider Image */}
+            <div style={{ textAlign: "center", margin: "4px auto" }}>
+              <Img
+                src={heartDividerUrl}
+                alt="♥"
+                width="125"
+                height="14"
+                style={{
+                  display: "block",
+                  margin: "0 auto",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </div>
+
+            {/* Tagline */}
+            <Text style={taglineText}>
+              Real People. Real Relationships. Personally Matched in Thailand.
+            </Text>
           </Column>
         </Row>
       </Section>
@@ -365,12 +332,6 @@ const cardContainer: React.CSSProperties = {
   color: "#111827",
 }
 
-const brandHeaderSection: React.CSSProperties = {
-  padding: "16px 0 12px",
-  textAlign: "center",
-  backgroundColor: "#FFFFFF",
-}
-
 const logoImage: React.CSSProperties = {
   display: "block",
   margin: "0 auto 6px auto",
@@ -411,12 +372,6 @@ const taglineText: React.CSSProperties = {
   textAlign: "center",
 }
 
-const sectionDivider: React.CSSProperties = {
-  height: "1px",
-  backgroundColor: "#E5E7EB",
-  margin: "12px 0 16px 0",
-}
-
 const bodySection: React.CSSProperties = {
   padding: "8px 0 16px",
   backgroundColor: "#FFFFFF",
@@ -454,21 +409,6 @@ const contactLink: React.CSSProperties = {
   lineHeight: "18px",
   color: "#111827",
   textDecoration: "none",
-  fontWeight: "500",
-}
-
-const companyDescription: React.CSSProperties = {
-  margin: "0 0 8px 0",
-  fontSize: "11px",
-  lineHeight: "16px",
-  color: "#4B5563",
-}
-
-const featureItem: React.CSSProperties = {
-  margin: "0 0 4px 0",
-  fontSize: "11px",
-  lineHeight: "15px",
-  color: "#374151",
   fontWeight: "500",
 }
 

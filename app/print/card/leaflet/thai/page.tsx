@@ -459,17 +459,19 @@ export default function MarketingLeafletPrintPage() {
                 {/* Main message */}
 
                 <div className="absolute right-[7mm] bottom-[5mm] left-[10mm]">
-                  <p className="font-serif text-[5.2mm] leading-[1.08] italic">
-                    <span className="text-[#D3A753]">Real People.</span>
+                  <p className="font-serif text-[4.8mm] leading-[1.15] italic">
+                    <span className="text-[#D3A753]">คนจริงใจ ตัวตนจริง</span>
 
                     <br />
 
-                    <span className="text-[#E791A7]">Real Relationships.</span>
+                    <span className="text-[#E791A7]">
+                      ความสัมพันธ์ที่แท้จริง
+                    </span>
 
                     <br />
 
                     <span className="bg-gradient-to-r from-[#D3A753] via-[#E791A7] to-[#CA617D] bg-clip-text text-transparent">
-                      Personally Matched in Thailand.
+                      คัดสรรคู่แมตช์เฉพาะบุคคลในประเทศไทย
                     </span>
                   </p>
                 </div>
@@ -549,17 +551,17 @@ export default function MarketingLeafletPrintPage() {
                     }}
                   />
 
-                  <h2 className="font-serif text-[5mm] leading-none font-semibold text-[#5A0816]">
-                    More Than A Dating App
+                  <h2 className="font-serif text-[4.6mm] leading-none font-semibold text-[#5A0816]">
+                    มากกว่าแค่แอปหาคู่
                   </h2>
                 </div>
 
                 {/* Description */}
 
-                <p className="mt-[2.5mm] font-sans text-[2.8mm] leading-[1.45] text-[#241e2a]/75">
-                  Finding the right person is about more than a profile, a
-                  photograph or a swipe. We take the time to understand you and
-                  create introductions with genuine relationship potential.
+                <p className="mt-[2.5mm] font-sans text-[2.7mm] leading-[1.45] text-[#241e2a]/75">
+                  การค้นพบคนที่ใช่มีความหมายมากกว่าแค่โปรไฟล์ รูปถ่าย
+                  หรือการปัดหน้าจอ เราใส่ใจทำความเข้าใจตัวตนของคุณ
+                  เพื่อแนะนำคนที่มีศักยภาพในการสร้างความสัมพันธ์ที่แท้จริงร่วมกัน
                 </p>
               </div>
             </div>
@@ -581,7 +583,7 @@ export default function MarketingLeafletPrintPage() {
               />
 
               <h2 className="font-sans text-[4mm] font-bold tracking-[0.16em] text-[#5A0816] uppercase">
-                Our Service
+                บริการของเรา
               </h2>
 
               <div
@@ -619,13 +621,13 @@ export default function MarketingLeafletPrintPage() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="font-serif text-[3.1mm] leading-[1.1] font-bold text-[#5A0816]">
-                      Personal Matching
+                    <h3 className="font-serif text-[3mm] leading-[1.1] font-bold text-[#5A0816]">
+                      คัดสรรคู่เฉพาะบุคคล
                     </h3>
 
-                    <p className="mt-[1.5mm] font-sans text-[2.55mm] leading-[1.35] text-[#241e2a]/70">
-                      Introductions based on personality, lifestyle and
-                      relationship goals.
+                    <p className="mt-[1.5mm] font-sans text-[2.45mm] leading-[1.35] text-[#241e2a]/70">
+                      แนะนำคู่ที่ตรงใจ โดยพิจารณาจากบุคลิกภาพ ไลฟ์สไตล์
+                      และเป้าหมายชีวิต
                     </p>
                   </div>
                 </div>
@@ -655,12 +657,12 @@ export default function MarketingLeafletPrintPage() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="font-serif text-[3.1mm] leading-[1.1] font-bold text-[#5A0816]">
-                      Personal Support
+                    <h3 className="font-serif text-[3mm] leading-[1.1] font-bold text-[#5A0816]">
+                      ที่ปรึกษาดูแลใกล้ชิด
                     </h3>
 
-                    <p className="mt-[1.5mm] font-sans text-[2.55mm] leading-[1.35] text-[#241e2a]/70">
-                      Professional guidance throughout your matchmaking journey.
+                    <p className="mt-[1.5mm] font-sans text-[2.45mm] leading-[1.35] text-[#241e2a]/70">
+                      คำแนะนำอย่างมืออาชีพตลอดเส้นทางการค้นหาคู่แท้ของคุณ
                     </p>
                   </div>
                 </div>
@@ -690,13 +692,12 @@ export default function MarketingLeafletPrintPage() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="font-serif text-[3.1mm] leading-[1.1] font-bold text-[#5A0816]">
-                      Private & Discreet
+                    <h3 className="font-serif text-[3mm] leading-[1.1] font-bold text-[#5A0816]">
+                      เป็นส่วนตัวและปลอดภัย
                     </h3>
 
-                    <p className="mt-[1.5mm] font-sans text-[2.55mm] leading-[1.35] text-[#241e2a]/70">
-                      Personal information and matchmaking journey are treated
-                      with care.
+                    <p className="mt-[1.5mm] font-sans text-[2.45mm] leading-[1.35] text-[#241e2a]/70">
+                      ข้อมูลส่วนตัวและทุกขั้นตอนการจับคู่จะได้รับการดูแลรักษาเป็นความลับ
                     </p>
                   </div>
                 </div>
@@ -726,13 +727,12 @@ export default function MarketingLeafletPrintPage() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="font-serif text-[3.1mm] leading-[1.1] font-bold text-[#5A0816]">
-                      Real People
+                    <h3 className="font-serif text-[3mm] leading-[1.1] font-bold text-[#5A0816]">
+                      สมาชิกมีตัวตนจริง
                     </h3>
 
-                    <p className="mt-[1.5mm] font-sans text-[2.55mm] leading-[1.35] text-[#241e2a]/70">
-                      Meet people who are genuinely interested in meaningful
-                      relationships.
+                    <p className="mt-[1.5mm] font-sans text-[2.45mm] leading-[1.35] text-[#241e2a]/70">
+                      พบกับผู้ที่จริงใจและพร้อมเริ่มต้นความสัมพันธ์ที่มีความหมาย
                     </p>
                   </div>
                 </div>
@@ -748,17 +748,17 @@ export default function MarketingLeafletPrintPage() {
             <div className="flex h-full items-center justify-between px-[10mm]">
               <div className="flex flex-col justify-center">
                 <p className="font-sans text-[3.2mm] leading-none font-bold tracking-[0.12em] text-white uppercase">
-                  Start Your Story
+                  เริ่มต้นเรื่องราวของคุณ
                 </p>
 
-                <p className="mt-[1.2mm] font-sans text-[3mm] leading-none font-medium text-white/80">
-                  Your journey to a meaningful connection.
+                <p className="mt-[1.2mm] font-sans text-[2.8mm] leading-none font-medium text-white/80">
+                  การเดินทางสู่ความสัมพันธ์ที่มีความหมาย
                 </p>
               </div>
 
               <div className="relative flex items-center justify-center rounded-full bg-white px-[5mm] py-[2mm]">
                 <span className="translate-y-[0.3mm] font-sans text-[3mm] leading-none font-bold tracking-[0.08em] text-[#5A0816] uppercase">
-                  Contact Us
+                  ติดต่อเรา
                 </span>
 
                 <ChevronRight
@@ -885,15 +885,15 @@ export default function MarketingLeafletPrintPage() {
           ====================================================== */}
 
           <div className="absolute top-[15mm] left-[11mm] z-20 w-[66mm]">
-            <h2 className="mt-[3mm] font-serif text-[8.5mm] leading-[0.95] text-[#D3A753]">
-              Where It
+            <h2 className="mt-[3mm] font-serif text-[7.5mm] leading-[1.05] text-[#D3A753]">
+              ใส่ใจมากกว่า
               <br />
-              <span className="text-pink italic">Matters More</span>
+              <span className="text-pink italic">ในทุกความสัมพันธ์</span>
             </h2>
 
-            <p className="mt-[3mm] w-[63mm] font-sans text-[3mm] leading-[1.45] font-medium text-white/75">
-              We get to know you first, understand what you are looking for, and
-              introduce you to people who may genuinely complement your life.
+            <p className="mt-[3mm] w-[63mm] font-sans text-[2.8mm] leading-[1.45] font-medium text-white/75">
+              เราเริ่มต้นด้วยการทำความรู้จักตัวตนของคุณ เข้าใจสิ่งที่คุณมองหา
+              เพื่อแนะนำคนที่จะเข้ามาเติมเต็มชีวิตของคุณได้อย่างแท้จริง
             </p>
           </div>
 
@@ -926,7 +926,7 @@ export default function MarketingLeafletPrintPage() {
           ====================================================== */}
 
           <div className="absolute top-[68mm] right-[10mm] left-[10mm] z-20">
-            <SectionTitle>Who We Help</SectionTitle>
+            <SectionTitle>ผู้ที่เราพร้อมดูแล</SectionTitle>
 
             {/* Decorative background accent */}
 
@@ -964,7 +964,7 @@ export default function MarketingLeafletPrintPage() {
                   </div>
 
                   <span className="mt-[1.2mm] text-center font-sans text-[2.7mm] leading-none font-bold text-[#5A0816]">
-                    Foreign Gentlemen
+                    สุภาพบุรุษชาวต่างชาติ
                   </span>
                 </div>
 
@@ -1017,7 +1017,7 @@ export default function MarketingLeafletPrintPage() {
                   </div>
 
                   <span className="mt-[1.2mm] text-center font-sans text-[2.7mm] leading-none font-bold text-[#5A0816]">
-                    Thai Ladies
+                    สุภาพสตรีไทย
                   </span>
                 </div>
               </div>
@@ -1027,13 +1027,13 @@ export default function MarketingLeafletPrintPage() {
               <div className="mt-[3mm] border-t border-[#CA617D]/20 pt-[2.5mm]">
                 <div className="grid gap-[1.2mm]">
                   {[
-                    "Individulas looking for a serious future partner",
-                    "Individulas who want carefully matched introductions",
-                    "Individulas looking for a genuine and meaningful relationship",
-                    "Individulas who appreciate personalized, 1-2-1 guidance and support",
-                    "Individulas who prefer a private and discreet matchmaking experience",
-                    "Individulas who value compatibility, shared values, and long-term potential",
-                    "Individulas who value their time and prefer a professional matchmaking service",
+                    "ผู้ที่กำลังมองหาคู่ชีวิตและพร้อมสร้างอนาคตที่มั่นคงร่วมกัน",
+                    "ผู้ที่ต้องการการจับคู่แนะนำที่ผ่านการคัดสรรอย่างพิถีพิถัน",
+                    "ผู้ที่แสวงหาความสัมพันธ์ที่จริงใจ มีคุณค่า และยั่งยืน",
+                    "ผู้ที่ชื่นชอบการดูแลและให้คำปรึกษาแบบตัวต่อตัว (1-2-1) สุดพิเศษ",
+                    "ผู้ที่ต้องการบริการจับคู่ที่มีความเป็นส่วนตัวและรักษาความลับสูงสุด",
+                    "ผู้ที่ให้ความสำคัญกับความเข้ากันได้ ทัศนคติ และเป้าหมายชีวิตในระยะยาว",
+                    "ผู้ที่เห็นคุณค่าของเวลา และต้องการบริการจัดหาคู่ระดับมืออาชีพ",
                   ].map((item) => (
                     <div key={item} className="flex items-center gap-[1.5mm]">
                       <div
@@ -1046,7 +1046,7 @@ export default function MarketingLeafletPrintPage() {
                         <Check size={8} color="white" strokeWidth={3} />
                       </div>
 
-                      <p className="font-sans text-[2.8mm] leading-[1.25] text-[#24141A]/75">
+                      <p className="font-sans text-[2.7mm] leading-[1.3] text-[#24141A]/75">
                         {item}
                       </p>
                     </div>
@@ -1069,11 +1069,11 @@ export default function MarketingLeafletPrintPage() {
 
                 <div className="min-w-0 flex-1">
                   <p className="font-sans text-[2.5mm] font-bold tracking-[0.15em] text-[#D3A753] uppercase">
-                    Start Your Journey
+                    เริ่มต้นการเดินทางของคุณ
                   </p>
 
-                  <p className="mt-[1mm] w-[62mm] font-serif text-[3.5mm] leading-[1.15] text-white italic">
-                    Your story deserves the right introduction.
+                  <p className="mt-[1mm] w-[62mm] font-serif text-[3.3mm] leading-[1.2] text-white italic">
+                    เรื่องราวความรักของคุณ... ควรเริ่มต้นด้วยการแนะนำที่ใช่
                   </p>
 
                   <div className="mt-[3mm] grid gap-[1.5mm]">

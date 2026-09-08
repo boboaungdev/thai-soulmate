@@ -12,7 +12,6 @@ import {
 import {
   Mail,
   Phone,
-  MapPin,
   Sparkles,
   Send,
   MessageSquare,
@@ -266,31 +265,6 @@ export default function ContactPage() {
                         </Link>
                       </motion.div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Thailand Concierge Trust Pill */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={{ y: -3, transition: { duration: 0.2 } }}
-            >
-              <div className="rounded-2xl border border-[#D3A753]/30 bg-gradient-to-br from-card/90 via-card/70 to-[#D3A753]/10 p-5 backdrop-blur-sm">
-                <div className="flex items-center gap-3">
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#D3A753]/15 text-[#D3A753]">
-                    <MapPin className="size-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-foreground sm:text-sm">
-                      Personal Matchmakers Based in Thailand
-                    </h4>
-                    <p className="text-[11px] text-muted-foreground sm:text-xs">
-                      Private consultations & personal introductions in Thailand
-                    </p>
                   </div>
                 </div>
               </div>

@@ -268,7 +268,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 rounded-full border border-[#D3A753]/30 bg-gradient-to-r from-[#D3A753]/15 via-[#E791A7]/15 to-[#CA617D]/15 px-4 py-1.5 text-xs font-semibold text-[#D3A753] sm:text-sm"
             >
               <Sparkles className="size-4 text-[#CA617D]" />
-              <span>About Thai Soulmate</span>
+              <span>About Us</span>
             </motion.div>
 
             <motion.h2
@@ -298,7 +298,7 @@ export default function HomePage() {
               </p>
               <div className="relative overflow-hidden rounded-2xl border border-[#D3A753]/25 bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/5 to-[#CA617D]/10 p-5 text-foreground shadow-sm sm:p-6">
                 <p className="text-base leading-relaxed font-medium sm:text-lg">
-                  <span className="font-semibold text-[#D3A753]">
+                  <span className="font-bold text-gradient tracking-tight">
                     THAI SOULMATE
                   </span>{" "}
                   was created to replace the frustration of modern dating with

@@ -95,8 +95,6 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
         If you have any questions or wish to discuss this candidate with your
         matchmaker, please feel free to reply directly to this email.
       </Text>
-
-      <Text style={closingText}>Best regards,</Text>
     </MemberEmailLayout>
   )
 }
@@ -163,11 +161,4 @@ const calloutText: React.CSSProperties = {
   fontSize: "13px",
   lineHeight: "20px",
   color: "#4B5563",
-}
-
-const closingText: React.CSSProperties = {
-  fontSize: "15px",
-  fontWeight: "600",
-  color: "#111827",
-  margin: "24px 0 0 0",
 }

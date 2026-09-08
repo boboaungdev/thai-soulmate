@@ -85,8 +85,6 @@ export const RegisterInterestMemberConfirmationEmail = ({
       </Text>
 
       <Text style={paragraph}>We look forward to speaking with you.</Text>
-
-      <Text style={closingText}>Warm regards,</Text>
     </MemberEmailLayout>
   )
 }
@@ -133,11 +131,4 @@ const button: React.CSSProperties = {
   display: "inline-block",
   textAlign: "center" as const,
   letterSpacing: "0.02em",
-}
-
-const closingText: React.CSSProperties = {
-  fontSize: "15px",
-  fontWeight: "600",
-  color: "#111827",
-  margin: "24px 0 0 0",
 }

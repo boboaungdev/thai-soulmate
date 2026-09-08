@@ -5,6 +5,7 @@ import { APP_INFO, CONTACT } from "@/constants"
 import { env } from "@/lib/env"
 
 export interface EmailSignatureProps {
+  signOff?: string
   name?: string
   role?: string
   email?: string
@@ -19,8 +20,9 @@ export interface EmailSignatureProps {
 }
 
 export function EmailSignature({
+  signOff = "Best regards,",
   name = APP_INFO.name,
-  role = "1-2-1 Matchmaking Service",
+  role = APP_INFO.tagline,
   email = CONTACT.email,
   primaryPhone = CONTACT.primaryPhone,
   secondaryPhone = CONTACT.secondaryPhone,
@@ -35,7 +37,7 @@ export function EmailSignature({
     env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
   const logoUrl = `${baseUrl}/logo.png`
   const wordmarkUrl = `${baseUrl}/email/brand-wordmark.png`
-  const heartDividerUrl = `${baseUrl}/email/heart-divider.png`
+  const exclusiveUrl = `${baseUrl}/email/brand-exclusive.png`
 
   // Bulletproof cross-client icon URLs (colored)
   const whatsappIconUrl = `${baseUrl}/email/icons/whatsapp.png`
@@ -70,7 +72,7 @@ export function EmailSignature({
               verticalAlign: "middle",
             }}
           >
-            <Text style={columnHeading}>Connect with us</Text>
+            <Text style={columnHeading}>{signOff}</Text>
 
             {/* WhatsApp */}
             <Row style={contactRow}>
@@ -165,7 +167,7 @@ export function EmailSignature({
             </Row>
           </Column>
 
-          {/* Right Column: Logo & Brand Section */}
+          {/* Right Column: Logo & Brand Section (Matching Footer Logo Section) */}
           <Column
             width="48%"
             align="center"
@@ -180,39 +182,17 @@ export function EmailSignature({
             <Img
               src={logoUrl}
               alt={APP_INFO.name}
-              width="56"
-              height="56"
+              width="52"
+              height="52"
               style={logoImage}
             />
 
-            {/* Color Wordmark Image */}
-            <div style={{ textAlign: "center", margin: "4px auto 2px auto" }}>
+            {/* App Name Image (Matching <AppName /> in Footer) */}
+            <div style={{ textAlign: "center", margin: "0 auto 8px auto" }}>
               <Img
                 src={wordmarkUrl}
-                alt={name}
-                width="145"
-                height="21"
-                style={{
-                  display: "block",
-                  margin: "0 auto",
-                  maxWidth: "100%",
-                  objectFit: "contain",
-                }}
-              />
-            </div>
-
-            {/* Exclusive Subtitle Badge */}
-            <Text style={exclusiveText}>EXCLUSIVE</Text>
-
-            {/* Service Subtitle */}
-            <Text style={serviceSubtitleText}>{role}</Text>
-
-            {/* Decorative Heart Divider Image */}
-            <div style={{ textAlign: "center", margin: "4px auto" }}>
-              <Img
-                src={heartDividerUrl}
-                alt="♥"
-                width="125"
+                alt={APP_INFO.name}
+                width="142"
                 height="14"
                 style={{
                   display: "block",
@@ -223,10 +203,24 @@ export function EmailSignature({
               />
             </div>
 
-            {/* Tagline */}
-            <Text style={taglineText}>
-              Real People. Real Relationships. Personally Matched in Thailand.
-            </Text>
+            {/* Exclusive Section Lines Image (Matching Footer — EXCLUSIVE —) */}
+            <div style={{ textAlign: "center", margin: "0 auto 8px auto" }}>
+              <Img
+                src={exclusiveUrl}
+                alt="— EXCLUSIVE —"
+                width="118"
+                height="6"
+                style={{
+                  display: "block",
+                  margin: "0 auto",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </div>
+
+            {/* Tagline (Matching APP_INFO.tagline in Footer) */}
+            <Text style={taglineText}>{role || APP_INFO.tagline}</Text>
           </Column>
         </Row>
       </Section>
@@ -334,42 +328,21 @@ const cardContainer: React.CSSProperties = {
 
 const logoImage: React.CSSProperties = {
   display: "block",
-  margin: "0 auto 6px auto",
+  margin: "0 auto 8px auto",
   objectFit: "contain",
 }
 
-const exclusiveText: React.CSSProperties = {
-  margin: "6px 0 0 0",
-  fontSize: "10px",
-  lineHeight: "14px",
-  fontWeight: "700",
-  letterSpacing: "0.3em",
-  color: "#E791A7",
-  textTransform: "uppercase",
-  textAlign: "center",
-  fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
-}
-
-const serviceSubtitleText: React.CSSProperties = {
-  margin: "4px 0 0 0",
-  fontSize: "11.5px",
-  lineHeight: "16px",
-  fontWeight: "700",
-  letterSpacing: "0.22em",
+const taglineText: React.CSSProperties = {
+  margin: "0",
+  fontSize: "10.5px",
+  lineHeight: "5px",
+  fontWeight: "600",
+  letterSpacing: "0.08em",
   color: "#D3A753",
   textTransform: "uppercase",
   textAlign: "center",
-  fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
-}
-
-const taglineText: React.CSSProperties = {
-  margin: "4px 0 0 0",
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "11.5px",
-  lineHeight: "17px",
-  fontStyle: "italic",
-  color: "#5A0816",
-  textAlign: "center",
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
 }
 
 const bodySection: React.CSSProperties = {

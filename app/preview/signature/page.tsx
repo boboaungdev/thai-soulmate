@@ -199,7 +199,6 @@ export default function EmailSignaturePreviewPage() {
                 Please let me know a convenient time for our upcoming 1-on-1
                 private consultation call this week.
               </p>
-              <p className="pt-2 font-medium text-slate-800">Best regards,</p>
 
               {/* Render Signature Component */}
               <div id="email-signature-render-target" className="pt-2">

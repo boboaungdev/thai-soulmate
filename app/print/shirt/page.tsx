@@ -25,14 +25,18 @@ function PrintTrigger() {
   return null
 }
 
-function BrandName({ size }: { size: "nav" | "hero" }) {
+function BrandName({
+  size = "nav",
+  className = "",
+}: {
+  size?: "nav" | "hero"
+  className?: string
+}) {
   return (
     <span
-      className={
-        size === "nav"
-          ? "block text-[13mm] leading-none font-black tracking-tight uppercase no-underline"
-          : "block text-[13mm] leading-none font-black tracking-tight uppercase no-underline"
-      }
+      className={`block leading-none font-black tracking-tight uppercase no-underline ${
+        size === "hero" ? "text-[13mm]" : "text-[8mm]"
+      } ${className}`}
       style={{
         background: "linear-gradient(to right, #D3A753, #E791A7, #CA617D)",
         backgroundSize: "100% 100%",
@@ -99,7 +103,7 @@ export default function ShirtPrintPage() {
 
       <div className="mx-auto w-[210mm] print:mx-0">
         <PrintPage>
-          <header className="flex flex-1 items-center justify-center gap-[7mm]">
+          <header className="flex flex-1 flex-col items-center justify-center text-center">
             <div className="relative h-[34mm] w-[34mm] shrink-0">
               <Image
                 src="/logo.png"
@@ -111,12 +115,12 @@ export default function ShirtPrintPage() {
               />
             </div>
 
-            <div className="flex flex-col items-center justify-center text-center">
+            <div className="mt-[6mm] flex flex-col items-center justify-center text-center">
               <BrandName size="nav" />
-              <div className="mt-[2mm]">
+              <div className="mt-[2.5mm]">
                 <ExclusiveLabel withLines />
               </div>
-              <div className="mt-[1mm]">
+              <div className="mt-[1.5mm]">
                 <PrimaryTagline />
               </div>
             </div>

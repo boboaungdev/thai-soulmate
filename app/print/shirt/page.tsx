@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { Globe } from "lucide-react"
 import { useEffect } from "react"
 
 import { APP_INFO } from "@/constants"
@@ -149,7 +150,18 @@ export default function ShirtPrintPage() {
               />
             </div>
 
-            <div className="mt-[13mm] flex flex-col items-center">
+            <div className="mt-[5mm] flex items-center gap-[2mm] text-[#D3A753]">
+              <Globe
+                aria-hidden="true"
+                className="h-[5.2mm] w-[5.2mm]"
+                strokeWidth={2}
+              />
+              <p className="text-[5.2mm] font-semibold tracking-[0.12em]">
+                thaisoulmate.org
+              </p>
+            </div>
+
+            <div className="mt-[5mm] flex flex-col items-center">
               <BrandName size="back" />
               <div className="mt-[3mm]">
                 <ExclusiveLabel withLines className="text-[5.5mm]" />

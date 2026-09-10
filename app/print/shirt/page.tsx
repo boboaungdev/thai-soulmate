@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import { useEffect } from "react"
-import { Heart, MapPin, ShieldCheck } from "lucide-react"
 
 import { APP_INFO } from "@/constants"
 
@@ -51,21 +50,29 @@ function BrandName({
   )
 }
 
-function PrimaryTagline() {
+function PrimaryTagline({ className = "" }: { className?: string }) {
   return (
-    <p className="text-[4.5mm] font-semibold tracking-[0.18em] text-[#D3A753] uppercase">
+    <p
+      className={`text-[4.5mm] font-semibold tracking-[0.18em] text-[#D3A753] uppercase ${className}`}
+    >
       {APP_INFO.tagline}
     </p>
   )
 }
 
-function ExclusiveLabel({ withLines = false }: { withLines?: boolean }) {
+function ExclusiveLabel({
+  withLines = false,
+  className = "",
+}: {
+  withLines?: boolean
+  className?: string
+}) {
   return (
     <p
       className={
         withLines
-          ? "inline-flex items-center gap-[2mm] text-[4mm] font-semibold tracking-[0.35em] text-[#CA617D] uppercase"
-          : "text-[4mm] font-semibold tracking-[0.35em] text-[#CA617D] uppercase"
+          ? `inline-flex items-center gap-[2mm] text-[4mm] font-semibold tracking-[0.35em] text-[#CA617D] uppercase ${className}`
+          : `text-[4mm] font-semibold tracking-[0.35em] text-[#CA617D] uppercase ${className}`
       }
     >
       {withLines && <span className="h-px w-[7mm] bg-[#CA617D]/70" />}
@@ -143,25 +150,29 @@ export default function ShirtPrintPage() {
             </div>
 
             <div className="mt-[13mm] flex flex-col items-center">
-              <BrandName size="nav" />
+              <BrandName size="hero" />
               <div className="mt-[3mm]">
-                <ExclusiveLabel withLines />
+                <ExclusiveLabel withLines className="text-[5mm]" />
               </div>
               <div className="mt-[2mm]">
-                <PrimaryTagline />
+                <PrimaryTagline className="text-[5.5mm]" />
               </div>
-              <div className="mt-[8mm] flex w-max max-w-none flex-nowrap items-center justify-center gap-[2mm]">
-                {secondaryTagline.map((line, lineIndex) => {
-                  const Icon = [ShieldCheck, Heart, MapPin][lineIndex]
-
+              <div className="mt-[8mm] flex items-center justify-center gap-[4mm]">
+                {secondaryTagline.map((line) => {
                   return (
-                    <p
+                    <span
                       key={line}
-                      className="inline-flex items-center gap-[1.5mm] rounded-full border border-[#C08F32] bg-[#D3A753] px-[4mm] py-[2mm] text-[3.3mm] leading-none font-bold tracking-[0.06em] whitespace-nowrap text-white"
+                      className="text-[4.2mm] leading-none font-bold tracking-[0.06em] whitespace-nowrap"
+                      style={{
+                        background:
+                          "linear-gradient(to right, #D3A753, #E791A7, #CA617D)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        color: "transparent",
+                      }}
                     >
-                      <Icon className="size-[3.5mm] text-white" />
                       {line}
-                    </p>
+                    </span>
                   )
                 })}
               </div>

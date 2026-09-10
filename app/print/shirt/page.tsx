@@ -111,24 +111,24 @@ export default function ShirtPrintPage() {
       <div className="mx-auto w-[210mm] print:mx-0">
         <PrintPage>
           <header className="flex flex-1 flex-col items-center justify-center text-center">
-            <div className="relative h-[34mm] w-[34mm] shrink-0">
+            <div className="relative h-[40mm] w-[40mm] shrink-0">
               <Image
                 src="/logo.png"
                 alt={`${APP_INFO.name} logo`}
                 fill
                 priority
-                sizes="34mm"
+                sizes="40mm"
                 className="object-contain"
               />
             </div>
 
             <div className="mt-[6mm] flex flex-col items-center justify-center text-center">
-              <BrandName size="nav" />
+              <BrandName size="nav" className="text-[6.5mm]" />
               <div className="mt-[2.5mm]">
-                <ExclusiveLabel withLines />
+                <ExclusiveLabel withLines className="text-[3.2mm]" />
               </div>
               <div className="mt-[1.5mm]">
-                <PrimaryTagline />
+                <PrimaryTagline className="text-[3.8mm]" />
               </div>
             </div>
           </header>
@@ -138,13 +138,13 @@ export default function ShirtPrintPage() {
 
         <PrintPage>
           <div className="flex flex-1 flex-col items-center justify-center text-center">
-            <div className="relative h-[63mm] w-[63mm]">
+            <div className="relative h-[78mm] w-[78mm]">
               <Image
                 src="/logo.png"
                 alt={`${APP_INFO.name} logo`}
                 fill
                 priority
-                sizes="63mm"
+                sizes="78mm"
                 className="object-contain drop-shadow-[0_5mm_7mm_rgba(90,8,22,0.18)]"
               />
             </div>

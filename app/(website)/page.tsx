@@ -126,7 +126,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6, delay: 2.5, ease: "easeOut" }}
-                  className="inline-flex items-center justify-center gap-2 text-[9px] font-semibold tracking-[0.35em] text-[#E791A7] uppercase sm:text-[10px]"
+                  className="inline-flex items-center justify-center gap-2 text-sm font-semibold tracking-[0.35em] text-[#E791A7] uppercase sm:text-base"
                 >
                   <motion.span
                     initial={{ width: 0 }}

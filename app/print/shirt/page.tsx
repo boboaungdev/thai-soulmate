@@ -157,12 +157,12 @@ export default function ShirtPrintPage() {
               <div className="mt-[2mm]">
                 <PrimaryTagline className="text-[5.6mm]" />
               </div>
-              <div className="mt-[8mm] flex items-center justify-center gap-[4mm]">
+              <div className="mt-[5mm] flex items-center justify-center gap-[4mm]">
                 {secondaryTagline.map((line) => {
                   return (
                     <span
                       key={line}
-                      className="text-[4.2mm] leading-none font-bold tracking-[0.06em] whitespace-nowrap"
+                      className="text-[5.6mm] leading-none font-bold tracking-[0.06em] whitespace-nowrap"
                       style={{
                         background:
                           "linear-gradient(to right, #D3A753, #E791A7, #CA617D)",

@@ -150,13 +150,13 @@ export default function ShirtPrintPage() {
               />
             </div>
 
-            <div className="mt-[5mm] flex items-center gap-[2mm] text-[#D3A753]">
+            <div className="mt-[8mm] flex items-center gap-[2.5mm] text-[#D3A753]">
               <Globe
                 aria-hidden="true"
-                className="h-[5.2mm] w-[5.2mm]"
+                className="h-[7.2mm] w-[7.2mm]"
                 strokeWidth={2}
               />
-              <p className="text-[5.2mm] font-semibold tracking-[0.12em]">
+              <p className="text-[7.2mm] font-semibold tracking-[0.12em]">
                 thaisoulmate.org
               </p>
             </div>

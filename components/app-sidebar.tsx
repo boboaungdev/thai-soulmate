@@ -564,14 +564,13 @@ export function AppSidebar() {
           </SidebarGroup>
         )} */}
 
-        {user?.role !== "MEMBER" && (
+        {/* {user?.role !== "MEMBER" && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
               Email
             </SidebarGroupLabel>
 
             <SidebarGroupContent>
-              {/* Personal Section */}
               <div className="px-2 pt-1 pb-1 text-[11px] font-semibold tracking-wider text-sidebar-foreground/60 uppercase group-data-[collapsible=icon]:hidden">
                 Personal
               </div>
@@ -582,7 +581,6 @@ export function AppSidebar() {
                 />
               </SidebarMenu>
 
-              {/* Work Section */}
               <div className="px-2 pt-3 pb-1 text-[11px] font-semibold tracking-wider text-sidebar-foreground/60 uppercase group-data-[collapsible=icon]:hidden">
                 Work
               </div>
@@ -597,7 +595,7 @@ export function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-        )}
+        )} */}
 
         {(user?.role === "ADMIN" || user?.role === "DEV") && (
           <SidebarGroup>

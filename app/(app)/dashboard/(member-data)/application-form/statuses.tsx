@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  CircleCheck,
-  CircleX,
-  CircleDot,
-  HeartHandshake,
-  Archive,
-  Clock,
-} from "lucide-react"
+import { CircleCheck, CircleDot, Archive, Clock } from "lucide-react"
 import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
 
 export const applicationStatuses: {
@@ -40,14 +33,6 @@ export const applicationStatuses: {
     color: "text-green-500",
     badgeClassName:
       "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300",
-  },
-  {
-    value: "MATCHED",
-    label: "Matched",
-    icon: CircleCheck,
-    color: "text-blue-500",
-    badgeClassName:
-      "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300",
   },
   {
     value: "CLOSED",

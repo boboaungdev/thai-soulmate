@@ -49,12 +49,6 @@ const STATUS_CONFIG: Record<
     badgeClass: "border-emerald-500/40 bg-emerald-500/10 text-emerald-400",
     iconClass: "text-emerald-400",
   },
-  MATCHED: {
-    label: "Matched",
-    icon: CircleCheck,
-    badgeClass: "border-blue-500/40 bg-blue-500/10 text-blue-400",
-    iconClass: "text-blue-400",
-  },
   CLOSED: {
     label: "Closed",
     icon: Archive,

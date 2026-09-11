@@ -230,7 +230,6 @@ enum ApplicationFormStatus {
   RECEIVED
   PENDING
   COMPLETED
-  MATCHED
   CLOSED
 }
 

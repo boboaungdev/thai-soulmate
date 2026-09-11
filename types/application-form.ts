@@ -1,7 +1,9 @@
+import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
+
 export interface ApplicationForm {
   id: string
   customId: number
-  status: "OPEN" | "IN_MATCHING" | "MATCHED" | "CLOSED"
+  status: ApplicationFormStatus
   personalDetails: PersonalDetails
   career: Career
   appearance: Appearance

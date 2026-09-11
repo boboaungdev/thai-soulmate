@@ -15,6 +15,7 @@ import {
   TrendingUp,
   ClipboardPen,
   FileText,
+  CreditCard,
   Users2,
   HeartHandshake,
   HeartPulse,
@@ -403,8 +404,16 @@ export default function AdminDashboardPage() {
                       x2="0"
                       y2="1"
                     >
-                      <stop offset="5%" stopColor="#D3A753" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="#D3A753" stopOpacity={0.0} />
+                      <stop
+                        offset="5%"
+                        stopColor="#D3A753"
+                        stopOpacity={0.25}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor="#D3A753"
+                        stopOpacity={0.0}
+                      />
                     </linearGradient>
                     <linearGradient
                       id="profitGradient"
@@ -413,8 +422,16 @@ export default function AdminDashboardPage() {
                       x2="0"
                       y2="1"
                     >
-                      <stop offset="5%" stopColor="#CA617D" stopOpacity={0.15} />
-                      <stop offset="95%" stopColor="#CA617D" stopOpacity={0.0} />
+                      <stop
+                        offset="5%"
+                        stopColor="#CA617D"
+                        stopOpacity={0.15}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor="#CA617D"
+                        stopOpacity={0.0}
+                      />
                     </linearGradient>
                   </defs>
 
@@ -641,7 +658,30 @@ export default function AdminDashboardPage() {
           </div>
         </Card>
 
-        {/* Card 3: Profiles Database */}
+        {/* Card 3: Completed Payments */}
+        <Card className="rounded-2xl border-border/70 p-5 shadow-xs transition-all hover:border-emerald-500/40">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-muted-foreground">
+              Completed Payments
+            </span>
+            <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+              <CreditCard className="size-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <p className="text-2xl font-bold tracking-tight text-foreground">
+              850
+            </p>
+            <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+              <span className="font-medium text-emerald-500">
+                +50 this month
+              </span>
+              <span>15 pending review</span>
+            </div>
+          </div>
+        </Card>
+
+        {/* Card 4: Verified Profiles Pool */}
         <Card className="rounded-2xl border-border/70 p-5 shadow-xs transition-all hover:border-[#D3A753]/40">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">
@@ -658,29 +698,6 @@ export default function AdminDashboardPage() {
             <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
               <span className="font-medium text-[#D3A753]">Ready to Match</span>
               <span>100% ID verified</span>
-            </div>
-          </div>
-        </Card>
-
-        {/* Card 4: Curated Matches */}
-        <Card className="rounded-2xl border-border/70 p-5 shadow-xs transition-all hover:border-[#CA617D]/40">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground">
-              Introductions & Matches
-            </span>
-            <div className="flex size-8 items-center justify-center rounded-lg bg-[#CA617D]/10 text-[#CA617D]">
-              <HeartHandshake className="size-4" />
-            </div>
-          </div>
-          <div className="mt-2">
-            <p className="text-2xl font-bold tracking-tight text-[#CA617D]">
-              125
-            </p>
-            <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
-              <span className="font-medium text-[#CA617D]">
-                465 total initiated
-              </span>
-              <span>92% date satisfaction</span>
             </div>
           </div>
         </Card>

@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Globe } from "lucide-react"
+import { Globe, Heart, MapPin, ShieldCheck } from "lucide-react"
 import { useEffect } from "react"
 
 import { APP_INFO } from "@/constants"
@@ -150,18 +150,7 @@ export default function ShirtPrintPage() {
               />
             </div>
 
-            <div className="mt-[8mm] flex items-center gap-[2.5mm] text-[#D3A753]">
-              <Globe
-                aria-hidden="true"
-                className="h-[7.2mm] w-[7.2mm]"
-                strokeWidth={2}
-              />
-              <p className="text-[7.2mm] font-semibold tracking-[0.12em]">
-                thaisoulmate.org
-              </p>
-            </div>
-
-            <div className="mt-[5mm] flex flex-col items-center">
+            <div className="mt-[12mm] flex flex-col items-center">
               <BrandName size="back" />
               <div className="mt-[3mm]">
                 <ExclusiveLabel withLines className="text-[5.5mm]" />
@@ -169,24 +158,36 @@ export default function ShirtPrintPage() {
               <div className="mt-[2mm]">
                 <PrimaryTagline className="text-[5.6mm]" />
               </div>
-              <div className="mt-[5mm] flex items-center justify-center gap-[4mm]">
-                {secondaryTagline.map((line) => {
+              <div className="mt-[6mm] flex w-max max-w-none flex-nowrap items-center justify-center gap-[2.5mm]">
+                {secondaryTagline.map((line, lineIndex) => {
+                  const Icon = [ShieldCheck, Heart, MapPin][lineIndex]
+
                   return (
-                    <span
+                    <p
                       key={line}
-                      className="text-[5.6mm] leading-none font-bold tracking-[0.06em] whitespace-nowrap"
-                      style={{
-                        background:
-                          "linear-gradient(to right, #D3A753, #E791A7, #CA617D)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
+                      className="inline-flex items-center gap-[1.5mm] rounded-full border border-[#C08F32] bg-[#D3A753] px-[4mm] py-[2mm] text-[3.5mm] leading-none font-bold tracking-[0.06em] whitespace-nowrap text-white"
                     >
+                      {Icon && (
+                        <Icon
+                          aria-hidden="true"
+                          className="h-[3.8mm] w-[3.8mm] shrink-0 text-white"
+                        />
+                      )}
                       {line}
-                    </span>
+                    </p>
                   )
                 })}
+              </div>
+
+              <div className="mt-[8mm] flex items-center gap-[2.5mm] text-[#D3A753]">
+                <Globe
+                  aria-hidden="true"
+                  className="h-[7.2mm] w-[7.2mm]"
+                  strokeWidth={2}
+                />
+                <p className="text-[7.2mm] font-semibold tracking-[0.12em]">
+                  thaisoulmate.org
+                </p>
               </div>
             </div>
           </div>

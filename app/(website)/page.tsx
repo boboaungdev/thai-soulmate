@@ -340,7 +340,7 @@ export default function HomePage() {
                 {
                   icon: Lock,
                   title: "Complete Discretion & Respect",
-                  desc: "Every interaction is handled with utmost privacy. Introductions only take place when both individuals have reviewed each other and agreed.",
+                  desc: "Every interaction is handled with utmost privacy. Introductions only take place when both individuals have reviewed each other's profiles and agreed to meet.",
                 },
               ].map((pillar, idx) => {
                 const Icon = pillar.icon
@@ -980,7 +980,7 @@ export default function HomePage() {
                 introductions.
               </h3>
               <p className="text-sm text-muted-foreground sm:text-base">
-                This makes your service feel personal and premium. We save you
+                This makes your service feel personal. We save you
                 the time, uncertainty, and frustration of doing it all yourself.
               </p>
               <div className="flex flex-col items-center justify-center gap-4 pt-2 sm:flex-row">

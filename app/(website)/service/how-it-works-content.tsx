@@ -28,6 +28,7 @@ import {
   MapPin,
   Languages,
   CalendarCheck,
+  Globe,
 } from "lucide-react"
 
 export function HowItWorksContent() {
@@ -109,8 +110,9 @@ export function HowItWorksContent() {
             Choose Your Matchmaking Journey
           </h2>
           <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-            Explore how our bespoke service works for international gentlemen
-            and relationship-minded Thai ladies.
+            Explore how our bespoke service works for gentlemen (both foreign
+            gentlemen living in Thailand and international men abroad) and
+            relationship-minded Thai ladies.
           </p>
         </MotionDiv>
 
@@ -126,25 +128,19 @@ export function HowItWorksContent() {
                 <TabsTrigger
                   value="men"
                   variant="gradient"
-                  className="h-full gap-2 rounded-lg px-4 text-xs font-semibold sm:px-6 sm:text-sm"
+                  className="h-full gap-2 rounded-lg px-3.5 text-xs font-semibold sm:px-6 sm:text-sm"
                 >
-                  <Compass className="size-4 shrink-0" />
-                  <span className="hidden sm:inline">
-                    For Gentlemen (International Men)
-                  </span>
-                  <span className="sm:hidden">For Gentlemen</span>
+                  <Globe className="size-4 shrink-0" />
+                  <span>For Foreign Gentlemen</span>
                 </TabsTrigger>
 
                 <TabsTrigger
                   value="women"
                   variant="gradient"
-                  className="h-full gap-2 rounded-lg px-4 text-xs font-semibold sm:px-6 sm:text-sm"
+                  className="h-full gap-2 rounded-lg px-3.5 text-xs font-semibold sm:px-6 sm:text-sm"
                 >
-                  <Heart className="size-4 shrink-0" />
-                  <span className="hidden sm:inline">
-                    For Thai Ladies (Women in Thailand)
-                  </span>
-                  <span className="sm:hidden">For Thai Ladies</span>
+                  <Sparkles className="size-4 shrink-0" />
+                  <span>For Thai Ladies</span>
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -154,10 +150,11 @@ export function HowItWorksContent() {
           <TabsContent value="men" className="space-y-6">
             <div className="mx-auto max-w-3xl text-center">
               <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-                As a serious gentleman, your time is valuable. You don&apos;t
-                have months to spend swiping through anonymous profiles or
-                wondering if someone is genuine. Here is how your personal
-                matchmaker handles everything for you:
+                Whether you are an expatriate gentleman living in Thailand or an
+                international gentleman based abroad, your time is valuable. You
+                don&apos;t have months to spend swiping through anonymous
+                profiles or wondering if someone is genuine. Here is how your
+                personal matchmaker handles everything for you:
               </p>
             </div>
 
@@ -321,10 +318,10 @@ export function HowItWorksContent() {
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
-                      We coordinate a secure Google Meet video date across your
-                      respective time zones. Your matchmaker is on hand to
-                      facilitate, break the ice, and provide bilingual
-                      translation.
+                      Whether you are already in Thailand or connecting from
+                      abroad across time zones, we coordinate a secure Google
+                      Meet video date. Your matchmaker is on hand to facilitate,
+                      break the ice, and provide bilingual translation.
                     </p>
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                       <li className="flex items-center gap-2">
@@ -369,17 +366,17 @@ export function HowItWorksContent() {
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
-                      When you are ready to visit Thailand, our local team in
-                      Thailand is right here on the ground to assist you. We
-                      coordinate safe, romantic meeting locations, offer
-                      cultural advice, and continue supporting you until your
-                      connection flourishes into marriage or long-term
-                      partnership.
+                      Whether you reside in Thailand or are visiting from
+                      abroad, our local team in Thailand is right here on the
+                      ground to assist you. We coordinate safe, romantic meeting
+                      locations, offer cultural advice, and continue supporting
+                      you until your connection flourishes into marriage or
+                      long-term partnership.
                     </p>
                     <div className="mt-auto grid grid-cols-1 gap-2 border-t border-border/40 pt-3 text-xs sm:grid-cols-3">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
-                        <span>Thailand meeting coordination</span>
+                        <span>Thailand in-person coordination</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#D3A753]" />
@@ -401,9 +398,11 @@ export function HowItWorksContent() {
             <div className="mx-auto max-w-3xl text-center">
               <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
                 Are you looking for a sincere, loving relationship with a kind
-                and committed international gentleman? Thai Soulmate is 100%
-                free for relationship-minded Thai ladies. You remain in total
-                control at every step.
+                and committed foreign gentleman—whether living here in Thailand
+                or abroad? Thai Soulmate offers both complimentary standard
+                membership and dedicated Female VIP plans for
+                relationship-minded Thai ladies. You remain in total control at
+                every step.
               </p>
             </div>
 
@@ -443,7 +442,9 @@ export function HowItWorksContent() {
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
-                        <span>Your photos are NEVER published publicly</span>
+                        <span>
+                          Confidential matching with optional VIP showcase
+                        </span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
@@ -474,16 +475,24 @@ export function HowItWorksContent() {
                       <UserCheck className="size-6" />
                     </div>
                     <CardTitle className="text-lg font-bold">
-                      Vetted, Sincere International Gentlemen
+                      Vetted Gentlemen (In Thailand & Abroad)
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
-                      We strictly vet every gentleman. They are financially
-                      established, emotionally mature, and committed to finding
-                      a life partner for marriage—not casual dating or games.
+                      We strictly vet every gentleman. They include foreign
+                      gentlemen living and working right here in Thailand as
+                      well as international gentlemen abroad. Every gentleman is
+                      financially established, emotionally mature, and committed
+                      to marriage—not casual dating or games.
                     </p>
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
+                        <span>
+                          Foreign gentlemen residing in Thailand & worldwide
+                        </span>
+                      </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
                         <span>Background & identity verified gentlemen</span>
@@ -491,10 +500,6 @@ export function HowItWorksContent() {
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
                         <span>Genuine intentions for long-term marriage</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
-                        <span>Respectful and family-oriented values</span>
                       </li>
                     </ul>
                   </CardContent>
@@ -615,11 +620,11 @@ export function HowItWorksContent() {
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col justify-between space-y-3 text-sm text-muted-foreground">
                     <p>
-                      When the gentleman arrives in Thailand to meet you, we
-                      help coordinate safe, public, and comfortable dinner dates
-                      in Thailand. We support you before, during, and after each
-                      meeting so you always feel protected, valued, and
-                      respected.
+                      Whether the gentleman already lives in Thailand or is
+                      traveling from abroad to meet you, we help coordinate
+                      safe, public, and comfortable dinner dates in Thailand. We
+                      support you before, during, and after each meeting so you
+                      always feel protected, valued, and respected.
                     </p>
                     <div className="mt-auto grid grid-cols-1 gap-2 border-t border-border/40 pt-3 text-xs sm:grid-cols-3">
                       <div className="flex items-center gap-2">
@@ -880,14 +885,14 @@ export function HowItWorksContent() {
               </div>
 
               <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-                Ready to Find Your Life Partner in Thailand?
+                Ready to Find Your Soulmate in Thailand?
               </h2>
 
               <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Whether you are an international gentleman seeking a meaningful
-                relationship or a Thai lady looking for a sincere, loving
-                partner, our private matchmaking team is here to guide you
-                discreetly every step of the way.
+                Whether you are a foreign gentleman living in Thailand or abroad
+                seeking a meaningful relationship, or a Thai lady looking for a
+                sincere, loving partner, our private matchmaking team is here to
+                guide you discreetly every step of the way.
               </p>
 
               <div className="pt-2">

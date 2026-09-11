@@ -34,7 +34,7 @@ export default function GalleryPage() {
           </div>
 
           <h1 className="text-gradient text-4xl font-bold tracking-tight md:text-5xl">
-            Meet Our Members
+            Meet a Few of Our Members
           </h1>
 
           <p className="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">

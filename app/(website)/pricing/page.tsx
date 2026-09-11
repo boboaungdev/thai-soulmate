@@ -2,7 +2,14 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Flame, Crown, Clock, Check, BadgePercent, Sparkles } from "lucide-react"
+import {
+  Flame,
+  Crown,
+  Clock,
+  Check,
+  BadgePercent,
+  Sparkles,
+} from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { PLANS } from "@/constants"
 import { MotionDiv } from "@/components/motion"
@@ -18,6 +25,15 @@ interface PricingPageContentsProps {
   isEmbedded?: boolean
   embeddedUserData?: User | null
 }
+
+const FEMALE_VIP_FEATURES = [
+  "All Welcome Free Plan Features",
+  "Active Marketing & Featured Showcase",
+  "Higher & Faster Chance to Match",
+  "Priority Introductions to Vetted Gentlemen",
+  "Dedicated Senior Matchmaker Advocacy",
+  "Personal Post-Date Feedback & Guidance",
+] as const
 
 export function PricingPageContents({
   isEmbedded = false,
@@ -243,7 +259,7 @@ export function PricingPageContents({
                         variant="gradient"
                         className="group h-full gap-2 rounded-lg px-3.5 text-xs font-semibold sm:px-5 sm:text-sm"
                       >
-                        <Flame className="size-4 shrink-0 transition-colors text-[#E791A7] group-data-[state=active]:text-white" />
+                        <Flame className="size-4 shrink-0 text-[#E791A7] transition-colors group-data-[state=active]:text-white" />
 
                         <span className="hidden sm:inline">
                           Special Promotion Offers
@@ -1038,10 +1054,12 @@ export function PricingPageContents({
                   >
                     <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#CA617D]/30 bg-card/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-[#CA617D]/60 hover:shadow-2xl sm:p-7">
                       <p className="mt-2 text-xs font-semibold tracking-wider text-[#CA617D] uppercase">
-                        Introductory VIP
+                        Free Plan
                       </p>
 
-                      <h3 className="mt-2 text-2xl font-bold">Welcome Plan</h3>
+                      <h3 className="mt-2 text-2xl font-bold">
+                        Welcome Free Plan
+                      </h3>
 
                       <div className="mt-5 rounded-xl border border-[#CA617D]/20 bg-[#CA617D]/10 p-4">
                         <p className="font-semibold text-foreground">
@@ -1072,7 +1090,15 @@ export function PricingPageContents({
                           variant="outline"
                           className="h-10 w-full border-border/80 font-semibold text-foreground hover:border-[#CA617D]/50 hover:bg-[#CA617D]/10 hover:text-foreground"
                         >
-                          <Link href="/contact">Contact Us</Link>
+                          <Link
+                            href={
+                              isFromApplicationForm
+                                ? `/application-form?from=pricing&plan=Welcome+Free+Plan`
+                                : "/contact"
+                            }
+                          >
+                            Join Free
+                          </Link>
                         </Button>
                       </div>
                     </div>
@@ -1130,7 +1156,7 @@ export function PricingPageContents({
                         </div>
 
                         <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                          {PLANS[0]?.features?.map((feature, index) => (
+                          {FEMALE_VIP_FEATURES.map((feature, index) => (
                             <li
                               key={index}
                               className="flex items-start gap-2.5"
@@ -1139,7 +1165,15 @@ export function PricingPageContents({
                                 <Check className="size-3 stroke-[2.5]" />
                               </span>
 
-                              <span className="leading-snug">{feature}</span>
+                              <span
+                                className={
+                                  index === 0
+                                    ? "leading-snug font-semibold text-foreground"
+                                    : "leading-snug"
+                                }
+                              >
+                                {feature}
+                              </span>
                             </li>
                           ))}
                         </ul>
@@ -1199,13 +1233,21 @@ export function PricingPageContents({
                       </div>
 
                       <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
-                        {PLANS[0]?.features?.map((feature, index) => (
+                        {FEMALE_VIP_FEATURES.map((feature, index) => (
                           <li key={index} className="flex items-start gap-2.5">
                             <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#CA617D]/15 text-[#CA617D]">
                               <Check className="size-3 stroke-[2.5]" />
                             </span>
 
-                            <span className="leading-snug">{feature}</span>
+                            <span
+                              className={
+                                index === 0
+                                  ? "leading-snug font-semibold text-foreground"
+                                  : "leading-snug"
+                              }
+                            >
+                              {feature}
+                            </span>
                           </li>
                         ))}
                       </ul>

@@ -439,7 +439,7 @@ export function HowItWorksContent() {
                     <ul className="mt-auto space-y-1.5 border-t border-border/40 pt-3 text-xs">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />
-                        <span>100% Free for Thai female applicants</span>
+                        <span>Complimentary Standard & Female VIP options</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="size-3.5 shrink-0 text-[#E791A7]" />

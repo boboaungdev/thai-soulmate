@@ -72,7 +72,7 @@ export default function HomePage() {
       {/* ========================================================= */}
       {/* HERO SECTION */}
       {/* ========================================================= */}
-      <section className="relative flex h-[85vh] min-h-[580px] flex-col justify-center overflow-hidden text-white">
+      <section className="relative flex min-h-[85vh] flex-col justify-center overflow-hidden py-12 text-white sm:h-[85vh] sm:min-h-[580px] sm:py-0">
         <motion.div
           style={{ y: heroBgY }}
           initial={{ scale: 1.1, opacity: 0.8 }}
@@ -99,147 +99,149 @@ export default function HomePage() {
 
         <motion.div
           style={{ opacity: heroContentOpacity }}
-          className="relative mx-auto w-full max-w-7xl px-4 pt-60 sm:px-6 sm:pt-0 lg:px-8"
+          className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
         >
           {/* Subtle golden ambient glow behind hero */}
-          <div className="pointer-events-none absolute top-1/2 left-1/4 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 via-[#E791A7]/10 to-transparent blur-3xl" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-[#D3A753]/20 via-[#E791A7]/10 to-transparent blur-3xl lg:left-1/4" />
 
-          <div className="flex max-w-2xl flex-col items-center space-y-5 text-center">
-            {/* Signature Two Souls Converging Wave & Logo Animation */}
-            <HeroSoulWaves />
+          <div className="grid grid-cols-1 items-center lg:grid-cols-2">
+            <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-5 text-center">
+              {/* Signature Two Souls Converging Wave & Logo Animation */}
+              <HeroSoulWaves />
 
-            <div className="space-y-4">
-              <motion.div
-                initial={{ opacity: 0, y: 22, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{
-                  duration: 0.75,
-                  delay: 2.3,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <AppName className="text-4xl font-black tracking-tight uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-5xl md:text-6xl" />
-              </motion.div>
-
-              <div className="space-y-2">
-                <motion.p
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: 2.5, ease: "easeOut" }}
-                  className="inline-flex items-center justify-center gap-2 text-sm font-semibold tracking-[0.35em] text-[#E791A7] uppercase sm:text-base"
+              <div className="space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 22, filter: "blur(8px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{
+                    duration: 0.75,
+                    delay: 2.3,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                 >
-                  <motion.span
-                    initial={{ width: 0 }}
-                    animate={{ width: 24 }}
-                    transition={{ duration: 0.6, delay: 2.55 }}
-                    className="h-px bg-[#CA617D]/70"
-                  />
-                  EXCLUSIVE
-                  <motion.span
-                    initial={{ width: 0 }}
-                    animate={{ width: 24 }}
-                    transition={{ duration: 0.6, delay: 2.55 }}
-                    className="h-px bg-[#CA617D]/70"
-                  />
-                </motion.p>
+                  <AppName className="text-4xl font-black tracking-tight uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-5xl md:text-6xl" />
+                </motion.div>
 
-                <motion.p
-                  initial={{ opacity: 0, y: 15 }}
+                <div className="space-y-2">
+                  <motion.p
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 2.5, ease: "easeOut" }}
+                    className="inline-flex items-center justify-center gap-2 text-sm font-semibold tracking-[0.35em] text-[#E791A7] uppercase sm:text-base"
+                  >
+                    <motion.span
+                      initial={{ width: 0 }}
+                      animate={{ width: 24 }}
+                      transition={{ duration: 0.6, delay: 2.55 }}
+                      className="h-px bg-[#CA617D]/70"
+                    />
+                    EXCLUSIVE
+                    <motion.span
+                      initial={{ width: 0 }}
+                      animate={{ width: 24 }}
+                      transition={{ duration: 0.6, delay: 2.55 }}
+                      className="h-px bg-[#CA617D]/70"
+                    />
+                  </motion.p>
+
+                  <motion.p
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 2.65 }}
+                    className="text-sm font-semibold tracking-[0.2em] text-[#D3A753] uppercase sm:text-base md:text-lg"
+                  >
+                    {APP_INFO.tagline}
+                  </motion.p>
+                </div>
+
+                {/* Slogan Trust Ribbon */}
+                <motion.div
+                  initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 2.65 }}
-                  className="text-sm font-semibold tracking-[0.2em] text-[#D3A753] uppercase sm:text-base md:text-lg"
+                  transition={{ duration: 0.6, delay: 2.8 }}
+                  className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-white/90 sm:gap-3 sm:text-sm"
                 >
-                  {APP_INFO.tagline}
-                </motion.p>
+                  <motion.div
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{
+                      duration: 3.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    whileHover={{ scale: 1.06, y: -2 }}
+                    className="inline-flex cursor-default items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md transition-colors hover:border-[#D3A753]/50"
+                  >
+                    <ShieldCheck className="size-3.5 text-[#D3A753]" />
+                    <span>Real People</span>
+                  </motion.div>
+                  <motion.div
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{
+                      duration: 3.8,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.6,
+                    }}
+                    whileHover={{ scale: 1.06, y: -2 }}
+                    className="inline-flex cursor-default items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md transition-colors hover:border-[#E791A7]/50"
+                  >
+                    <Heart className="size-3.5 text-[#E791A7]" />
+                    <span>Real Relationships</span>
+                  </motion.div>
+                  <motion.div
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{
+                      duration: 3.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1.2,
+                    }}
+                    whileHover={{ scale: 1.06, y: -2 }}
+                    className="inline-flex cursor-default items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md transition-colors hover:border-[#D3A753]/50"
+                  >
+                    <MapPin className="size-3.5 text-[#D3A753]" />
+                    <span>Personally Matched in Thailand</span>
+                  </motion.div>
+                </motion.div>
+
+                {/* Two Hero CTAs */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 2.95 }}
+                  className="mx-auto flex w-full flex-col items-stretch justify-center gap-3 pt-2 sm:w-fit"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full"
+                  >
+                    <Button
+                      asChild
+                      size="lg"
+                      className="btn-gradient w-full font-semibold shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-[#D3A753]/30"
+                    >
+                      <Link href="/#register-interest">
+                        Arrange a Confidential Consultation
+                      </Link>
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full"
+                  >
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="outline"
+                      className="w-full border-white/30 bg-black/50 text-white backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/15 hover:text-white"
+                    >
+                      <Link href="/service">See How It Works</Link>
+                    </Button>
+                  </motion.div>
+                </motion.div>
               </div>
-
-              {/* Slogan Trust Ribbon */}
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 2.8 }}
-                className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-white/90 sm:gap-3 sm:text-sm"
-              >
-                <motion.div
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{
-                    duration: 3.2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  whileHover={{ scale: 1.06, y: -2 }}
-                  className="inline-flex cursor-default items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md transition-colors hover:border-[#D3A753]/50"
-                >
-                  <ShieldCheck className="size-3.5 text-[#D3A753]" />
-                  <span>Real People</span>
-                </motion.div>
-                <motion.div
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{
-                    duration: 3.8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.6,
-                  }}
-                  whileHover={{ scale: 1.06, y: -2 }}
-                  className="inline-flex cursor-default items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md transition-colors hover:border-[#E791A7]/50"
-                >
-                  <Heart className="size-3.5 text-[#E791A7]" />
-                  <span>Real Relationships</span>
-                </motion.div>
-                <motion.div
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{
-                    duration: 3.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1.2,
-                  }}
-                  whileHover={{ scale: 1.06, y: -2 }}
-                  className="inline-flex cursor-default items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 backdrop-blur-md transition-colors hover:border-[#D3A753]/50"
-                >
-                  <MapPin className="size-3.5 text-[#D3A753]" />
-                  <span>Personally Matched in Thailand</span>
-                </motion.div>
-              </motion.div>
-
-              {/* Two Hero CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 2.95 }}
-                className="mx-auto flex w-full flex-col items-stretch justify-center gap-3 pt-2 sm:w-fit"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full"
-                >
-                  <Button
-                    asChild
-                    size="lg"
-                    className="btn-gradient w-full font-semibold shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-[#D3A753]/30"
-                  >
-                    <Link href="/#register-interest">
-                      Arrange a Confidential Consultation
-                    </Link>
-                  </Button>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full"
-                >
-                  <Button
-                    asChild
-                    size="lg"
-                    variant="outline"
-                    className="w-full border-white/30 bg-black/50 text-white backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/15 hover:text-white"
-                  >
-                    <Link href="/service">See How It Works</Link>
-                  </Button>
-                </motion.div>
-              </motion.div>
             </div>
           </div>
         </motion.div>

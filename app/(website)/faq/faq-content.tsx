@@ -419,18 +419,48 @@ const FAQ_ITEMS: FaqItem[] = [
     id: "privacy-free-for-women",
     category: "privacy",
     categoryLabel: "Privacy & Fees",
-    questionText: "Is it free for Thai women to join?",
-    question: "Is it free for Thai women to join?",
+    questionText: "What are the membership options for Thai women?",
+    question: "What are the membership options for Thai women?",
     answerText:
-      "Yes. Joining our private verified network is 100% free for relationship-minded Thai women. We believe financial barriers should never prevent genuine, high-caliber women from finding loving international husbands. However, female members must pass our rigorous 6-point verification standard and sign our mutual respect guidelines before being considered for introductions.",
+      "We offer two distinct pathways: Complimentary Standard membership and dedicated Female VIP plans. Standard membership is free to join after passing our 6-point verification standard; profiles are strictly confidential in our internal database, never exposed to public marketing, and matched exclusively through internal matchmaker reviews. For ladies seeking proactive marketing, featured showcases, and significantly higher match opportunities with vetted international gentlemen, we offer exclusive Female VIP plans.",
     answer: (
       <>
-        Yes. Joining our private, verified female network is{" "}
-        <strong className="text-foreground">100% free for Thai women</strong>.
-        We believe financial barriers should never prevent genuine, respectable
-        women from finding sincere international life partners. However, all
-        female applicants must pass our comprehensive 6-point verification
-        process and personal interview before any introductions take place.
+        We offer two distinct pathways for relationship-minded Thai women:{" "}
+        <strong className="text-foreground">
+          Complimentary Standard Membership
+        </strong>{" "}
+        and <strong className="text-foreground">Female VIP Plans</strong>.
+        <br />
+        <br />•{" "}
+        <strong className="text-foreground">
+          Standard Membership (Complimentary):
+        </strong>{" "}
+        Joining our verified network is free of charge for ladies who pass our
+        6-point verification standard. Standard profiles are{" "}
+        <strong className="text-foreground">
+          strictly confidential and never exposed to public marketing
+        </strong>
+        . Matches happen exclusively through our internal matching process when
+        our matchmakers hand-select candidates for enrolled gentlemen.
+        <br />
+        <br />• <strong className="text-foreground">
+          Female VIP Plans:
+        </strong>{" "}
+        For ladies who desire proactive search assistance, our team actively
+        markets and features VIP members to high-caliber international gentlemen
+        through curated showcases, priority presentations, and dedicated 1-on-1
+        matchmaker advocacy. This active promotion gives Female VIP members a{" "}
+        <strong className="text-foreground">
+          substantially higher and faster chance of finding their ideal match
+        </strong>
+        . Learn more on our{" "}
+        <Link
+          href="/pricing"
+          className="font-medium text-[var(--gold)] underline underline-offset-4 hover:opacity-80"
+        >
+          Pricing page
+        </Link>
+        .
       </>
     ),
   },
@@ -441,25 +471,54 @@ const FAQ_ITEMS: FaqItem[] = [
     category: "ladies",
     categoryLabel: "For Thai Ladies",
     questionText:
-      "สุภาพสตรีไทยต้องเสียค่าใช้จ่ายหรือไม่? (Are there any fees for Thai women?)",
+      "สุภาพสตรีไทยมีค่าใช้จ่ายหรือแพ็กเกจอย่างไรบ้าง? (What are the membership options for Thai women?)",
     question: (
       <>
-        สุภาพสตรีไทยต้องเสียค่าใช้จ่ายหรือไม่?{" "}
+        สุภาพสตรีไทยมีค่าใช้จ่ายหรือแพ็กเกจอย่างไรบ้าง?{" "}
         <span className="text-xs font-normal text-muted-foreground sm:text-sm">
-          (Are there any fees for Thai women?)
+          (What are the membership options for Thai women?)
         </span>
       </>
     ),
     answerText:
-      "ไม่มีค่าใช้จ่ายใดๆ ทั้งสิ้น บริการของเราฟรี 100% สำหรับสุภาพสตรีไทยที่มีความจริงใจและมองหาความสัมพันธ์ระยะยาวเพื่อการแต่งงาน ท่านจะได้รับการดูแลอย่างให้เกียรติ ปลอดภัย และมีความเป็นส่วนตัวในทุกขั้นตอน โดยไม่มีค่าธรรมเนียมแอบแฝงใดๆ (100% Free for Thai women seeking sincere, long-term relationships).",
+      "เรามี 2 รูปแบบให้เลือก: สมาชิกมาตรฐาน (ไม่มีค่าใช้จ่าย) ข้อมูลจะถูกเก็บเป็นความลับในระบบภายในเท่านั้น จะไม่ถูกนำไปทำการตลาดสาธารณะใดๆ และจับคู่ผ่านกระบวนการคัดสรรภายในของแม่สื่อเท่านั้น ส่วนแพ็กเกจ Female VIP จะได้รับการทำการตลาดและนำเสนอโปรไฟล์เป็นพิเศษแก่สุภาพบุรุษต่างชาติระดับพรีเมียม จึงมีโอกาสและอัตราความสำเร็จในการจับคู่ที่รวดเร็วและสูงกว่าอย่างมาก (Standard is 100% private internal matching with zero marketing; Female VIP includes active marketing and priority presentation for higher match chances).",
     answer: (
       <>
+        บริการของเรามี 2 รูปแบบให้เลือกตามความต้องการของสุภาพสตรีค่ะ:
+        <br />
+        <br />•{" "}
         <strong className="text-foreground">
-          ไม่มีค่าใช้จ่ายใดๆ ทั้งสิ้น บริการของเราฟรี 100%
+          สมาชิกมาตรฐาน (Standard — ไม่มีค่าใช้จ่าย):
         </strong>{" "}
-        สำหรับสุภาพสตรีไทยที่มีความจริงใจและกำลังมองหาความรักที่มั่นคงระยะยาวเพื่อสร้างครอบครัว
-        ท่านจะได้รับการดูแลอย่างให้เกียรติ ปลอดภัย
-        และเป็นส่วนตัวสูงสุดในทุกขั้นตอนโดยไม่มีค่าธรรมเนียมแอบแฝงใดๆ ทั้งสิ้น
+        ไม่มีค่าใช้จ่ายใดๆ สำหรับสุภาพสตรีไทยที่ผ่านเกณฑ์การตรวจสอบ 6 ขั้นตอน
+        โปรไฟล์ของท่านจะถูกเก็บรักษาเป็นความลับในระบบฐานข้อมูลภายในเท่านั้น{" "}
+        <strong className="text-foreground">
+          โดยจะไม่มีการนำไปเผยแพร่หรือทำการตลาดในที่สาธารณะโดยเด็ดขาด
+        </strong>{" "}
+        การจับคู่จะดำเนินผ่านกระบวนการคัดสรรภายใน (Internal Matching Process)
+        เมื่อแม่สื่อค้นหาผู้ที่เหมาะสมกับสุภาพบุรุษที่สมัครบริการ
+        <br />
+        <br />•{" "}
+        <strong className="text-foreground">
+          สมาชิก Female VIP (บริการทำการตลาดและดูแลพิเศษ):
+        </strong>{" "}
+        สำหรับสุภาพสตรีที่ต้องการเพิ่มโอกาสและพบเนื้อคู่ได้รวดเร็วยิ่งขึ้น
+        ทีมงานแม่สื่อจะทำการตลาดและนำเสนอโปรไฟล์ของท่านเป็นลำดับต้นๆ
+        แก่สุภาพบุรุษชาวต่างชาติคุณภาพสูงที่กำลังมองหาคู่ชีวิตอย่างจริงจัง
+        ด้วยการโปรโมตและแนะนำอย่างต่อเนื่องแบบเชิงรุก จึงทำให้สมาชิก Female VIP
+        มี{" "}
+        <strong className="text-foreground">
+          โอกาสและอัตราความสำเร็จในการจับคู่สูงขึ้นอย่างเห็นได้ชัด
+        </strong>
+        <br />
+        <br />
+        ท่านสามารถดูรายละเอียดเพิ่มเติมได้ที่หน้า{" "}
+        <Link
+          href="/pricing"
+          className="font-medium text-[var(--gold)] underline underline-offset-4 hover:opacity-80"
+        >
+          แพ็กเกจราคา (Pricing)
+        </Link>
       </>
     ),
   },
@@ -696,7 +755,7 @@ export function FaqContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search questions by keyword (e.g. verify, cost, travel, language)..."
-              className="h-11 w-full rounded-2xl border border-border/80 bg-card/70 pr-10 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 transition-all duration-200 focus:border-[#D3A753] focus:ring-2 focus:ring-[#D3A753]/30 focus:outline-none sm:text-base"
+              className="h-11 w-full rounded-2xl border border-border/80 bg-card/70 pr-10 pl-11 text-sm text-foreground transition-all duration-200 placeholder:text-muted-foreground/70 focus:border-[#D3A753] focus:ring-2 focus:ring-[#D3A753]/30 focus:outline-none sm:text-base"
             />
             {searchQuery && (
               <button

@@ -1,6 +1,7 @@
+import Link from "next/link"
 import { AppName } from "@/components/app-name"
 import { PolicyPage } from "@/components/policy-page"
-import { APP_INFO, CONTACT } from "@/constants"
+import { APP_INFO } from "@/constants"
 
 const PRIVACY_POLICY_CONTENT = [
   {
@@ -18,48 +19,153 @@ const PRIVACY_POLICY_CONTENT = [
   },
   {
     heading: "2. Information We Collect",
-    text: `We may collect information about you in a variety of ways. The information we may collect on the Service includes:
-
-A. Personal Data:
-- Account Information: When you register, we collect personally identifiable information, such as your name, email address, date of birth, gender, photographs, and password.
-- Profile Information: To help build your profile, we may collect additional information such as details about your personality, lifestyle, interests, education, and relationship preferences.
-- Financial Data: We may collect financial information, such as data related to your payment method (e.g. valid credit card number, card brand, expiration date) when you purchase, order, return, or exchange. We store only very limited, if any, financial information that we collect. Otherwise, all financial information is stored by our payment processor.
-- Communication Data: If you contact us directly, we may receive additional information about you. We also store the communications you have with other users through our platform.
-
-B. Information Collected Automatically:
-- Usage Data: Information your browser automatically sends when you visit our site, such as your IP address, browser type, browser version, the pages of our Service that you visit, the time and date of your visit, and the time spent on those pages.
-- Device Information: We may collect information about your computer or mobile device, such as your device model, operating system, and unique device identifiers.`,
+    text: (
+      <>
+        We collect information that allows us to deliver high-quality,
+        personalized matchmaking and verification services. This includes:
+        {"\n\n"}
+        <strong className="text-foreground">A. Personal Data:</strong>
+        {"\n"}• <strong>Contact Details:</strong> Your full name, email address,
+        telephone number / WhatsApp, and country or general residential
+        location.
+        {"\n"}• <strong>Verification & Profile Information:</strong> Date of
+        birth, gender, single or marital status confirmation, career background,
+        lifestyle preferences, relationship goals, and consultation interview
+        notes.
+        {"\n"}• <strong>Photographs & Media:</strong> Portraits, headshots, and
+        lifestyle photographs submitted for profile verification and
+        matchmaking. For members enrolled in our Female VIP Plan, selected and
+        approved photographs are utilized for promotional showcases and active
+        marketing.
+        {"\n"}• <strong>Financial & Transaction Data:</strong> Payment details
+        processed securely through our authorized third-party payment processors
+        when you enroll in paid plans or services. We do not store full credit
+        card numbers on our servers.
+        {"\n\n"}
+        <strong className="text-foreground">
+          B. Information Collected Automatically:
+        </strong>
+        {"\n"}• <strong>Technical & Usage Data:</strong> Standard server logs,
+        IP addresses, browser type, operating system, and pages visited on our
+        website to maintain platform performance and security.
+      </>
+    ),
   },
   {
     heading: "3. How We Use Your Information",
-    text: `Having accurate information about you permits us to provide you with a smooth, efficient, and customized experience. Specifically, we may use information collected about you via the Service to:
-- Create and manage your account.
-- Fulfill and manage purchases, orders, payments, and other transactions related to the Service.
-- Deliver targeted advertising, coupons, newsletters, and other information regarding promotions and the Service to you.
-- Email you regarding your account or order.
-- Enable user-to-user communications.
-- Generate a personal profile about you to make future visits to the Service more personalized.
-- Increase the efficiency and operation of the Service.
-- Monitor and analyze usage and trends to improve your experience with the Service.
-- Prevent fraudulent transactions, monitor against theft, and protect against criminal activity.
-- Process payments and refunds.
-- Request feedback and contact you about your use of the Service.`,
+    text: (
+      <>
+        Having accurate information permits us to curate authentic matches,
+        maintain community safety, and deliver our bespoke matchmaking services:
+        {"\n\n"}
+        <strong className="text-foreground">
+          • 1-to-1 Matchmaking & Introductions:
+        </strong>{" "}
+        To evaluate compatibility, suggest curated candidates, and coordinate
+        live video consultations between verified members.
+        {"\n\n"}
+        <strong className="text-foreground">
+          • Confidential Internal Matching (Welcome Free Plan):
+        </strong>{" "}
+        For female members enrolled in our Welcome Free Plan, all profile data,
+        photos, and personal details are maintained strictly confidential in our
+        internal database. They are accessed solely by our matchmaking team and
+        are{" "}
+        <strong>
+          never exposed to public marketing, social media, or public advertising
+        </strong>
+        .{"\n\n"}
+        <strong className="text-foreground">
+          • Public Marketing & Promotional Showcases (Female VIP Plan):
+        </strong>{" "}
+        For female members who choose to subscribe to a Female VIP Plan, we use
+        approved photographs, general age, profession, and curated profile
+        highlights across our public and private marketing channels (including
+        our website showcases, social media features, and candidate newsletters)
+        to actively attract and connect with vetted international gentlemen.
+        {"\n\n"}
+        <strong className="text-foreground">
+          • Verification & Community Safety:
+        </strong>{" "}
+        To verify single status, conduct in-person or video interviews, and
+        protect members against fraud, scams, or commercial solicitation.
+        {"\n\n"}
+        <strong className="text-foreground">
+          • Service Communications:
+        </strong>{" "}
+        To notify you of candidate introductions, consultation appointments, and
+        respond to customer service requests.
+      </>
+    ),
   },
   {
-    heading: "4. Disclosure of Your Information",
-    text: `We may share information we have collected about you in certain situations. Your information may be disclosed as follows:
-
-- By Law or to Protect Rights: If we believe the release of information about you is necessary to respond to legal process, to investigate or remedy potential violations of our policies, or to protect the rights, property, and safety of others, we may share your information as permitted or required by any applicable law, rule, or regulation.
-- Third-Party Service Providers: We may share your information with third parties that perform services for us or on our behalf, including payment processing, data analysis, email delivery, hosting services, customer service, and marketing assistance.
-- With other Users2: Your profile information is visible to other registered users of the Service.
-- Business Transfers: We may share or transfer your information in connection with, or during negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion of our business to another company.`,
+    heading: "4. Disclosure and Sharing of Your Information",
+    text: (
+      <>
+        We treat your personal data with utmost discretion. Your information may
+        be disclosed only under the following strictly defined circumstances:
+        {"\n\n"}
+        <strong className="text-foreground">
+          • Public Marketing Channels (Female VIP Members Only):
+        </strong>{" "}
+        With explicit consent granted upon enrolling in a Female VIP Plan,
+        curated profile excerpts and approved photos may be featured on our
+        official website, social media showcases, and marketing campaigns.
+        Direct personal contact information (phone, WhatsApp, email, or exact
+        address) is NEVER publicly disclosed.
+        {"\n\n"}
+        <strong className="text-foreground">
+          • Private 1-to-1 Match Introductions (Mutual Consent / Double-Opt-In):
+        </strong>{" "}
+        Full profile summaries are shared privately and confidentially with
+        prospective matches. Direct contact information is only exchanged after
+        both members have reviewed each other&apos;s profiles and confirmed
+        mutual interest.
+        {"\n\n"}
+        <strong className="text-foreground">
+          • Trusted Third-Party Service Providers:
+        </strong>{" "}
+        We share necessary operational data with trusted third parties that
+        assist our operations, such as payment gateways, secure cloud hosting,
+        and transactional email services. These providers are bound by strict
+        confidentiality agreements.
+        {"\n\n"}
+        <strong className="text-foreground">
+          • No Sale or Commercial Rental of Data:
+        </strong>{" "}
+        We never sell, rent, monetize, or trade your personal information to
+        third-party data brokers or marketing agencies.
+        {"\n\n"}
+        <strong className="text-foreground">
+          • Legal & Safety Requirements:
+        </strong>{" "}
+        We may disclose information if required by applicable law in Thailand,
+        subpoena, or to safeguard the physical safety and legal rights of our
+        members and staff.
+      </>
+    ),
   },
   {
-    heading: "5. Your Choices and Rights",
-    text: `You have certain rights regarding your personal information. You can:
-- Access, review, and update your account information at any time by logging into your account settings.
-- Opt-out of receiving marketing emails from us by following the unsubscribe link in those emails.
-- Close your account, which will remove your profile and data from active view. Please note that we may retain certain information for analytical purposes and recordkeeping integrity, as well as to prevent fraud, enforce our Terms of Service, take actions we deem necessary to protect the integrity of our Service or our users, or take other actions otherwise permitted by law.`,
+    heading: "5. Your Choices, Marketing Preferences & Rights",
+    text: (
+      <>
+        You maintain full control over your personal data and privacy settings:
+        {"\n\n"}• <strong>Review & Profile Updates:</strong> You may review or
+        update your personal information, relationship preferences, or photos at
+        any time by contacting your matchmaker.
+        {"\n"}• <strong>Marketing Media Control (Female VIP):</strong> Female
+        VIP members may request changes to the photos or bio details featured in
+        our promotional showcases, or request to pause public marketing at any
+        time.
+        {"\n"}• <strong>Account Closure & Marketing Removal:</strong> You may
+        close your account at any time. Upon request, your profile will be
+        promptly withdrawn from active matchmaking, and active public marketing
+        showcases will be removed within a reasonable administrative period.
+        {"\n"}• <strong>Communication Preferences:</strong> You can opt out of
+        marketing announcements or promotional emails at any time via the
+        unsubscribe link or by contacting support.
+      </>
+    ),
   },
   {
     heading: "6. Data Security",
@@ -67,7 +173,20 @@ B. Information Collected Automatically:
   },
   {
     heading: "7. Policy for Children",
-    text: "We do not knowingly solicit information from or market to children under the age of 18. If you become aware of any data we have collected from children under age 18, please contact us using the contact information provided below.",
+    text: (
+      <>
+        We do not knowingly solicit information from or market to children under
+        the age of 18. If you become aware of any data we have collected from
+        children under age 18, please reach out to us via our{" "}
+        <Link
+          href="/contact"
+          className="font-medium text-[#D3A753] underline underline-offset-4 hover:brightness-110"
+        >
+          Contact Us
+        </Link>{" "}
+        page.
+      </>
+    ),
   },
   {
     heading: "8. Changes to This Privacy Policy",
@@ -75,7 +194,19 @@ B. Information Collected Automatically:
   },
   {
     heading: "9. Contact Us",
-    text: `If you have questions or comments about this Privacy Policy, please contact us at: ${CONTACT.email}`,
+    text: (
+      <>
+        If you have questions or comments about this Privacy Policy, please
+        reach out to our privacy and support team via our{" "}
+        <Link
+          href="/contact"
+          className="font-medium text-[#D3A753] underline underline-offset-4 hover:brightness-110"
+        >
+          Contact Us
+        </Link>{" "}
+        page.
+      </>
+    ),
   },
 ]
 

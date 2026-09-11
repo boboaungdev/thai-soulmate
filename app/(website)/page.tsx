@@ -208,17 +208,17 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 2.95 }}
-                className="flex w-full flex-col items-center justify-center gap-3 pt-2 sm:flex-row"
+                className="mx-auto flex w-full flex-col items-stretch justify-center gap-3 pt-2 sm:w-fit"
               >
                 <motion.div
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full sm:w-auto"
+                  className="w-full"
                 >
                   <Button
                     asChild
                     size="lg"
-                    className="btn-gradient w-full font-semibold shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-[#D3A753]/30 sm:w-auto"
+                    className="btn-gradient w-full font-semibold shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-[#D3A753]/30"
                   >
                     <Link href="/#register-interest">
                       Arrange a Confidential Consultation
@@ -228,13 +228,13 @@ export default function HomePage() {
                 <motion.div
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full sm:w-auto"
+                  className="w-full"
                 >
                   <Button
                     asChild
                     size="lg"
                     variant="outline"
-                    className="w-full border-white/30 bg-black/50 text-white backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/15 hover:text-white sm:w-auto"
+                    className="w-full border-white/30 bg-black/50 text-white backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/15 hover:text-white"
                   >
                     <Link href="/service">See How It Works</Link>
                   </Button>
@@ -298,7 +298,7 @@ export default function HomePage() {
               </p>
               <div className="relative overflow-hidden rounded-2xl border border-[#D3A753]/25 bg-gradient-to-r from-[#D3A753]/10 via-[#E791A7]/5 to-[#CA617D]/10 p-5 text-foreground shadow-sm sm:p-6">
                 <p className="text-base leading-relaxed font-medium sm:text-lg">
-                  <span className="font-bold text-gradient tracking-tight">
+                  <span className="text-gradient font-bold tracking-tight">
                     THAI SOULMATE
                   </span>{" "}
                   was created to replace the frustration of modern dating with

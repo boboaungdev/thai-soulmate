@@ -159,7 +159,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 2.8 }}
-                  className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-white/90 sm:gap-3 sm:text-sm pt-6"
+                  className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-1 pt-6 text-xs text-white/90 sm:gap-3 sm:text-sm"
                 >
                   <motion.div
                     animate={{ y: [0, -4, 0] }}

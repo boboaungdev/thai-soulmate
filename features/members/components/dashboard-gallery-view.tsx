@@ -15,7 +15,8 @@ import {
 
 import Link from "next/link"
 import Image from "next/image"
-import { MapPin, Briefcase } from "lucide-react"
+import { motion } from "framer-motion"
+import { MapPin, Briefcase, ShieldCheck } from "lucide-react"
 import {
   ApplicationForm,
   PersonalDetails,
@@ -29,78 +30,102 @@ interface Profile {
   applicationForm: ApplicationForm
 }
 
-function UserCard({ profile }: { profile: Profile }) {
-  const personalDetails: PersonalDetails =
-    profile.applicationForm.personalDetails &&
-    typeof profile.applicationForm.personalDetails === "string"
-      ? JSON.parse(profile.applicationForm.personalDetails as string)
-      : profile.applicationForm.personalDetails || {}
-  const photos: Photos =
-    profile.applicationForm.photos &&
-    typeof profile.applicationForm.photos === "string"
-      ? JSON.parse(profile.applicationForm.photos as string)
-      : (profile.applicationForm.photos as unknown as Photos) || {}
-  const career: Career =
-    profile.applicationForm.career &&
-    typeof profile.applicationForm.career === "string"
-      ? JSON.parse(profile.applicationForm.career as string)
-      : (profile.applicationForm.career as unknown as Career) || {}
+const safeParse = <T,>(json: unknown, fallback: T): T => {
+  if (!json) return fallback
+  if (typeof json === "object") return json as T
+  try {
+    return JSON.parse(String(json)) as T
+  } catch {
+    return fallback
+  }
+}
 
-  const age = personalDetails.dob
-    ? new Date().getFullYear() - new Date(personalDetails.dob).getFullYear()
-    : "N/A"
+const calculateAge = (dob?: string | Date) => {
+  if (!dob) return 25
+  const birth = new Date(dob)
+  if (isNaN(birth.getTime())) return 25
+  const diff = Date.now() - birth.getTime()
+  return Math.abs(new Date(diff).getUTCFullYear() - 1970)
+}
+
+function UserCard({ profile }: { profile: Profile }) {
+  const personalDetails: PersonalDetails = safeParse(
+    profile.applicationForm.personalDetails,
+    {} as PersonalDetails
+  )
+  const photos: Photos = safeParse(profile.applicationForm.photos, {} as Photos)
+  const career: Career = safeParse(profile.applicationForm.career, {} as Career)
+
+  const age = calculateAge(personalDetails?.dob)
+  const nickname = personalDetails?.nickname?.trim()
 
   return (
-    <Link
-      href={`/dashboard/gallery/${profile.id}`}
-      className="bg-gold block w-full rounded-lg p-[2px]"
+    <motion.div
+      whileHover={{ y: -8, scale: 1.02 }}
+      transition={{ duration: 0.3 }}
+      className="w-full"
     >
-      <Card className="group relative h-[380px] w-full overflow-hidden rounded-md border-0 bg-background">
-        {photos?.headshot ? (
-          <Image
-            src={photos.headshot}
-            alt={personalDetails?.name || "User"}
-            fill
-            sizes="280px"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-secondary">
-            No Image
+      <Link
+        href={`/dashboard/gallery/${profile.id}`}
+        className="group relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-[2px] shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-[#D3A753]/60 hover:shadow-xl hover:shadow-[#D3A753]/15"
+      >
+        <div className="relative size-full overflow-hidden rounded-[14px] bg-card">
+          {photos?.headshot ? (
+            <Image
+              src={photos.headshot}
+              alt={nickname || personalDetails?.name || "Member"}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center bg-secondary/50 text-xs text-muted-foreground">
+              No Photo Available
+            </div>
+          )}
+
+          {/* Top Verified Pill */}
+          <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D3A753]/30 bg-black/60 px-2.5 py-1 text-[11px] font-semibold text-[#D3A753] backdrop-blur-md">
+            <ShieldCheck className="size-3" />
+            <span>Verified</span>
           </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-          <p className="text-lg font-semibold">
-            <span className="text-gold">
-              {personalDetails?.nickname?.trim()
-                ? `${personalDetails.nickname.trim()} (ID-${String(
-                    profile.applicationForm.customId
-                  ).padStart(4, "0")})`
-                : `ID-${String(profile.applicationForm.customId).padStart(
-                    4,
-                    "0"
-                  )}`}
-            </span>
-            , <span className="text-pink">{age}</span>
-          </p>
-          <div className="mt-1 space-y-0.5 text-xs">
-            {career?.occupation && (
-              <p className="flex items-center gap-1.5 text-white/90">
-                <Briefcase className="size-3 shrink-0 text-[#E791A7]" />
-                <span className="truncate">{career.occupation}</span>
+
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+
+          {/* Member Info */}
+          <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+            <div className="flex items-baseline justify-between gap-2">
+              <p className="truncate text-base font-bold text-white sm:text-lg">
+                <span className="text-[#D3A753]">{nickname || "Member"}</span>{" "}
+                <span className="text-xs font-normal text-white/70">
+                  (ID-
+                  {String(profile.applicationForm.customId).padStart(4, "0")})
+                </span>
               </p>
-            )}
-            <p className="flex items-center gap-1 text-white/80">
-              <MapPin className="size-3 shrink-0" />
-              <span className="truncate">
-                {personalDetails?.currentLocation || "N/A"}
+              <span className="shrink-0 rounded-md bg-[#E791A7]/25 px-2 py-0.5 text-xs font-semibold text-[#E791A7]">
+                {age} yrs
               </span>
-            </p>
+            </div>
+
+            <div className="mt-1 space-y-0.5 text-xs">
+              {career?.occupation && (
+                <p className="flex items-center gap-1.5 text-white/90">
+                  <Briefcase className="size-3 shrink-0 text-[#E791A7]" />
+                  <span className="truncate">{career.occupation}</span>
+                </p>
+              )}
+              <p className="flex items-center gap-1.5 text-white/80">
+                <MapPin className="size-3 shrink-0 text-[#D3A753]" />
+                <span className="truncate">
+                  {personalDetails?.currentLocation || "Thailand"}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
-      </Card>
-    </Link>
+      </Link>
+    </motion.div>
   )
 }
 
@@ -147,15 +172,14 @@ export function DashboardGalleryView() {
     const lowerCaseSearchTerm = searchTerm.toLowerCase()
 
     const id = String(profile.applicationForm.customId).padStart(4, "0")
-    const name =
-      profile.applicationForm.personalDetails?.name?.toLowerCase() || ""
-    const nickname =
-      profile.applicationForm.personalDetails?.nickname?.toLowerCase() || ""
-    const nationality =
-      profile.applicationForm.personalDetails?.nationality?.toLowerCase() || ""
-    const currentLocation =
-      profile.applicationForm.personalDetails?.currentLocation?.toLowerCase() ||
-      ""
+    const personal = safeParse(
+      profile.applicationForm.personalDetails,
+      {} as PersonalDetails
+    )
+    const name = personal?.name?.toLowerCase() || ""
+    const nickname = personal?.nickname?.toLowerCase() || ""
+    const nationality = personal?.nationality?.toLowerCase() || ""
+    const currentLocation = personal?.currentLocation?.toLowerCase() || ""
     return (
       name.includes(lowerCaseSearchTerm) ||
       nickname.includes(lowerCaseSearchTerm) ||
@@ -166,14 +190,18 @@ export function DashboardGalleryView() {
   })
 
   const sortedProfiles = filteredProfiles?.slice().sort((a, b) => {
+    const personalA = safeParse(
+      a.applicationForm.personalDetails,
+      {} as PersonalDetails
+    )
+    const personalB = safeParse(
+      b.applicationForm.personalDetails,
+      {} as PersonalDetails
+    )
     const aValue =
-      sortBy === "customId"
-        ? a.applicationForm.customId
-        : a.applicationForm.personalDetails?.name || ""
+      sortBy === "customId" ? a.applicationForm.customId : personalA?.name || ""
     const bValue =
-      sortBy === "customId"
-        ? b.applicationForm.customId
-        : b.applicationForm.personalDetails?.name || ""
+      sortBy === "customId" ? b.applicationForm.customId : personalB?.name || ""
 
     if (sortBy === "customId") {
       const valA = aValue as number
@@ -196,13 +224,18 @@ export function DashboardGalleryView() {
   })
 
   return (
-    <div className="container mx-auto px-6 py-4 lg:py-6">
-      <div className="mb-6">
-        <h1 className="text-lg font-semibold md:text-2xl">User Gallery</h1>
-        <p className="text-sm text-muted-foreground">
-          Browse through a curated selection of profiles.
-        </p>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+    <div className="container mx-auto px-4 py-4 sm:px-6 lg:py-6">
+      <div className="mb-6 space-y-4">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+            User Gallery
+          </h1>
+          <p className="text-xs text-muted-foreground sm:text-sm">
+            Browse through curated verified member profiles.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="relative w-full max-w-md flex-1">
             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -252,20 +285,33 @@ export function DashboardGalleryView() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+      {/* Profile Cards Grid */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {isLoading
-          ? Array.from({ length: 12 }).map((_, index) => (
+          ? Array.from({ length: 8 }).map((_, index) => (
               <Card
                 key={index}
-                className="h-[380px] w-full overflow-hidden rounded-md border-0"
+                className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-border/70"
               >
-                <Skeleton className="h-full w-full" />
+                <Skeleton className="size-full" />
               </Card>
             ))
           : sortedProfiles?.map((profile) => (
               <UserCard key={profile.id} profile={profile} />
             ))}
       </div>
+
+      {!isLoading && sortedProfiles?.length === 0 && (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/70 py-16 text-center">
+          <p className="text-base font-semibold text-foreground">
+            No members found
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Try adjusting your search query or filters.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

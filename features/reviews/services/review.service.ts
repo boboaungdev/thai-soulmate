@@ -1,7 +1,7 @@
 import { reviewRepository } from "../repositories/review.repository"
 import { WebsiteReviewFormOutput } from "../types/review.types"
 import { resend } from "@/lib/resend"
-import { WebsiteReviewAdminNotificationEmail } from "@/emails"
+import { WebsiteReviewAdminNotificationEmail } from "../emails"
 import { APP_INFO, CONTACT, EMAIL } from "@/constants"
 
 export class ReviewService {
@@ -54,7 +54,10 @@ export class ReviewService {
         }),
       })
     } catch (adminError) {
-      console.error("Website review admin notification email failed:", adminError)
+      console.error(
+        "Website review admin notification email failed:",
+        adminError
+      )
     }
 
     return review
@@ -66,4 +69,3 @@ export class ReviewService {
 }
 
 export const reviewService = new ReviewService()
-

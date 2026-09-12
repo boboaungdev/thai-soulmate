@@ -5,7 +5,7 @@ import { APP_INFO } from "@/constants"
 import { formatDateTime, formatDOB } from "@/lib/date"
 import { prisma } from "@/lib/prisma"
 import { ApplicationForm } from "@/types/application-form"
-import { PrintTrigger } from "./print-trigger"
+import { PrintTrigger } from "@/features/shared"
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => {
   const title = String(children)

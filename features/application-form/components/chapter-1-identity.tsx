@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import Image from "next/image"
 import {
   User,
   Mail,
@@ -672,12 +671,12 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               >
                 <span className="flex items-center gap-2 truncate">
                   {selectedLocationObj?.flag ? (
-                    <Image
+                    <img
                       src={selectedLocationObj.flag}
                       alt={selectedLocationObj.name}
                       width={16}
                       height={12}
-                      className="shrink-0 rounded-xs"
+                      className="h-3 w-4 shrink-0 rounded-xs object-cover"
                     />
                   ) : (
                     <MapPin className="size-3.5 shrink-0 text-[#D3A753]" />
@@ -719,12 +718,13 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                         }}
                         className="flex items-center gap-2 text-xs"
                       >
-                        <Image
+                        <img
                           src={c.flag}
                           alt={c.name}
                           width={16}
                           height={12}
-                          className="shrink-0 rounded-xs"
+                          className="h-3 w-4 shrink-0 rounded-xs object-cover"
+                          loading="lazy"
                         />
                         <span className="truncate">{c.name}</span>
                         {data.currentLocation === c.name && (
@@ -765,12 +765,12 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
               >
                 <span className="flex items-center gap-2 truncate">
                   {selectedNationalityObj?.flag && (
-                    <Image
+                    <img
                       src={selectedNationalityObj.flag}
                       alt={data.nationality}
                       width={16}
                       height={12}
-                      className="shrink-0 rounded-xs"
+                      className="h-3 w-4 shrink-0 rounded-xs object-cover"
                     />
                   )}
                   <span className="truncate">
@@ -823,12 +823,13 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                         }}
                         className="flex items-center gap-2 text-xs"
                       >
-                        <Image
+                        <img
                           src={c.flag}
                           alt={c.name}
                           width={16}
                           height={12}
-                          className="shrink-0 rounded-xs"
+                          className="h-3 w-4 shrink-0 rounded-xs object-cover"
+                          loading="lazy"
                         />
                         <span className="truncate">
                           {c.nationality || c.name}
@@ -903,12 +904,12 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                 >
                   {selectedPhoneCountryObj ? (
                     <span className="flex items-center gap-1.5 truncate text-xs">
-                      <Image
+                      <img
                         src={selectedPhoneCountryObj.flag}
                         alt={selectedPhoneCountryObj.code}
                         width={16}
                         height={12}
-                        className="shrink-0 rounded-xs"
+                        className="h-3 w-4 shrink-0 rounded-xs object-cover"
                       />
                       <span>+{selectedPhoneCountryObj.callCode}</span>
                     </span>
@@ -944,12 +945,13 @@ export function Chapter1Identity({ data, onChange, onNext }: Chapter1Props) {
                           className="flex items-center justify-between text-xs"
                         >
                           <div className="flex items-center gap-2 truncate">
-                            <Image
+                            <img
                               src={c.flag}
                               alt={c.code}
                               width={16}
                               height={12}
-                              className="shrink-0 rounded-xs"
+                              className="h-3 w-4 shrink-0 rounded-xs object-cover"
+                              loading="lazy"
                             />
                             <span className="truncate">{c.name}</span>
                           </div>

@@ -4,4 +4,6 @@ export * from "./repositories/review.repository"
 export * from "./services/review.service"
 export * from "./actions/review.action"
 export * from "./store/review.store"
-
+export { WebsiteReviewsDashboardView } from "./components/dashboard/website-reviews-dashboard-view"
+export { WebsiteReviewForm } from "./components/website-review-form"
+export * from "./emails"

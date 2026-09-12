@@ -59,7 +59,6 @@ import { Calendar } from "@/components/ui/calendar"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
 import { MotionDiv } from "@/components/motion"
-import Image from "next/image"
 import { COUNTRIES, type Country } from "@/features/shared/countries"
 import { submitRegisterInterestAction } from "../actions/interest.action"
 
@@ -542,12 +541,12 @@ export function RegisterInterestForm() {
                                   >
                                     {selectedLocationObj ? (
                                       <span className="flex items-center gap-2 truncate">
-                                        <Image
+                                        <img
                                           src={selectedLocationObj.flag}
                                           alt={selectedLocationObj.name}
                                           width={16}
                                           height={12}
-                                          className="shrink-0 rounded-xs"
+                                          className="h-3 w-4 shrink-0 rounded-xs object-cover"
                                         />
                                         <span className="truncate text-foreground">
                                           {field.value}
@@ -593,12 +592,13 @@ export function RegisterInterestForm() {
                                           }}
                                           className="flex items-center gap-2 text-xs"
                                         >
-                                          <Image
+                                          <img
                                             src={country.flag}
                                             alt={country.name}
                                             width={16}
                                             height={12}
-                                            className="shrink-0 rounded-xs"
+                                            className="h-3 w-4 shrink-0 rounded-xs object-cover"
+                                            loading="lazy"
                                           />
                                           <span className="truncate">
                                             {country.name}
@@ -646,12 +646,12 @@ export function RegisterInterestForm() {
                                 >
                                   {selectedCountryObj ? (
                                     <span className="flex items-center gap-1.5 truncate text-xs">
-                                      <Image
+                                      <img
                                         src={selectedCountryObj.flag}
                                         alt={selectedCountryObj.code}
                                         width={16}
                                         height={12}
-                                        className="shrink-0 rounded-xs"
+                                        className="h-3 w-4 shrink-0 rounded-xs object-cover"
                                       />
                                       <span>
                                         +{selectedCountryObj.callCode}
@@ -690,12 +690,13 @@ export function RegisterInterestForm() {
                                           className="flex items-center justify-between text-xs"
                                         >
                                           <div className="flex items-center gap-2 truncate">
-                                            <Image
+                                            <img
                                               src={c.flag}
                                               alt={c.code}
                                               width={16}
                                               height={12}
-                                              className="shrink-0 rounded-xs"
+                                              className="h-3 w-4 shrink-0 rounded-xs object-cover"
+                                              loading="lazy"
                                             />
                                             <span className="truncate">
                                               {c.name}

@@ -1,0 +1,6 @@
+export { FaqContent } from "./components/faq-content"
+export { HowItWorksContent } from "./components/how-it-works-content"
+export { FaqView } from "./components/faq-view"
+export { ServiceView } from "./components/service-view"
+export { PrivacyPolicyView } from "./components/privacy-policy-view"
+export { TermsOfServiceView } from "./components/terms-of-service-view"

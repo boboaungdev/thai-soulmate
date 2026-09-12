@@ -4,7 +4,7 @@ import { APP_INFO } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { ApplicationForm } from "@/types/application-form"
-import { PrintTrigger } from "./print-trigger"
+import { PrintTrigger } from "@/features/shared"
 
 function calculateAge(dob: string | Date): number {
   const birthDate = new Date(dob)

@@ -6,7 +6,7 @@ import { formatDateTime } from "@/lib/date"
 import { prisma } from "@/lib/prisma"
 import { reviewRepository } from "@/features/reviews"
 import { Prisma } from "@/lib/generated/prisma/client"
-import { PrintTrigger } from "./print-trigger"
+import { PrintTrigger } from "@/features/shared"
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => {
   const title = String(children)

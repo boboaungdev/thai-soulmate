@@ -1,4 +1,4 @@
-import countriesJson from "@/data/countries.json"
+import countriesData from "./data/countries.json"
 
 export interface Country {
   name: string
@@ -11,17 +11,7 @@ export interface Country {
 
 export type CustomCountry = Country
 
-export const COUNTRIES: Country[] = (countriesJson as any[])
-  .filter((c) => c.name && c.alpha2Code)
-  .map((c) => ({
-    name: c.name as string,
-    nationality: (c.demonym || c.name) as string,
-    flag: (c.flags?.svg || c.flags?.png || "") as string,
-    code: c.alpha2Code as string,
-    callCode: String(c.callingCodes?.[0] ?? "").replace(/^\+/, ""),
-    region: (c.region || "") as string,
-  }))
-  .sort((a, b) => a.name.localeCompare(b.name))
+export const COUNTRIES: Country[] = countriesData as Country[]
 
 export function getCountries(): Country[] {
   return COUNTRIES

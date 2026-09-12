@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
-import { AdminNotification } from "@/emails/components/admin-notification-card"
+import { AdminNotification } from "@/features/shared/emails"
 import { APP_INFO } from "@/constants"
 import { Mail, Laptop, Smartphone } from "lucide-react"
 

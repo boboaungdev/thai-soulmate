@@ -6,7 +6,7 @@ import {
 import { env } from "@/lib/env"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
-import { SendProfileEmail } from "@/emails"
+import { SendProfileEmail } from "../emails"
 import { launchBrowser } from "@/features/matching/lib/browser"
 import { APP_INFO, EMAIL } from "@/constants"
 import { generateProfilePdf } from "@/features/matching/lib/generate-profile-pdf"

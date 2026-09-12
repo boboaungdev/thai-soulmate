@@ -2,10 +2,9 @@ import React from "react"
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import { APP_INFO } from "@/constants"
-import { env } from "@/lib/env"
 import { getMatchComparisonAction } from "@/features/matching"
 import { formatDOB } from "@/lib/date"
-import { PrintTrigger } from "./print-trigger"
+import { PrintTrigger } from "@/features/shared"
 
 type Breakdown = {
   key: string
@@ -132,13 +131,13 @@ export default async function MatchComparisonPrintPage({
   const { maleId, femaleId } = await searchParams
   if (!maleId || !femaleId) notFound()
 
-  const response = await fetch(
-    `${env.BASE_URL}/api/matching/${maleId}/${femaleId}`,
-    { cache: "no-store" }
-  )
-  if (!response.ok) notFound()
   const result = await getMatchComparisonAction(maleId, femaleId)
-  if (!result.success || !result.data || !result.data.male || !result.data.female) {
+  if (
+    !result.success ||
+    !result.data ||
+    !result.data.male ||
+    !result.data.female
+  ) {
     notFound()
   }
 

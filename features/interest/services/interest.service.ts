@@ -3,7 +3,7 @@ import { resend } from "@/lib/resend"
 import {
   RegisterInterestAdminNotificationEmail,
   RegisterInterestMemberConfirmationEmail,
-} from "@/emails"
+} from "../emails"
 import { formatDate } from "@/lib/date"
 import { findCountryByName } from "@/features/shared/countries"
 import type { RegisterInterestStatus } from "@/lib/generated/prisma/enums"

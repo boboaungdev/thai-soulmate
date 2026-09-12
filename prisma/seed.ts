@@ -4,7 +4,7 @@ import {
   MembershipPlan,
   RegisterInterestStatus,
 } from "../lib/generated/prisma/client.js"
-import applicationForms from "../data/application-form.json" with { type: "json" }
+import applicationForms from "./seed-data/application-form.json" with { type: "json" }
 
 /*
  * Preferred contact times matching the exact 1-hour slots in

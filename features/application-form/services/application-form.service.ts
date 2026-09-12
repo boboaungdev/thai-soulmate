@@ -1,6 +1,6 @@
 import { resend } from "@/lib/resend"
 import { APP_INFO, EMAIL } from "@/constants"
-import { ApplicationFormAdminNotificationEmail } from "@/emails"
+import { ApplicationFormAdminNotificationEmail } from "../emails"
 import type { ApplicationFormStatus } from "@/lib/generated/prisma/client"
 import {
   findAllApplications,
@@ -25,7 +25,8 @@ export async function processApplicationForm(body: any) {
   if (existing) {
     return {
       ok: false,
-      error: "An application form has already been submitted for this email address.",
+      error:
+        "An application form has already been submitted for this email address.",
       existing: {
         customId: existing.customId,
         status: existing.status,
@@ -160,7 +161,10 @@ export async function processApplicationForm(body: any) {
       console.log("Application form email sent:", data?.id)
     }
   } catch (emailErr) {
-    console.warn("Failed to dispatch admin notification email (continuing):", emailErr)
+    console.warn(
+      "Failed to dispatch admin notification email (continuing):",
+      emailErr
+    )
   }
 
   return {
@@ -181,7 +185,10 @@ export async function checkApplicationEmail(email: string) {
   return findApplicationByEmail(email)
 }
 
-export async function setApplicationStatus(id: string, status: ApplicationFormStatus) {
+export async function setApplicationStatus(
+  id: string,
+  status: ApplicationFormStatus
+) {
   return updateRepoStatus(id, status)
 }
 

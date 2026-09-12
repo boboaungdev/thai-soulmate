@@ -151,7 +151,8 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
   const fetchStorageData = useCallback(async () => {
     try {
       const data = await getProfileStorageAction(profileId)
-      if (!data.success) throw new Error(data.error || "Failed to fetch storage")
+      if (!data.success)
+        throw new Error(data.error || "Failed to fetch storage")
       setFolders(data.folders || [])
       setFiles(data.files || [])
       setTotalSize(data.totalSize || 0)
@@ -169,7 +170,8 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
     const loadInitialData = async () => {
       try {
         const data = await getProfileStorageAction(profileId)
-        if (!data.success) throw new Error(data.error || "Failed to fetch storage")
+        if (!data.success)
+          throw new Error(data.error || "Failed to fetch storage")
         if (isMounted) {
           setFolders(data.folders || [])
           setFiles(data.files || [])
@@ -285,7 +287,8 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
         false
       )
 
-      if (!data.success) throw new Error(data.error || "Failed to delete folder.")
+      if (!data.success)
+        throw new Error(data.error || "Failed to delete folder.")
 
       toast.success(`Folder "${deleteFolderItem.name}" deleted.`)
       if (activeFolderId === deleteFolderItem.id) {
@@ -685,6 +688,7 @@ export function ProfileStorageTab({ profileId }: { profileId: string }) {
                         src={file.url}
                         alt={file.name}
                         fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         unoptimized
                         className="object-cover"
                       />

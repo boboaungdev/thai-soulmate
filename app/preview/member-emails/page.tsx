@@ -5,8 +5,8 @@ import { renderToStaticMarkup } from "react-dom/server"
 import { APP_INFO } from "@/constants"
 import { Mail, Laptop, Smartphone } from "lucide-react"
 
-import RegisterInterestMemberConfirmationEmail from "@/emails/member/register-interest-member-confirmation"
-import SendProfileEmail from "@/emails/member/send-profile-email"
+import { RegisterInterestMemberConfirmationEmail } from "@/features/interest"
+import { SendProfileEmail } from "@/features/matching"
 
 function EmailFrame({ children }: { children: React.ReactElement }) {
   const [html, setHtml] = useState<string>("")
@@ -75,7 +75,8 @@ const memberTemplates = [
     tab: "Send Profile (To Female Member)",
     subject: `[${APP_INFO.name}] A hand-selected match is waiting for your review.`,
     recipient: "supansa.t@example.com (Miss Supansa Thanakit)",
-    description: "Sent to female member with male match's profile PDF & Accept/Decline action buttons.",
+    description:
+      "Sent to female member with male match's profile PDF & Accept/Decline action buttons.",
     component: (
       <SendProfileEmail
         to={{
@@ -92,7 +93,8 @@ const memberTemplates = [
     tab: "Send Profile (To Male Member)",
     subject: `[${APP_INFO.name}] A hand-selected match is waiting for your review.`,
     recipient: "alex.j@example.com (Mr. Alex Johnson)",
-    description: "Sent to male member with female match's profile PDF & Accept/Decline action buttons.",
+    description:
+      "Sent to male member with female match's profile PDF & Accept/Decline action buttons.",
     component: (
       <SendProfileEmail
         to={{
@@ -115,34 +117,34 @@ export default function MemberEmailsPreviewPage() {
   return (
     <div className="min-h-screen bg-[#11070A] pb-20 font-sans text-slate-100 antialiased">
       {/* ── Top Header Bar ── */}
-      <header className="sticky top-0 z-50 border-b border-[#5A0816]/60 bg-[#1A0A0E]/95 backdrop-blur-md px-6 py-4">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <header className="sticky top-0 z-50 border-b border-[#5A0816]/60 bg-[#1A0A0E]/95 px-6 py-4 backdrop-blur-md">
+        <div className="mx-auto flex max-w-5xl flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-gradient-to-tr from-[#D3A753] via-[#E791A7] to-[#CA617D] p-0.5 flex items-center justify-center shadow-xl">
-              <div className="size-full bg-[#1C0A0F] rounded-[10px] flex items-center justify-center">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#D3A753] via-[#E791A7] to-[#CA617D] p-0.5 shadow-xl">
+              <div className="flex size-full items-center justify-center rounded-[10px] bg-[#1C0A0F]">
                 <Mail className="size-4 text-[#D3A753]" />
               </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-white tracking-wide">
+                <span className="text-base font-bold tracking-wide text-white">
                   Member Email Templates
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#D3A753]/20 text-[#D3A753] border border-[#D3A753]/40">
+                <span className="rounded-full border border-[#D3A753]/40 bg-[#D3A753]/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-[#D3A753] uppercase">
                   {memberTemplates.length} Templates
                 </span>
               </div>
-              <p className="text-xs text-[#E791A7]/70 mt-0.5">
+              <p className="mt-0.5 text-xs text-[#E791A7]/70">
                 Luxury branded member communications with full email signature
               </p>
             </div>
           </div>
 
           {/* Viewport Switcher */}
-          <div className="flex items-center bg-[#14070A] p-1 rounded-xl border border-[#5A0816]/60 text-xs">
+          <div className="flex items-center rounded-xl border border-[#5A0816]/60 bg-[#14070A] p-1 text-xs">
             <button
               onClick={() => setViewport("desktop")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition-all ${
                 viewport === "desktop"
                   ? "bg-[#5A0816] text-[#D3A753] shadow-sm"
                   : "text-slate-400 hover:text-white"
@@ -153,7 +155,7 @@ export default function MemberEmailsPreviewPage() {
             </button>
             <button
               onClick={() => setViewport("mobile")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition-all ${
                 viewport === "mobile"
                   ? "bg-[#5A0816] text-[#D3A753] shadow-sm"
                   : "text-slate-400 hover:text-white"
@@ -167,16 +169,16 @@ export default function MemberEmailsPreviewPage() {
       </header>
 
       {/* ── Template Switcher Tabs ── */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
-        <div className="flex gap-2 flex-wrap">
+      <div className="mx-auto max-w-5xl px-4 pt-6 sm:px-6">
+        <div className="flex flex-wrap gap-2">
           {memberTemplates.map((item, idx) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(idx)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all border ${
+              className={`rounded-xl border px-4 py-2 text-xs font-semibold transition-all ${
                 activeTab === idx
-                  ? "bg-gradient-to-r from-[#5A0816] to-[#8B1428] text-white border-[#5A0816] shadow-md shadow-[#5A0816]/30"
-                  : "bg-[#1A0A0E] text-slate-400 border-[#5A0816]/40 hover:text-white hover:border-[#5A0816]/80"
+                  ? "border-[#5A0816] bg-gradient-to-r from-[#5A0816] to-[#8B1428] text-white shadow-md shadow-[#5A0816]/30"
+                  : "border-[#5A0816]/40 bg-[#1A0A0E] text-slate-400 hover:border-[#5A0816]/80 hover:text-white"
               }`}
             >
               {item.tab}
@@ -186,27 +188,27 @@ export default function MemberEmailsPreviewPage() {
       </div>
 
       {/* ── Email Preview Canvas ── */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
-        <div className="rounded-3xl border border-[#5A0816]/40 bg-[#F5F0EC] p-4 sm:p-10 flex justify-center transition-all duration-300">
+      <main className="mx-auto max-w-5xl px-4 pt-6 sm:px-6">
+        <div className="flex justify-center rounded-3xl border border-[#5A0816]/40 bg-[#F5F0EC] p-4 transition-all duration-300 sm:p-10">
           <div
             className={`w-full transition-all duration-300 ${
               viewport === "desktop" ? "max-w-[620px]" : "max-w-[390px]"
             }`}
           >
             {/* Simulated Email Client Envelope */}
-            <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
               {/* Top Client Header */}
-              <div className="bg-slate-50 border-b border-slate-200 px-5 py-3.5 flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5 border-b border-slate-200 bg-slate-50 px-5 py-3.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="size-2.5 rounded-full bg-rose-400/80 inline-block" />
-                    <span className="size-2.5 rounded-full bg-amber-400/80 inline-block" />
-                    <span className="size-2.5 rounded-full bg-emerald-400/80 inline-block" />
-                    <span className="text-[11px] font-semibold text-slate-600 ml-1">
+                    <span className="inline-block size-2.5 rounded-full bg-rose-400/80" />
+                    <span className="inline-block size-2.5 rounded-full bg-amber-400/80" />
+                    <span className="inline-block size-2.5 rounded-full bg-emerald-400/80" />
+                    <span className="ml-1 text-[11px] font-semibold text-slate-600">
                       {APP_INFO.name} Member Communications
                     </span>
                   </div>
-                  <span className="text-[11px] font-mono text-slate-400">
+                  <span className="font-mono text-[11px] text-slate-400">
                     {new Date().toLocaleDateString("en-GB", {
                       day: "2-digit",
                       month: "short",
@@ -215,9 +217,11 @@ export default function MemberEmailsPreviewPage() {
                   </span>
                 </div>
 
-                <div className="pt-1 text-[11px] text-slate-500 border-t border-slate-100 flex flex-col gap-0.5">
+                <div className="flex flex-col gap-0.5 border-t border-slate-100 pt-1 text-[11px] text-slate-500">
                   <div>
-                    <span className="font-semibold text-slate-700">Subject:</span>{" "}
+                    <span className="font-semibold text-slate-700">
+                      Subject:
+                    </span>{" "}
                     <span className="text-slate-900">{current.subject}</span>
                   </div>
                   <div>
@@ -238,12 +242,18 @@ export default function MemberEmailsPreviewPage() {
         </div>
 
         {/* Info Bar */}
-        <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-2">
+        <div className="mt-4 flex flex-col justify-between gap-2 px-2 sm:flex-row sm:items-center">
           <p className="text-xs text-slate-500">
-            Active: <span className="text-[#D3A753] font-semibold">{current.tab}</span> — {current.description}
+            Active:{" "}
+            <span className="font-semibold text-[#D3A753]">{current.tab}</span>{" "}
+            — {current.description}
           </p>
           <p className="text-xs text-slate-600">
-            Powered by <code className="text-[#E791A7] text-[11px]">MemberEmailLayout</code> + <code className="text-[#E791A7] text-[11px]">EmailSignature</code>
+            Powered by{" "}
+            <code className="text-[11px] text-[#E791A7]">
+              MemberEmailLayout
+            </code>{" "}
+            + <code className="text-[11px] text-[#E791A7]">EmailSignature</code>
           </p>
         </div>
       </main>

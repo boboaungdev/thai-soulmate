@@ -1,7 +1,10 @@
 "use client"
 
-import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { motion } from "framer-motion"
+import { Search, MapPin, Briefcase, ShieldCheck } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
@@ -12,11 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { MapPin, Briefcase, ShieldCheck } from "lucide-react"
 import {
   ApplicationForm,
   PersonalDetails,

@@ -125,8 +125,10 @@ export default async function ProfilePrintPage({
 }) {
   const { id } = await params
 
-  const profile = await prisma.profile.findUnique({
-    where: { id },
+  const profile = await prisma.profile.findFirst({
+    where: {
+      OR: [{ id }, { applicationFormId: id }],
+    },
     include: {
       applicationForm: true,
     },

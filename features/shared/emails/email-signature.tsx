@@ -3,7 +3,6 @@ import { Section, Row, Column, Img, Text, Link } from "react-email"
 
 import { APP_INFO, CONTACT } from "@/constants"
 import { env } from "@/lib/env"
-import { useAuthStore } from "@/features/auth"
 
 export interface EmailSignatureProps {
   signOff?: string
@@ -34,8 +33,7 @@ export function EmailSignature({
   line = "https://line.me/ti/p/~thaisoulmate",
   tiktok = "https://tiktok.com/@thaisoulmate",
 }: EmailSignatureProps) {
-  const authUser = useAuthStore((state) => state.user)
-  const senderName = name !== undefined ? name : authUser?.name || `${APP_INFO.name} Team`
+  const senderName = name || `${APP_INFO.name} Team`
 
   const baseUrl =
     env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"

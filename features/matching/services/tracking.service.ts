@@ -121,6 +121,7 @@ export class TrackingService {
               photos: femalePhotos,
             }
           : null,
+        notes: t.notes || [],
       }
     })
 

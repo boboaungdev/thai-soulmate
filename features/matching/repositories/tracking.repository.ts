@@ -1,5 +1,9 @@
 import { prisma } from "@/lib/prisma"
-import { Prisma, TrackingStatus, TrackingNoteType } from "@/lib/generated/prisma/client"
+import {
+  Prisma,
+  TrackingStatus,
+  TrackingNoteType,
+} from "@/lib/generated/prisma/client"
 
 export class TrackingRepository {
   static async findTrackings(params: {
@@ -35,6 +39,19 @@ export class TrackingRepository {
         statusHistory: {
           orderBy: { createdAt: "desc" },
           take: 1,
+        },
+        notes: {
+          include: {
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 3,
         },
       },
     })
@@ -146,10 +163,7 @@ export class TrackingRepository {
     })
   }
 
-  static async updateTracking(
-    id: string,
-    data: Prisma.TrackingUpdateInput
-  ) {
+  static async updateTracking(id: string, data: Prisma.TrackingUpdateInput) {
     return prisma.tracking.update({
       where: { id },
       data,
@@ -343,4 +357,3 @@ export class TrackingRepository {
     })
   }
 }
-

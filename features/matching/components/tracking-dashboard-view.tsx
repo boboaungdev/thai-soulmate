@@ -163,7 +163,7 @@ interface Tracking {
   completedStatuses: TrackingStatus[]
   male: TrackingApplication
   female: TrackingApplication
-  notes: TrackingNote[]
+  notes?: TrackingNote[]
   createdAt: string
   updatedAt?: string
   closedFromStatus?: TrackingStatus
@@ -815,9 +815,7 @@ export function TrackingDashboardView() {
       const updated = result.tracking as any
       setTrackings((currentSoulmates) =>
         currentSoulmates.map((s) =>
-          s.id === updated.id
-            ? { ...s, ...updated }
-            : s
+          s.id === updated.id ? { ...s, ...updated } : s
         )
       )
     } catch (error) {
@@ -1247,17 +1245,23 @@ export function TrackingDashboardView() {
                     Latest notes for this connection.
                   </CardDescription>
                   <div className="mt-2 space-y-2">
-                    {tracking.notes.slice(0, 3).map((note) => (
-                      <div
-                        key={note.id}
-                        className="text-sm text-muted-foreground"
-                      >
-                        <p className="font-semibold">
-                          {note.user.name}:{" "}
-                          <span className="font-normal">{note.message}</span>
-                        </p>
-                      </div>
-                    ))}
+                    {tracking.notes && tracking.notes.length > 0 ? (
+                      tracking.notes.slice(0, 3).map((note) => (
+                        <div
+                          key={note.id}
+                          className="text-sm text-muted-foreground"
+                        >
+                          <p className="font-semibold">
+                            {note.user?.name || "Team"}:{" "}
+                            <span className="font-normal">{note.message}</span>
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-muted-foreground italic">
+                        No notes recorded yet.
+                      </p>
+                    )}
                   </div>
                 </div>
               </CardContent>

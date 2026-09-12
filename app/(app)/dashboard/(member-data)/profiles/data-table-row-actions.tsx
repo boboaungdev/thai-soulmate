@@ -40,7 +40,9 @@ import {
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { ProfileStatus } from "@/lib/generated/prisma/enums"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
+import { updateProfileAction } from "@/features/members"
+import { addNoteAction } from "@/features/notes"
 import { Textarea } from "@/components/ui/textarea"
 import { ProfileRow } from "./columns"
 import { EditProfileSheet } from "./edit-profile-sheet"
@@ -89,18 +91,16 @@ export function DataTableRowActions<TData>({
 
   const handleStatusChange = async (status: ProfileStatus) => {
     setIsUpdatingStatus(true)
-    const promise = fetch(`/api/profiles/${profile.id}`, {
-      method: "PATCH",
-      body: JSON.stringify({ status }),
+    const promise = updateProfileAction(profile.id, { status }).then((res) => {
+      setIsUpdatingStatus(false)
+      if (!res.success) throw new Error(res.message || "Failed to update status")
+      window.dispatchEvent(new Event("profile-updated"))
+      return "Status updated successfully"
     })
 
     toast.promise(promise, {
       loading: "Updating status...",
-      success: () => {
-        setIsUpdatingStatus(false)
-        window.dispatchEvent(new Event("profile-updated"))
-        return "Status updated successfully"
-      },
+      success: (msg) => msg,
       error: () => {
         setIsUpdatingStatus(false)
         return "Failed to update status"
@@ -121,20 +121,20 @@ export function DataTableRowActions<TData>({
 
     setIsLoading(true)
     try {
-      const res = await fetch(`/api/notes/${profile.id}/profile`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, userId: authUser.id }),
-      })
+      const res = await addNoteAction(
+        profile.id,
+        "profile",
+        message,
+        authUser.id
+      )
 
-      if (res.ok) {
+      if (res.success) {
         toast.success("Note added successfully.")
         setMessage("")
         setIsNoteDialogOpen(false)
         window.dispatchEvent(new Event("profile-updated"))
       } else {
-        const { message: errorMessage, error } = await res.json()
-        toast.error(errorMessage || error || "Failed to add note.")
+        toast.error(res.error || "Failed to add note.")
       }
     } catch (error: any) {
       toast.error(error.message || "An error occurred.")

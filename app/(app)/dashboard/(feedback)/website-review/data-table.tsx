@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { useWebsiteReviewStore } from "@/stores/website-review-store"
+import { useWebsiteReviewStore } from "@/features/reviews/store/review.store"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 

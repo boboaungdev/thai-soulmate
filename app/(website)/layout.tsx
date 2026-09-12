@@ -1,8 +1,6 @@
 import { Suspense } from "react"
 
-import { Footer } from "@/components/footer"
-import { WebNavBar } from "@/components/web-nav-bar"
-import { FloatingWhatsapp } from "@/components/floating-whatsapp"
+import { Footer, WebNavBar, FloatingWhatsapp } from "@/components/layout"
 
 export default function WebsiteLayout({
   children,

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { Cta } from "@/components/cta"
-import { ProfileGallery } from "@/components/profile-gallery"
+import { Cta } from "@/components/layout"
+import { ProfileGallery } from "@/features/members"
 import { MotionDiv } from "@/components/motion"
 import { Sparkles } from "lucide-react"
 

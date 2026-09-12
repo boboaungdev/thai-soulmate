@@ -6,7 +6,7 @@ import { DataTable } from "./data-table"
 import { WebsiteReviewDetails } from "./website-review-details"
 import { Skeleton } from "@/components/ui/skeleton"
 import { WebsiteReview } from "@/lib/generated/prisma/client"
-import { useWebsiteReviewStore } from "@/stores/website-review-store"
+import { useWebsiteReviewStore } from "@/features/reviews/store/review.store"
 
 export default function WebsiteReviewPage() {
   const data = useWebsiteReviewStore((state) => state.reviews)

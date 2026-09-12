@@ -7,7 +7,7 @@ import { RegisterInterestDetails } from "./register-interest-details"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
-import { useRegisterInterestStore } from "@/stores/register-interest-store"
+import { useRegisterInterestStore } from "@/features/interest"
 
 type RegisterInterestWithNotesCount = RegisterInterest & {
   _count: {

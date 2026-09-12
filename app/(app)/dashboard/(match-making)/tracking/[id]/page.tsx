@@ -78,11 +78,14 @@ import {
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
 import { toast } from "sonner"
-import { TrackingStorageTab } from "@/components/dashboard/tracking/tracking-storage-tab"
 import {
+  TrackingStorageTab,
   TrackingNotesTab,
-  TrackingNoteWithUser,
-} from "@/components/dashboard/tracking/tracking-notes-tab"
+  getTrackingByIdAction,
+  updateTrackingAction,
+  sendTrackingProfilesAction,
+} from "@/features/matching"
+import type { TrackingNoteWithUser } from "@/features/matching/components/tracking-notes-tab"
 
 enum TrackingStatus {
   INITIAL_CONNECT = "INITIAL_CONNECT",
@@ -1529,12 +1532,11 @@ export default function SoulmateDetailPage() {
     if (!id) return
     const fetchSoulmate = async () => {
       try {
-        const response = await fetch(`/api/tracking/${id}`)
-        const data = await response.json()
-        if (data.success) {
-          setSoulmate(data.tracking)
+        const data = await getTrackingByIdAction(id)
+        if (data.success && "tracking" in data && data.tracking) {
+          setSoulmate(data.tracking as any)
         } else {
-          setError(data.message)
+          setError(data.message || "Failed to fetch tracking details.")
         }
       } catch (err) {
         setError("Failed to fetch tracking details.")
@@ -1563,20 +1565,15 @@ export default function SoulmateDetailPage() {
     }
 
     try {
-      const response = await fetch(`/api/tracking/${trackingId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+      const result = await updateTrackingAction(trackingId, {
+        status: newStatus as any,
       })
 
-      if (!response.ok) {
-        throw new Error("Failed to update status")
+      if (!result.success || !("tracking" in result) || !result.tracking) {
+        throw new Error(result.message || "Failed to update status")
       }
 
-      const updatedSoulmate = await response.json()
-      if (tracking) {
-        setSoulmate({ ...tracking, ...updatedSoulmate.tracking })
-      }
+      setSoulmate(result.tracking as any)
     } catch (error) {
       console.error(error)
       if (originalSoulmate) {
@@ -1591,24 +1588,20 @@ export default function SoulmateDetailPage() {
   const handleSendProfiles = async (tracking: Tracking) => {
     setUpdatingId(tracking.id)
     try {
-      const response = await fetch(
-        `/api/tracking/${tracking.id}/send-profiles`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            male: tracking.male,
-            female: tracking.female,
-          }),
-        }
-      )
+      const result = await sendTrackingProfilesAction({
+        trackingId: tracking.id,
+        male: tracking.male,
+        female: tracking.female,
+      })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to send profiles")
+      if (!result.success) {
+        throw new Error(result.message || "Failed to send profiles")
       }
 
       await handleUpdateStatus(tracking.id, TrackingStatus.BOTH_PROFILES_SENT)
+      if ("tracking" in result && result.tracking) {
+        setSoulmate(result.tracking as any)
+      }
     } catch (error) {
       console.error(error)
       setError("Failed to send profile.")

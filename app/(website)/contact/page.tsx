@@ -19,7 +19,7 @@ import {
   Share2,
 } from "lucide-react"
 import { CONTACT } from "@/constants"
-import { ContactForm } from "@/components/contact-form"
+import { ContactForm } from "@/features/contact"
 
 export default function ContactPage() {
   return (

@@ -46,8 +46,12 @@ import { statuses } from "./columns"
 import { APP_INFO } from "@/constants"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
 import { toast } from "sonner"
-import { useAuthStore } from "@/stores/auth-store"
-// import { Spinner } from "@/components/ui/spinner" // Spinner is no longer needed if Loader2 is used
+import { useAuthStore } from "@/features/auth"
+import { addNoteAction } from "@/features/notes"
+import {
+  updateRegisterInterestStatusAction,
+  deleteRegisterInterestAction,
+} from "@/features/interest"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -67,16 +71,13 @@ export function DataTableRowActions<TData>({
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/register-interest/${task.id}`, {
-        method: "DELETE",
-      })
-      if (response.ok) {
+      const res = await deleteRegisterInterestAction(task.id)
+      if (res.ok) {
         toast.success("Interest record deleted successfully.")
         setIsDeleteDialogOpen(false)
         window.dispatchEvent(new Event("register-interest-updated"))
       } else {
-        const result = await response.json()
-        toast.error(result.error || "Failed to delete interest record.")
+        toast.error(res.error || "Failed to delete interest record.")
       }
     } catch (error) {
       console.log(error)
@@ -87,20 +88,13 @@ export function DataTableRowActions<TData>({
   }
 
   const handleStatusChange = async (status: string) => {
-    const promise = fetch(`/api/register-interest/${task.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status }),
-    })
+    const promise = updateRegisterInterestStatusAction(task.id, status as any)
 
     toast.promise(promise, {
       loading: "Updating status...",
-      success: async (response) => {
-        if (!response.ok) {
-          const result = await response.json()
-          throw new Error(result.error || "Failed to update status.")
+      success: (res) => {
+        if (!res.ok) {
+          throw new Error(res.error || "Failed to update status.")
         }
         window.dispatchEvent(new Event("register-interest-updated"))
         return "Status updated successfully."
@@ -124,27 +118,27 @@ export function DataTableRowActions<TData>({
       return
     }
 
-    setIsLoading(true) // Set loading to true
+    setIsLoading(true)
     try {
-      const res = await fetch(`/api/notes/${task.id}/register-interest`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, userId: user.id }),
-      })
+      const res = await addNoteAction(
+        task.id,
+        "register-interest",
+        message,
+        user.id
+      )
 
-      if (res.ok) {
+      if (res.success) {
         toast.success("Note added successfully.")
         setMessage("")
         setIsNoteDialogOpen(false)
         window.dispatchEvent(new Event("register-interest-updated"))
       } else {
-        const { message: errorMessage } = await res.json()
-        toast.error(errorMessage || "Failed to add note.")
+        toast.error(res.error || "Failed to add note.")
       }
     } catch (error: any) {
       toast.error(error.message || "An error occurred.")
     } finally {
-      setIsLoading(false) // Set loading to false in finally block
+      setIsLoading(false)
     }
   }
 

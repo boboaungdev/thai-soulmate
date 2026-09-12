@@ -28,6 +28,11 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatDateTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
+import {
+  getTrackingsAction,
+  sendTrackingProfilesAction,
+  updateTrackingAction,
+} from "@/features/matching"
 import { PersonalDetails, Photos } from "@/types/application-form"
 import {
   CheckCircle2,
@@ -675,23 +680,16 @@ export default function SoulmateTrackingPage() {
       else setIsFetching(true)
 
       try {
-        const url = new URL("/api/tracking", window.location.origin)
-        if (debouncedSearch.trim()) {
-          url.searchParams.set("search", debouncedSearch.trim())
-        }
-        if (selectedMember !== "all") {
-          url.searchParams.set("memberId", selectedMember)
-        }
-        if (selectedStatus !== "all") {
-          url.searchParams.set("status", selectedStatus)
-        }
-        url.searchParams.set("sortKey", sortKey)
-        url.searchParams.set("sortOrder", sortOrder)
-        url.searchParams.set("page", String(currentPage))
-        url.searchParams.set("pageSize", String(pageSize))
+        const data = await getTrackingsAction({
+          search: debouncedSearch.trim(),
+          memberId: selectedMember,
+          status: selectedStatus,
+          sortKey,
+          sortOrder: sortOrder as "asc" | "desc",
+          page: currentPage,
+          pageSize,
+        })
 
-        const response = await fetch(url.toString())
-        const data = await response.json()
         if (data.success) {
           setTrackings(data.trackings)
           if (typeof data.totalCount === "number") {
@@ -708,7 +706,7 @@ export default function SoulmateTrackingPage() {
           }
           setError(null)
         } else {
-          setError(data.message)
+          setError(data.message || "Failed to fetch trackings")
         }
       } catch (err) {
         setError("Failed to fetch trackings.")
@@ -753,25 +751,26 @@ export default function SoulmateTrackingPage() {
   const handleSendProfiles = async (tracking: Tracking) => {
     setUpdatingId(tracking.id)
     try {
-      const response = await fetch(
-        `/api/tracking/${tracking.id}/send-profiles`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            male: tracking.male,
-            female: tracking.female,
-          }),
-        }
-      )
+      const result = await sendTrackingProfilesAction({
+        trackingId: tracking.id,
+        male: tracking.male,
+        female: tracking.female,
+      })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to send profiles")
+      if (!result.success) {
+        throw new Error(result.message || "Failed to send profiles")
       }
 
       // If emails are sent successfully, update the status
       await handleUpdateStatus(tracking.id, TrackingStatus.BOTH_PROFILES_SENT)
+      const updated = result.tracking as any
+      if (updated) {
+        setTrackings((currentSoulmates) =>
+          currentSoulmates.map((s) =>
+            s.id === updated.id ? { ...s, ...updated } : s
+          )
+        )
+      }
     } catch (error) {
       console.error(error)
       setError(
@@ -779,6 +778,7 @@ export default function SoulmateTrackingPage() {
       )
     } finally {
       // setUpdatingId(null) is called inside handleUpdateStatus
+      setUpdatingId(null)
     }
   }
 
@@ -804,21 +804,19 @@ export default function SoulmateTrackingPage() {
     setTrackings(optimisticUpdate)
 
     try {
-      const response = await fetch(`/api/tracking/${trackingId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+      const result = await updateTrackingAction(trackingId, {
+        status: newStatus as any,
       })
 
-      if (!response.ok) {
-        throw new Error("Failed to update status")
+      if (!result.success || !("tracking" in result) || !result.tracking) {
+        throw new Error(result.message || "Failed to update status")
       }
 
-      const updatedSoulmate = await response.json()
+      const updated = result.tracking as any
       setTrackings((currentSoulmates) =>
         currentSoulmates.map((s) =>
-          s.id === updatedSoulmate.tracking.id
-            ? { ...s, ...updatedSoulmate.tracking }
+          s.id === updated.id
+            ? { ...s, ...updated }
             : s
         )
       )

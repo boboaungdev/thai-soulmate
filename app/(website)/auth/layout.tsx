@@ -1,4 +1,4 @@
-import { AuthPageGuard } from "@/components/auth-page-guard"
+import { AuthPageGuard } from "@/features/auth"
 
 export default function AuthLayout({
   children,

@@ -22,6 +22,7 @@ import {
   Photos,
   Career,
 } from "@/types/application-form"
+import { getGalleryProfilesAction } from "@/features/members"
 
 interface Profile {
   id: string
@@ -118,22 +119,19 @@ export default function GalleryPage() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const params = new URLSearchParams()
+        const data = await getGalleryProfilesAction({
+          gender,
+          sortBy,
+          sortOrder: sortOrder as "asc" | "desc",
+          nickname,
+          customId,
+        })
 
-        if (gender) params.append("gender", gender)
-        if (sortBy) params.append("sortBy", sortBy)
-        if (sortOrder) params.append("sortOrder", sortOrder)
-        if (nickname) params.append("nickname", nickname)
-        if (customId) params.append("customId", customId)
-
-        const response = await fetch(`/api/gallery?${params.toString()}`)
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch users")
+        if (!data.success) {
+          throw new Error(data.error || "Failed to fetch users")
         }
 
-        const data = await response.json()
-        setProfiles(data.data)
+        setProfiles((data.data || []) as any)
       } catch (error) {
         console.error(error)
       } finally {

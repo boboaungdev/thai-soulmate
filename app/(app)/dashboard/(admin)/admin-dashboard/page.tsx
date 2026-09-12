@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { LayoutDashboard, Coins, Users2, HeartHandshake } from "lucide-react"
-import { WelcomeBanner } from "@/components/dashboard/welcome-banner"
+import { WelcomeBanner } from "@/components/layout"
 import { OverviewTab } from "./components/overview-tab"
 import { FinancialTab } from "./components/financial-tab"
 import { MemberDataTab } from "./components/member-data-tab"

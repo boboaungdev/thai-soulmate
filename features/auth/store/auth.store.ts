@@ -1,0 +1,43 @@
+import { create } from "zustand"
+import { createJSONStorage, persist } from "zustand/middleware"
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: "MEMBER" | "STAFF" | "ADMIN" | "DEV"
+  avatar?: string
+  fallback?: string
+}
+
+export interface AuthState {
+  user: User | null
+  setUser: (user: User | null) => void
+  logout: () => void
+}
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user) => {
+        const fallback =
+          user?.name
+            ?.split(" ")
+            .map((n) => n[0])
+            .slice(0, 2)
+            .join("")
+            .toUpperCase() ||
+          user?.email[0]?.toUpperCase() ||
+          ""
+        set({ user: user ? { ...user, fallback } : null })
+      },
+      logout: () => set({ user: null }),
+    }),
+    {
+      name: "auth-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+)
+

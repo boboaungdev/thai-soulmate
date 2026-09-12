@@ -60,6 +60,7 @@ import { ApplicationForm } from "@/types/application-form"
 import React from "react"
 import { FaSmoking } from "react-icons/fa"
 import { env } from "@/lib/env"
+import { getMatchComparisonAction } from "@/features/matching"
 import Image from "next/image"
 import { ApplicantHeader } from "./applicant-header"
 import {
@@ -233,36 +234,17 @@ export default async function MatchComparisonPage({
 }: MatchComparisonPageProps) {
   const { maleId, femaleId } = await params
 
-  const res = await fetch(
-    `${env.BASE_URL}/api/matching/${maleId}/${femaleId}`,
-    {
-      cache: "no-store",
-    }
-  )
+  const result = await getMatchComparisonAction(maleId, femaleId)
 
-  if (!res.ok) {
-    const errorText = await res.text()
+  if (!result.success || !result.data) {
     return (
       <div className="flex h-full items-center justify-center p-6 text-center text-red-500">
-        Error: Failed to fetch match details.
-        <br />
-        API responded with: {res.status} {res.statusText}
-        {errorText && (
-          <pre className="mt-4 whitespace-pre-wrap">{errorText}</pre>
-        )}
+        Error: {result.error || "Failed to fetch match details."}
       </div>
     )
   }
 
-  const data = await res.json()
-
-  if (data.error) {
-    return (
-      <div className="flex h-full items-center justify-center text-red-500">
-        Error from API: {data.error}
-      </div>
-    )
-  }
+  const data = result.data
 
   if (!data.male || !data.female) {
     return notFound()

@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/input-group"
 import { Label } from "@/components/ui/label"
 import { APP_INFO } from "@/constants"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore, loginAction } from "@/features/auth"
 
 function AuthPageContents() {
   const router = useRouter()
@@ -61,14 +61,9 @@ function AuthPageContents() {
 
     setIsLoggingIn(true)
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result.data),
-      })
-      const data = await response.json()
+      const data = await loginAction(result.data)
 
-      if (!response.ok) {
+      if (!data.success || !data.user) {
         toast.error("Login Failed", {
           description: data.error || "Please check your credentials.",
         })

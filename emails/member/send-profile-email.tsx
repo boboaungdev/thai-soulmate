@@ -21,8 +21,8 @@ export const SendProfileEmail = ({ to, trackingId }: SendProfileEmailProps) => {
   const otherPronoun = isMaleRecipient ? "she" : "he"
   const displayName = [to.prefix, to.name].filter(Boolean).join(" ")
 
-  const acceptUrl = `${env.BASE_URL}/api/tracking/${trackingId}?response=accepted&from=${from}`
-  const rejectUrl = `${env.BASE_URL}/api/tracking/${trackingId}?response=rejected&from=${from}`
+  const acceptUrl = `${env.BASE_URL}/action-feedback?trackingId=${trackingId}&response=accepted&from=${from}`
+  const rejectUrl = `${env.BASE_URL}/action-feedback?trackingId=${trackingId}&response=rejected&from=${from}`
 
   return (
     <MemberEmailLayout

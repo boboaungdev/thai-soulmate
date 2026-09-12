@@ -3,11 +3,10 @@
 import { useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
 
-import { AppNavBar } from "@/components/app-nav-bar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppNavBar, AppSidebar } from "@/components/layout"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { useMounted } from "@/hooks/use-mounted"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
 
 const allowedRoutes = {
   DEV: ["/dashboard"],

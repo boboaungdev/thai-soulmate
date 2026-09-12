@@ -8,7 +8,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { roles } from "./roles"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
 import { formatDateTime } from "@/lib/date"
 
 export type User = {

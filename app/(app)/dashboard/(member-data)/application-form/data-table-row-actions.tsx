@@ -43,7 +43,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
+import { updateApplicationStatusAction } from "@/features/application-form"
+import { addNoteAction } from "@/features/notes"
+import type { ApplicationFormStatus } from "@/lib/generated/prisma/client"
 
 import { ApplicationRow } from "./columns"
 import { applicationStatuses } from "./statuses"
@@ -74,25 +77,22 @@ export function DataTableRowActions<TData>({
   }
 
   const handleStatusChange = async (status: string) => {
-    const promise = fetch(`/api/application-form/${application.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status }),
+    const promise = updateApplicationStatusAction(
+      application.id,
+      status as ApplicationFormStatus
+    ).then((res) => {
+      if (!res.success) {
+        throw new Error(res.message || "Failed to update status.")
+      }
+      window.dispatchEvent(new Event("application-form-updated"))
+      router.refresh()
+      return "Application status updated."
     })
 
     toast.promise(promise, {
       loading: "Updating application status...",
-      success: async (response) => {
-        if (!response.ok) throw new Error("Failed to update status.")
-        window.dispatchEvent(new Event("application-form-updated"))
-        return "Application status updated."
-      },
-      error: async (error) => {
-        const result = await error.response?.json()
-        return result?.message || result?.error || "Failed to update status."
-      },
+      success: (msg) => msg,
+      error: (err) => err?.message || "Failed to update status.",
     })
   }
 
@@ -109,21 +109,21 @@ export function DataTableRowActions<TData>({
 
     setIsLoading(true)
     try {
-      const res = await fetch(`/api/notes/${application.id}/application-form`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, userId: user.id }),
-      })
+      const res = await addNoteAction(
+        application.id,
+        "application-form",
+        message,
+        user.id
+      )
 
-      if (res.ok) {
+      if (res.success) {
         toast.success("Note added successfully.")
         setMessage("")
         setIsNoteDialogOpen(false)
         window.dispatchEvent(new Event("application-form-updated"))
         router.refresh()
       } else {
-        const { message: errorMessage, error } = await res.json()
-        toast.error(errorMessage || error || "Failed to add note.")
+        toast.error(res.error || "Failed to add note.")
       }
     } catch (error: any) {
       toast.error(error.message || "An error occurred.")

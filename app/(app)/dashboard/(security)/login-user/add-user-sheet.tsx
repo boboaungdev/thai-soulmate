@@ -17,6 +17,8 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { isDisallowedEmail } from "@/constants/email"
+import { createUserAction, checkUserEmailAction } from "@/features/auth"
+import { uploadFileAction } from "@/features/upload"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -41,7 +43,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { AvatarUploadInput } from "@/components/avatar-upload-input"
+import { AvatarUploadInput } from "@/features/members"
 import { FaUserShield } from "react-icons/fa"
 
 const Role = {
@@ -119,37 +121,29 @@ export function AddUserSheet({
     }
 
     setEmailStatus("checking")
-    const controller = new AbortController()
 
     const timeoutId = setTimeout(async () => {
       try {
         const fullEmail = `${trimmed}@thaisoulmate.org`
-        const res = await fetch(
-          `/api/users/check-email?email=${encodeURIComponent(fullEmail)}`,
-          { signal: controller.signal }
-        )
-        const data = await res.json()
+        const data = await checkUserEmailAction(fullEmail)
 
         if (data.success) {
-          if (data.reason === "reserved") {
+          if ((data as any).reason === "reserved") {
             setEmailStatus("reserved")
           } else {
-            setEmailStatus(data.available ? "available" : "taken")
+            setEmailStatus((data as any).available ? "available" : "taken")
           }
         } else {
           setEmailStatus("idle")
         }
       } catch (err: any) {
-        if (err.name !== "AbortError") {
-          console.error("Failed to check email availability:", err)
-          setEmailStatus("idle")
-        }
+        console.error("Failed to check email availability:", err)
+        setEmailStatus("idle")
       }
     }, 500) // 500ms debounce
 
     return () => {
       clearTimeout(timeoutId)
-      controller.abort()
     }
   }, [emailValue])
 
@@ -162,18 +156,12 @@ export function AddUserSheet({
   }) => {
     const formData = new FormData()
     formData.append("file", file)
+    formData.append("email", email)
+    formData.append("path", "users/avatars")
 
-    const response = await fetch(
-      `/api/upload?email=${encodeURIComponent(email)}&path=users/avatars`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    )
+    const result = await uploadFileAction(formData)
 
-    const result = await response.json()
-
-    if (!response.ok) {
+    if (!result.success || !result.url) {
       throw new Error(result.error || "Avatar upload failed")
     }
 
@@ -212,21 +200,17 @@ export function AddUserSheet({
         avatarUrl = null
       }
 
-      const response = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...values,
-          email: fullEmail,
-          avatar: avatarUrl,
-        }),
+      const result = await createUserAction({
+        name: values.name,
+        email: fullEmail,
+        password: values.password,
+        role: values.role,
+        avatar: avatarUrl,
       })
 
-      const result = await response.json()
-
-      if (result.success) {
+      if (result.success && result.data) {
         toast.success("User added successfully!")
-        onUserAdded(result.data)
+        onUserAdded(result.data as any)
         onOpenChange(false)
         form.reset()
         setAvatarFile(null) // Clear avatar file state
@@ -278,7 +262,7 @@ export function AddUserSheet({
                       <div className="mb-4 flex justify-center">
                         <AvatarUploadInput
                           value={field.value}
-                          onChange={(file) => {
+                          onChange={(file: File | null) => {
                             if (viewOnly) return
                             setAvatarFile(file)
                             field.onChange(

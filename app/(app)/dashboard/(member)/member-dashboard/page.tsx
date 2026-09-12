@@ -21,7 +21,7 @@ import {
   Clock,
   CheckCircle2,
 } from "lucide-react"
-import { WelcomeBanner } from "@/components/dashboard/welcome-banner"
+import { WelcomeBanner } from "@/components/layout"
 
 const membershipData = {
   plan: "Membership (3 Months)",

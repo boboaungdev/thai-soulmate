@@ -1,17 +1,48 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { CheckCircle2, ShieldCheck, XCircle } from "lucide-react"
+import { CheckCircle2, ShieldCheck, XCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { motion } from "framer-motion"
+import { processTrackingEmailResponseAction } from "@/features/matching"
 
 function ActionFeedbackContent() {
   const searchParams = useSearchParams()
-  const message = searchParams.get("message")
-  const isError = searchParams.has("error")
-  const errorMessage = searchParams.get("error")
+  const trackingId = searchParams.get("trackingId")
+  const response = searchParams.get("response")
+  const from = searchParams.get("from")
+
+  const [message, setMessage] = useState<string | null>(searchParams.get("message"))
+  const [isError, setIsError] = useState<boolean>(searchParams.has("error"))
+  const [errorMessage, setErrorMessage] = useState<string | null>(
+    searchParams.get("error")
+  )
+  const [isProcessing, setIsProcessing] = useState<boolean>(
+    Boolean(trackingId && response && from)
+  )
+
+  useEffect(() => {
+    if (trackingId && response && from) {
+      processTrackingEmailResponseAction({ trackingId, response, from })
+        .then((res) => {
+          if (res.success) {
+            setMessage(res.message)
+            setIsError(false)
+          } else {
+            setIsError(true)
+            setErrorMessage(res.message)
+          }
+          setIsProcessing(false)
+        })
+        .catch(() => {
+          setIsError(true)
+          setErrorMessage("An unexpected error occurred.")
+          setIsProcessing(false)
+        })
+    }
+  }, [trackingId, response, from])
 
   return (
     <main className="relative flex min-h-[calc(100vh-4rem)] flex-1 flex-col items-center justify-center overflow-hidden bg-background px-4 py-16 sm:px-6 lg:px-8">
@@ -50,7 +81,19 @@ function ActionFeedbackContent() {
             </div>
 
             {/* Status Visual */}
-            {isError ? (
+            {isProcessing ? (
+              <>
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-[#D3A753]/30 bg-[#D3A753]/10 text-[#D3A753] shadow-xl shadow-[#D3A753]/10">
+                  <Loader2 className="h-10 w-10 animate-spin text-[#D3A753]" />
+                </div>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  Processing Your Response
+                </h1>
+                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                  Please wait while we record your introduction preferences...
+                </p>
+              </>
+            ) : isError ? (
               <>
                 <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-500 shadow-xl shadow-rose-500/10">
                   <XCircle className="h-10 w-10 text-rose-500" />

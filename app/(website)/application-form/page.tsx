@@ -21,11 +21,14 @@ import {
   RegisterInterestLead,
   formatPartnerHeightRange,
   formatPartnerAgeRange,
-} from "@/components/application-form/types"
-import { IntakeGatekeeper } from "@/components/application-form/intake-gatekeeper"
-import { ChapterAccordion } from "@/components/application-form/chapter-accordion"
-import { ReviewDossier } from "@/components/application-form/review-dossier"
-import { ThankYouScreen } from "@/components/application-form/thank-you-screen"
+  IntakeGatekeeper,
+  ChapterAccordion,
+  ReviewDossier,
+  ThankYouScreen,
+  submitApplicationFormAction,
+} from "@/features/application-form"
+import { checkInterestAndApplicationAction } from "@/features/interest"
+import { uploadFileAction } from "@/features/upload"
 import { APP_INFO } from "@/constants"
 
 function ApplicationFormContent() {
@@ -63,13 +66,10 @@ function ApplicationFormContent() {
     setNotFound(false)
 
     try {
-      const res = await fetch(
-        `/api/register-interest/check?email=${encodeURIComponent(emailToCheck)}`
-      )
-      const data = await res.json()
+      const data = await checkInterestAndApplicationAction(emailToCheck)
 
       // If user has ALREADY submitted an application form, show status immediately
-      if (res.ok && data.hasApplication && data.application) {
+      if (data.hasApplication && data.application) {
         const app = data.application
         const personal = (app.personalDetails || {}) as any
         const applicantName =
@@ -101,7 +101,7 @@ function ApplicationFormContent() {
       }
 
       // If consultation interest is registered but application form not yet filled
-      if (res.ok && data.exists && data.interest) {
+      if (data.exists && data.interest) {
         setIsExistingSubmission(false)
         const interest = data.interest
         const parsedLead: RegisterInterestLead = {
@@ -114,7 +114,9 @@ function ApplicationFormContent() {
           phone: interest.phone || "",
           currentLocation: interest.currentLocation || "",
           relationshipGoal: interest.relationshipGoal || null,
-          preferredContactDate: interest.preferredContactDate || null,
+          preferredContactDate: interest.preferredContactDate
+            ? new Date(interest.preferredContactDate).toISOString().split("T")[0]
+            : null,
           preferredContactTime: interest.preferredContactTime || null,
         }
 
@@ -227,7 +229,7 @@ function ApplicationFormContent() {
     })
   }
 
-  // 2. Final Submit to /api/application-form
+  // 2. Final Submit via submitApplicationFormAction
   const handleSubmitFinal = async () => {
     setIsSubmitting(true)
 
@@ -248,17 +250,12 @@ function ApplicationFormContent() {
           })
           const fd = new FormData()
           fd.append("file", file)
-          const emailParam = encodeURIComponent(formData.email || "applicant")
-          const uploadRes = await fetch(
-            `/api/upload?email=${emailParam}&type=${type}&path=applications/photos`,
-            {
-              method: "POST",
-              body: fd,
-            }
-          )
-          const data = await uploadRes.json()
-          if (uploadRes.ok && data.url) {
-            return data.url as string
+          fd.append("email", formData.email || "applicant")
+          fd.append("type", type)
+          fd.append("path", "applications/photos")
+          const uploadRes = await uploadFileAction(fd)
+          if (uploadRes.success && uploadRes.url) {
+            return uploadRes.url
           }
         } catch (e) {
           console.error("Failed to convert blob to R2:", e)
@@ -372,15 +369,9 @@ function ApplicationFormContent() {
         },
       }
 
-      const response = await fetch("/api/application-form", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
+      const result = await submitApplicationFormAction(payload)
 
-      const result = await response.json()
-
-      if (response.ok) {
+      if (result.success) {
         toast.success("Application Submitted Successfully!")
         // Clear local draft
         try {
@@ -393,7 +384,7 @@ function ApplicationFormContent() {
         setIsExistingSubmission(false)
         setStage("thank-you")
         window.scrollTo({ top: 0, behavior: "instant" })
-      } else if (response.status === 409 && result.application) {
+      } else if (result.existing) {
         toast.info(
           result.message ||
             "An application has already been submitted with this email address."
@@ -403,8 +394,8 @@ function ApplicationFormContent() {
         } catch {
           // ignore
         }
-        setSubmittedCustomId(result.application?.customId)
-        setSubmittedStatus(result.application?.status || "RECEIVED")
+        setSubmittedCustomId(result.existing?.customId)
+        setSubmittedStatus(result.existing?.status || "RECEIVED")
         setIsExistingSubmission(true)
         setStage("thank-you")
         window.scrollTo({ top: 0, behavior: "instant" })

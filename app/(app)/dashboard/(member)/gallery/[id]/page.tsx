@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
 import { ApplicationForm } from "@/types/application-form"
+import { getGalleryProfileByIdAction } from "@/features/members"
+import { downloadFileAction } from "@/features/upload"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -344,12 +346,11 @@ export default function UserDetailPage() {
     async function fetchUser() {
       if (!id) return
       try {
-        const response = await fetch(`/api/gallery/${id}`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data")
+        const data = await getGalleryProfileByIdAction(id)
+        if (!data.success || !data.profile) {
+          throw new Error(data.message || "Failed to fetch user data")
         }
-        const data = await response.json()
-        setUser(data.profile)
+        setUser(data.profile as any)
       } catch (error) {
         console.error(error)
       } finally {
@@ -365,26 +366,18 @@ export default function UserDetailPage() {
 
     try {
       const key = new URL(url).pathname.slice(1)
+      const res = await downloadFileAction(key)
 
-      const response = await fetch(
-        `/api/download?key=${encodeURIComponent(key)}`
-      )
-
-      if (!response.ok) {
-        throw new Error("Download failed.")
+      if (!res.success || !res.data) {
+        throw new Error(res.error || "Download failed.")
       }
 
-      const blob = await response.blob()
-      const objectUrl = URL.createObjectURL(blob)
-
       const link = document.createElement("a")
-      link.href = objectUrl
-      link.download = key.split("/").pop() ?? "photo"
+      link.href = `data:${res.data.contentType};base64,${res.data.base64}`
+      link.download = `${imgKey}.jpg`
       document.body.appendChild(link)
       link.click()
       link.remove()
-
-      URL.revokeObjectURL(objectUrl)
 
       toast.success(`${imgKey.toUpperCase()} photo downloaded successfully.`)
     } catch (error) {

@@ -24,7 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore, deleteUserAction } from "@/features/auth"
 
 // Duplicating User type because it's not exported from auth-store
 interface User {
@@ -33,6 +33,7 @@ interface User {
   email: string
   role: string
 }
+
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
 }
@@ -50,16 +51,9 @@ export function DataTableRowActions<TData extends User>({
     setIsDeleting(true)
 
     try {
-      const res = await fetch(`/api/users/${userToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "x-user-id": currentUser.id,
-        },
-      })
-      const data = await res.json()
+      const data = await deleteUserAction(userToDelete.id, currentUser.id)
 
-      if (res.ok && data.success) {
+      if (data.success) {
         toast.success("User deleted successfully.")
         // A common pattern is to trigger a refetch of the data.
         // For simplicity here, we'll reload the page.

@@ -29,6 +29,7 @@ import { Spinner } from "@/components/ui/spinner"
 
 import { WebsiteReview } from "@/lib/generated/prisma/client"
 import { toast } from "sonner"
+import { deleteReviewAction } from "@/features/reviews/actions/review.action"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -46,16 +47,13 @@ export function DataTableRowActions<TData>({
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
-      const response = await fetch(`/api/website-review/${review.id}`, {
-        method: "DELETE",
-      })
-      if (response.ok) {
+      const res = await deleteReviewAction(review.id)
+      if (res.success) {
         toast.success("Review deleted successfully.")
         setIsDeleteDialogOpen(false)
         window.dispatchEvent(new Event("website-review-updated"))
       } else {
-        const result = await response.json()
-        toast.error(result.error || "Failed to delete review.")
+        toast.error(res.error || "Failed to delete review.")
       }
     } catch (error) {
       toast.error("An unexpected error occurred while deleting the review.")

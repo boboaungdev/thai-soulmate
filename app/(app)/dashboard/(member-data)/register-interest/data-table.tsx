@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { useRegisterInterestStore } from "@/stores/register-interest-store"
+import { useRegisterInterestStore } from "@/features/interest"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 

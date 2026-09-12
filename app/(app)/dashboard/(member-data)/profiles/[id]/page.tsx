@@ -50,7 +50,7 @@ import {
   User2 as UserIcon,
   HardDrive,
 } from "lucide-react"
-import { ProfileStorageTab } from "@/components/dashboard/profiles/profile-storage-tab"
+import { ProfileStorageTab } from "@/features/members"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
@@ -85,7 +85,10 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
+import { getProfileByIdAction } from "@/features/members"
+import { addNoteAction, deleteNoteAction, updateNoteAction } from "@/features/notes"
+import { downloadFileAction } from "@/features/upload"
 import { Textarea } from "@/components/ui/textarea"
 import { formatDateTime } from "@/lib/date"
 
@@ -422,14 +425,14 @@ function NotesSection({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch(`/api/notes/${profileId}/profile`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, userId: user.id }),
-      })
-      const result = await response.json()
+      const result = await addNoteAction(
+        profileId,
+        "profile",
+        message,
+        user.id
+      )
 
-      if (result.success) {
+      if (result.success && result.note) {
         setNotes([result.note, ...notes])
         setMessage("")
         toast.success("Note added successfully.")
@@ -448,10 +451,7 @@ function NotesSection({
     if (!noteToDelete) return
 
     try {
-      const response = await fetch(`/api/notes/${noteToDelete.id}`, {
-        method: "DELETE",
-      })
-      const result = await response.json()
+      const result = await deleteNoteAction(noteToDelete.id)
 
       if (result.success) {
         setNotes(notes.filter((note) => note.id !== noteToDelete.id))
@@ -472,14 +472,9 @@ function NotesSection({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch(`/api/notes/${editingNote.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: editedMessage }),
-      })
-      const result = await response.json()
+      const result = await updateNoteAction(editingNote.id, editedMessage)
 
-      if (result.success) {
+      if (result.success && result.note) {
         setNotes(
           notes.map((note) => (note.id === editingNote.id ? result.note : note))
         )
@@ -696,12 +691,11 @@ export default function ProfilesDetailPage() {
     async function fetchUser() {
       if (!id) return
       try {
-        const response = await fetch(`/api/profiles/${id}`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data")
+        const data = await getProfileByIdAction(id)
+        if (!data.success || !data.profile) {
+          throw new Error(data.message || "Failed to fetch user data")
         }
-        const data = await response.json()
-        setProfile(data.profile)
+        setProfile(data.profile as any)
       } catch (error) {
         console.error(error)
       } finally {
@@ -717,26 +711,18 @@ export default function ProfilesDetailPage() {
 
     try {
       const key = new URL(url).pathname.slice(1)
+      const res = await downloadFileAction(key)
 
-      const response = await fetch(
-        `/api/download?key=${encodeURIComponent(key)}`
-      )
-
-      if (!response.ok) {
-        throw new Error("Download failed.")
+      if (!res.success || !res.data) {
+        throw new Error(res.error || "Download failed.")
       }
 
-      const blob = await response.blob()
-      const objectUrl = URL.createObjectURL(blob)
-
       const link = document.createElement("a")
-      link.href = objectUrl
-      link.download = key.split("/").pop() ?? "photo"
+      link.href = `data:${res.data.contentType};base64,${res.data.base64}`
+      link.download = `${imgKey}.jpg`
       document.body.appendChild(link)
       link.click()
       link.remove()
-
-      URL.revokeObjectURL(objectUrl)
 
       toast.success(`${imgKey.toUpperCase()} photo downloaded successfully.`)
     } catch (error) {

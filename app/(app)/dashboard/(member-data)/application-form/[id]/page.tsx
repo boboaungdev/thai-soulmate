@@ -93,7 +93,17 @@ import { Textarea } from "@/components/ui/textarea"
 import { ApplicationForm } from "@/types/application-form"
 import { Note, User as PrismaUser } from "@/lib/generated/prisma/client"
 import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
+import {
+  getApplicationByIdAction,
+  updateApplicationStatusAction,
+} from "@/features/application-form"
+import {
+  addNoteAction,
+  updateNoteAction,
+  deleteNoteAction,
+} from "@/features/notes"
+import { downloadFileAction } from "@/features/upload"
 
 import { applicationStatuses, getApplicationStatusMeta } from "../statuses"
 import { calculateAge, formatDateTime } from "@/lib/date"
@@ -208,17 +218,14 @@ function NotesSection({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch(
-        `/api/notes/${applicationId}/application-form`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message, userId: user.id }),
-        }
+      const result = await addNoteAction(
+        applicationId,
+        "application-form",
+        message,
+        user.id
       )
-      const result = await response.json()
 
-      if (result.success) {
+      if (result.success && result.note) {
         setNotes([result.note, ...notes])
         setMessage("")
         toast.success("Note added successfully.")
@@ -237,10 +244,7 @@ function NotesSection({
     if (!noteToDelete) return
 
     try {
-      const response = await fetch(`/api/notes/${noteToDelete.id}`, {
-        method: "DELETE",
-      })
-      const result = await response.json()
+      const result = await deleteNoteAction(noteToDelete.id)
 
       if (result.success) {
         setNotes(notes.filter((note) => note.id !== noteToDelete.id))
@@ -261,14 +265,9 @@ function NotesSection({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch(`/api/notes/${editingNote.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: editedMessage }),
-      })
-      const result = await response.json()
+      const result = await updateNoteAction(editingNote.id, editedMessage)
 
-      if (result.success) {
+      if (result.success && result.note) {
         setNotes(
           notes.map((note) => (note.id === editingNote.id ? result.note : note))
         )
@@ -551,12 +550,11 @@ export default function ApplicationDetailPage() {
     const loadApplication = async () => {
       setLoading(true)
       try {
-        const res = await fetch(`/api/application-form/${params.id}`)
-        if (!res.ok) {
-          throw new Error("Failed to fetch application")
+        const res = await getApplicationByIdAction(String(params.id))
+        if (!res.success || !res.application) {
+          throw new Error(res.message || "Failed to fetch application")
         }
-        const data = await res.json()
-        setApplication(data.application)
+        setApplication(res.application as ApplicationDetail)
       } catch (error) {
         console.error(error)
         toast.error("Failed to fetch application.")
@@ -573,16 +571,12 @@ export default function ApplicationDetailPage() {
 
     setIsStatusUpdating(true)
     try {
-      const response = await fetch(`/api/application-form/${application.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      })
-      const result = await response.json()
+      const result = await updateApplicationStatusAction(
+        application.id,
+        status as ApplicationFormStatus
+      )
 
-      if (result.success) {
+      if (result.success && result.application) {
         setApplication({
           ...application,
           status: result.application.status,
@@ -604,26 +598,18 @@ export default function ApplicationDetailPage() {
 
     try {
       const key = new URL(url).pathname.slice(1)
+      const res = await downloadFileAction(key)
 
-      const response = await fetch(
-        `/api/download?key=${encodeURIComponent(key)}`
-      )
-
-      if (!response.ok) {
-        throw new Error("Download failed.")
+      if (!res.success || !res.data) {
+        throw new Error(res.error || "Download failed.")
       }
 
-      const blob = await response.blob()
-      const objectUrl = URL.createObjectURL(blob)
-
       const link = document.createElement("a")
-      link.href = objectUrl
-      link.download = key.split("/").pop() ?? "photo"
+      link.href = `data:${res.data.contentType};base64,${res.data.base64}`
+      link.download = `${imgKey}.jpg`
       document.body.appendChild(link)
       link.click()
       link.remove()
-
-      URL.revokeObjectURL(objectUrl)
 
       toast.success(`${imgKey.toUpperCase()} photo downloaded successfully.`)
     } catch (error) {

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Eye, HeartHandshake, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { createTrackingAction } from "@/features/matching"
 
 export function ConnectButton({
   maleId,
@@ -35,21 +36,17 @@ export function ConnectButton({
   const handleConnect = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch("/api/tracking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ maleId, femaleId, matchPercentage }),
+      const result = await createTrackingAction({
+        maleId,
+        femaleId,
+        matchPercentage,
       })
 
-      const result = await response.json()
-
-      if (response.ok) {
+      if (result.success) {
         toast.success("Soulmates connected successfully!")
         router.push("/dashboard/tracking")
       } else {
-        toast.error(`Failed to connect soulmates: ${result.message}`)
+        toast.error(`Failed to connect soulmates: ${(result as any).message || (result as any).error || "Unknown error"}`)
       }
     } catch (error) {
       toast.error("An unexpected error occurred.")

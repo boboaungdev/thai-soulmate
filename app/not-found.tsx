@@ -5,7 +5,7 @@ import Image from "next/image"
 import { ChevronLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
 import { AppName } from "@/components/app-name"
 import { APP_INFO } from "@/constants"
 import { MotionDiv } from "@/components/motion"

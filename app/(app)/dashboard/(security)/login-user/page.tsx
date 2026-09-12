@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 
+import { getUsersAction } from "@/features/auth"
 import { AddUserSheet } from "./add-user-sheet"
 import { columns, User } from "./columns"
 import { DataTable } from "./data-table"
@@ -20,10 +21,9 @@ export default function UsersPage() {
       setLoading(true)
 
       try {
-        const res = await fetch(`/api/users?limit=100`)
-        const json = await res.json()
+        const json = await getUsersAction(100)
 
-        if (json.success) {
+        if (json.success && json.data) {
           setUsers(json.data)
         }
       } catch (error) {

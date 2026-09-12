@@ -1,0 +1,90 @@
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
+import { type VisibilityState } from "@tanstack/react-table"
+import { getApplicationsAction } from "../actions/application-form.action"
+
+type ApplicationFormState = {
+  applications: any[]
+  loading: boolean
+  error: string | null
+  columnVisibility: VisibilityState
+  actions: {
+    fetchApplications: () => Promise<void>
+    forceFetchApplications: () => Promise<void>
+    setColumnVisibility: (updater: React.SetStateAction<VisibilityState>) => void
+  }
+}
+
+const defaultColumnVisibility: VisibilityState = {
+  profile: true,
+  gender: true,
+  plan: true,
+  notes: true,
+  status: true,
+  createdAt: true,
+  phone: false,
+  nationality: false,
+  currentLocation: false,
+  dob: false,
+  "user.name": false,
+  "user.email": false,
+  "user.phone": false,
+  occupation: false,
+  email: false,
+}
+
+export const useApplicationFormStore = create<ApplicationFormState>()(
+  persist(
+    (set, get) => ({
+      applications: [],
+      loading: false,
+      error: null,
+      columnVisibility: defaultColumnVisibility,
+      actions: {
+        fetchApplications: async () => {
+          if (get().applications.length > 0) {
+            return
+          }
+          set({ loading: true, error: null })
+          try {
+            const res = await getApplicationsAction()
+            if (!res.success) {
+              throw new Error(res.message || "Failed to fetch applications")
+            }
+            set({ applications: res.applications || [], loading: false })
+          } catch (error) {
+            set({
+              error: error instanceof Error ? error.message : "An unknown error occurred",
+              loading: false,
+            })
+          }
+        },
+        forceFetchApplications: async () => {
+          set({ loading: true, error: null, applications: [] })
+          try {
+            const res = await getApplicationsAction()
+            if (!res.success) {
+              throw new Error(res.message || "Failed to fetch applications")
+            }
+            set({ applications: res.applications || [], loading: false })
+          } catch (error) {
+            set({
+              error: error instanceof Error ? error.message : "An unknown error occurred",
+              loading: false,
+            })
+          }
+        },
+        setColumnVisibility: (updater) => {
+          const newVisibility =
+            typeof updater === "function" ? updater(get().columnVisibility) : updater
+          set({ columnVisibility: newVisibility })
+        },
+      },
+    }),
+    {
+      name: "application-form-table-settings",
+      partialize: (state) => ({ columnVisibility: state.columnVisibility }),
+    }
+  )
+)
+

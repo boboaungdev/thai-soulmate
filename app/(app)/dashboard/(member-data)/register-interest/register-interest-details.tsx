@@ -42,7 +42,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
+import {
+  getNotesAction,
+  addNoteAction,
+  updateNoteAction,
+  deleteNoteAction,
+} from "@/features/notes"
 import { Note, RegisterInterest, User } from "@/lib/generated/prisma/client"
 import { formatDate, formatDateTime, formatDOB } from "@/lib/date"
 
@@ -74,10 +80,7 @@ export function RegisterInterestDetails({
       const fetchNotes = async () => {
         setIsLoadingNotes(true)
         try {
-          const response = await fetch(
-            `/api/notes/${item.id}/register-interest`
-          )
-          const result = await response.json()
+          const result = await getNotesAction(item.id, "register-interest")
           if (result.success) {
             setNotes(result.notes)
           } else {
@@ -119,14 +122,14 @@ export function RegisterInterestDetails({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch(`/api/notes/${item.id}/register-interest`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: newMessage, userId: user.id }),
-      })
-      const result = await response.json()
+      const result = await addNoteAction(
+        item.id,
+        "register-interest",
+        newMessage,
+        user.id
+      )
 
-      if (result.success) {
+      if (result.success && result.note) {
         setNotes([result.note, ...notes])
         setNewMessage("")
         toast.success("Note added successfully.")
@@ -146,10 +149,7 @@ export function RegisterInterestDetails({
     if (!noteToDelete) return
 
     try {
-      const response = await fetch(`/api/notes/${noteToDelete.id}`, {
-        method: "DELETE",
-      })
-      const result = await response.json()
+      const result = await deleteNoteAction(noteToDelete.id)
 
       if (result.success) {
         setNotes(notes.filter((note) => note.id !== noteToDelete.id))
@@ -171,14 +171,9 @@ export function RegisterInterestDetails({
 
     setIsSubmitting(true)
     try {
-      const response = await fetch(`/api/notes/${editingNote.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: editedMessage }),
-      })
-      const result = await response.json()
+      const result = await updateNoteAction(editingNote.id, editedMessage)
 
-      if (result.success) {
+      if (result.success && result.note) {
         setNotes(
           notes.map((note) => (note.id === editingNote.id ? result.note : note))
         )

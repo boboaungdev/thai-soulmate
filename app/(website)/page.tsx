@@ -31,7 +31,7 @@ import {
   Quote,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { RegisterInterestForm } from "@/components/register-interest-form"
+import { RegisterInterestForm } from "@/features/interest"
 import { HeroSoulWaves } from "@/components/hero-soul-waves"
 import { motion, useScroll, useSpring, useTransform } from "framer-motion"
 import { useRouter } from "next/navigation"

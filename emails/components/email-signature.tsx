@@ -3,7 +3,7 @@ import { Section, Row, Column, Img, Text, Link } from "react-email"
 
 import { APP_INFO, CONTACT } from "@/constants"
 import { env } from "@/lib/env"
-import { useAuthStore } from "@/stores/auth-store"
+import { useAuthStore } from "@/features/auth"
 
 export interface EmailSignatureProps {
   signOff?: string

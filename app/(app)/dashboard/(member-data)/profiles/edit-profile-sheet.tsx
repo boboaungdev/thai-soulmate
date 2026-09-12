@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { calculateAge } from "@/lib/date"
 import { cn } from "@/lib/utils"
 
+import { updateProfileAction } from "@/features/members"
 import { ProfileRow } from "./columns"
 
 interface EditProfileSheetProps {
@@ -39,8 +40,8 @@ export function EditProfileSheet({
 
   // Reset the form state when the sheet is opened
   useEffect(() => {
-    if (isOpen) {
-      setAbout(profile?.personality?.about || "")
+    if (isOpen && profile) {
+      setAbout(profile.personality?.about || "")
     }
   }, [isOpen, profile])
 
@@ -56,16 +57,10 @@ export function EditProfileSheet({
 
     setIsSaving(true)
     try {
-      const response = await fetch(`/api/profiles/${profile.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ about }),
-      })
+      const res = await updateProfileAction(profile.id, { about })
 
-      if (!response.ok) {
-        throw new Error("Failed to update profile")
+      if (!res.success) {
+        throw new Error(res.message || "Failed to update profile")
       }
 
       toast.success("Profile updated successfully!")

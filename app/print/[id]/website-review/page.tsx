@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { APP_INFO } from "@/constants"
 import { formatDateTime } from "@/lib/date"
 import { prisma } from "@/lib/prisma"
+import { reviewRepository } from "@/features/reviews"
 import { Prisma } from "@/lib/generated/prisma/client"
 import { PrintTrigger } from "./print-trigger"
 
@@ -127,9 +128,7 @@ export default async function PrintWebsiteReviewPage({
 }) {
   const { id } = await params
 
-  const review = await prisma.websiteReview.findUnique({
-    where: { id },
-  })
+  const review = await reviewRepository.findById(id)
 
   if (!review) {
     notFound()

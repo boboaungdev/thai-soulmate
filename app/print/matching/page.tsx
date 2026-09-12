@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import Image from "next/image"
 import { APP_INFO } from "@/constants"
 import { env } from "@/lib/env"
+import { getMatchComparisonAction } from "@/features/matching"
 import { formatDOB } from "@/lib/date"
 import { PrintTrigger } from "./print-trigger"
 
@@ -136,14 +137,17 @@ export default async function MatchComparisonPrintPage({
     { cache: "no-store" }
   )
   if (!response.ok) notFound()
+  const result = await getMatchComparisonAction(maleId, femaleId)
+  if (!result.success || !result.data || !result.data.male || !result.data.female) {
+    notFound()
+  }
 
-  const data = await response.json()
-  if (data.error || !data.male || !data.female) notFound()
+  const data = result.data
 
-  const male = data.male as Applicant
-  const female = data.female as Applicant
-  const breakdown = (data.matchBreakdown || []) as Breakdown[]
-  const penalties = (data.dealBreakerPenalties || []) as Penalty[]
+  const male = data.male as unknown as Applicant
+  const female = data.female as unknown as Applicant
+  const breakdown = (data.matchBreakdown || []) as unknown as Breakdown[]
+  const penalties = (data.dealBreakerPenalties || []) as unknown as Penalty[]
 
   // Split breakdown across 2 pages for optimal readability
   const page1Breakdown = breakdown.slice(0, 6)

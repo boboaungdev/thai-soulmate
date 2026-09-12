@@ -15,7 +15,7 @@ import {
 } from "@tanstack/react-table"
 import * as React from "react"
 
-import { useApplicationFormStore } from "@/stores/application-form-store"
+import { useApplicationFormStore } from "@/features/application-form"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Table,

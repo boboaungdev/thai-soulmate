@@ -1,7 +1,8 @@
 "use client"
 import { useRouter } from "next/navigation"
 import { useMemo, useState, useEffect } from "react"
-import { useMatchingStore } from "@/stores/matching-store"
+import { useMatchingStore, getMatchesAction } from "@/features/matching"
+import { getApplicationsAction } from "@/features/application-form"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -316,18 +317,17 @@ export default function MatchingPage() {
     const fetchMaleUsers = async () => {
       setIsLoadingMales(true)
       try {
-        const response = await fetch("/api/application-form")
-        if (!response.ok) throw new Error("Failed to fetch applicants")
-        const data = await response.json()
+        const data = await getApplicationsAction()
+        if (!data.success) throw new Error(data.message || "Failed to fetch applicants")
         if (data && Array.isArray(data.applications)) {
           const males = data.applications
-            .map(parseApplicantData)
+            .map((applicant: any) => parseApplicantData(applicant))
             .filter(
               (applicant: any) => applicant.personalDetails?.gender === "Male"
             )
           setMaleUsers(males)
         } else {
-          throw new Error("API response is missing 'applications' array.")
+          throw new Error("Missing 'applications' array.")
         }
       } catch (e: any) {
         setError(e.message)
@@ -343,24 +343,19 @@ export default function MatchingPage() {
       setIsLoadingMatches(true)
       setError(null)
       try {
-        const url = new URL(`/api/matching`, window.location.origin)
-        url.searchParams.set("filter", filterOption)
-        url.searchParams.set("sortKey", sortKey)
-        url.searchParams.set("sortOrder", sortOrder)
-        url.searchParams.set("matchRange", matchRange)
+        const result = await getMatchesAction({
+          userId: selectedMale ? selectedMale.id : null,
+          filter: filterOption,
+          sortKey,
+          sortOrder,
+          matchRange,
+        })
 
-        if (selectedMale) {
-          url.searchParams.set("userId", selectedMale.id)
+        if (!result.success) {
+          throw new Error(result.error || "Failed to fetch matches")
         }
 
-        const response = await fetch(url.toString())
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({})) // Try to get more specific error
-          throw new Error(errorData.error || "Failed to fetch matches")
-        }
-        const data = await response.json()
-
+        const data = result.matches
         if (Array.isArray(data)) {
           const finalMatches = data.map((match: Match) => ({
             ...match,
@@ -368,7 +363,7 @@ export default function MatchingPage() {
           }))
           setMatches(finalMatches)
         } else {
-          throw new Error("API did not return an array of matches.")
+          throw new Error("Action did not return an array of matches.")
         }
       } catch (e: any) {
         setError(e.message)

@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button"
 import { AnimatePresence } from "framer-motion"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import type { User, Plan } from "@/types"
-import { useAuthStore } from "@/stores/auth-store"
 
 interface PricingPageContentsProps {
   isEmbedded?: boolean
@@ -49,8 +48,6 @@ export function PricingPageContents({
   const userDataFromUrl = searchParams.get("userData")
 
   const [userData, setUserData] = useState<User | null>(embeddedUserData)
-
-  const { user } = useAuthStore()
 
   const tabParam = searchParams.get("tab")
   const [activeCategory, setActiveCategory] = useState<string>(() => {
@@ -96,7 +93,7 @@ export function PricingPageContents({
     }
   }, [userDataFromUrl, isEmbedded, embeddedUserData, searchParams])
 
-  const handleChoosePlan = async (plan: Plan) => {
+  const handleChoosePlan = (plan: Plan) => {
     if (isFromApplicationForm) {
       const params = new URLSearchParams(searchParams.toString())
 
@@ -110,37 +107,7 @@ export function PricingPageContents({
       return
     }
 
-    const priceId = isAutoRenew
-      ? plan.priceIds.subscription
-      : plan.priceIds.oneTime
-
-    const mode = isAutoRenew ? "subscription" : "payment"
-
-    try {
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          priceId,
-          userData: user,
-          mode,
-          autoRenew: isAutoRenew,
-          plan: plan.name,
-        }),
-      })
-
-      if (response.ok) {
-        const { url } = await response.json()
-
-        window.open(url, "_blank")
-      } else {
-        console.error("Failed to create Stripe checkout session")
-      }
-    } catch (error) {
-      console.error("An error occurred:", error)
-    }
+    router.push(`/application-form?plan=${encodeURIComponent(plan.name)}`)
   }
 
   return (

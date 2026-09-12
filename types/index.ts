@@ -1,10 +1,6 @@
 export interface Plan {
   id: string
   name: string
-  priceIds: {
-    subscription: string
-    oneTime: string
-  }
   price: string
   features: string[]
   popular?: boolean

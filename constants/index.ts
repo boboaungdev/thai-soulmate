@@ -1,5 +1,4 @@
 import { Plan } from "@/types"
-import { env } from "@/lib/env"
 
 export const APP_INFO = {
   name: "THAI SOULMATE",
@@ -33,10 +32,6 @@ export const PLANS: Plan[] = [
   {
     id: "1-month",
     name: "1 Month",
-    priceIds: {
-      subscription: env.STRIPE.priceIds.subscription.oneMonth,
-      oneTime: env.STRIPE.priceIds.oneTime.oneMonth,
-    },
     price: "฿29,999",
     duration: { paid: "1 month", total: "2 months" },
     recurringInterval: { paid: "1 month", total: "2 months" },
@@ -53,10 +48,6 @@ export const PLANS: Plan[] = [
   {
     id: "3-months",
     name: "3 Months",
-    priceIds: {
-      subscription: env.STRIPE.priceIds.subscription.threeMonth,
-      oneTime: env.STRIPE.priceIds.oneTime.threeMonth,
-    },
     price: "฿34,999",
     duration: { paid: "3 months", total: "6 months" },
     recurringInterval: { paid: "3 months", total: "6 months" },
@@ -74,10 +65,6 @@ export const PLANS: Plan[] = [
   {
     id: "6-months",
     name: "6 Months",
-    priceIds: {
-      subscription: env.STRIPE.priceIds.subscription.sixMonth,
-      oneTime: env.STRIPE.priceIds.oneTime.sixMonth,
-    },
     price: "฿49,999",
     duration: { paid: "6 months", total: "12 months" },
     recurringInterval: { paid: "6 months", total: "12 months" },

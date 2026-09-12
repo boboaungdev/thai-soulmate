@@ -101,8 +101,9 @@ const notifications = [
       ],
       messagePreview:
         "Hello, I came across your website and I am very interested in your exclusive matchmaking service. Could you please provide more information about your membership packages and how the process works? I am looking for a serious, long-term relationship.",
-      buttonText: "View in Email Inbox",
-      buttonUrl: "https://thaisoulmate.org/dashboard/email/contact/inbox",
+      buttonText: "Reply via Email",
+      buttonUrl:
+        "mailto:priya.sharma@example.com?subject=Re: Enquiry about membership tiers",
     },
   },
   {
@@ -119,24 +120,6 @@ const notifications = [
       ],
       buttonText: "View in Dashboard",
       buttonUrl: "https://thaisoulmate.org/dashboard/website-review",
-    },
-  },
-  {
-    id: "mailbox",
-    tab: "Mailbox Activity",
-    props: {
-      previewText: "[Mailbox Alert] RE: Your Thai Soulmate consultation",
-      category: "Mailbox Activity",
-      title: "RE: Your Thai Soulmate consultation",
-      description: "New email received for contact@thaisoulmate.org.",
-      fields: [
-        { label: "From", value: "James Wilson <james.wilson@example.com>" },
-        { label: "To", value: "contact@thaisoulmate.org" },
-      ],
-      messagePreview:
-        "Thank you for your prompt response. I would love to schedule a consultation call at your earliest convenience. Please let me know what times are available this week.",
-      buttonText: "View in Email Inbox",
-      buttonUrl: "https://thaisoulmate.org/dashboard/email/contact/inbox",
     },
   },
 ]

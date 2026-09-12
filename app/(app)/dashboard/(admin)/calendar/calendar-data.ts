@@ -217,7 +217,7 @@ export const mockCalendarItems: CalendarItem[] = [
     kind: "register_interest",
     person: "Emily R.",
     description:
-      "Second contact after she requested evening hours. Review Bangkok dates availability.",
+      "Second contact after she requested evening hours. Review Thailand dates availability.",
     location: "WhatsApp",
     phone: "+447911123456",
     email: "emily.r@example.co.uk",
@@ -313,7 +313,7 @@ export const mockCalendarItems: CalendarItem[] = [
     kind: "event",
     description:
       "Small cocktail introduction evening for verified executive members.",
-    location: "Bangkok Lounge · Sukhumvit",
+    location: "Thailand Lounge · Sukhumvit",
   },
   {
     id: "holiday-1",

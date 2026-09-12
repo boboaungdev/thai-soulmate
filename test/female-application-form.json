@@ -9,10 +9,10 @@
       "email": "angela@example.com",
       "phone": "+66901234567",
       "nationality": "Thai",
-      "currentLocation": "Bangkok, Thailand"
+      "currentLocation": "Thailand"
     },
     "career": {
-      "company": "Bangkok Hospital",
+      "company": "BDMS Hospital",
       "education": "Bachelor's Degree",
       "occupation": "Doctor"
     },

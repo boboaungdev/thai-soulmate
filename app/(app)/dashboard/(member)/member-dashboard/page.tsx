@@ -70,7 +70,7 @@ const soulmateData = {
   name: "Amara",
   age: 28,
   occupation: "Graphic Designer",
-  location: "Bangkok, Thailand",
+  location: "Thailand",
   matchDate: "2024-08-01",
   compatibilityScore: 92,
   interests: ["Art", "Traveling", "Yoga", "Cooking"],

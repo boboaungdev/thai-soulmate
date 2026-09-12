@@ -55,7 +55,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
-import { useEmailStore } from "@/stores/email-store"
 import { cn } from "@/lib/utils"
 
 const roleIcons: Record<string, React.ElementType> = {
@@ -218,13 +217,6 @@ export function AppSidebar() {
   const router = useRouter()
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
-  const fetchFolderCounts = useEmailStore((s) => s.fetchFolderCounts)
-
-  React.useEffect(() => {
-    if (user?.email) {
-      fetchFolderCounts(user.email)
-    }
-  }, [user?.email, pathname, fetchFolderCounts])
 
   if (!user) {
     return null

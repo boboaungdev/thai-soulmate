@@ -1,5 +1,4 @@
 import * as React from "react"
-import { env } from "@/lib/env"
 import { AdminNotification } from "../components/admin-notification-card"
 
 type ContactFormNotificationDetails = {
@@ -15,9 +14,6 @@ export const ContactFormAdminNotificationEmail = ({
   subject,
   message,
 }: ContactFormNotificationDetails) => {
-  const baseUrl =
-    env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
-
   return (
     <AdminNotification
       previewText={`[Contact Form] ${subject}`}
@@ -30,8 +26,8 @@ export const ContactFormAdminNotificationEmail = ({
         { label: "Subject", value: subject },
       ]}
       messagePreview={message}
-      buttonText="View in Email Inbox"
-      buttonUrl={`${baseUrl}/dashboard/email/contact/inbox`}
+      buttonText="Reply via Email"
+      buttonUrl={`mailto:${email}?subject=${encodeURIComponent(`Re: ${subject}`)}`}
     />
   )
 }

@@ -109,7 +109,7 @@ export default function HomePage() {
               {/* Signature Two Souls Converging Wave & Logo Animation */}
               <HeroSoulWaves />
 
-              <div className="space-y-4">
+              <div className="space-y-1">
                 <motion.div
                   initial={{ opacity: 0, y: 22, filter: "blur(8px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -119,15 +119,15 @@ export default function HomePage() {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
-                  <AppName className="text-4xl font-black tracking-tight uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-5xl md:text-6xl" />
+                  <AppName className="text-3xl font-black tracking-tight uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] sm:text-4xl md:text-5xl" />
                 </motion.div>
 
-                <div className="space-y-2">
+                <div className="space-y-0">
                   <motion.p
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6, delay: 2.5, ease: "easeOut" }}
-                    className="inline-flex items-center justify-center gap-2 text-sm font-semibold tracking-[0.35em] text-[#E791A7] uppercase sm:text-base"
+                    className="inline-flex items-center justify-center gap-2 text-xs font-semibold tracking-[0.35em] text-[#E791A7] uppercase sm:text-base"
                   >
                     <motion.span
                       initial={{ width: 0 }}
@@ -148,7 +148,7 @@ export default function HomePage() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 2.65 }}
-                    className="text-sm font-semibold tracking-[0.2em] text-[#D3A753] uppercase sm:text-base md:text-lg"
+                    className="text-xs font-semibold tracking-[0.2em] text-[#D3A753] uppercase sm:text-base md:text-lg"
                   >
                     {APP_INFO.tagline}
                   </motion.p>
@@ -159,7 +159,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 2.8 }}
-                  className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-white/90 sm:gap-3 sm:text-sm"
+                  className="mx-auto flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-white/90 sm:gap-3 sm:text-sm pt-6"
                 >
                   <motion.div
                     animate={{ y: [0, -4, 0] }}
@@ -209,7 +209,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 2.95 }}
-                  className="mx-auto flex w-full flex-col items-stretch justify-center gap-3 pt-2 sm:w-fit"
+                  className="mx-auto flex w-full flex-col items-stretch justify-center gap-3 pt-6 sm:w-fit"
                 >
                   <motion.div
                     whileHover={{ scale: 1.03, y: -2 }}
@@ -980,8 +980,8 @@ export default function HomePage() {
                 introductions.
               </h3>
               <p className="text-sm text-muted-foreground sm:text-base">
-                This makes your service feel personal. We save you
-                the time, uncertainty, and frustration of doing it all yourself.
+                This makes your service feel personal. We save you the time,
+                uncertainty, and frustration of doing it all yourself.
               </p>
               <div className="flex flex-col items-center justify-center gap-4 pt-2 sm:flex-row">
                 <motion.div

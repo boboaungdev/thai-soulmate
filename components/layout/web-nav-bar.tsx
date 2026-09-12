@@ -158,7 +158,7 @@ export function WebNavBar() {
               alt={`${APP_INFO.name} logo`}
               width={72}
               height={72}
-              className="relative size-10 shrink-0 object-contain sm:size-11"
+              className="relative size-15 shrink-0 object-contain"
               priority
             />
           </motion.div>
@@ -181,7 +181,7 @@ export function WebNavBar() {
               />
             </p>
 
-            <p className="truncate text-[9px] leading-tight font-medium tracking-[0.08em] text-[#D3A753] sm:text-[10px]">
+            <p className="truncate text-[9px] leading-tight font-medium tracking-[0.08em] text-[#D3A753] sm:text-[9px]">
               {APP_INFO.tagline}
             </p>
           </div>

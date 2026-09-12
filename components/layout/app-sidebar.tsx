@@ -250,7 +250,7 @@ export function AppSidebar() {
               alt={`${APP_INFO.name} logo`}
               width={72}
               height={72}
-              className="relative size-10 shrink-0 object-contain group-data-[collapsible=icon]:size-8 sm:size-11"
+              className="relative size-15 shrink-0 object-contain group-data-[collapsible=icon]:size-8 sm:size-15"
               priority
             />
           </motion.div>
@@ -274,7 +274,7 @@ export function AppSidebar() {
               />
             </p>
 
-            <p className="truncate text-[9px] leading-tight font-medium tracking-[0.08em] text-[#D3A753] sm:text-[10px]">
+            <p className="truncate text-[9px] leading-tight font-medium tracking-[0.08em] text-[#D3A753] sm:text-[9px]">
               {APP_INFO.tagline}
             </p>
           </div>

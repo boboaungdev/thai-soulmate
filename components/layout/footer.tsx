@@ -63,16 +63,16 @@ export function Footer() {
                   <Image
                     src="/logo.png"
                     alt={`${APP_INFO.name} logo`}
-                    width={56}
-                    height={56}
-                    className="relative size-12 shrink-0 object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+                    width={72}
+                    height={72}
+                    className="relative size-15 shrink-0 object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
                   />
                 </motion.div>
 
                 <div className="flex flex-col items-center justify-center space-y-1">
-                  <AppName className="block text-base leading-tight font-black tracking-tight uppercase" />
+                  <AppName className="block text-lg leading-tight font-black tracking-tight uppercase" />
                   <div className="flex flex-col items-center justify-center space-y-0.5">
-                    <p className="inline-flex items-center justify-center gap-1.5 text-[9px] font-bold tracking-[0.25em] text-[#E791A7] uppercase sm:text-[10px]">
+                    <p className="inline-flex items-center justify-center gap-1.5 text-[9px] font-bold tracking-[0.25em] text-[#E791A7] uppercase sm:text-[9px]">
                       <motion.span
                         initial={{ width: 0 }}
                         whileInView={{ width: 12 }}
@@ -89,7 +89,7 @@ export function Footer() {
                         className="h-px bg-[#CA617D]/60"
                       />
                     </p>
-                    <p className="text-xs font-medium tracking-[0.08em] text-[#D3A753]">
+                    <p className="text-[9px] font-medium tracking-[0.08em] text-[#D3A753]">
                       {APP_INFO.tagline}
                     </p>
                   </div>

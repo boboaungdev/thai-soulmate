@@ -256,9 +256,9 @@ export function HeroSoulWaves() {
           <Image
             src="/logo.png"
             alt={`${APP_INFO.name} Logo`}
-            width={160}
-            height={160}
-            className="h-24 w-24 object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.6)] sm:h-32 sm:w-32 md:h-36 md:w-36"
+            width={200}
+            height={200}
+            className="h-48 w-48 object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.6)] sm:h-52 sm:w-52 md:h-52 md:w-52"
             priority
           />
         </motion.div>

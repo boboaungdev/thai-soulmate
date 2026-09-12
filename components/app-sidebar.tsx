@@ -25,22 +25,11 @@ import {
   UserKey,
   Code,
   Moon,
-  MessageCircle,
   Calendar1,
-  Inbox,
-  Mail,
-  ChevronRight,
-  Send,
-  Star,
-  FileText,
-  Archive,
-  ShieldAlert,
-  Trash2,
 } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { APP_INFO } from "@/constants"
-import { EMAIL_ACCOUNTS, EMAIL_FOLDERS } from "@/constants/email"
 import { AppName } from "@/components/app-name"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -52,11 +41,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import { Switch } from "@/components/ui/switch"
 import {
   Sidebar,
@@ -69,9 +53,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/auth-store"
 import { useEmailStore } from "@/stores/email-store"
@@ -164,31 +145,6 @@ const securityItems = [
   },
 ]
 
-const emailFolderIcons: Record<string, React.ElementType> = {
-  inbox: Inbox,
-  starred: Star,
-  sent: Send,
-  draft: FileText,
-  archive: Archive,
-  spam: ShieldAlert,
-  trash: Trash2,
-  settings: Settings2,
-}
-
-type EmailNavigationItem = {
-  title: string
-  url: string
-  icon: React.ElementType
-  accountId?: string
-  items?: {
-    title: string
-    url: string
-    icon: React.ElementType
-  }[]
-}
-
-const EMPTY_COUNTS: Record<string, number> = {}
-
 function isRouteActive(pathname: string, itemUrl: string): boolean {
   if (itemUrl === "/") {
     return pathname === "/"
@@ -201,7 +157,7 @@ function isRouteActive(pathname: string, itemUrl: string): boolean {
 
 function LuxuryGroupLabel({ label }: { label: string }) {
   return (
-    <SidebarGroupLabel className="flex h-auto select-none items-center gap-2 px-3 pt-3.5 pb-1 text-[10px] font-bold tracking-[0.18em] text-[#D3A753]/90 uppercase group-data-[collapsible=icon]:hidden dark:text-[#D3A753]">
+    <SidebarGroupLabel className="flex h-auto items-center gap-2 px-3 pt-3.5 pb-1 text-[10px] font-bold tracking-[0.18em] text-[#D3A753]/90 uppercase select-none group-data-[collapsible=icon]:hidden dark:text-[#D3A753]">
       <span className="size-1 rounded-full bg-[#D3A753]/60" />
       <span>{label}</span>
       <span className="h-px flex-1 bg-gradient-to-r from-[#D3A753]/25 via-[#D3A753]/10 to-transparent" />
@@ -257,162 +213,6 @@ function SidebarNavItem({
   )
 }
 
-function EmailSidebarMenuItem({
-  item,
-  pathname,
-  accountId = "contact",
-}: {
-  item: EmailNavigationItem
-  pathname: string
-  accountId?: string
-}) {
-  const effectiveAccId = (item.accountId || accountId).toLowerCase()
-  const allFolderCounts = useEmailStore((s) => s.folderCounts)
-  const folderCounts = allFolderCounts[effectiveAccId] || EMPTY_COUNTS
-  const hasSubItems = Boolean(item.items && item.items.length > 0)
-  const isAnySubActive = Boolean(
-    item.items?.some((sub) => pathname.startsWith(sub.url))
-  )
-
-  const unreadInboxCount = folderCounts.inbox || 0
-
-  if (!hasSubItems) {
-    const active = pathname === item.url
-    return (
-      <SidebarMenuItem key={item.title}>
-        <SidebarMenuButton
-          asChild
-          tooltip={item.title}
-          isActive={active}
-          className={cn(
-            "group/nav relative h-9.5 w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
-            "hover:bg-[#D3A753]/10 hover:text-[#D3A753]",
-            active
-              ? "border-l-2 border-[#D3A753] bg-gradient-to-r from-[#D3A753]/18 via-[#E791A7]/8 to-transparent font-semibold text-[#D3A753] group-data-[collapsible=icon]:border-l-0 group-data-[collapsible=icon]:bg-[#D3A753]/15 group-data-[collapsible=icon]:ring-1 group-data-[collapsible=icon]:ring-[#D3A753]/50"
-              : "text-sidebar-foreground/75"
-          )}
-        >
-          <Link href={item.url} className="flex w-full items-center">
-            <item.icon
-              className={cn(
-                "size-4 shrink-0 transition-transform duration-200 group-hover/nav:scale-110",
-                active
-                  ? "text-[#D3A753] drop-shadow-[0_0_8px_rgba(211,167,83,0.4)]"
-                  : "text-muted-foreground group-hover/nav:text-[#D3A753]"
-              )}
-            />
-            <span className="flex-1 truncate group-data-[collapsible=icon]:hidden">
-              {item.title}
-            </span>
-            {unreadInboxCount > 0 && (
-              <span className="ml-auto rounded-full bg-gradient-to-r from-[#D3A753] to-[#CA617D] px-1.5 py-0.5 text-[10px] font-bold text-white shadow-xs group-data-[collapsible=icon]:hidden">
-                {unreadInboxCount > 99 ? "99+" : unreadInboxCount}
-              </span>
-            )}
-            {active && unreadInboxCount === 0 && (
-              <span className="ml-auto size-1.5 shrink-0 rounded-full bg-[#D3A753] shadow-[0_0_6px_#D3A753] group-data-[collapsible=icon]:hidden" />
-            )}
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    )
-  }
-
-  return (
-    <Collapsible
-      key={item.title}
-      asChild
-      defaultOpen={isAnySubActive}
-      className="group/collapsible"
-    >
-      <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton
-            tooltip={item.title}
-            className="group/nav h-9.5 w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-[#D3A753]/10 hover:text-[#D3A753]"
-          >
-            <item.icon className="size-4 shrink-0 text-muted-foreground transition-colors group-hover/nav:text-[#D3A753]" />
-            <span className="flex-1 truncate group-data-[collapsible=icon]:hidden">
-              {item.title}
-            </span>
-            {unreadInboxCount > 0 && (
-              <span className="mr-1 ml-auto rounded-full bg-gradient-to-r from-[#D3A753] to-[#CA617D] px-1.5 py-0.5 text-[10px] font-bold text-white shadow-xs group-data-[collapsible=icon]:hidden">
-                {unreadInboxCount > 99 ? "99+" : unreadInboxCount}
-              </span>
-            )}
-            <ChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-
-        <CollapsibleContent>
-          <SidebarMenuSub className="ml-4 space-y-0.5 border-l border-[#D3A753]/20 pl-2">
-            {item.items?.map((subItem) => {
-              const folderSlug = subItem.url.split("/").pop() || ""
-              const count = folderCounts[folderSlug] || 0
-              const isInbox = folderSlug === "inbox"
-              const isDraft = folderSlug === "draft"
-              const isSpam = folderSlug === "spam"
-              const hasCount = count > 0 && folderSlug !== "settings"
-              const isSubActive = pathname === subItem.url
-
-              return (
-                <SidebarMenuSubItem key={subItem.title}>
-                  <SidebarMenuSubButton
-                    asChild
-                    isActive={isSubActive}
-                    className={cn(
-                      "h-8 rounded-md px-2 text-xs transition-all duration-200 hover:bg-[#D3A753]/10 hover:text-[#D3A753]",
-                      isSubActive
-                        ? "bg-[#D3A753]/15 font-semibold text-[#D3A753]"
-                        : "text-sidebar-foreground/70"
-                    )}
-                  >
-                    <Link href={subItem.url} className="flex w-full items-center">
-                      {subItem.icon && (
-                        <subItem.icon
-                          className={cn(
-                            "mr-2 size-3.5",
-                            isSubActive ? "text-[#D3A753]" : "text-muted-foreground"
-                          )}
-                        />
-                      )}
-                      <span
-                        className={cn(
-                          "flex-1 truncate",
-                          isInbox && count > 0 && "font-semibold text-foreground"
-                        )}
-                      >
-                        {subItem.title}
-                      </span>
-
-                      {hasCount && (
-                        <span
-                          className={cn(
-                            "ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
-                            isInbox
-                              ? "bg-gradient-to-r from-[#D3A753] to-[#CA617D] text-white"
-                              : isDraft
-                                ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
-                                : isSpam
-                                  ? "bg-destructive/15 text-destructive"
-                                  : "text-muted-foreground"
-                          )}
-                        >
-                          {count > 999 ? "999+" : count}
-                        </span>
-                      )}
-                    </Link>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              )
-            })}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </SidebarMenuItem>
-    </Collapsible>
-  )
-}
-
 export function AppSidebar() {
   const { user, logout } = useAuthStore()
   const router = useRouter()
@@ -430,32 +230,6 @@ export function AppSidebar() {
     return null
   }
 
-  const personalEmailItem: EmailNavigationItem = {
-    title: user.email,
-    url: "/dashboard/email/personal/inbox",
-    accountId: "personal",
-    icon: Mail,
-    items: EMAIL_FOLDERS.map((folder) => ({
-      title: folder.title,
-      url: `/dashboard/email/personal/${folder.slug}`,
-      icon: emailFolderIcons[folder.id] ?? Mail,
-    })),
-  }
-
-  const workEmailItems: EmailNavigationItem[] = EMAIL_ACCOUNTS.map(
-    (account) => ({
-      title: account.email,
-      url: `/dashboard/email/${account.id}/inbox`,
-      accountId: account.id,
-      icon: Mail,
-      items: EMAIL_FOLDERS.map((folder) => ({
-        title: folder.title,
-        url: `/dashboard/email/${account.id}/${folder.slug}`,
-        icon: emailFolderIcons[folder.id] ?? Mail,
-      })),
-    })
-  )
-
   const isWebsiteActive = pathname === "/"
 
   return (
@@ -470,7 +244,7 @@ export function AppSidebar() {
 
         <Link
           href="/dashboard"
-          className="group flex min-w-0 items-center gap-2 sm:gap-3 group-data-[collapsible=icon]:justify-center"
+          className="group flex min-w-0 items-center gap-2 group-data-[collapsible=icon]:justify-center sm:gap-3"
         >
           <motion.div
             whileHover={{ scale: 1.08, rotate: 2 }}
@@ -484,7 +258,7 @@ export function AppSidebar() {
               alt={`${APP_INFO.name} logo`}
               width={72}
               height={72}
-              className="relative size-10 shrink-0 object-contain sm:size-11 group-data-[collapsible=icon]:size-8"
+              className="relative size-10 shrink-0 object-contain group-data-[collapsible=icon]:size-8 sm:size-11"
               priority
             />
           </motion.div>
@@ -548,7 +322,7 @@ export function AppSidebar() {
                       Go to Website
                     </span>
                     <span className="ml-auto flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-500 group-data-[collapsible=icon]:hidden">
-                      <span className="size-1 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="size-1 animate-pulse rounded-full bg-emerald-500" />
                       Live
                     </span>
                   </Link>
@@ -667,12 +441,12 @@ export function AppSidebar() {
       {/* Luxury User Footer */}
       <SidebarFooter className="relative border-t border-sidebar-border/60 bg-gradient-to-t from-[#1C0E12]/30 via-transparent to-transparent p-2.5">
         {/* Subtle decorative gold gradient line at footer top */}
-        <div className="pointer-events-none absolute top-0 left-3 right-3 h-px bg-gradient-to-r from-transparent via-[#D3A753]/35 to-transparent" />
+        <div className="pointer-events-none absolute top-0 right-3 left-3 h-px bg-gradient-to-r from-transparent via-[#D3A753]/35 to-transparent" />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              className="group/footer h-13 w-full rounded-xl border border-sidebar-border/60 bg-sidebar-accent/20 p-2 transition-all duration-200 hover:border-[#D3A753]/40 hover:bg-[#D3A753]/8 group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
+              className="group/footer h-13 w-full rounded-xl border border-sidebar-border/60 bg-sidebar-accent/20 p-2 transition-all duration-200 group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 hover:border-[#D3A753]/40 hover:bg-[#D3A753]/8"
               tooltip={user?.name ?? "Account"}
             >
               <Avatar className="size-9 shrink-0 ring-2 ring-[#D3A753]/35 ring-offset-2 ring-offset-background transition-transform duration-200 group-hover/footer:scale-105">
@@ -692,7 +466,7 @@ export function AppSidebar() {
                   </span>
                   <span
                     className={cn(
-                      "shrink-0 rounded-full border px-1.5 py-0.2 text-[8.5px] font-bold tracking-wider uppercase",
+                      "py-0.2 shrink-0 rounded-full border px-1.5 text-[8.5px] font-bold tracking-wider uppercase",
                       user.role === "DEV" &&
                         "border-[#D3A753]/50 bg-[#D3A753]/12 text-[#D3A753]",
                       user.role === "ADMIN" &&
@@ -733,7 +507,7 @@ export function AppSidebar() {
                 </Avatar>
                 <div className="flex flex-1 flex-col gap-1 overflow-hidden">
                   <div className="flex items-center justify-between gap-1">
-                    <p className="truncate text-xs font-semibold leading-none">
+                    <p className="truncate text-xs leading-none font-semibold">
                       {user.name}
                     </p>
                     <Badge

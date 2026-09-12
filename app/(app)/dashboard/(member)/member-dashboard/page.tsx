@@ -92,7 +92,7 @@ const StatusIcon = ({
   }
 }
 
-const UserDashboardPage = () => {
+const MemberDashboardPage = () => {
   return (
     <main className="flex flex-1 flex-col gap-6 p-4 lg:gap-6 lg:p-6">
       {/* ── Title Section ── */}
@@ -250,4 +250,4 @@ const UserDashboardPage = () => {
   )
 }
 
-export default UserDashboardPage
+export default MemberDashboardPage

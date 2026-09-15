@@ -10,7 +10,7 @@ export function FloatingWhatsapp() {
   const [isOpen, setIsOpen] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
 
-  // Prompt speech bubble appears smoothly after 2.5 seconds
+  // Prompt speech bubble appears smoothly after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isDismissed) {
@@ -19,6 +19,15 @@ export function FloatingWhatsapp() {
     }, 5000)
     return () => clearTimeout(timer)
   }, [isDismissed])
+
+  // Auto-hide the card 5 seconds after it becomes visible
+  useEffect(() => {
+    if (!isOpen) return
+    const autoHide = setTimeout(() => {
+      setIsOpen(false)
+    }, 5000)
+    return () => clearTimeout(autoHide)
+  }, [isOpen])
 
   const prefilledMessage = encodeURIComponent(
     "Hello Thai Soulmate team, I would like to inquire about your personal matchmaking service."

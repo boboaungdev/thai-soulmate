@@ -1018,7 +1018,7 @@ export function CalendarView() {
             {/* CONTROLS ROW UNDER SUBTITLE */}
             <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
               {/* SEARCH INPUT */}
-              <div className="relative w-full sm:max-w-xs">
+              <div className="relative w-full sm:max-w-[180px]">
                 <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search calendar..."
@@ -1087,10 +1087,10 @@ export function CalendarView() {
                 {/* NEW APPOINTMENT BUTTON */}
                 <Button
                   size="sm"
-                  className="btn-gradient h-9 gap-1.5 px-3.5 text-sm font-medium"
+                  className="btn-gradient h-8 gap-1 px-2.5 text-xs font-medium"
                   onClick={handleOpenCreate}
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <Plus className="h-3 w-3" />
                   New Event
                 </Button>
               </div>

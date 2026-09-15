@@ -52,9 +52,7 @@ export function AdminDashboardView() {
               className="h-7 shrink-0 gap-1.5 rounded-md px-2.5 text-xs font-medium sm:px-3"
             >
               <LayoutDashboard className="size-3.5 shrink-0" />
-              <span>
-                <span className="hidden sm:inline">Executive </span>Overview
-              </span>
+              <span>Overview</span>
             </TabsTrigger>
 
             <TabsTrigger
@@ -63,7 +61,7 @@ export function AdminDashboardView() {
               className="h-7 shrink-0 gap-1.5 rounded-md px-2.5 text-xs font-medium sm:px-3"
             >
               <Coins className="size-3.5 shrink-0" />
-              <span>Financial Health</span>
+              <span>Financial</span>
             </TabsTrigger>
 
             <TabsTrigger
@@ -81,9 +79,7 @@ export function AdminDashboardView() {
               className="h-7 shrink-0 gap-1.5 rounded-md px-2.5 text-xs font-medium sm:px-3"
             >
               <HeartHandshake className="size-3.5 shrink-0" />
-              <span>
-                Matchmaking<span className="hidden sm:inline"> Pipeline</span>
-              </span>
+              <span>Matchmaking</span>
             </TabsTrigger>
           </TabsList>
         </div>

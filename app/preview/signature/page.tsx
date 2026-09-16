@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { EmailSignature } from "@/features/shared/emails"
+import { EmailSignature, NewEmailSignature } from "@/features/shared/emails"
 import { APP_INFO } from "@/constants"
 import { Check, Copy, Laptop, Smartphone, ExternalLink } from "lucide-react"
 
@@ -202,7 +202,7 @@ export default function EmailSignaturePreviewPage() {
 
               {/* Render Signature Component */}
               <div id="email-signature-render-target" className="pt-2">
-                <EmailSignature />
+                <NewEmailSignature />
               </div>
             </div>
           </div>

@@ -19,7 +19,7 @@ export interface EmailSignatureProps {
   tiktok?: string
 }
 
-export function EmailSignature({
+export function NewEmailSignature({
   signOff = "Best regards,",
   name,
   role = APP_INFO.tagline,
@@ -374,7 +374,7 @@ export function EmailSignature({
   )
 }
 
-export default EmailSignature
+export default NewEmailSignature
 
 /* ============================================================
    STYLES — Dark Luxury (Burgundy / Gold / Rose)

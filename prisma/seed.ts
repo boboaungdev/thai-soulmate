@@ -137,7 +137,12 @@ async function main() {
     })
 
     console.log(
-      `Created application #${application.customId} (${form.personalDetails.name})`
+      `Created application #${application.customId} (${[
+        form.personalDetails.firstName,
+        form.personalDetails.lastName,
+      ]
+        .filter(Boolean)
+        .join(" ")})`
     )
   }
 

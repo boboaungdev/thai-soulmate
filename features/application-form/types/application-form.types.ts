@@ -37,14 +37,16 @@ export interface ApplicationForm {
 export interface PersonalDetails {
   nickname?: string
   prefix: string
-  name: string
+  firstName: string
+  lastName: string
   gender: string
   dob: string | Date
   email: string
   phone: string
   nationality: string
   currentLocation: string
-  region: string
+  nationalityRegion?: string
+  currentLocationRegion?: string
 }
 
 export interface Career {

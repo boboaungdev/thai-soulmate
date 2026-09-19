@@ -18,6 +18,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { motion } from "framer-motion"
 import {
   ApplicationForm,
+  getPersonalDetailsName,
   PersonalDetails,
   Career,
   Photos,
@@ -186,7 +187,11 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                           {photos?.headshot ? (
                             <Image
                               src={photos.headshot}
-                              alt={nickname || details?.name || "Member"}
+                              alt={
+                                nickname ||
+                                getPersonalDetailsName(details) ||
+                                "Member"
+                              }
                               fill
                               sizes="(max-width: 768px) 100vw, 280px"
                               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -309,7 +314,11 @@ export function ProfileGallery({ layout = "grid" }: UserGalleryProps) {
                     {photos?.headshot ? (
                       <Image
                         src={photos.headshot}
-                        alt={nickname || details?.name || "Member"}
+                        alt={
+                          nickname ||
+                          getPersonalDetailsName(details) ||
+                          "Member"
+                        }
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"

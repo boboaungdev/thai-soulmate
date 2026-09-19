@@ -12,7 +12,10 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
-import { ApplicationForm } from "@/types/application-form"
+import {
+  ApplicationForm,
+  getPersonalDetailsName,
+} from "@/types/application-form"
 import {
   Note,
   Profile as PrismaProfile,
@@ -834,6 +837,7 @@ export function ProfileDetailView() {
   }
 
   const { personalDetails, photos } = profile.applicationForm
+  const fullName = getPersonalDetailsName(personalDetails)
 
   const age =
     personalDetails?.dob && !isNaN(new Date(personalDetails.dob).getTime())
@@ -933,15 +937,14 @@ export function ProfileDetailView() {
                 className="object-cover"
               />
               <AvatarFallback className="bg-gradient-to-br from-[#8A2535] to-[#5A0816] text-2xl font-bold text-white">
-                {personalDetails?.name?.charAt(0) || "U"}
+                {fullName.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
             <div>
               <h1 className="text-gradient text-2xl font-bold">
-                {personalDetails?.prefix || ""}{" "}
-                {personalDetails?.name || "User"}
+                {personalDetails?.prefix || ""} {fullName || "User"}
                 {personalDetails?.nickname &&
-                  personalDetails.name &&
+                  fullName &&
                   ` (${personalDetails.nickname})`}
               </h1>
               <div className="mt-2 flex flex-wrap items-center justify-center gap-2 md:justify-start">

@@ -9,7 +9,10 @@ import { ProfileStatus } from "@/lib/generated/prisma/enums"
 
 import { DataTableColumnHeader } from "@/components/ui/data-table"
 import { DataTableRowActions } from "./data-table-row-actions"
-import { ApplicationForm } from "@/types/application-form"
+import {
+  ApplicationForm,
+  getPersonalDetailsName,
+} from "@/types/application-form"
 import { calculateAge, formatDateTime } from "@/lib/date"
 import { Profile } from "@/lib/generated/prisma/client"
 
@@ -29,7 +32,12 @@ export const profileStatuses = [
 export type ProfileRow = Profile &
   Pick<
     ApplicationForm,
-    "personalDetails" | "photos" | "membership" | "notes" | "customId" | 'personality'
+    | "personalDetails"
+    | "photos"
+    | "membership"
+    | "notes"
+    | "customId"
+    | "personality"
   >
 
 const getStatusMeta = (status: ProfileStatus) => {
@@ -64,13 +72,13 @@ export const columns: ColumnDef<ProfileRow>[] = [
   },
   {
     id: "profile",
-    accessorFn: (row) => row.personalDetails?.name ?? "",
+    accessorFn: (row) => getPersonalDetailsName(row.personalDetails),
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Applicant" />
     ),
     cell: ({ row }) => {
       const applicant = row.original
-      const name = applicant.personalDetails?.name || "-"
+      const name = getPersonalDetailsName(applicant.personalDetails) || "-"
       const nickname = applicant?.personalDetails?.nickname
 
       return (

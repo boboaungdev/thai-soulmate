@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils"
 import {
   PersonalDetails,
   Photos,
+  getPersonalDetailsName,
   Career,
   Appearance,
   Personality,
@@ -660,6 +661,7 @@ const MemberHeaderCard: React.FC<{
   const personalDetails = application.personalDetails as PersonalDetails
   const photos = application.photos as Photos
   const age = calculateAge(personalDetails?.dob)
+  const fullName = getPersonalDetailsName(personalDetails)
   const isMale = genderRole === "Male"
 
   return (
@@ -676,21 +678,17 @@ const MemberHeaderCard: React.FC<{
               )}
               onClick={() => {
                 if (photos?.headshot) {
-                  onPhotoClick(
-                    photos.headshot,
-                    "headshot",
-                    personalDetails?.name
-                  )
+                  onPhotoClick(photos.headshot, "headshot", fullName)
                 }
               }}
             >
               <AvatarImage
                 src={photos?.headshot}
-                alt={personalDetails?.name}
+                alt={fullName}
                 className="object-cover"
               />
               <AvatarFallback className="text-base font-bold">
-                {getInitials(personalDetails?.name)}
+                {getInitials(fullName)}
               </AvatarFallback>
             </Avatar>
             <span
@@ -718,7 +716,7 @@ const MemberHeaderCard: React.FC<{
                 )}
               >
                 {personalDetails?.prefix ? `${personalDetails.prefix} ` : ""}
-                {personalDetails?.name}
+                {fullName}
               </CardTitle>
               {personalDetails?.nickname && (
                 <span className="text-xs font-medium text-muted-foreground">
@@ -915,7 +913,7 @@ const SynchronizedProfilesView: React.FC<{
           <CardHeader className="border-b bg-muted/10 pb-3">
             <CardTitle className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-[#b48735] uppercase dark:text-[#E5BE6C]">
               <Sparkles className="h-3.5 w-3.5 text-[#D3A753]" />
-              About {malePersonal?.name || "Male Member"}
+              About {getPersonalDetailsName(malePersonal) || "Male Member"}
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col p-4">
@@ -931,7 +929,7 @@ const SynchronizedProfilesView: React.FC<{
           <CardHeader className="border-b bg-muted/10 pb-3">
             <CardTitle className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-pink-600 uppercase dark:text-pink-400">
               <Sparkles className="h-3.5 w-3.5 text-pink-500" />
-              About {femalePersonal?.name || "Female Member"}
+              About {getPersonalDetailsName(femalePersonal) || "Female Member"}
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col p-4">
@@ -1421,7 +1419,7 @@ const SynchronizedProfilesView: React.FC<{
                       onPhotoClick(
                         value as string,
                         key as string,
-                        `${malePersonal?.name} - ${label}`
+                        `${getPersonalDetailsName(malePersonal)} - ${label}`
                       )
                     }
                   >
@@ -1474,7 +1472,7 @@ const SynchronizedProfilesView: React.FC<{
                       onPhotoClick(
                         value as string,
                         key as string,
-                        `${femalePersonal?.name} - ${label}`
+                        `${getPersonalDetailsName(femalePersonal)} - ${label}`
                       )
                     }
                   >

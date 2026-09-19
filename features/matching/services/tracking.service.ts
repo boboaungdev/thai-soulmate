@@ -3,6 +3,7 @@ import {
   TrackingStatus,
   TrackingNoteType,
 } from "@/lib/generated/prisma/client"
+import { getPersonalDetailsName } from "@/types/application-form"
 import { env } from "@/lib/env"
 import { prisma } from "@/lib/prisma"
 import { resend } from "@/lib/resend"
@@ -129,8 +130,12 @@ export class TrackingService {
     if (search) {
       const term = search.toLowerCase()
       filteredTrackings = parsedTrackings.filter((t) => {
-        const mName = t.male?.personalDetails?.name?.toLowerCase() || ""
-        const fName = t.female?.personalDetails?.name?.toLowerCase() || ""
+        const mName = getPersonalDetailsName(
+          t.male?.personalDetails
+        ).toLowerCase()
+        const fName = getPersonalDetailsName(
+          t.female?.personalDetails
+        ).toLowerCase()
         const mId = String(t.male?.customId || "")
         const fId = String(t.female?.customId || "")
         return (

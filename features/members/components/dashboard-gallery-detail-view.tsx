@@ -5,7 +5,10 @@ import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
-import { ApplicationForm } from "@/types/application-form"
+import {
+  ApplicationForm,
+  getPersonalDetailsName,
+} from "@/types/application-form"
 import { getGalleryProfileByIdAction } from "@/features/members"
 import { downloadFileAction } from "@/features/upload"
 
@@ -418,6 +421,7 @@ export function DashboardGalleryDetailView() {
   }
 
   const { personalDetails, photos } = user
+  const fullName = getPersonalDetailsName(personalDetails)
 
   const age =
     personalDetails?.dob && !isNaN(new Date(personalDetails.dob).getTime())
@@ -508,14 +512,12 @@ export function DashboardGalleryDetailView() {
         <CardContent className="flex flex-col items-center pt-6">
           <Avatar className="mx-auto mb-4 h-32 w-32 border-4 border-background">
             <AvatarImage src={mainPhoto} alt="Profile photo" />
-            <AvatarFallback>
-              {personalDetails?.name?.charAt(0) || "U"}
-            </AvatarFallback>
+            <AvatarFallback>{fullName.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
           <h1 className="text-gradient text-3xl font-bold">
             {personalDetails?.nickname
               ? ` ${personalDetails.nickname}`
-              : personalDetails.name}
+              : fullName}
           </h1>
           <div className="mt-2 flex items-center justify-center gap-4 text-muted-foreground">
             <div

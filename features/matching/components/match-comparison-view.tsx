@@ -1,3 +1,7 @@
+import {
+  ApplicationForm,
+  getPersonalDetailsName,
+} from "@/types/application-form"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
@@ -56,7 +60,6 @@ import {
   GitCompare,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { ApplicationForm } from "@/types/application-form"
 import React from "react"
 import { FaSmoking } from "react-icons/fa"
 import { env } from "@/lib/env"
@@ -446,7 +449,7 @@ export async function MatchComparisonView({
               <DetailRow
                 icon={<User />}
                 label="Name"
-                value={`${male.personalDetails?.prefix || ""} ${male.personalDetails?.name || ""}`}
+                value={`${male.personalDetails?.prefix || ""} ${getPersonalDetailsName(male.personalDetails)}`}
               />
               <DetailRow
                 icon={<PersonStanding />}
@@ -507,7 +510,7 @@ export async function MatchComparisonView({
               <DetailRow
                 icon={<User />}
                 label="Name"
-                value={`${female.personalDetails?.prefix || ""} ${female.personalDetails?.name || ""}`}
+                value={`${female.personalDetails?.prefix || ""} ${getPersonalDetailsName(female.personalDetails)}`}
               />
               <DetailRow
                 icon={<PersonStanding />}

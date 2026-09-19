@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { calculateAge } from "@/lib/date"
 import { cn } from "@/lib/utils"
+import { getPersonalDetailsName } from "@/types/application-form"
 
 import { updateProfileAction } from "@/features/members"
 import { ProfileRow } from "./columns"
@@ -51,6 +52,7 @@ export function EditProfileSheet({
 
   const { personalDetails, photos } = profile
   const age = calculateAge(personalDetails?.dob)
+  const fullName = getPersonalDetailsName(personalDetails)
 
   const handleSaveChanges = async () => {
     if (!profile) return
@@ -81,7 +83,7 @@ export function EditProfileSheet({
         <SheetHeader className="px-6 pt-6 text-left">
           <SheetTitle>Edit Profile</SheetTitle>
           <SheetDescription>
-            Make changes to {personalDetails?.prefix} {personalDetails?.name}
+            Make changes to {personalDetails?.prefix} {fullName}
             &apos;s profile.
           </SheetDescription>
         </SheetHeader>
@@ -89,17 +91,12 @@ export function EditProfileSheet({
           <div className="space-y-6 px-6 py-4">
             <div className="flex flex-col items-center gap-4">
               <Avatar className="h-24 w-24 border">
-                <AvatarImage
-                  src={photos?.headshot}
-                  alt={personalDetails?.name}
-                />
-                <AvatarFallback>
-                  {personalDetails?.name?.charAt(0)}
-                </AvatarFallback>
+                <AvatarImage src={photos?.headshot} alt={fullName} />
+                <AvatarFallback>{fullName.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="text-center">
                 <h2 className="text-xl font-semibold">
-                  {personalDetails?.prefix} {personalDetails?.name}
+                  {personalDetails?.prefix} {fullName}
                 </h2>
                 <div className="mt-1 flex items-center justify-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">

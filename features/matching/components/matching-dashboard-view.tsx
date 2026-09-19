@@ -53,6 +53,7 @@ import {
 } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Skeleton } from "@/components/ui/skeleton"
+import { getPersonalDetailsName } from "@/types/application-form"
 
 // Types
 export interface TrackingStats {
@@ -318,7 +319,8 @@ export function MatchingDashboardView() {
       setIsLoadingMales(true)
       try {
         const data = await getApplicationsAction()
-        if (!data.success) throw new Error(data.message || "Failed to fetch applicants")
+        if (!data.success)
+          throw new Error(data.message || "Failed to fetch applicants")
         if (data && Array.isArray(data.applications)) {
           const males = data.applications
             .map((applicant: any) => parseApplicantData(applicant))
@@ -428,7 +430,7 @@ export function MatchingDashboardView() {
                     {isLoadingMales
                       ? "Loading males..."
                       : selectedMale
-                        ? `${selectedMale.personalDetails.prefix} ${selectedMale.personalDetails.name}`
+                        ? `${selectedMale.personalDetails.prefix} ${getPersonalDetailsName(selectedMale.personalDetails)}`
                         : "Select a male"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -444,7 +446,7 @@ export function MatchingDashboardView() {
                         {maleUsers.map((user) => (
                           <CommandItem
                             key={user.id}
-                            value={`${user.personalDetails.prefix} ${user.personalDetails.name}`}
+                            value={`${user.personalDetails.prefix} ${getPersonalDetailsName(user.personalDetails)}`}
                             onSelect={() => {
                               setSelectedMaleId(user.id)
                               setOpen(false)
@@ -462,16 +464,20 @@ export function MatchingDashboardView() {
                             <Avatar className="h-9 w-9">
                               <AvatarImage
                                 src={user.photos?.headshot}
-                                alt={user.personalDetails?.name}
+                                alt={getPersonalDetailsName(
+                                  user.personalDetails
+                                )}
                               />
                               <AvatarFallback>
-                                {user.personalDetails?.name?.charAt(0)}
+                                {getPersonalDetailsName(
+                                  user.personalDetails
+                                ).charAt(0)}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
                               <span className="font-medium">
                                 {user.personalDetails?.prefix}{" "}
-                                {user.personalDetails?.name}
+                                {getPersonalDetailsName(user.personalDetails)}
                               </span>
                               <span className="text-xs text-muted-foreground">
                                 {calculateAge(user.personalDetails?.dob)} years
@@ -507,16 +513,18 @@ export function MatchingDashboardView() {
                 <Avatar className="h-24 w-24">
                   <AvatarImage
                     src={selectedMale.photos?.headshot}
-                    alt={selectedMale.personalDetails?.name}
+                    alt={getPersonalDetailsName(selectedMale.personalDetails)}
                   />
                   <AvatarFallback>
-                    {selectedMale.personalDetails?.name?.charAt(0)}
+                    {getPersonalDetailsName(
+                      selectedMale.personalDetails
+                    ).charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="mt-3 grid gap-1">
                   <p className="text-lg font-semibold">
                     {selectedMale.personalDetails?.prefix}{" "}
-                    {selectedMale.personalDetails?.name}
+                    {getPersonalDetailsName(selectedMale.personalDetails)}
                   </p>
                   <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
                     <Mars className="text-gold h-5 w-5" />
@@ -868,16 +876,22 @@ export function MatchingDashboardView() {
                       <Avatar className="h-24 w-24">
                         <AvatarImage
                           src={applicant.photos?.headshot}
-                          alt={applicant.personalDetails?.name}
+                          alt={getPersonalDetailsName(
+                            applicant.personalDetails
+                          )}
                         />
                         <AvatarFallback>
-                          {applicant.personalDetails?.name?.charAt(0)}
+                          {getPersonalDetailsName(
+                            applicant.personalDetails
+                          ).charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                     </CardHeader>
                     <CardContent className="flex-1 space-y-2 p-2">
                       <CardTitle className="flex items-center justify-center gap-2 text-lg">
-                        <span>{applicant.personalDetails?.name}</span>
+                        <span>
+                          {getPersonalDetailsName(applicant.personalDetails)}
+                        </span>
                         {applicant.isVip && (
                           <Badge className="border-pink text-gradient">
                             VIP

@@ -1,5 +1,10 @@
 "use client"
 
+import {
+  ApplicationForm,
+  getPersonalDetailsName,
+} from "@/types/application-form"
+
 import React from "react"
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
@@ -90,7 +95,6 @@ import {
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
-import { ApplicationForm } from "@/types/application-form"
 import { Note, User as PrismaUser } from "@/lib/generated/prisma/client"
 import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
 import { useAuthStore } from "@/features/auth"
@@ -710,6 +714,7 @@ export function ApplicationDetailView() {
     status,
     notes = [],
   } = application
+  const fullName = getPersonalDetailsName(personalDetails)
 
   const photoLabels: Record<string, string> = {
     headshot: "Headshot",
@@ -785,13 +790,11 @@ export function ApplicationDetailView() {
             <div className="flex flex-col items-center gap-4 md:flex-row">
               <Avatar className="h-28 w-28 border-4 border-primary/20">
                 <AvatarImage src={photos?.headshot} className="object-cover" />
-                <AvatarFallback>
-                  {personalDetails?.name?.charAt(0) || "A"}
-                </AvatarFallback>
+                <AvatarFallback>{fullName.charAt(0) || "A"}</AvatarFallback>
               </Avatar>
               <div>
                 <h1 className="text-gradient text-2xl font-bold">
-                  {personalDetails?.prefix} {personalDetails?.name}
+                  {personalDetails?.prefix} {fullName}
                   {personalDetails?.nickname
                     ? ` (${personalDetails.nickname})`
                     : ""}
@@ -884,7 +887,7 @@ export function ApplicationDetailView() {
             <DetailRow
               icon={<User2 />}
               label="Name"
-              value={`${personalDetails?.prefix} ${personalDetails?.name}`}
+              value={`${personalDetails?.prefix} ${fullName}`}
             />
             {personalDetails.gender === "Female" && (
               <DetailRow

@@ -5,6 +5,7 @@ import { APP_INFO } from "@/constants"
 import { getMatchComparisonAction } from "@/features/matching"
 import { formatDOB } from "@/lib/date"
 import { PrintTrigger } from "@/features/shared"
+import { getPersonalDetailsName } from "@/types/application-form"
 
 type Breakdown = {
   key: string
@@ -23,7 +24,8 @@ type Applicant = {
   customId: number
   personalDetails?: {
     prefix?: string
-    name?: string
+    firstName?: string
+    lastName?: string
     nickname?: string
     gender?: string
     nationality?: string
@@ -331,7 +333,10 @@ export default async function MatchComparisonPrintPage({
                   </div>
                 )}
                 <h3 className="mt-2 text-sm font-bold text-gray-800">
-                  {[male.personalDetails?.prefix, male.personalDetails?.name]
+                  {[
+                    male.personalDetails?.prefix,
+                    getPersonalDetailsName(male.personalDetails),
+                  ]
                     .filter(Boolean)
                     .join(" ") || "Male Profile"}
                 </h3>
@@ -389,7 +394,7 @@ export default async function MatchComparisonPrintPage({
                 <h3 className="mt-2 text-sm font-bold text-gray-800">
                   {[
                     female.personalDetails?.prefix,
-                    female.personalDetails?.name,
+                    getPersonalDetailsName(female.personalDetails),
                   ]
                     .filter(Boolean)
                     .join(" ") || "Female Profile"}

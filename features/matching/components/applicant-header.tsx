@@ -1,7 +1,10 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import type { ApplicationForm } from "@/types/application-form"
+import {
+  getPersonalDetailsName,
+  type ApplicationForm,
+} from "@/types/application-form"
 import { Copy, Home, MapPin, Mars, Venus } from "lucide-react"
 import { toast } from "sonner"
 
@@ -21,6 +24,7 @@ export function ApplicantHeader({ applicant }: { applicant: ApplicationForm }) {
   const age = calculateAge(applicant.personalDetails?.dob)
   const idToCopy = String(applicant.customId).padStart(4, "0")
   const isMale = applicant.personalDetails?.gender === "Male"
+  const fullName = getPersonalDetailsName(applicant.personalDetails)
 
   const handleCopyId = () => {
     navigator.clipboard.writeText(idToCopy).then(
@@ -41,11 +45,11 @@ export function ApplicantHeader({ applicant }: { applicant: ApplicationForm }) {
         >
           <AvatarImage
             src={applicant.photos?.headshot}
-            alt={applicant.personalDetails?.name}
+            alt={fullName}
             className="object-cover"
           />
           <AvatarFallback className="text-xl font-bold">
-            {applicant.personalDetails?.name?.charAt(0)}
+            {fullName.charAt(0)}
           </AvatarFallback>
         </Avatar>
         <span
@@ -71,7 +75,7 @@ export function ApplicantHeader({ applicant }: { applicant: ApplicationForm }) {
           {applicant.personalDetails?.prefix
             ? `${applicant.personalDetails.prefix} `
             : ""}
-          {applicant.personalDetails?.name}{" "}
+          {fullName}{" "}
           {applicant.personalDetails?.nickname &&
             `(${applicant.personalDetails?.nickname})`}
         </h2>

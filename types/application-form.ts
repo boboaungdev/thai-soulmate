@@ -37,14 +37,25 @@ export interface ApplicationForm {
 export interface PersonalDetails {
   nickname?: string
   prefix: string
-  name: string
+  firstName: string
+  lastName: string
   gender: string
   dob: string | Date
   email: string
   phone: string
   nationality: string
   currentLocation: string
-  region: string
+  nationalityRegion?: string
+  currentLocationRegion?: string
+}
+
+export function getPersonalDetailsName(
+  personalDetails?: Partial<PersonalDetails> | null
+) {
+  return [personalDetails?.firstName, personalDetails?.lastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim()
 }
 
 export interface Career {

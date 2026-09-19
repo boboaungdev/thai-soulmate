@@ -3,7 +3,10 @@ import Image from "next/image"
 import { APP_INFO } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
-import { ApplicationForm } from "@/types/application-form"
+import {
+  ApplicationForm,
+  getPersonalDetailsName,
+} from "@/types/application-form"
 import { PrintTrigger } from "@/features/shared"
 
 function calculateAge(dob: string | Date): number {
@@ -145,11 +148,12 @@ export default async function ProfilePrintPage({
     ? calculateAge(user.personalDetails.dob)
     : null
   const isMale = user.personalDetails?.gender === "Male"
-  const firstName = user.personalDetails?.name?.trim().split(/\s+/)[0] || ""
+  const fullName = getPersonalDetailsName(user.personalDetails)
+  const firstName = user.personalDetails?.firstName || ""
   const nickname = user.personalDetails?.nickname || ""
 
   const nameToDisplay = isMale
-    ? firstName || nickname || "Member"
+    ? fullName || nickname || "Member"
     : nickname || firstName || "Member"
 
   return (

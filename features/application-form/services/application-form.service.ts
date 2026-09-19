@@ -1,5 +1,6 @@
 import { resend } from "@/lib/resend"
 import { APP_INFO, EMAIL } from "@/constants"
+import { getPersonalDetailsName } from "@/types/application-form"
 import { ApplicationFormAdminNotificationEmail } from "../emails"
 import type { ApplicationFormStatus } from "@/lib/generated/prisma/client"
 import {
@@ -39,7 +40,8 @@ export async function processApplicationForm(body: any) {
     personalDetails: {
       nickname: body.profile?.nickname ?? body.details?.nickname ?? "",
       prefix: body.details?.prefix ?? "Mr.",
-      name: body.details?.name ?? "",
+      firstName: body.details?.firstName ?? "",
+      lastName: body.details?.lastName ?? "",
       gender: body.details?.gender ?? "Male",
       dob: body.details?.dob ?? "",
       email: email,
@@ -140,15 +142,18 @@ export async function processApplicationForm(body: any) {
 
   // 4. Send Admin Notification Email via Resend
   try {
+    const applicantName = getPersonalDetailsName(
+      formattedPayload.personalDetails
+    )
     const { data, error } = await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
       to: EMAIL.NOTIFICATIONS,
       replyTo: formattedPayload.personalDetails.email,
-      subject: `[New Application Form] New application received from ${formattedPayload.personalDetails.prefix} ${formattedPayload.personalDetails.name}`,
+      subject: `[New Application Form] New application received from ${formattedPayload.personalDetails.prefix} ${applicantName}`,
       react: ApplicationFormAdminNotificationEmail({
         prefix: formattedPayload.personalDetails.prefix,
         nickname: formattedPayload.personalDetails.nickname ?? "",
-        name: formattedPayload.personalDetails.name,
+        name: applicantName,
         gender: formattedPayload.personalDetails.gender,
         email: formattedPayload.personalDetails.email,
         phone: formattedPayload.personalDetails.phone,

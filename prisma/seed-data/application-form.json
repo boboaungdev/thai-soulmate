@@ -2,7 +2,8 @@
   {
     "personalDetails": {
       "dob": "1988-06-15T00:00:00.000Z",
-      "name": "John Doe",
+      "firstName": "John",
+      "lastName": "Doe",
       "nickname": "",
       "gender": "Male",
       "prefix": "Mr.",
@@ -137,7 +138,8 @@
   {
     "personalDetails": {
       "dob": "1998-04-18T00:00:00.000Z",
-      "name": "Araya Suksom",
+      "firstName": "Araya",
+      "lastName": "Suksom",
       "nickname": "Ploy",
       "gender": "Female",
       "prefix": "Ms.",
@@ -270,7 +272,8 @@
   {
     "personalDetails": {
       "dob": "1996-08-12T00:00:00.000Z",
-      "name": "Nicha Chareon",
+      "firstName": "Nicha",
+      "lastName": "Chareon",
       "nickname": "Fern",
       "gender": "Female",
       "prefix": "Ms.",
@@ -403,7 +406,8 @@
   {
     "personalDetails": {
       "dob": "1994-11-20T00:00:00.000Z",
-      "name": "Maria Reyes",
+      "firstName": "Maria",
+      "lastName": "Reyes",
       "nickname": "Maria",
       "gender": "Female",
       "prefix": "Ms.",
@@ -538,7 +542,8 @@
   {
     "personalDetails": {
       "dob": "1997-03-14T00:00:00.000Z",
-      "name": "Yuki Tanaka",
+      "firstName": "Yuki",
+      "lastName": "Tanaka",
       "nickname": "Yuki",
       "gender": "Female",
       "prefix": "Ms.",
@@ -671,7 +676,8 @@
   {
     "personalDetails": {
       "dob": "1995-09-08T00:00:00.000Z",
-      "name": "Mai Pham",
+      "firstName": "Mai",
+      "lastName": "Pham",
       "nickname": "Mai",
       "gender": "Female",
       "prefix": "Ms.",
@@ -804,7 +810,8 @@
   {
     "personalDetails": {
       "dob": "1996-01-25T00:00:00.000Z",
-      "name": "Jisoo Kim",
+      "firstName": "Jisoo",
+      "lastName": "Kim",
       "nickname": "Jisoo",
       "gender": "Female",
       "prefix": "Ms.",
@@ -937,7 +944,8 @@
   {
     "personalDetails": {
       "dob": "1993-07-19T00:00:00.000Z",
-      "name": "Anya Sharma",
+      "firstName": "Anya",
+      "lastName": "Sharma",
       "nickname": "Anya",
       "gender": "Female",
       "prefix": "Dr.",
@@ -1070,7 +1078,8 @@
   {
     "personalDetails": {
       "dob": "1995-12-04T00:00:00.000Z",
-      "name": "Aisyah Abdullah",
+      "firstName": "Aisyah",
+      "lastName": "Abdullah",
       "nickname": "Aisyah",
       "gender": "Female",
       "prefix": "Ms.",
@@ -1203,7 +1212,8 @@
   {
     "personalDetails": {
       "dob": "1994-05-30T00:00:00.000Z",
-      "name": "Pimchanok Leenutaphong",
+      "firstName": "Pimchanok",
+      "lastName": "Leenutaphong",
       "nickname": "Baifern",
       "gender": "Female",
       "prefix": "Ms.",
@@ -1338,7 +1348,8 @@
   {
     "personalDetails": {
       "dob": "1996-10-15T00:00:00.000Z",
-      "name": "Waranya Kongsom",
+      "firstName": "Waranya",
+      "lastName": "Kongsom",
       "nickname": "Nan",
       "gender": "Female",
       "prefix": "Ms.",
@@ -1471,7 +1482,8 @@
   {
     "personalDetails": {
       "dob": "1992-04-02T00:00:00.000Z",
-      "name": "Grace Tan",
+      "firstName": "Grace",
+      "lastName": "Tan",
       "nickname": "Grace",
       "gender": "Female",
       "prefix": "Ms.",
@@ -1606,7 +1618,8 @@
   {
     "personalDetails": {
       "dob": "1997-08-22T00:00:00.000Z",
-      "name": "Camila Santos",
+      "firstName": "Camila",
+      "lastName": "Santos",
       "nickname": "Mila",
       "gender": "Female",
       "prefix": "Ms.",

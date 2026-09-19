@@ -10,7 +10,10 @@ import { DataTableColumnHeader } from "@/components/ui/data-table"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { getApplicationStatusMeta } from "./statuses"
 import { ApplicationFormStatus } from "@/lib/generated/prisma/enums"
-import { ApplicationForm } from "@/types/application-form"
+import {
+  ApplicationForm,
+  getPersonalDetailsName,
+} from "@/types/application-form"
 import { calculateAge, formatDateTime } from "@/lib/date"
 
 export type ApplicationRow = ApplicationForm & {
@@ -53,13 +56,13 @@ export const columns: ColumnDef<ApplicationRow>[] = [
   },
   {
     id: "profile",
-    accessorFn: (row) => row.personalDetails?.name ?? "",
+    accessorFn: (row) => getPersonalDetailsName(row.personalDetails),
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Applicant" />
     ),
     cell: ({ row }) => {
       const applicant = row.original
-      const name = applicant.personalDetails?.name || "-"
+      const name = getPersonalDetailsName(applicant.personalDetails) || "-"
       const nickname = applicant.personalDetails?.nickname
 
       return (

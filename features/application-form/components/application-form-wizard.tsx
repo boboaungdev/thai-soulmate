@@ -73,7 +73,6 @@ function ApplicationFormContent() {
         const app = data.application
         const personal = (app.personalDetails || {}) as any
         const applicantName =
-          personal.name ||
           [personal.firstName, personal.lastName].filter(Boolean).join(" ") ||
           ""
 

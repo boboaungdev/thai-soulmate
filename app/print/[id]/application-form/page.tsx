@@ -4,7 +4,10 @@ import { notFound } from "next/navigation"
 import { APP_INFO } from "@/constants"
 import { formatDateTime, formatDOB } from "@/lib/date"
 import { prisma } from "@/lib/prisma"
-import { ApplicationForm } from "@/types/application-form"
+import {
+  ApplicationForm,
+  getPersonalDetailsName,
+} from "@/types/application-form"
 import { PrintTrigger } from "@/features/shared"
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => {
@@ -143,7 +146,10 @@ export default async function ApplicationFormPrintPage({
   const personal = application.personalDetails
   const idLabel = String(application.customId).padStart(4, "0")
 
-  const fullNameWithPrefix = [personal?.prefix, personal?.name]
+  const fullNameWithPrefix = [
+    personal?.prefix,
+    getPersonalDetailsName(personal),
+  ]
     .filter(Boolean)
     .join(" ")
 
@@ -356,7 +362,10 @@ export default async function ApplicationFormPrintPage({
                       label: "Current Location",
                       value: personal?.currentLocation,
                     },
-                    { label: "Region", value: personal?.region },
+                    {
+                      label: "Region",
+                      value: personal?.currentLocationRegion,
+                    },
                   ]}
                 />
               </section>

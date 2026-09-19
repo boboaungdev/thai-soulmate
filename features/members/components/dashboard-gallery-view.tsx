@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select"
 import {
   ApplicationForm,
+  getPersonalDetailsName,
   PersonalDetails,
   Photos,
   Career,
@@ -56,6 +57,7 @@ function UserCard({ profile }: { profile: Profile }) {
 
   const age = calculateAge(personalDetails?.dob)
   const nickname = personalDetails?.nickname?.trim()
+  const fullName = getPersonalDetailsName(personalDetails)
 
   return (
     <motion.div
@@ -71,7 +73,7 @@ function UserCard({ profile }: { profile: Profile }) {
           {photos?.headshot ? (
             <Image
               src={photos.headshot}
-              alt={nickname || personalDetails?.name || "Member"}
+              alt={nickname || fullName || "Member"}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -174,7 +176,7 @@ export function DashboardGalleryView() {
       profile.applicationForm.personalDetails,
       {} as PersonalDetails
     )
-    const name = personal?.name?.toLowerCase() || ""
+    const name = getPersonalDetailsName(personal).toLowerCase()
     const nickname = personal?.nickname?.toLowerCase() || ""
     const nationality = personal?.nationality?.toLowerCase() || ""
     const currentLocation = personal?.currentLocation?.toLowerCase() || ""
@@ -197,9 +199,13 @@ export function DashboardGalleryView() {
       {} as PersonalDetails
     )
     const aValue =
-      sortBy === "customId" ? a.applicationForm.customId : personalA?.name || ""
+      sortBy === "customId"
+        ? a.applicationForm.customId
+        : getPersonalDetailsName(personalA)
     const bValue =
-      sortBy === "customId" ? b.applicationForm.customId : personalB?.name || ""
+      sortBy === "customId"
+        ? b.applicationForm.customId
+        : getPersonalDetailsName(personalB)
 
     if (sortBy === "customId") {
       const valA = aValue as number

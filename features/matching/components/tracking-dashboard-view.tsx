@@ -33,7 +33,11 @@ import {
   sendTrackingProfilesAction,
   updateTrackingAction,
 } from "@/features/matching"
-import { PersonalDetails, Photos } from "@/types/application-form"
+import {
+  getPersonalDetailsName,
+  PersonalDetails,
+  Photos,
+} from "@/types/application-form"
 import {
   CheckCircle2,
   Circle,
@@ -1189,11 +1193,15 @@ export function TrackingDashboardView() {
                       <Avatar>
                         <AvatarImage src={tracking.male.photos?.headshot} />
                         <AvatarFallback>
-                          {getInitials(tracking.male.personalDetails?.name)}
+                          {getInitials(
+                            getPersonalDetailsName(
+                              tracking.male.personalDetails
+                            )
+                          )}
                         </AvatarFallback>
                       </Avatar>
                       <span className="font-semibold">
-                        {tracking.male.personalDetails?.name}
+                        {getPersonalDetailsName(tracking.male.personalDetails)}
                       </span>
                     </div>
                     <div className="flex items-center text-gray-600">
@@ -1209,11 +1217,17 @@ export function TrackingDashboardView() {
                       <Avatar>
                         <AvatarImage src={tracking.female.photos?.headshot} />
                         <AvatarFallback>
-                          {getInitials(tracking.female.personalDetails?.name)}
+                          {getInitials(
+                            getPersonalDetailsName(
+                              tracking.female.personalDetails
+                            )
+                          )}
                         </AvatarFallback>
                       </Avatar>
                       <span className="font-semibold">
-                        {tracking.female.personalDetails?.name}
+                        {getPersonalDetailsName(
+                          tracking.female.personalDetails
+                        )}
                       </span>
                     </div>
                   </CardTitle>

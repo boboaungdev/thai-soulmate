@@ -1,77 +1,29 @@
 import React from "react"
-import { notFound } from "next/navigation"
-import { formatDateTime, formatDOB } from "@/lib/date"
-import { prisma } from "@/lib/prisma"
 import Image from "next/image"
-import { APP_INFO } from "@/constants"
+import { prisma } from "@/lib/prisma"
+import { notFound } from "next/navigation"
 import { PrintTrigger } from "@/features/shared"
+import { formatDateTime } from "@/lib/date"
 
-const SectionTitle = ({ children }: { children: React.ReactNode }) => {
+const SectionTitle = ({
+  children,
+  gender,
+}: {
+  children: React.ReactNode
+  gender?: "Male" | "Female" | string
+}) => {
   const title = String(children)
-  const gradientId = `interest-section-gradient-${title.replace(/\W/g, "-")}`
+  const accentColor = gender === "Male" ? "#D3A753" : "#E791A7"
 
   return (
-    <h2 className="h-6 font-bold">
-      <svg
-        aria-label={title}
-        className="block h-6 w-fit"
-        role="img"
-        viewBox="0 0 360 24"
-        preserveAspectRatio="xMinYMid meet"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor="#D3A753" />
-            <stop offset="50%" stopColor="#E791A7" />
-            <stop offset="100%" stopColor="#CA617D" />
-          </linearGradient>
-        </defs>
-        <text
-          x="0"
-          y="18"
-          fill={`url(#${gradientId})`}
-          fontFamily="sans-serif"
-          fontSize="15"
-          fontWeight="700"
-          letterSpacing="0.5"
-        >
-          {title}
-        </text>
-      </svg>
+    <h2
+      className="h-6 text-[15px] font-black tracking-[0.5px]"
+      style={{ color: accentColor }}
+    >
+      {title}
     </h2>
   )
 }
-
-const BrandName = ({ className = "" }: { className?: string }) => (
-  <svg
-    aria-label={APP_INFO.name}
-    className={`inline-block h-7 w-[180px] ${className}`}
-    role="img"
-    viewBox="0 0 180 28"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <defs>
-      <linearGradient id="interest-brand-gradient" x1="0" x2="1" y1="0" y2="0">
-        <stop offset="0%" stopColor="#D3A753" />
-        <stop offset="50%" stopColor="#E791A7" />
-        <stop offset="100%" stopColor="#CA617D" />
-      </linearGradient>
-    </defs>
-    <text
-      x="90"
-      y="21"
-      fill="url(#interest-brand-gradient)"
-      fontFamily="sans-serif"
-      fontSize="20"
-      fontWeight="700"
-      letterSpacing="1"
-      textAnchor="middle"
-    >
-      {APP_INFO.name}
-    </text>
-  </svg>
-)
 
 const DetailItem = ({
   label,
@@ -218,26 +170,15 @@ export default async function PrintRegisterInterestPage({
           <div>
             {/* App Header */}
             <header className="mb-6 flex items-center justify-between border-b-2 border-gray-100 pb-4">
-              <div className="flex items-center gap-3.5">
+              <div className="flex items-center">
                 <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  width={52}
-                  height={52}
+                  src="/assets/logo-section-horizontal.png"
+                  alt="Thai Soulmate logo"
+                  width={280}
+                  height={62}
                   unoptimized
-                  className="shrink-0"
+                  className="h-auto w-[220px] max-w-full object-contain"
                 />
-                <div className="flex flex-col items-center text-center">
-                  <h1 className="flex justify-center leading-none">
-                    <BrandName />
-                  </h1>
-                  <p className="mt-1 w-full text-center font-sans text-[9px] font-semibold tracking-[0.3em] text-[#E791A7] uppercase">
-                    Exclusive
-                  </p>
-                  <p className="mt-0.5 w-full text-center font-sans text-[10.5px] font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
-                    {APP_INFO.tagline}
-                  </p>
-                </div>
               </div>
               <div className="text-right">
                 <p className="text-xs font-bold tracking-wider text-gray-500 uppercase">
@@ -252,17 +193,21 @@ export default async function PrintRegisterInterestPage({
             <div className="space-y-6">
               {/* Personal Details */}
               <section className="break-inside-avoid">
-                <SectionTitle>Personal Details</SectionTitle>
+                <SectionTitle gender={interest.gender}>
+                  Personal Details
+                </SectionTitle>
                 <div className="mt-2.5">
                   <DetailItem
                     label="Name"
                     value={`${interest.prefix} ${interest.name}`}
                   />
-                  <DetailItem
-                    label="Date of Birth"
-                    value={formatDOB(interest.dob, { showAge: true })}
-                  />
                   <DetailItem label="Gender" value={interest.gender} />
+                  {interest.relationshipGoal && (
+                    <DetailItem
+                      label="Relationship Goal"
+                      value={interest.relationshipGoal}
+                    />
+                  )}
                   <DetailItem
                     label="Nationality"
                     value={
@@ -284,7 +229,9 @@ export default async function PrintRegisterInterestPage({
 
               {/* Contact Information */}
               <section className="break-inside-avoid">
-                <SectionTitle>Contact Information</SectionTitle>
+                <SectionTitle gender={interest.gender}>
+                  Contact Information
+                </SectionTitle>
                 <div className="mt-2.5">
                   <DetailItem label="Email" value={interest.email} />
                   <DetailItem
@@ -310,7 +257,9 @@ export default async function PrintRegisterInterestPage({
 
               {/* Source & Status */}
               <section className="break-inside-avoid">
-                <SectionTitle>Discovery & Source</SectionTitle>
+                <SectionTitle gender={interest.gender}>
+                  Discovery & Source
+                </SectionTitle>
                 <div className="mt-2.5">
                   <DetailItem label="Source" value={interest.source} />
                   {interest.otherSource && (

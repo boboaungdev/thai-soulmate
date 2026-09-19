@@ -107,7 +107,12 @@ function ApplicationFormContent() {
         const parsedLead: RegisterInterestLead = {
           id: interest.id,
           prefix: interest.prefix || "",
-          name: interest.name || "",
+          firstName: interest.firstName || "",
+          lastName: interest.lastName || "",
+          name:
+            [interest.prefix, interest.firstName, interest.lastName]
+              .filter(Boolean)
+              .join(" ") || "",
           gender: interest.gender || "",
           email: interest.email || emailToCheck,
           phoneCountry: interest.phoneCountry || "",
@@ -115,7 +120,9 @@ function ApplicationFormContent() {
           currentLocation: interest.currentLocation || "",
           relationshipGoal: interest.relationshipGoal || null,
           preferredContactDate: interest.preferredContactDate
-            ? new Date(interest.preferredContactDate).toISOString().split("T")[0]
+            ? new Date(interest.preferredContactDate)
+                .toISOString()
+                .split("T")[0]
             : null,
           preferredContactTime: interest.preferredContactTime || null,
         }
@@ -123,17 +130,17 @@ function ApplicationFormContent() {
         setLead(parsedLead)
 
         // Pre-fill form data with known consultation details
-        const nameParts = (parsedLead.name || "").trim().split(/\s+/)
-        const fName = nameParts[0] || ""
-        const lName = nameParts.slice(1).join(" ")
+        const fName =
+          parsedLead.firstName || parsedLead.name?.split(/\s+/)[0] || ""
+        const lName =
+          parsedLead.lastName ||
+          parsedLead.name?.split(/\s+/).slice(1).join(" ") ||
+          ""
 
         const leadLoc = parsedLead.currentLocation || ""
         const isFemale = parsedLead.gender === "Female"
         const isMale = parsedLead.gender === "Male"
-        const isThai =
-          leadLoc.toLowerCase().includes("thai") ||
-          (interest.nationality &&
-            interest.nationality.toLowerCase().includes("thai"))
+        const isThai = leadLoc.toLowerCase().includes("thai")
 
         setFormData((prev) => {
           let englishFluency = prev.englishFluency

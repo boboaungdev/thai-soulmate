@@ -132,7 +132,9 @@ export type ApplicationStage = "gatekeeper" | "form" | "review" | "thank-you"
 export interface RegisterInterestLead {
   id: string
   prefix: string
-  name: string
+  firstName?: string
+  lastName?: string
+  name?: string
   gender: string
   email: string
   phoneCountry: string

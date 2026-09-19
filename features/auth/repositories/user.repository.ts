@@ -45,7 +45,6 @@ export async function findUsers(limit: number = 100, page: number = 1) {
           select: {
             id: true,
             gender: true,
-            nationality: true,
             currentLocation: true,
           },
         },
@@ -83,7 +82,6 @@ export async function createUser(data: {
         select: {
           id: true,
           gender: true,
-          nationality: true,
           currentLocation: true,
         },
       },
@@ -96,4 +94,3 @@ export async function deleteUser(id: string) {
     where: { id },
   })
 }
-

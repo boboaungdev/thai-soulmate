@@ -41,20 +41,15 @@ export async function findAllInterests() {
 export async function upsertInterest(data: {
   email: string
   prefix: string
-  name: string
-  dob?: Date | null
+  firstName: string
+  lastName?: string | null
   gender: string
-  nationality: string
-  nationalityRegion: string
   currentLocation: string
-  currentLocationRegion: string
   relationshipGoal?: string | null
   phoneCountry: string
   phone: string
   preferredContactDate?: Date | null
   preferredContactTime?: string | null
-  source: string
-  otherSource?: string | null
 }) {
   return prisma.registerInterest.upsert({
     where: { email: data.email.toLowerCase() },
@@ -63,7 +58,10 @@ export async function upsertInterest(data: {
   })
 }
 
-export async function updateInterestStatus(id: string, status: RegisterInterestStatus) {
+export async function updateInterestStatus(
+  id: string,
+  status: RegisterInterestStatus
+) {
   return prisma.registerInterest.update({
     where: { id },
     data: { status },

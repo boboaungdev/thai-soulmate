@@ -47,7 +47,7 @@ async function main() {
   )
   for (let i = 0; i < applicationForms.length; i++) {
     const form = applicationForms[i]
-    const personal = form.personalDetails
+    const personal = form.personalDetails as Record<string, any>
     const relGoals = form.relationshipGoals
 
     // Extract country call code (e.g. "+66") and phone digits
@@ -66,16 +66,26 @@ async function main() {
     // Preferred appointment within next 7 days (as constrained by calendar picker)
     const contactDate = new Date(Date.now() + ((i % 7) + 1) * 86400000)
 
+    const firstName =
+      personal.firstName ||
+      (typeof personal.name === "string"
+        ? personal.name.split(/\s+/)[0]
+        : "") ||
+      "Applicant"
+    const lastName =
+      personal.firstName ||
+      (typeof personal.name === "string"
+        ? personal.name.split(/\s+/).slice(1).join(" ")
+        : "") ||
+      null
+
     await prisma.registerInterest.create({
       data: {
         prefix: personal.prefix || "Mr.",
-        name: personal.name,
+        firstName,
+        lastName,
         gender: personal.gender,
         currentLocation: personal.currentLocation || "Thailand",
-        currentLocationRegion: personal.currentLocationRegion || "Asia",
-        nationality:
-          personal.nationality || personal.currentLocation || "Thailand",
-        nationalityRegion: personal.nationalityRegion || "Asia",
         relationshipGoal: lookingFor,
         email: personal.email.toLowerCase(),
         phoneCountry: phoneCountry,
@@ -83,7 +93,6 @@ async function main() {
         preferredContactDate: contactDate,
         preferredContactTime:
           PREFERRED_CONTACT_TIMES[i % PREFERRED_CONTACT_TIMES.length],
-        source: "Website Consultation",
         status: RegisterInterestStatus.RECEIVED,
       },
     })

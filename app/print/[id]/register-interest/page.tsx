@@ -199,7 +199,13 @@ export default async function PrintRegisterInterestPage({
                 <div className="mt-2.5">
                   <DetailItem
                     label="Name"
-                    value={`${interest.prefix} ${interest.name}`}
+                    value={[
+                      interest.prefix,
+                      interest.firstName,
+                      interest.lastName,
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                   />
                   <DetailItem label="Gender" value={interest.gender} />
                   {interest.relationshipGoal && (
@@ -209,20 +215,8 @@ export default async function PrintRegisterInterestPage({
                     />
                   )}
                   <DetailItem
-                    label="Nationality"
-                    value={
-                      interest.nationalityRegion
-                        ? `${interest.nationality} (${interest.nationalityRegion})`
-                        : interest.nationality
-                    }
-                  />
-                  <DetailItem
                     label="Current Location"
-                    value={
-                      interest.currentLocationRegion
-                        ? `${interest.currentLocation} (${interest.currentLocationRegion})`
-                        : interest.currentLocation
-                    }
+                    value={interest.currentLocation}
                   />
                 </div>
               </section>
@@ -255,19 +249,12 @@ export default async function PrintRegisterInterestPage({
                 </div>
               </section>
 
-              {/* Source & Status */}
+              {/* Status */}
               <section className="break-inside-avoid">
                 <SectionTitle gender={interest.gender}>
-                  Discovery & Source
+                  Registration Status
                 </SectionTitle>
                 <div className="mt-2.5">
-                  <DetailItem label="Source" value={interest.source} />
-                  {interest.otherSource && (
-                    <DetailItem
-                      label="Source Details"
-                      value={interest.otherSource}
-                    />
-                  )}
                   <DetailItem label="Status" value={interest.status} />
                 </div>
               </section>

@@ -50,7 +50,7 @@ import {
   deleteNoteAction,
 } from "@/features/notes"
 import { Note, RegisterInterest, User } from "@/lib/generated/prisma/client"
-import { formatDate, formatDateTime, formatDOB } from "@/lib/date"
+import { formatDate, formatDateTime } from "@/lib/date"
 
 type NoteWithUser = Note & {
   user: Pick<User, "name" | "avatar" | "email" | "role">
@@ -198,7 +198,9 @@ export function RegisterInterestDetails({
         <SheetContent className="w-[400px] sm:w-[540px]">
           <SheetHeader className="px-6 pt-6">
             <SheetTitle className="text-xl">
-              {item.prefix} {item.name}
+              {[item.prefix, item.firstName, item.lastName]
+                .filter(Boolean)
+                .join(" ")}
             </SheetTitle>
             <SheetDescription>
               Full details of the registered interest.
@@ -209,14 +211,15 @@ export function RegisterInterestDetails({
             <div className="grid gap-6 py-6 pr-4">
               <DetailItem label="Gender" value={item.gender} />
               <DetailItem
-                label="Date of Birth"
-                value={`${formatDOB(item.dob, { showAge: true })}`}
-              />
-              <DetailItem label="Nationality" value={item.nationality} />
-              <DetailItem
                 label="Current Location"
                 value={item.currentLocation}
               />
+              {item.relationshipGoal && (
+                <DetailItem
+                  label="Relationship Goal"
+                  value={item.relationshipGoal}
+                />
+              )}
               <DetailItem label="Email" value={item.email} />
               <DetailItem
                 label="Phone"
@@ -236,10 +239,6 @@ export function RegisterInterestDetails({
                   item.preferredContactTime ? item.preferredContactTime : "-"
                 }
               />
-              <DetailItem label="Source" value={item.source} />
-              {item.otherSource && (
-                <DetailItem label="Other Source" value={item.otherSource} />
-              )}
               <DetailItem label="Status" value={item.status} />
               <DetailItem
                 label="Registered On"

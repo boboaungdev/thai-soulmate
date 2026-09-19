@@ -27,23 +27,19 @@ model User {
 model RegisterInterest {
   id String @id @default(uuid())
 
-  prefix                String
-  name                  String
-  dob                   DateTime?
-  gender                String
-  nationality           String
-  nationalityRegion     String
-  currentLocation       String
-  currentLocationRegion String
-  relationshipGoal      String?
+  prefix    String
+  firstName String
+  lastName  String?
+  gender    String
+
+  currentLocation  String
+  relationshipGoal String?
 
   email                String    @unique
   phoneCountry         String
   phone                String
   preferredContactDate DateTime?
   preferredContactTime String?
-  source               String
-  otherSource          String?
 
   status RegisterInterestStatus @default(RECEIVED)
 

@@ -233,9 +233,6 @@ export function RegisterInterestForm() {
         const selectedPhoneCountry = countries.find(
           (country) => country.code === values.phoneCountry
         )
-        const selectedLocationCountry = countries.find(
-          (country) => country.name === values.currentLocation
-        )
 
         const payload = {
           prefix: values.prefix,
@@ -246,10 +243,6 @@ export function RegisterInterestForm() {
           phoneCountry: `+${selectedPhoneCountry?.callCode ?? ""}`,
           phone: values.phone,
           currentLocation: values.currentLocation,
-          currentLocationRegion: selectedLocationCountry?.region ?? "",
-          nationality:
-            selectedLocationCountry?.nationality || values.currentLocation,
-          nationalityRegion: selectedLocationCountry?.region ?? "",
           relationshipGoal:
             values.relationshipGoal || "Marriage / Life Partner",
           preferredContactDate: format(
@@ -257,7 +250,6 @@ export function RegisterInterestForm() {
             "yyyy-MM-dd"
           ),
           preferredContactTime: values.preferredContactTime,
-          source: "Website Confidential Consultation",
         }
 
         const result = await submitRegisterInterestAction(payload)

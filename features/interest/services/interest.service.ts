@@ -30,24 +30,23 @@ export async function processRegisterInterest(input: RegisterInterestInput) {
     } as const
   }
 
-  // 2. Format name
-  const formattedName = [input.firstName, input.lastName]
-    .filter(Boolean)
-    .join(" ")
-    .trim()
+  // 2. Format name for display and email use
+  const firstName = input.firstName.trim()
+  const lastName = (input.lastName || "").trim()
+  const formattedFirstName = firstName
     .split(" ")
     .filter(Boolean)
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(" ")
-
-  // 3. Derive location and nationality regions from local data
-  const locationCountry = findCountryByName(input.currentLocation)
-  const currentLocationRegion =
-    input.currentLocationRegion || locationCountry?.region || ""
-  const nationality =
-    input.nationality || locationCountry?.nationality || input.currentLocation
-  const nationalityRegion =
-    input.nationalityRegion || locationCountry?.region || ""
+  const formattedLastName = lastName
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ")
+  const formattedName = [formattedFirstName, formattedLastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim()
 
   const contactDateObj = input.preferredContactDate
     ? new Date(input.preferredContactDate)
@@ -56,12 +55,10 @@ export async function processRegisterInterest(input: RegisterInterestInput) {
   const interestRecord = {
     email: normalizedEmail,
     prefix: input.prefix || "Mr.",
-    name: formattedName,
+    firstName: formattedFirstName,
+    lastName: formattedLastName || null,
     gender: input.gender || "Male",
-    nationality,
-    nationalityRegion,
     currentLocation: input.currentLocation,
-    currentLocationRegion,
     relationshipGoal: input.relationshipGoal || null,
     phoneCountry: input.phoneCountry.startsWith("+")
       ? input.phoneCountry
@@ -69,7 +66,6 @@ export async function processRegisterInterest(input: RegisterInterestInput) {
     phone: input.phone.trim(),
     preferredContactDate: contactDateObj,
     preferredContactTime: input.preferredContactTime || null,
-    source: input.source || "Website Consultation",
   }
 
   // 4. Save to Database
@@ -92,7 +88,7 @@ export async function processRegisterInterest(input: RegisterInterestInput) {
       subject: `[Consultation Request] Thank you for contacting ${APP_INFO.name}!`,
       react: RegisterInterestMemberConfirmationEmail({
         prefix: interestRecord.prefix,
-        name: interestRecord.name,
+        name: formattedName,
         email: interestRecord.email,
         preferredContactDate: contactDateObj
           ? formatDate(contactDateObj)
@@ -109,10 +105,10 @@ export async function processRegisterInterest(input: RegisterInterestInput) {
     await resend.emails.send({
       from: `"${APP_INFO.name}" <${EMAIL.notify}>`,
       to: EMAIL.NOTIFICATIONS,
-      subject: `[Consultation Request] New Request from ${interestRecord.prefix} ${interestRecord.name}`,
+      subject: `[Consultation Request] New Request from ${interestRecord.prefix} ${formattedName}`,
       react: RegisterInterestAdminNotificationEmail({
         prefix: interestRecord.prefix,
-        name: interestRecord.name,
+        name: formattedName,
         email: interestRecord.email,
         phone: interestRecord.phone,
         phoneCountry: interestRecord.phoneCountry,

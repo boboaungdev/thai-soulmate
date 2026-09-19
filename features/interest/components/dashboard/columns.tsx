@@ -10,7 +10,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { RegisterInterestStatus } from "@/lib/generated/prisma/enums"
 import { RegisterInterest } from "@/lib/generated/prisma/client"
-import { formatDateTime, formatDOB } from "@/lib/date"
+import { formatDateTime } from "@/lib/date"
 
 type RegisterInterestWithNotesCount = RegisterInterest & {
   _count: {
@@ -112,15 +112,20 @@ export const getColumns = (
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "firstName",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => (
-      <div className="max-w-[150px] truncate">
-        {row.original.prefix} {row.getValue("name")}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const fullName = [
+        row.original.prefix,
+        row.original.firstName,
+        row.original.lastName,
+      ]
+        .filter(Boolean)
+        .join(" ")
+      return <div className="max-w-[180px] truncate">{fullName}</div>
+    },
     enableSorting: false,
   },
   {
@@ -137,15 +142,6 @@ export const getColumns = (
     },
   },
   {
-    accessorKey: "nationality",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nationality" />
-    ),
-    cell: ({ row }) => (
-      <div className="max-w-[80px] truncate">{row.getValue("nationality")}</div>
-    ),
-  },
-  {
     accessorKey: "currentLocation",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Location" />
@@ -155,19 +151,6 @@ export const getColumns = (
         {row.getValue("currentLocation")}
       </div>
     ),
-  },
-  {
-    accessorKey: "dob",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="DOB (Age)" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="w-[120px]">
-          {formatDOB(row.getValue("dob"), { showAge: true })}
-        </div>
-      )
-    },
   },
   {
     accessorKey: "phone",

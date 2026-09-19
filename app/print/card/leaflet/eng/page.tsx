@@ -910,7 +910,7 @@ export default function MarketingLeafletPrintPage() {
           >
             <div className="relative h-full w-full overflow-hidden rounded-full bg-[#FBF8F3]">
               <Image
-                src="/card/marketing/3.png"
+                src="/card/marketing/2.png"
                 alt="Thai Soulmate couple"
                 fill
                 quality={100}

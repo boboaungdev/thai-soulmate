@@ -202,7 +202,7 @@ export default function EmailSignaturePreviewPage() {
 
               {/* Render Signature Component */}
               <div id="email-signature-render-target" className="pt-2">
-                <NewEmailSignature />
+                <EmailSignature />
               </div>
             </div>
           </div>

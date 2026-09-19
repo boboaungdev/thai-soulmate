@@ -81,7 +81,7 @@ export function HomeView() {
           className="absolute inset-0 will-change-transform"
         >
           <Image
-            src="/home-landing-mobile-2.png"
+            src="/home-landing-mobile.png"
             alt="Background"
             fill
             sizes="100vw"
@@ -89,7 +89,7 @@ export function HomeView() {
             priority
           />
           <Image
-            src="/home-landing-2.png"
+            src="/home-landing.png"
             alt="Background"
             fill
             sizes="100vw"

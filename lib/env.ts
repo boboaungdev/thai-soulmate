@@ -6,8 +6,7 @@ export const env = {
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
 
-  CHROMIUM_EXECUTABLE_PATH:
-    process.env.CHROMIUM_EXECUTABLE_PATH || "/usr/bin/brave",
+  CHROMIUM_PACK_URL: process.env.CHROMIUM_PACK_URL || "/usr/bin/brave",
 
   R2: {
     BUCKET: process.env.R2_BUCKET,

@@ -7,11 +7,11 @@ export async function launchBrowser() {
 
   const executablePath = isProduction
     ? await chromium.executablePath()
-    : env.CHROMIUM_EXECUTABLE_PATH
+    : env.CHROMIUM_PACK_URL
 
   if (!executablePath) {
     throw new Error(
-      "Chrome executable path is not configured. Set CHROMIUM_EXECUTABLE_PATH in .env"
+      "Chrome executable path is not configured. Set CHROMIUM_PACK_URL in .env"
     )
   }
 

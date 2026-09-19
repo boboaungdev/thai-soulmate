@@ -1,6 +1,5 @@
 import React from "react"
 import Image from "next/image"
-import { APP_INFO } from "@/constants"
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import {
@@ -55,71 +54,24 @@ const DetailItem = ({
   </div>
 )
 
-const SectionTitle = ({ children }: { children: React.ReactNode }) => {
-  const title = String(children)
-  const gradientId = `profile-section-gradient-${title.replace(/\W/g, "-")}`
+const SectionTitle = ({
+  children,
+  gender,
+}: {
+  children: React.ReactNode
+  gender?: string
+}) => {
+  const accentColor = gender === "Female" ? "#E791A7" : "#D3A753"
 
   return (
-    <h2 className="h-6 font-bold">
-      <svg
-        aria-label={title}
-        className="block h-6 w-fit"
-        role="img"
-        viewBox="0 0 360 24"
-        preserveAspectRatio="xMinYMid meet"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor="#D3A753" />
-            <stop offset="50%" stopColor="#E791A7" />
-            <stop offset="100%" stopColor="#CA617D" />
-          </linearGradient>
-        </defs>
-        <text
-          x="0"
-          y="18"
-          fill={`url(#${gradientId})`}
-          fontFamily="sans-serif"
-          fontSize="15"
-          fontWeight="700"
-        >
-          {title}
-        </text>
-      </svg>
+    <h2
+      className="h-6 text-[15px] font-bold tracking-[0.5px]"
+      style={{ color: accentColor }}
+    >
+      {children}
     </h2>
   )
 }
-
-const BrandName = ({ className = "" }: { className?: string }) => (
-  <svg
-    aria-label={APP_INFO.name}
-    className={`inline-block h-7 w-[180px] ${className}`}
-    role="img"
-    viewBox="0 0 180 28"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <defs>
-      <linearGradient id="profile-brand-gradient" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stopColor="#D3A753" />
-        <stop offset="50%" stopColor="#E791A7" />
-        <stop offset="100%" stopColor="#CA617D" />
-      </linearGradient>
-    </defs>
-    <text
-      x="90"
-      y="21"
-      fill="url(#profile-brand-gradient)"
-      fontFamily="sans-serif"
-      fontSize="20"
-      fontWeight="700"
-      letterSpacing="1"
-      textAnchor="middle"
-    >
-      {APP_INFO.name}
-    </text>
-  </svg>
-)
 
 export default async function ProfilePrintPage({
   params,
@@ -153,7 +105,7 @@ export default async function ProfilePrintPage({
   const nickname = user.personalDetails?.nickname || ""
 
   const nameToDisplay = isMale
-    ? fullName || nickname || "Member"
+    ? firstName || fullName || "Member"
     : nickname || firstName || "Member"
 
   return (
@@ -255,8 +207,7 @@ export default async function ProfilePrintPage({
             page-break-after: auto !important;
           }
 
-          img,
-          svg {
+          img {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
@@ -274,26 +225,15 @@ export default async function ProfilePrintPage({
           <div>
             {/* App Header */}
             <header className="mb-5 flex items-center justify-between border-b-2 border-gray-100 pb-3">
-              <div className="flex items-center gap-3.5">
+              <div className="flex items-center">
                 <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  width={52}
-                  height={52}
+                  src="/assets/logo-section-horizontal.png"
+                  alt="Thai Soulmate logo"
+                  width={280}
+                  height={62}
                   unoptimized
-                  className="shrink-0"
+                  className="h-auto w-[220px] max-w-full object-contain"
                 />
-                <div className="flex flex-col items-center text-center">
-                  <h1 className="flex justify-center leading-none">
-                    <BrandName />
-                  </h1>
-                  <p className="mt-1 w-full text-center font-sans text-[9px] font-semibold tracking-[0.3em] text-[#E791A7] uppercase">
-                    Exclusive
-                  </p>
-                  <p className="mt-0.5 w-full text-center font-sans text-[10.5px] font-semibold tracking-[0.2em] text-[#D3A753] uppercase">
-                    {APP_INFO.tagline}
-                  </p>
-                </div>
               </div>
               <div className="text-right">
                 <p className="text-xs font-bold tracking-wider text-gray-500 uppercase">
@@ -361,7 +301,9 @@ export default async function ProfilePrintPage({
                     value={user.appearance?.religion}
                   />
                   <div className="pt-1.5">
-                    <SectionTitle>Languages</SectionTitle>
+                    <SectionTitle gender={user.personalDetails?.gender}>
+                      Languages
+                    </SectionTitle>
                     <div className="mt-1.5">
                       <DetailItem
                         label="Thai"
@@ -379,14 +321,18 @@ export default async function ProfilePrintPage({
               {/* Right Column */}
               <div className="space-y-3.5">
                 <section>
-                  <SectionTitle>About Me</SectionTitle>
+                  <SectionTitle gender={user.personalDetails?.gender}>
+                    About Me
+                  </SectionTitle>
                   <p className="mt-1.5 text-xs leading-relaxed text-gray-600">
                     {user.personality?.about || "N/A"}
                   </p>
                 </section>
 
                 <section>
-                  <SectionTitle>Vocation</SectionTitle>
+                  <SectionTitle gender={user.personalDetails?.gender}>
+                    Vocation
+                  </SectionTitle>
                   <div className="mt-1.5 space-y-1">
                     <DetailItem
                       label="Occupation"
@@ -400,7 +346,9 @@ export default async function ProfilePrintPage({
                 </section>
 
                 <section>
-                  <SectionTitle>Lifestyle</SectionTitle>
+                  <SectionTitle gender={user.personalDetails?.gender}>
+                    Lifestyle
+                  </SectionTitle>
                   <div className="mt-1.5 space-y-1">
                     <DetailItem
                       label="Exercise"
@@ -418,7 +366,9 @@ export default async function ProfilePrintPage({
                 </section>
 
                 <section>
-                  <SectionTitle>Looking For</SectionTitle>
+                  <SectionTitle gender={user.personalDetails?.gender}>
+                    Looking For
+                  </SectionTitle>
                   <div className="mt-1.5 space-y-1">
                     <DetailItem
                       label="Relationship Goals"
@@ -432,7 +382,9 @@ export default async function ProfilePrintPage({
                 </section>
 
                 <section>
-                  <SectionTitle>Interests</SectionTitle>
+                  <SectionTitle gender={user.personalDetails?.gender}>
+                    Interests
+                  </SectionTitle>
                   <div className="mt-1.5 text-xs text-gray-700">
                     <div className="flex flex-wrap gap-1.5">
                       {[
@@ -453,7 +405,9 @@ export default async function ProfilePrintPage({
                 </section>
 
                 <section>
-                  <SectionTitle>Qualities I&apos;m Looking For</SectionTitle>
+                  <SectionTitle gender={user.personalDetails?.gender}>
+                    Qualities I&apos;m Looking For
+                  </SectionTitle>
                   <div className="mt-1.5 text-xs text-gray-700">
                     <div className="flex flex-wrap gap-1.5">
                       {(user.personality?.lookingForQualities || []).map(
@@ -487,26 +441,15 @@ export default async function ProfilePrintPage({
         <section className="profile-page flex flex-col justify-between text-black shadow-2xl">
           <div>
             <header className="mb-4 flex items-center justify-between border-b-2 border-gray-100 pb-3">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center">
                 <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  width={42}
-                  height={42}
+                  src="/assets/logo-section-horizontal.png"
+                  alt="Thai Soulmate logo"
+                  width={280}
+                  height={62}
                   unoptimized
-                  className="shrink-0"
+                  className="h-auto w-[220px] max-w-full object-contain"
                 />
-                <div className="flex flex-col items-center text-center">
-                  <div className="flex justify-center leading-none">
-                    <BrandName className="!h-5.5 !w-[145px]" />
-                  </div>
-                  <p className="mt-0.5 w-full text-center font-sans text-[8px] font-semibold tracking-[0.25em] text-[#E791A7] uppercase">
-                    Exclusive
-                  </p>
-                  <p className="mt-0.5 w-full text-center font-sans text-[9px] font-semibold tracking-[0.16em] text-[#D3A753] uppercase">
-                    {APP_INFO.tagline}
-                  </p>
-                </div>
               </div>
               <div className="text-right">
                 <p className="text-xs font-bold tracking-wider text-gray-500 uppercase">
@@ -568,26 +511,15 @@ export default async function ProfilePrintPage({
         <section className="profile-page flex flex-col justify-between text-black shadow-2xl">
           <div>
             <header className="mb-4 flex items-center justify-between border-b-2 border-gray-100 pb-3">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center">
                 <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  width={42}
-                  height={42}
+                  src="/assets/logo-section-horizontal.png"
+                  alt="Thai Soulmate logo"
+                  width={280}
+                  height={62}
                   unoptimized
-                  className="shrink-0"
+                  className="h-auto w-[220px] max-w-full object-contain"
                 />
-                <div className="flex flex-col items-center text-center">
-                  <div className="flex justify-center leading-none">
-                    <BrandName className="!h-5.5 !w-[145px]" />
-                  </div>
-                  <p className="mt-0.5 w-full text-center font-sans text-[8px] font-semibold tracking-[0.25em] text-[#E791A7] uppercase">
-                    Exclusive
-                  </p>
-                  <p className="mt-0.5 w-full text-center font-sans text-[9px] font-semibold tracking-[0.16em] text-[#D3A753] uppercase">
-                    {APP_INFO.tagline}
-                  </p>
-                </div>
               </div>
               <div className="text-right">
                 <p className="text-xs font-bold tracking-wider text-gray-500 uppercase">

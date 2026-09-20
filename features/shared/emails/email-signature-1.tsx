@@ -88,13 +88,15 @@ export function EmailSignature1({
             {/* WhatsApp */}
             <Row style={contactRow}>
               <Column width="22" style={iconCell}>
-                <Img
-                  src={whatsappIconUrl}
-                  alt="WhatsApp"
-                  width="14"
-                  height="14"
-                  style={{ display: "block" }}
-                />
+                <Link href={whatsappUrl} style={iconLink}>
+                  <Img
+                    src={whatsappIconUrl}
+                    alt="WhatsApp"
+                    width="14"
+                    height="14"
+                    style={{ display: "block" }}
+                  />
+                </Link>
               </Column>
               <Column style={contactContentCell}>
                 <Link href={whatsappUrl} style={contactLink}>
@@ -103,16 +105,39 @@ export function EmailSignature1({
               </Column>
             </Row>
 
+            {line && (
+              <Row style={contactRow}>
+                <Column width="22" style={iconCell}>
+                  <Link href={line} style={iconLink}>
+                    <Img
+                      src={lineIconUrl}
+                      alt="LINE"
+                      width="14"
+                      height="14"
+                      style={{ display: "block" }}
+                    />
+                  </Link>
+                </Column>
+                <Column style={contactContentCell}>
+                  <Link href={line} style={contactLink}>
+                    +66 6369 15263
+                  </Link>
+                </Column>
+              </Row>
+            )}
+
             {/* Primary Phone */}
             <Row style={contactRow}>
               <Column width="22" style={iconCell}>
-                <Img
-                  src={phoneIconUrl}
-                  alt="Phone"
-                  width="13"
-                  height="13"
-                  style={{ display: "block" }}
-                />
+                <Link href={primaryPhoneUrl} style={iconLink}>
+                  <Img
+                    src={phoneIconUrl}
+                    alt="Phone"
+                    width="13"
+                    height="13"
+                    style={{ display: "block" }}
+                  />
+                </Link>
               </Column>
               <Column style={contactContentCell}>
                 <Link href={primaryPhoneUrl} style={contactLink}>
@@ -125,13 +150,15 @@ export function EmailSignature1({
             {secondaryPhone && (
               <Row style={contactRow}>
                 <Column width="22" style={iconCell}>
-                  <Img
-                    src={phoneIconUrl}
-                    alt="Phone"
-                    width="13"
-                    height="13"
-                    style={{ display: "block" }}
-                  />
+                  <Link href={secondaryPhoneUrl} style={iconLink}>
+                    <Img
+                      src={phoneIconUrl}
+                      alt="Phone"
+                      width="13"
+                      height="13"
+                      style={{ display: "block" }}
+                    />
+                  </Link>
                 </Column>
                 <Column style={contactContentCell}>
                   <Link href={secondaryPhoneUrl} style={contactLink}>
@@ -144,13 +171,15 @@ export function EmailSignature1({
             {/* Email */}
             <Row style={contactRow}>
               <Column width="22" style={iconCell}>
-                <Img
-                  src={mailIconUrl}
-                  alt="Email"
-                  width="14"
-                  height="14"
-                  style={{ display: "block" }}
-                />
+                <Link href={emailUrl} style={iconLink}>
+                  <Img
+                    src={mailIconUrl}
+                    alt="Email"
+                    width="14"
+                    height="14"
+                    style={{ display: "block" }}
+                  />
+                </Link>
               </Column>
               <Column style={contactContentCell}>
                 <Link href={emailUrl} style={contactLink}>
@@ -162,13 +191,15 @@ export function EmailSignature1({
             {/* Website */}
             <Row style={lastContactRow}>
               <Column width="22" style={iconCell}>
-                <Img
-                  src={globeIconUrl}
-                  alt="Website"
-                  width="14"
-                  height="14"
-                  style={{ display: "block" }}
-                />
+                <Link href={websiteUrl} style={iconLink}>
+                  <Img
+                    src={globeIconUrl}
+                    alt="Website"
+                    width="14"
+                    height="14"
+                    style={{ display: "block" }}
+                  />
+                </Link>
               </Column>
               <Column style={contactContentCell}>
                 <Link href={websiteUrl} style={contactLink}>
@@ -238,7 +269,7 @@ export function EmailSignature1({
                       />
                     </Link>
                   </td>
-                  <td style={line ? socialIconCell : socialIconCellLast}>
+                  <td style={socialIconCellLast}>
                     <Link href={tiktok} style={socialIconLink}>
                       <Img
                         src={tiktokIconUrl}
@@ -249,19 +280,6 @@ export function EmailSignature1({
                       />
                     </Link>
                   </td>
-                  {line && (
-                    <td style={socialIconCellLast}>
-                      <Link href={line} style={socialIconLink}>
-                        <Img
-                          src={lineIconUrl}
-                          alt="LINE"
-                          width="16"
-                          height="16"
-                          style={{ display: "block" }}
-                        />
-                      </Link>
-                    </td>
-                  )}
                 </tr>
               </tbody>
             </table>
@@ -300,11 +318,13 @@ const cardContainer: React.CSSProperties = {
   width: "100%",
   maxWidth: "600px",
   margin: "0 auto",
-  background: "linear-gradient(135deg, #fffdf9 0%, #fffaf5 35%, #fff7fb 100%)",
-  border: "2px solid #D3A753",
-  borderRadius: "20px",
+  background: "transparent",
+  borderWidth: "3px",
+  borderStyle: "solid",
+  borderColor: "#D3A753",
+  borderRadius: "18px",
   overflow: "hidden",
-  boxShadow: "0 12px 30px rgba(115, 82, 38, 0.12)",
+  boxShadow: "0 0 0 1px rgba(211, 167, 83, 0.22)",
   fontFamily:
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
   color: "#111827",
@@ -340,7 +360,7 @@ const columnHeading: React.CSSProperties = {
 }
 
 const contactRow: React.CSSProperties = {
-  marginBottom: "8px",
+  marginBottom: "4px",
 }
 
 const lastContactRow: React.CSSProperties = {
@@ -365,6 +385,12 @@ const contactLink: React.CSSProperties = {
   color: "#1F2937",
   textDecoration: "none",
   fontWeight: "400",
+}
+
+const iconLink: React.CSSProperties = {
+  display: "inline-block",
+  lineHeight: "1",
+  textDecoration: "none",
 }
 
 const socialSection: React.CSSProperties = {
@@ -399,13 +425,13 @@ const socialIconLink: React.CSSProperties = {
   display: "inline-block",
   textDecoration: "none",
   lineHeight: "1",
-  backgroundColor: "#FFFFFF",
-  borderRadius: "999px",
-  width: "26px",
-  height: "26px",
+  backgroundColor: "transparent",
+  borderRadius: 0,
+  width: "16px",
+  height: "16px",
   textAlign: "center",
-  paddingTop: "5px",
-  border: "1px solid rgba(17, 7, 10, 0.06)",
+  paddingTop: "0",
+  border: "none",
 }
 
 const legalFooterSection: React.CSSProperties = {

@@ -61,6 +61,22 @@ export function EmailSignature1({
 
   return (
     <Section style={cardContainer}>
+      <style>{`
+        @media screen and (max-width: 600px) {
+          .social-row {
+            width: 100% !important;
+          }
+          .social-label {
+            width: 50% !important;
+            text-align: left !important;
+          }
+          .social-icons {
+            width: 50% !important;
+            text-align: right !important;
+          }
+        }
+      `}</style>
+
       {/* ── 2-COLUMN DETAILS (LEFT: CONNECT WITH US, RIGHT: LOGO & BRAND) ── */}
       <Section style={bodySection}>
         <Row>
@@ -215,7 +231,6 @@ export function EmailSignature1({
             align="center"
             style={{
               paddingLeft: "16px",
-              borderLeft: "1px solid #E5E7EB",
               verticalAlign: "middle",
               textAlign: "center",
             }}
@@ -238,8 +253,9 @@ export function EmailSignature1({
 
       {/* ── SOCIAL MEDIA BAR ── */}
       <Section style={socialSection}>
-        <Row style={{ width: "100%" }}>
+        <Row className="social-row" style={{ width: "100%" }}>
           <Column
+            className="social-label"
             width="50%"
             style={{ verticalAlign: "middle", textAlign: "left" }}
           >
@@ -247,6 +263,7 @@ export function EmailSignature1({
           </Column>
 
           <Column
+            className="social-icons"
             width="50%"
             style={{ verticalAlign: "middle", textAlign: "right" }}
           >

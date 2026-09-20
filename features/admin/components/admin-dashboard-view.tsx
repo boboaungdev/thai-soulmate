@@ -8,6 +8,7 @@ import { OverviewTab } from "./overview-tab"
 import { FinancialTab } from "./financial-tab"
 import { MemberDataTab } from "./member-data-tab"
 import { MatchmakingTab } from "./matchmaking-tab"
+import { WebAnalysis } from "./web-analysis"
 
 export function AdminDashboardView() {
   const [activeTab, setActiveTab] = useState<string>("overview")
@@ -81,6 +82,14 @@ export function AdminDashboardView() {
               <HeartHandshake className="size-3.5 shrink-0" />
               <span>Matchmaking</span>
             </TabsTrigger>
+
+            <TabsTrigger
+              value="web-analysis"
+              variant="gradient"
+              className="h-7 shrink-0 gap-1.5 rounded-md px-2.5 text-xs font-medium sm:px-3"
+            >
+              <span>Web Analysis</span>
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -114,6 +123,14 @@ export function AdminDashboardView() {
           className="mt-0 focus-visible:outline-none"
         >
           <MatchmakingTab />
+        </TabsContent>
+
+        {/* Tab 5: Web Analysis */}
+        <TabsContent
+          value="web-analysis"
+          className="mt-0 focus-visible:outline-none"
+        >
+          <WebAnalysis />
         </TabsContent>
       </Tabs>
     </main>

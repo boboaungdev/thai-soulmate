@@ -22,7 +22,6 @@ export interface EmailSignatureProps {
 export function EmailSignature1({
   signOff = "Best regards,",
   name,
-  role = APP_INFO.tagline,
   email = CONTACT.email,
   primaryPhone = CONTACT.primaryPhone,
   secondaryPhone = CONTACT.secondaryPhone,

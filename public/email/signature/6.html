@@ -47,6 +47,7 @@
         overflow: hidden;
         width: 100%;
         height: 100%;
+        box-sizing: border-box;
       }
 
       .bento-cream {
@@ -57,6 +58,7 @@
         overflow: hidden;
         width: 100%;
         height: 100%;
+        box-sizing: border-box;
       }
 
       /* ── Contact links ── */
@@ -183,7 +185,8 @@
                       font-family: Arial, Helvetica, sans-serif;
                     "
                   >
-                    Real People. Real Relationships. Personally Matched in Thailand.
+                    Real People. Real Relationships. Personally Matched in
+                    Thailand.
                   </div>
                 </td>
               </tr>
@@ -203,21 +206,29 @@
               cellpadding="0"
               border="0"
             >
-              <tr>
+              <tr style="height: 100%">
                 <!-- ╔════════════════════╗
                      ║  CONTACT CARD      ║
                      ╚════════════════════╝ -->
-                <td width="60%" valign="top" style="height: 100%">
+                <td width="49%" valign="top" style="height: 100%">
                   <table
                     class="bento-cream"
                     role="presentation"
+                    width="100%"
+                    height="100%"
                     cellpadding="0"
                     cellspacing="0"
                     border="0"
-                    height="100%"
+                    style="height: 100%"
                   >
                     <tr>
-                      <td style="padding: 16px 18px; vertical-align: top">
+                      <td
+                        style="
+                          padding: 16px 18px;
+                          vertical-align: top;
+                          height: 100%;
+                        "
+                      >
                         <!-- Sign-off + brand name -->
                         <div
                           style="
@@ -324,11 +335,7 @@
 
                           <!-- Phone -->
                           <tr>
-                            <td
-                              width="20"
-                              valign="middle"
-                              style="padding-bottom: 6px"
-                            >
+                            <td width="20" valign="middle">
                               <a
                                 href="tel:+66636915263"
                                 target="_blank"
@@ -343,10 +350,7 @@
                                 />
                               </a>
                             </td>
-                            <td
-                              valign="middle"
-                              style="padding-bottom: 6px; padding-left: 6px"
-                            >
+                            <td valign="middle" style="padding-left: 6px">
                               <a
                                 href="tel:+66636915263"
                                 class="contact-link"
@@ -363,50 +367,63 @@
                 </td>
 
                 <!-- Spacer -->
-                <td width="10" style="font-size: 1px; line-height: 1px">
+                <td width="12" style="font-size: 1px; line-height: 1px">
                   &nbsp;
                 </td>
 
                 <!-- ╔════════════════════╗
                      ║  SOCIAL CARD       ║
                      ╚════════════════════╝ -->
-                <td valign="top" style="height: 100%">
+                <td width="49%" valign="top" style="height: 100%">
                   <table
                     class="bento-light"
                     role="presentation"
+                    width="100%"
+                    height="100%"
                     cellpadding="0"
                     cellspacing="0"
                     border="0"
-                    height="100%"
+                    style="height: 100%"
                   >
                     <tr>
-                      <td style="padding: 18px 16px; vertical-align: top">
+                      <td
+                        style="
+                          padding: 16px 18px;
+                          vertical-align: top;
+                          height: 100%;
+                        "
+                      >
                         <!-- Label -->
                         <div
                           style="
-                            font-size: 8.5px;
+                            font-size: 9.5px;
+                            line-height: 15px;
+                            color: #b07d3a;
                             letter-spacing: 1.5px;
                             font-weight: 700;
-                            color: #b07d3a;
                             text-transform: uppercase;
-                            margin-bottom: 14px;
+                            margin-bottom: 16px;
                             font-family: Arial, Helvetica, sans-serif;
                           "
                         >
                           Follow Us
                         </div>
 
-                        <!-- Facebook -->
+                        <!-- Social rows matching left side spacing -->
                         <table
                           role="presentation"
                           width="100%"
                           cellspacing="0"
                           cellpadding="0"
                           border="0"
-                          style="margin-bottom: 11px"
                         >
+                          <!-- Facebook -->
                           <tr>
-                            <td width="22" valign="middle">
+                            <td
+                              width="20"
+                              valign="middle"
+                              style="padding-bottom: 12px"
+                            >
                               <a
                                 href="https://facebook.com/thaisoulmates"
                                 target="_blank"
@@ -415,35 +432,33 @@
                                 <img
                                   src="https://thaisoulmate.org/email/icons/facebook.png"
                                   alt="Facebook"
-                                  width="18"
-                                  height="18"
+                                  width="14"
+                                  height="14"
                                   style="display: block"
                                 />
                               </a>
                             </td>
-                            <td valign="middle" style="padding-left: 8px">
+                            <td
+                              valign="middle"
+                              style="padding-bottom: 12px; padding-left: 6px"
+                            >
                               <a
                                 href="https://facebook.com/thaisoulmates"
-                                class="platform-name"
+                                class="contact-link"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 >Facebook</a
                               >
                             </td>
                           </tr>
-                        </table>
 
-                        <!-- Instagram -->
-                        <table
-                          role="presentation"
-                          width="100%"
-                          cellspacing="0"
-                          cellpadding="0"
-                          border="0"
-                          style="margin-bottom: 11px"
-                        >
+                          <!-- Instagram -->
                           <tr>
-                            <td width="22" valign="middle">
+                            <td
+                              width="20"
+                              valign="middle"
+                              style="padding-bottom: 12px"
+                            >
                               <a
                                 href="https://instagram.com/thaisoulmate"
                                 target="_blank"
@@ -452,34 +467,29 @@
                                 <img
                                   src="https://thaisoulmate.org/email/icons/instagram.png"
                                   alt="Instagram"
-                                  width="18"
-                                  height="18"
+                                  width="14"
+                                  height="14"
                                   style="display: block"
                                 />
                               </a>
                             </td>
-                            <td valign="middle" style="padding-left: 8px">
+                            <td
+                              valign="middle"
+                              style="padding-bottom: 12px; padding-left: 6px"
+                            >
                               <a
                                 href="https://instagram.com/thaisoulmate"
-                                class="platform-name"
+                                class="contact-link"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 >Instagram</a
                               >
                             </td>
                           </tr>
-                        </table>
 
-                        <!-- TikTok -->
-                        <table
-                          role="presentation"
-                          width="100%"
-                          cellspacing="0"
-                          cellpadding="0"
-                          border="0"
-                        >
+                          <!-- TikTok -->
                           <tr>
-                            <td width="22" valign="middle">
+                            <td width="20" valign="middle">
                               <a
                                 href="https://tiktok.com/@thaisoulmate"
                                 target="_blank"
@@ -488,16 +498,16 @@
                                 <img
                                   src="https://thaisoulmate.org/email/icons/tiktok.png"
                                   alt="TikTok"
-                                  width="17"
-                                  height="17"
+                                  width="14"
+                                  height="14"
                                   style="display: block"
                                 />
                               </a>
                             </td>
-                            <td valign="middle" style="padding-left: 8px">
+                            <td valign="middle" style="padding-left: 6px">
                               <a
                                 href="https://tiktok.com/@thaisoulmate"
-                                class="platform-name"
+                                class="contact-link"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 >TikTok</a

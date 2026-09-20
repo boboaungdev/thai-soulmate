@@ -1,24 +1,13 @@
 import * as React from "react"
-import {
-  Body,
-  Container,
-  Head,
-  Html,
-  Preview,
-  Section,
-} from "react-email"
-
-import EmailSignature, { EmailSignatureProps } from "./email-signature"
+import { Body, Container, Head, Html, Preview, Section } from "react-email"
 
 export interface MemberEmailLayoutProps {
   previewText: string
-  signatureProps?: EmailSignatureProps
   children: React.ReactNode
 }
 
 export function MemberEmailLayout({
   previewText,
-  signatureProps,
   children,
 }: MemberEmailLayoutProps) {
   return (
@@ -34,9 +23,6 @@ export function MemberEmailLayout({
           <div style={dividerLine} />
 
           {/* Email Signature */}
-          <Section style={signatureSection}>
-            <EmailSignature {...signatureProps} />
-          </Section>
         </Container>
       </Body>
     </Html>

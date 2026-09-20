@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Button, Section, Text } from "react-email"
 
-import { APP_INFO } from "@/constants"
 import { env } from "@/lib/env"
 import { User } from "@/types"
 import { MemberEmailLayout } from "@/features/shared/emails"

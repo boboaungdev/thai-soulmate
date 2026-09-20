@@ -37,6 +37,7 @@ export function EmailSignature1({
   const baseUrl =
     env.BASE_URL?.replace(/\/+$/, "") || "https://thaisoulmate.org"
   const verticalLogoUrl = `${baseUrl}/email/logo-section-vertical-cropped.png`
+  const appNameLogoUrl = `${baseUrl}/email/brand-app-name.png`
 
   // Bulletproof cross-client icon URLs (colored)
   const whatsappIconUrl = `${baseUrl}/email/icons/whatsapp.png`
@@ -74,7 +75,15 @@ export function EmailSignature1({
             <Text style={senderName ? signOffText : columnHeading}>
               {signOff}
             </Text>
-            {senderName && <Text style={senderNameText}>{senderName}</Text>}
+            {senderName && (
+              <Img
+                src={appNameLogoUrl}
+                alt={APP_INFO.name}
+                width="120"
+                height="24"
+                style={brandNameImage}
+              />
+            )}
 
             {/* WhatsApp */}
             <Row style={contactRow}>
@@ -291,31 +300,35 @@ const cardContainer: React.CSSProperties = {
   width: "100%",
   maxWidth: "600px",
   margin: "0 auto",
-  backgroundColor: "#FFFFFF",
+  background: "linear-gradient(135deg, #fffdf9 0%, #fffaf5 35%, #fff7fb 100%)",
+  border: "2px solid #D3A753",
+  borderRadius: "20px",
+  overflow: "hidden",
+  boxShadow: "0 12px 30px rgba(115, 82, 38, 0.12)",
   fontFamily:
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
   color: "#111827",
 }
 
 const bodySection: React.CSSProperties = {
-  padding: "8px 0 16px",
-  backgroundColor: "#FFFFFF",
+  padding: "20px 20px 18px",
+  backgroundColor: "transparent",
 }
 
 const signOffText: React.CSSProperties = {
-  margin: "0 0 2px 0",
+  margin: "0 0 4px 0",
   fontSize: "12.5px",
   lineHeight: "16px",
-  fontWeight: "500",
-  color: "#4B5563",
+  // fontWeight: "600",
+  letterSpacing: "0.04em",
+  color: "#111111",
 }
 
-const senderNameText: React.CSSProperties = {
-  margin: "0 0 10px 0",
-  fontSize: "14px",
-  lineHeight: "18px",
-  fontWeight: "700",
-  color: "#111827",
+const brandNameImage: React.CSSProperties = {
+  display: "block",
+  margin: "0 0 12px 0",
+  maxWidth: "120px",
+  height: "auto",
 }
 
 const columnHeading: React.CSSProperties = {
@@ -337,41 +350,43 @@ const lastContactRow: React.CSSProperties = {
 const iconCell: React.CSSProperties = {
   width: "22px",
   verticalAlign: "middle",
+  paddingTop: "2px",
 }
 
 const contactContentCell: React.CSSProperties = {
   verticalAlign: "middle",
-  paddingLeft: "4px",
+  paddingLeft: "6px",
 }
 
 const contactLink: React.CSSProperties = {
   display: "inline-block",
-  fontSize: "12px",
+  fontSize: "12.5px",
   lineHeight: "18px",
-  color: "#111827",
+  color: "#1F2937",
   textDecoration: "none",
-  fontWeight: "500",
+  fontWeight: "400",
 }
 
 const socialSection: React.CSSProperties = {
-  padding: "12px 0",
-  borderTop: "1px solid #E5E7EB",
-  borderBottom: "1px solid #E5E7EB",
-  backgroundColor: "#FFFFFF",
+  padding: "12px 20px",
+  borderTop: "1px solid rgba(207, 161, 79, 0.22)",
+  borderBottom: "1px solid rgba(207, 161, 79, 0.22)",
+  background:
+    "linear-gradient(90deg, rgba(207, 161, 79, 0.06), rgba(231, 145, 167, 0.06))",
 }
 
 const socialHeaderLabel: React.CSSProperties = {
   margin: 0,
-  fontSize: "10px",
+  fontSize: "9px",
   lineHeight: "16px",
   fontWeight: "700",
-  letterSpacing: "1px",
-  color: "#111827",
+  letterSpacing: "1.4px",
+  color: "#7A4B52",
   textTransform: "uppercase",
 }
 
 const socialIconCell: React.CSSProperties = {
-  paddingRight: "14px",
+  paddingRight: "12px",
   verticalAlign: "middle",
 }
 
@@ -384,16 +399,23 @@ const socialIconLink: React.CSSProperties = {
   display: "inline-block",
   textDecoration: "none",
   lineHeight: "1",
+  backgroundColor: "#FFFFFF",
+  borderRadius: "999px",
+  width: "26px",
+  height: "26px",
+  textAlign: "center",
+  paddingTop: "5px",
+  border: "1px solid rgba(17, 7, 10, 0.06)",
 }
 
 const legalFooterSection: React.CSSProperties = {
-  padding: "16px 0 8px",
+  padding: "16px 20px 18px",
   textAlign: "center",
-  backgroundColor: "#FFFFFF",
+  backgroundColor: "rgba(255, 255, 255, 0.55)",
 }
 
 const confidentialityNoticeText: React.CSSProperties = {
-  margin: "0 0 10px 0",
+  margin: "0",
   fontSize: "9px",
   lineHeight: "14px",
   color: "#6B7280",

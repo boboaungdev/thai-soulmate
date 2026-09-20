@@ -61,50 +61,12 @@ export function EmailSignature1({
 
   return (
     <Section style={cardContainer}>
-      <style>{`
-        @media screen and (max-width: 600px) {
-          .desktop-signature {
-            display: none !important;
-          }
-          .mobile-signature {
-            display: block !important;
-            width: 100% !important;
-          }
-          .mobile-signature .mobile-logo,
-          .mobile-signature .mobile-contact {
-            display: block !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            border-left: none !important;
-          }
-          .mobile-signature .mobile-logo {
-            text-align: center !important;
-          }
-          .mobile-signature .mobile-logo img {
-            display: block !important;
-            margin: 0 auto !important;
-            max-width: 180px !important;
-            width: 180px !important;
-            height: auto !important;
-          }
-        }
-        @media screen and (min-width: 601px) {
-          .desktop-signature {
-            display: block !important;
-          }
-          .mobile-signature {
-            display: none !important;
-          }
-        }
-      `}</style>
-
-      {/* Desktop layout: contact left, logo right */}
-      <Section className="desktop-signature" style={bodySection}>
+      {/* ── 2-COLUMN DETAILS (LEFT: CONNECT WITH US, RIGHT: LOGO & BRAND) ── */}
+      <Section style={bodySection}>
         <Row>
+          {/* Left Column: Contact Details */}
           <Column
-            width="50%"
+            width="52%"
             style={{
               paddingRight: "16px",
               verticalAlign: "middle",
@@ -123,6 +85,7 @@ export function EmailSignature1({
               />
             )}
 
+            {/* WhatsApp */}
             <Row style={contactRow}>
               <Column width="22" style={iconCell}>
                 <Link href={whatsappUrl} style={iconLink}>
@@ -163,6 +126,7 @@ export function EmailSignature1({
               </Row>
             )}
 
+            {/* Primary Phone */}
             <Row style={contactRow}>
               <Column width="22" style={iconCell}>
                 <Link href={primaryPhoneUrl} style={iconLink}>
@@ -182,6 +146,7 @@ export function EmailSignature1({
               </Column>
             </Row>
 
+            {/* Secondary Phone */}
             {secondaryPhone && (
               <Row style={contactRow}>
                 <Column width="22" style={iconCell}>
@@ -203,6 +168,7 @@ export function EmailSignature1({
               </Row>
             )}
 
+            {/* Email */}
             <Row style={contactRow}>
               <Column width="22" style={iconCell}>
                 <Link href={emailUrl} style={iconLink}>
@@ -222,6 +188,7 @@ export function EmailSignature1({
               </Column>
             </Row>
 
+            {/* Website */}
             <Row style={lastContactRow}>
               <Column width="22" style={iconCell}>
                 <Link href={websiteUrl} style={iconLink}>
@@ -242,11 +209,13 @@ export function EmailSignature1({
             </Row>
           </Column>
 
+          {/* Right Column: Vertical Logo */}
           <Column
-            width="50%"
+            width="48%"
             align="center"
             style={{
               paddingLeft: "16px",
+              borderLeft: "1px solid #E5E7EB",
               verticalAlign: "middle",
               textAlign: "center",
             }}
@@ -267,192 +236,27 @@ export function EmailSignature1({
         </Row>
       </Section>
 
-      {/* Mobile layout: logo top, contact below */}
-      <Section className="mobile-signature" style={bodySection}>
-        <Row>
-          <Column
-            className="mobile-logo"
-            style={{ textAlign: "center", paddingBottom: "12px" }}
-          >
-            <table
-              role="presentation"
-              cellPadding="0"
-              cellSpacing="0"
-              border={0}
-              width="100%"
-              style={{ width: "100%", textAlign: "center" }}
-            >
-              <tbody>
-                <tr>
-                  <td align="center" style={{ textAlign: "center" }}>
-                    <Img
-                      src={verticalLogoUrl}
-                      alt={APP_INFO.name}
-                      width="220"
-                      height="167"
-                      style={{
-                        display: "block",
-                        margin: "0 auto",
-                        maxWidth: "180px",
-                        width: "180px",
-                        height: "auto",
-                      }}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Column>
-        </Row>
-
-        <Row>
-          <Column
-            className="mobile-contact"
-            style={{ verticalAlign: "middle" }}
-          >
-            <Text style={senderName ? signOffText : columnHeading}>
-              {signOff}
-            </Text>
-            {senderName && (
-              <Img
-                src={appNameLogoUrl}
-                alt={APP_INFO.name}
-                width="120"
-                height="24"
-                style={brandNameImage}
-              />
-            )}
-
-            <Row style={contactRow}>
-              <Column width="22" style={iconCell}>
-                <Link href={whatsappUrl} style={iconLink}>
-                  <Img
-                    src={whatsappIconUrl}
-                    alt="WhatsApp"
-                    width="14"
-                    height="14"
-                    style={{ display: "block" }}
-                  />
-                </Link>
-              </Column>
-              <Column style={contactContentCell}>
-                <Link href={whatsappUrl} style={contactLink}>
-                  {whatsapp}
-                </Link>
-              </Column>
-            </Row>
-
-            {line && (
-              <Row style={contactRow}>
-                <Column width="22" style={iconCell}>
-                  <Link href={line} style={iconLink}>
-                    <Img
-                      src={lineIconUrl}
-                      alt="LINE"
-                      width="14"
-                      height="14"
-                      style={{ display: "block" }}
-                    />
-                  </Link>
-                </Column>
-                <Column style={contactContentCell}>
-                  <Link href={line} style={contactLink}>
-                    +66 6369 15263
-                  </Link>
-                </Column>
-              </Row>
-            )}
-
-            <Row style={contactRow}>
-              <Column width="22" style={iconCell}>
-                <Link href={primaryPhoneUrl} style={iconLink}>
-                  <Img
-                    src={phoneIconUrl}
-                    alt="Phone"
-                    width="13"
-                    height="13"
-                    style={{ display: "block" }}
-                  />
-                </Link>
-              </Column>
-              <Column style={contactContentCell}>
-                <Link href={primaryPhoneUrl} style={contactLink}>
-                  {primaryPhone}
-                </Link>
-              </Column>
-            </Row>
-
-            {secondaryPhone && (
-              <Row style={contactRow}>
-                <Column width="22" style={iconCell}>
-                  <Link href={secondaryPhoneUrl} style={iconLink}>
-                    <Img
-                      src={phoneIconUrl}
-                      alt="Phone"
-                      width="13"
-                      height="13"
-                      style={{ display: "block" }}
-                    />
-                  </Link>
-                </Column>
-                <Column style={contactContentCell}>
-                  <Link href={secondaryPhoneUrl} style={contactLink}>
-                    {secondaryPhone}
-                  </Link>
-                </Column>
-              </Row>
-            )}
-
-            <Row style={contactRow}>
-              <Column width="22" style={iconCell}>
-                <Link href={emailUrl} style={iconLink}>
-                  <Img
-                    src={mailIconUrl}
-                    alt="Email"
-                    width="14"
-                    height="14"
-                    style={{ display: "block" }}
-                  />
-                </Link>
-              </Column>
-              <Column style={contactContentCell}>
-                <Link href={emailUrl} style={contactLink}>
-                  {email}
-                </Link>
-              </Column>
-            </Row>
-
-            <Row style={lastContactRow}>
-              <Column width="22" style={iconCell}>
-                <Link href={websiteUrl} style={iconLink}>
-                  <Img
-                    src={globeIconUrl}
-                    alt="Website"
-                    width="14"
-                    height="14"
-                    style={{ display: "block" }}
-                  />
-                </Link>
-              </Column>
-              <Column style={contactContentCell}>
-                <Link href={websiteUrl} style={contactLink}>
-                  {cleanWebsite}
-                </Link>
-              </Column>
-            </Row>
-          </Column>
-        </Row>
-      </Section>
-
       {/* ── SOCIAL MEDIA BAR ── */}
       <Section style={socialSection}>
-        <Row>
-          <Column style={{ verticalAlign: "middle" }}>
+        <Row style={{ width: "100%" }}>
+          <Column
+            width="50%"
+            style={{ verticalAlign: "middle", textAlign: "left" }}
+          >
             <Text style={socialHeaderLabel}>FOLLOW US</Text>
           </Column>
 
-          <Column align="right" style={{ verticalAlign: "middle" }}>
-            <table cellPadding="0" cellSpacing="0" border={0}>
+          <Column
+            width="50%"
+            style={{ verticalAlign: "middle", textAlign: "right" }}
+          >
+            <table
+              cellPadding="0"
+              cellSpacing="0"
+              border={0}
+              align="right"
+              style={{ width: "auto" }}
+            >
               <tbody>
                 <tr>
                   <td style={socialIconCell}>
@@ -602,6 +406,7 @@ const iconLink: React.CSSProperties = {
 }
 
 const socialSection: React.CSSProperties = {
+  width: "100%",
   padding: "12px 20px",
   borderTop: "1px solid rgba(207, 161, 79, 0.22)",
   borderBottom: "1px solid rgba(207, 161, 79, 0.22)",

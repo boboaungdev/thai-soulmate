@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { EmailSignature1, NewEmailSignature } from "@/features/shared/emails"
+import { EmailSignature1 } from "@/features/shared/emails"
 import { APP_INFO } from "@/constants"
 import { Check, Copy, Laptop, Smartphone, ExternalLink } from "lucide-react"
 

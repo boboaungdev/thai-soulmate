@@ -70,7 +70,18 @@
         text-decoration: none;
       }
 
-      /* ── Social strip ── */
+      /* ── Social card ── */
+      .social-card {
+        background-color: #f5efe4;
+        border: 2px solid #d3a753;
+        border-radius: 14px;
+        border-collapse: separate;
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* ── Social label ── */
       .social-label {
         margin: 0;
         font-size: 9px;
@@ -199,7 +210,7 @@
                         align="center"
                         valign="middle"
                         style="
-                          padding: 16px 14px;
+                          padding: 14px 10px;
                           text-align: center;
                           vertical-align: middle;
                           height: 100%;
@@ -208,14 +219,52 @@
                         <img
                           src="https://thaisoulmate.org/email/logo-section-vertical-cropped.png"
                           alt="Thai Soulmate"
-                          width="130"
+                          width="118"
                           style="
                             display: block;
                             margin: 0 auto;
-                            max-width: 130px;
+                            max-width: 118px;
                             height: auto;
                           "
                         />
+
+                        <!-- Thin gold rule -->
+                        <table
+                          role="presentation"
+                          cellspacing="0"
+                          cellpadding="0"
+                          border="0"
+                          style="
+                            margin: 8px auto 7px auto;
+                            border-collapse: collapse;
+                            width: 36%;
+                          "
+                        >
+                          <tr>
+                            <td
+                              height="1"
+                              bgcolor="#3D2318"
+                              style="font-size: 1px; line-height: 1px"
+                            >
+                              &nbsp;
+                            </td>
+                          </tr>
+                        </table>
+
+                        <!-- Tagline -->
+                        <div
+                          style="
+                            font-size: 8.5px;
+                            line-height: 12.5px;
+                            color: #c9973f;
+                            font-weight: 700;
+                            font-family: Arial, Helvetica, sans-serif;
+                            text-align: center;
+                          "
+                        >
+                          Real People. Real Relationships.<br />Personally
+                          Matched in Thailand.
+                        </div>
                       </td>
                     </tr>
                   </table>
@@ -258,6 +307,22 @@
                           height: 100%;
                         "
                       >
+                        <!-- Top Header Label -->
+                        <div
+                          style="
+                            font-size: 9px;
+                            line-height: 14px;
+                            font-weight: 700;
+                            letter-spacing: 1.5px;
+                            color: #b07d3a;
+                            text-transform: uppercase;
+                            margin-bottom: 10px;
+                            font-family: Arial, Helvetica, sans-serif;
+                          "
+                        >
+                          CONTACT US
+                        </div>
+
                         <!-- Contact rows -->
                         <table
                           role="presentation"
@@ -443,80 +508,105 @@
           </td>
         </tr>
 
-        <!-- ── SOCIAL STRIP ── -->
+        <!-- ── FOLLOW US CARD ── -->
         <tr>
-          <td
-            style="
-              padding: 10px 18px;
-              border-top: 1.5px solid #d3a753;
-              border-bottom: 1.5px solid #d3a753;
-              background-color: #f5efe4;
-            "
-          >
+          <td style="padding: 0 14px 10px 14px">
             <table
+              class="social-card"
               role="presentation"
               width="100%"
               cellspacing="0"
               cellpadding="0"
               border="0"
+              style="
+                width: 100%;
+                background-color: #f5efe4;
+                border: 2px solid #d3a753;
+                border-radius: 14px;
+                border-collapse: separate;
+                overflow: hidden;
+                box-sizing: border-box;
+              "
             >
               <tr>
-                <td align="left" valign="middle" width="50%">
-                  <p class="social-label">FOLLOW US</p>
-                </td>
-                <td align="right" valign="middle" width="50%">
+                <td style="padding: 10px 16px">
                   <table
                     role="presentation"
+                    width="100%"
                     cellspacing="0"
                     cellpadding="0"
                     border="0"
-                    align="right"
                   >
                     <tr>
-                      <td style="padding-right: 12px; vertical-align: middle">
-                        <a
-                          href="https://facebook.com/thaisoulmates"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <img
-                            src="https://thaisoulmate.org/email/icons/facebook.png"
-                            alt="Facebook"
-                            width="16"
-                            height="16"
-                            style="display: block"
-                          />
-                        </a>
+                      <td align="left" valign="middle" width="50%">
+                        <p class="social-label">FOLLOW US</p>
                       </td>
-                      <td style="padding-right: 12px; vertical-align: middle">
-                        <a
-                          href="https://instagram.com/thaisoulmate"
-                          target="_blank"
-                          rel="noopener noreferrer"
+                      <td align="right" valign="middle" width="50%">
+                        <table
+                          role="presentation"
+                          cellspacing="0"
+                          cellpadding="0"
+                          border="0"
+                          align="right"
                         >
-                          <img
-                            src="https://thaisoulmate.org/email/icons/instagram.png"
-                            alt="Instagram"
-                            width="16"
-                            height="16"
-                            style="display: block"
-                          />
-                        </a>
-                      </td>
-                      <td style="vertical-align: middle">
-                        <a
-                          href="https://tiktok.com/@thaisoulmate"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <img
-                            src="https://thaisoulmate.org/email/icons/tiktok.png"
-                            alt="TikTok"
-                            width="15"
-                            height="15"
-                            style="display: block"
-                          />
-                        </a>
+                          <tr>
+                            <td
+                              style="
+                                padding-right: 12px;
+                                vertical-align: middle;
+                              "
+                            >
+                              <a
+                                href="https://facebook.com/thaisoulmates"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <img
+                                  src="https://thaisoulmate.org/email/icons/facebook.png"
+                                  alt="Facebook"
+                                  width="16"
+                                  height="16"
+                                  style="display: block"
+                                />
+                              </a>
+                            </td>
+                            <td
+                              style="
+                                padding-right: 12px;
+                                vertical-align: middle;
+                              "
+                            >
+                              <a
+                                href="https://instagram.com/thaisoulmate"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <img
+                                  src="https://thaisoulmate.org/email/icons/instagram.png"
+                                  alt="Instagram"
+                                  width="16"
+                                  height="16"
+                                  style="display: block"
+                                />
+                              </a>
+                            </td>
+                            <td style="vertical-align: middle">
+                              <a
+                                href="https://tiktok.com/@thaisoulmate"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <img
+                                  src="https://thaisoulmate.org/email/icons/tiktok.png"
+                                  alt="TikTok"
+                                  width="15"
+                                  height="15"
+                                  style="display: block"
+                                />
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
                       </td>
                     </tr>
                   </table>
@@ -528,7 +618,7 @@
 
         <!-- ── CONFIDENTIALITY & PRIVACY NOTICE CARD ── -->
         <tr>
-          <td style="padding: 12px 14px 14px 14px">
+          <td style="padding: 0 14px 14px 14px">
             <table
               class="notice-card"
               role="presentation"
